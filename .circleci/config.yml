@@ -53,7 +53,7 @@ jobs:
           name: Export unitypackage
           command: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
           working_directory: .
-     - store_artifacts:
+      - store_artifacts:
           path: ./UniRx.Async.unitypackage
           destination: /UniRx.Async.unitypackage
 workflows:
