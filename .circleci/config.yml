@@ -1,6 +1,6 @@
 version: 2.1
 executors:
-  unity_2018.3.12f1:
+  unity_2018_3_12f1:
     docker:
       # https://hub.docker.com/r/gableroux/unity3d/tags
       - image: gableroux/unity3d:2018.3.12f1
@@ -10,7 +10,7 @@ commands:
       # get activation file, if fail to activate unity, use this key and activate from https://license.unity3d.com/manual
       - run: apt update && apt install libunwind8 -y
       - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -createManualActivationFile || exit 0
-      - run: cat  << parameters.unity_version >>.alf # file name same as image's version
+      - run: cat << parameters.unity_version >>.alf # file name same as image's version
       # get from UNITY_LICENSE envvar(base64 encoded(cat foo.ulf | base64 )), this file is generated from above manual activation
       - run: echo << parameters.unity_license >> | base64 -di  >> .circleci/Unity.ulf
       - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile .circleci/Unity.ulf || exit 0
@@ -42,5 +42,5 @@ workflows:
   build-unity:
     jobs:
       - build-unity-2017:
-        unity_version: 2018.3.12f1
-        unity_license: ${UNITY_LICENSE_2018_3}
+          unity_version: 2018.3.12f1
+          unity_license: ${UNITY_LICENSE_2018_3}
