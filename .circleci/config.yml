@@ -42,6 +42,6 @@ workflows:
   version: 2
   build-unity:
     jobs:
-      - build-unity-2017:
+      - build-and-test:
           unity_version: 2018.3.12f1
           unity_license: ${UNITY_LICENSE_2018_3}
