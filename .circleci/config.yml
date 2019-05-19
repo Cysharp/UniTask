@@ -73,10 +73,11 @@ workflows:
       - build-and-test:
           unity_version: 2019.1.2f1
           unity_license: ${UNITY_LICENSE_2019_1}
-      - build-and-test:
-          unity_version: 2018.4.0f1
-          unity_license: ${UNITY_LICENSE_2018_4}
-      # UniTask minimum support version is 2018.3(C# 7.x)
-      - build-and-test:
-          unity_version: 2018.3.12f1
-          unity_license: ${UNITY_LICENSE_2018_3}
+      # test asmdef will not found.
+      # - build-and-test:
+      #     unity_version: 2018.4.0f1
+      #     unity_license: ${UNITY_LICENSE_2018_4}
+      # # UniTask minimum support version is 2018.3(C# 7.x)
+      # - build-and-test:
+      #     unity_version: 2018.3.12f1
+      #     unity_license: ${UNITY_LICENSE_2018_3}
