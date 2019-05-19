@@ -1,9 +1,11 @@
 version: 2.1
 executors:
-  unity_2018_3_12f1:
+  unity:
+    # https://hub.docker.com/r/gableroux/unity3d/tags
+    parameters:
+      version: {type: string}
     docker:
-      # https://hub.docker.com/r/gableroux/unity3d/tags
-      - image: gableroux/unity3d:2018.3.12f1
+      - image: gableroux/unity3d:<< parameters.version >>
 commands:
   unity_activate:
     parameters:
@@ -22,10 +24,14 @@ jobs:
     parameters:
       unity_version: {type: string}
       unity_license: {type: string}
-    executor: unity_<< parameters.unity_version >>
+    executor:
+      name: unity
+      version: << parameters.unity_version >>
     steps:
       - checkout
-      - unity_activate
+      - unity_activate:
+          unity_version: << parameters.unity_version >>
+          unity_license: << parameters.unity_license >>
       # - run:
       #     name: Build Linux(Mono)
       #     command: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend Mono2x /BuildTarget StandaloneLinux64
