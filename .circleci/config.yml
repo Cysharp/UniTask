@@ -6,6 +6,7 @@ executors:
       - image: gableroux/unity3d:2018.3.12f1
 commands:
   unity_activate:
+    steps:
       # requires: parameters.unity_version and parameters.unity_license.
       # get activation file, if fail to activate unity, use this key and activate from https://license.unity3d.com/manual
       - run: apt update && apt install libunwind8 -y
