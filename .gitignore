@@ -141,3 +141,7 @@ UniRx\.Async\.Tests\.csproj
 UniTask\.sln
 
 RuntimeUnitTestToolkit\.csproj
+
+Assembly-CSharp-Editor\.csproj
+
+UniRx\.Async\.unitypackage

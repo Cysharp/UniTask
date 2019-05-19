@@ -32,27 +32,37 @@ jobs:
       - unity_activate:
           unity_version: << parameters.unity_version >>
           unity_license: << parameters.unity_license >>
-      # - run:
-      #     name: Build Linux(Mono)
-      #     command: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend Mono2x /BuildTarget StandaloneLinux64
-      #     working_directory: src/RandomFixtureKit.Unity
-      # - run: src/RandomFixtureKit.Unity/bin/UnitTest/StandaloneLinux64_Mono2x/test
-  # build-and-create-package:
-  #   executor: unity
-  #   steps:
-  #     - checkout
-  #     - unity_activate
-  #     - run:
-  #         name: Export unitypackage
-  #         command: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
-  #         working_directory: src/MagicOnion.Client.Unity
-  #     - store_artifacts:
-  #         path: src/MagicOnion.Client.Unity/MagicOnion.Client.Unity.unitypackage
-  #         destination: /MagicOnion.Client.Unity.unitypackage
+      - run:
+          name: Build Linux(Mono)
+          command: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend Mono2x /BuildTarget StandaloneLinux64
+          working_directory: .
+      - run: ./bin/UnitTest/StandaloneLinux64_Mono2x/test
+  build-and-create-package:
+    parameters:
+      unity_version: {type: string}
+      unity_license: {type: string}
+    executor:
+      name: unity
+      version: << parameters.unity_version >>
+    steps:
+      - checkout
+      - unity_activate:
+          unity_version: << parameters.unity_version >>
+          unity_license: << parameters.unity_license >>
+      - run:
+          name: Export unitypackage
+          command: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
+          working_directory: .
+     - store_artifacts:
+          path: ./UniRx.Async.unitypackage
+          destination: /UniRx.Async.unitypackage
 workflows:
   version: 2
   build-unity:
     jobs:
+      - build-and-create-package:
+          unity_version: 2019.3.0a2
+          unity_license: ${UNITY_LICENSE_2019_3}
       - build-and-test:
           unity_version: 2019.3.0a2
           unity_license: ${UNITY_LICENSE_2019_3}
