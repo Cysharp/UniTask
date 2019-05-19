@@ -6,8 +6,10 @@ executors:
       - image: gableroux/unity3d:2018.3.12f1
 commands:
   unity_activate:
+    parameters:
+      unity_version: {type: string}
+      unity_license: {type: string}
     steps:
-      # requires: parameters.unity_version and parameters.unity_license.
       # get activation file, if fail to activate unity, use this key and activate from https://license.unity3d.com/manual
       - run: apt update && apt install libunwind8 -y
       - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -createManualActivationFile || exit 0
@@ -17,6 +19,9 @@ commands:
       - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile .circleci/Unity.ulf || exit 0
 jobs:
   build-and-test:
+    parameters:
+      unity_version: {type: string}
+      unity_license: {type: string}
     executor: unity_<< parameters.unity_version >>
     steps:
       - checkout
