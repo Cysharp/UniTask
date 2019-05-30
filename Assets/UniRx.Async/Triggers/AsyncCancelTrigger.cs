@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnCancelAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<BaseEventData> OnCancelAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onCancel, ref onCancels, cancellationToken);
         }

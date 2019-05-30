@@ -59,7 +59,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnDeselectAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<BaseEventData> OnDeselectAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onDeselect, ref onDeselects, cancellationToken);
         }
@@ -71,7 +71,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnMoveAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<AxisEventData> OnMoveAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onMove, ref onMoves, cancellationToken);
         }
@@ -83,7 +83,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnPointerDownAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnPointerDownAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onPointerDown, ref onPointerDowns, cancellationToken);
         }
@@ -95,7 +95,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnPointerEnterAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnPointerEnterAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onPointerEnter, ref onPointerEnters, cancellationToken);
         }
@@ -107,7 +107,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnPointerExitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnPointerExitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onPointerExit, ref onPointerExits, cancellationToken);
         }
@@ -119,7 +119,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnPointerUpAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnPointerUpAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onPointerUp, ref onPointerUps, cancellationToken);
         }
@@ -131,7 +131,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnSelectAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<BaseEventData> OnSelectAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onSelect, ref onSelects, cancellationToken);
         }
@@ -143,7 +143,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnPointerClickAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnPointerClickAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onPointerClick, ref onPointerClicks, cancellationToken);
         }
@@ -155,7 +155,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnSubmitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<BaseEventData> OnSubmitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onSubmit, ref onSubmits, cancellationToken);
         }
@@ -167,7 +167,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnDragAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnDragAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onDrag, ref onDrags, cancellationToken);
         }
@@ -179,7 +179,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnBeginDragAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnBeginDragAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onBeginDrag, ref onBeginDrags, cancellationToken);
         }
@@ -191,7 +191,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnEndDragAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnEndDragAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onEndDrag, ref onEndDrags, cancellationToken);
         }
@@ -203,7 +203,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnDropAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnDropAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onDrop, ref onDrops, cancellationToken);
         }
@@ -215,7 +215,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnUpdateSelectedAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<BaseEventData> OnUpdateSelectedAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onUpdateSelected, ref onUpdateSelecteds, cancellationToken);
         }
@@ -227,7 +227,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnInitializePotentialDragAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnInitializePotentialDragAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onInitializePotentialDrag, ref onInitializePotentialDrags, cancellationToken);
         }
@@ -239,7 +239,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnCancelAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<BaseEventData> OnCancelAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onCancel, ref onCancels, cancellationToken);
         }
@@ -251,7 +251,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnScrollAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnScrollAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onScroll, ref onScrolls, cancellationToken);
         }

@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnPointerDownAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnPointerDownAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onPointerDown, ref onPointerDowns, cancellationToken);
         }

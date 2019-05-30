@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnScrollAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnScrollAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onScroll, ref onScrolls, cancellationToken);
         }

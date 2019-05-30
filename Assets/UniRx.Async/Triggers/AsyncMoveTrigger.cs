@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnMoveAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<AxisEventData> OnMoveAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onMove, ref onMoves, cancellationToken);
         }

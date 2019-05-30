@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnParticleCollisionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<GameObject> OnParticleCollisionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onParticleCollision, ref onParticleCollisions, cancellationToken);
         }

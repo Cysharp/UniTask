@@ -4,7 +4,7 @@
 
 namespace System.Runtime.CompilerServices
 {
-    public sealed class AsyncMethodBuilderAttribute : Attribute
+    internal sealed class AsyncMethodBuilderAttribute : Attribute
     {
         public Type BuilderType { get; }
 

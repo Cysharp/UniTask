@@ -1,20 +1,33 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UniRx.Async;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class SandboxMain : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        RunAsync().Forget();
-    }
+    public Button okButton;
+    public Button cancelButton;
+    CancellationTokenSource cts;
 
-    async UniTaskVoid RunAsync()
+    async void Start()
     {
-        var id = await UniTask.Run(() => System.Threading.Thread.CurrentThread.ManagedThreadId, configureAwait: false);
-        UnityEngine.Debug.Log("ReturnId:" + id);
-        UnityEngine.Debug.Log("CurrentId:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+        await UniTask.CompletedTask;  // ok
+
+        // var subject = new Subject<Unit>();
+        //subject.OnCompleted();
+        IObservable<AsyncUnit> subject = default;
+        try
+        {
+            await subject.ToUniTask();  // exception
+        }
+        catch (Exception exception)
+        {
+            Debug.Log(exception);
+        }
     }
 }
+

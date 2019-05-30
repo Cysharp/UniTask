@@ -29,7 +29,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnAnimatorIKAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<int> OnAnimatorIKAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onAnimatorIK, ref onAnimatorIKs, cancellationToken);
         }

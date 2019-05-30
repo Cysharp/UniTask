@@ -30,7 +30,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnJointBreakAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<float> OnJointBreakAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onJointBreak, ref onJointBreaks, cancellationToken);
         }
@@ -42,7 +42,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnJointBreak2DAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<Joint2D> OnJointBreak2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onJointBreak2D, ref onJointBreak2Ds, cancellationToken);
         }

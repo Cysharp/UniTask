@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using UniRx.Async.Internal;
+using UnityEngine;
 
 namespace UniRx.Async
 {
@@ -57,7 +59,7 @@ namespace UniRx.Async
                     return;
                 }
 
-                this.innerEnumerator = innerEnumerator;
+                this.innerEnumerator = ConsumeEnumerator(innerEnumerator);
                 this.status = AwaiterStatus.Pending;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
@@ -141,6 +143,108 @@ namespace UniRx.Async
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
+            }
+
+            // Unwrap YieldInstructions
+
+            static IEnumerator ConsumeEnumerator(IEnumerator enumerator)
+            {
+                while (enumerator.MoveNext())
+                {
+                    var current = enumerator.Current;
+                    if (current == null)
+                    {
+                        yield return null;
+                    }
+                    else if (current is CustomYieldInstruction)
+                    {
+                        // WWW, WaitForSecondsRealtime
+                        var e2 = UnwrapWaitCustomYieldInstruction((CustomYieldInstruction)current);
+                        while (e2.MoveNext())
+                        {
+                            yield return null;
+                        }
+                    }
+                    else if (current is YieldInstruction)
+                    {
+                        IEnumerator innerCoroutine = null;
+                        switch (current)
+                        {
+                            case AsyncOperation ao:
+                                innerCoroutine = UnwrapWaitAsyncOperation(ao);
+                                break;
+                            case WaitForSeconds wfs:
+                                innerCoroutine = UnwrapWaitForSeconds(wfs);
+                                break;
+                        }
+                        if (innerCoroutine != null)
+                        {
+                            while (innerCoroutine.MoveNext())
+                            {
+                                yield return null;
+                            }
+                        }
+                        else
+                        {
+                            yield return null;
+                        }
+                    }
+                    else if (current is IEnumerator e3)
+                    {
+                        while (e3.MoveNext())
+                        {
+                            yield return null;
+                        }
+                    }
+                    else
+                    {
+                        // WaitForEndOfFrame, WaitForFixedUpdate, others.
+                        yield return null;
+                    }
+                }
+            }
+
+            // WWW and others as CustomYieldInstruction.
+            static IEnumerator UnwrapWaitCustomYieldInstruction(CustomYieldInstruction yieldInstruction)
+            {
+                while (yieldInstruction.keepWaiting)
+                {
+                    yield return null;
+                }
+            }
+
+            static readonly FieldInfo waitForSeconds_Seconds = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
+
+            static IEnumerator UnwrapWaitForSeconds(WaitForSeconds waitForSeconds)
+            {
+                var second = (float)waitForSeconds_Seconds.GetValue(waitForSeconds);
+                var startTime = DateTimeOffset.UtcNow;
+                while (true)
+                {
+                    yield return null;
+
+                    var elapsed = (DateTimeOffset.UtcNow - startTime).TotalSeconds;
+                    if (elapsed >= second)
+                    {
+                        break;
+                    }
+                };
+            }
+
+            static IEnumerator UnwrapEnumerator(IEnumerator enumerator)
+            {
+                while (enumerator.MoveNext())
+                {
+                    yield return null;
+                }
+            }
+
+            static IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation)
+            {
+                while (!asyncOperation.isDone)
+                {
+                    yield return null;
+                }
             }
         }
     }

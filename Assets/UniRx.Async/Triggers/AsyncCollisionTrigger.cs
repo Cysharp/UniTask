@@ -32,7 +32,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnCollisionEnterAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<Collision> OnCollisionEnterAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onCollisionEnter, ref onCollisionEnters, cancellationToken);
         }
@@ -44,7 +44,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnCollisionExitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<Collision> OnCollisionExitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onCollisionExit, ref onCollisionExits, cancellationToken);
         }
@@ -56,7 +56,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnCollisionStayAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<Collision> OnCollisionStayAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onCollisionStay, ref onCollisionStays, cancellationToken);
         }

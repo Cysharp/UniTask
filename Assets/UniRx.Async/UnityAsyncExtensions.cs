@@ -168,12 +168,15 @@ namespace UniRx.Async
                     }
                 }
 
-                asyncOperation = null; // remove reference.
-
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
+                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+                }
+                else
+                {
+                    asyncOperation = null; // remove reference.
                 }
             }
 
@@ -316,12 +319,16 @@ namespace UniRx.Async
                 }
 
                 this.result = asyncOperation.asset;
-                asyncOperation = null; // remove reference.
 
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
+                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+                }
+                else
+                {
+                    asyncOperation = null; // remove reference.
                 }
 
                 return this.result;
@@ -576,13 +583,18 @@ namespace UniRx.Async
                 }
 
                 this.result = asyncOperation.webRequest;
-                asyncOperation = null; // remove reference.
 
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
+                    asyncOperation = null; // remove reference.
                     continuationAction = null;
                 }
+                else
+                {
+                    asyncOperation = null; // remove reference.
+                }
+
 
                 return this.result;
             }

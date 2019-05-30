@@ -32,7 +32,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnTriggerEnter2DAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<Collider2D> OnTriggerEnter2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onTriggerEnter2D, ref onTriggerEnter2Ds, cancellationToken);
         }
@@ -44,7 +44,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnTriggerExit2DAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<Collider2D> OnTriggerExit2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onTriggerExit2D, ref onTriggerExit2Ds, cancellationToken);
         }
@@ -56,7 +56,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnTriggerStay2DAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<Collider2D> OnTriggerStay2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onTriggerStay2D, ref onTriggerStay2Ds, cancellationToken);
         }

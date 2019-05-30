@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        public UniTask OnInitializePotentialDragAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public UniTask<PointerEventData> OnInitializePotentialDragAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetOrAddPromise(ref onInitializePotentialDrag, ref onInitializePotentialDrags, cancellationToken);
         }
