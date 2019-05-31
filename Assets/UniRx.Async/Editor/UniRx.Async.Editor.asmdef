@@ -1,7 +1,7 @@
 {
     "name": "UniRx.Async.Editor",
     "references": [
-        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+        "UniRx.Async"
     ],
     "includePlatforms": [
         "Editor"
