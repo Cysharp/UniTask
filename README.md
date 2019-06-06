@@ -8,7 +8,7 @@ Provides an efficient async/await integration to Unity.
 
 Getting started
 ---
-Install package is available in [UniTask/releases](https://github.com/Cysharp/UniTask/releases) page.
+Install package(`UniRx.Async.unitypackage`) is available in [UniTask/releases](https://github.com/Cysharp/UniTask/releases) page.
 
 ```csharp
 // extension awaiter/methods can be used by this namespace
