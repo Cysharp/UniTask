@@ -4,7 +4,7 @@
 
 Provides an efficient async/await integration to Unity.
 
-> UniTask was included in UniRx before v6 but now completely separated, it no dependent each other.
+> UniTask was included in UniRx before v7 but now completely separated, it no dependent each other.
 
 Getting started
 ---
