@@ -192,6 +192,11 @@ UniTask.DelayFrame
 UniTask.Delay(..., bool ignoreTimeScale = false, ...) parameter
 ```
 
+Cancellation
+---
+
+async void vs async UniTask/UniTaskVoid
+---
 
 For Unit Testing
 ---
