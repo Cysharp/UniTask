@@ -191,7 +191,8 @@ namespace UniRx.Async
                     }
                     else if (current is IEnumerator e3)
                     {
-                        while (e3.MoveNext())
+                        var e4 = ConsumeEnumerator(e3);
+                        while (e4.MoveNext())
                         {
                             yield return null;
                         }
