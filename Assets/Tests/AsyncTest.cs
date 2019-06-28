@@ -376,6 +376,27 @@ namespace UniRx.AsyncTests
             throw new Exception("MyException");
         }
 
+        [UnityTest]
+        public IEnumerator NestedEnumerator() => UniTask.ToCoroutine(async () =>
+        {
+            var time = Time.realtimeSinceStartup;
+
+            await ParentCoroutineEnumerator();
+
+            var elapsed = Time.realtimeSinceStartup - time;
+            ((int)Math.Round(TimeSpan.FromSeconds(elapsed).TotalSeconds, MidpointRounding.ToEven)).Should().Be(3);
+        });
+
+        IEnumerator ParentCoroutineEnumerator()
+        {
+            yield return ChildCoroutineEnumerator();
+        }
+
+        IEnumerator ChildCoroutineEnumerator()
+        {
+            yield return new WaitForSeconds(3);
+        }
+
 #endif
 #endif
     }
