@@ -67,13 +67,33 @@ namespace UniRx.Async
             var yieldLoop = new PlayerLoopSystem
             {
                 type = loopRunnerYieldType,
+#if UNITY_EDITOR
+                updateDelegate = () =>
+                {
+                    if (Application.isPlaying)
+                    {
+                        cq.Run();
+                    }
+                }
+#else
                 updateDelegate = cq.Run
+#endif
             };
 
             var runnerLoop = new PlayerLoopSystem
             {
                 type = loopRunnerType,
+#if UNITY_EDITOR
+                updateDelegate = () =>
+                {
+                    if (Application.isPlaying)
+                    {
+                        runner.Run();
+                    }
+                }
+#else
                 updateDelegate = runner.Run
+#endif
             };
 
             var dest = new PlayerLoopSystem[loopSystem.subSystemList.Length + 2];

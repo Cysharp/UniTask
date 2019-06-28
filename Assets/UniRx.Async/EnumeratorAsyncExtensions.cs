@@ -232,14 +232,6 @@ namespace UniRx.Async
                 };
             }
 
-            static IEnumerator UnwrapEnumerator(IEnumerator enumerator)
-            {
-                while (enumerator.MoveNext())
-                {
-                    yield return null;
-                }
-            }
-
             static IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation)
             {
                 while (!asyncOperation.isDone)

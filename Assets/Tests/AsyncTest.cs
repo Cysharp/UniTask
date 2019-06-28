@@ -195,7 +195,6 @@ namespace UniRx.AsyncTests
 
             var currentThreadId = Thread.CurrentThread.ManagedThreadId;
 
-            UnityEngine.Debug.Log("Before:" + currentThreadId);
 
 
             await UniTask.SwitchToThreadPool();
@@ -209,7 +208,6 @@ namespace UniRx.AsyncTests
 
             var switchedThreadId = Thread.CurrentThread.ManagedThreadId;
 
-            UnityEngine.Debug.Log("After:" + switchedThreadId);
 
 
             currentThreadId.Should().NotBe(switchedThreadId);
