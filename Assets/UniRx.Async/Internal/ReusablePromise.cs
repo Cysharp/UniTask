@@ -391,5 +391,5 @@ namespace UniRx.Async.Internal
         public abstract bool MoveNext();
     }
 
-#endif
 }
+#endif
