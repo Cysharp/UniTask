@@ -257,6 +257,7 @@ namespace UniRx.Async
             public IDisposable Subscribe(IObserver<T> observer)
             {
                 observer.OnNext(value);
+                observer.OnCompleted();
                 return EmptyDisposable.Instance;
             }
         }
