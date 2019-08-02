@@ -395,6 +395,40 @@ namespace UniRx.AsyncTests
             yield return new WaitForSeconds(3);
         }
 
+        [UnityTest]
+        public IEnumerator ToObservable() => UniTask.ToCoroutine(async () =>
+        {
+            var completedTaskObserver = new ToObservableObserver<AsyncUnit>();
+            completedTaskObserver.OnNextCalled.Should().BeFalse();
+            completedTaskObserver.OnCompletedCalled.Should().BeFalse();
+            completedTaskObserver.OnErrorCalled.Should().BeFalse();
+            UniTask.CompletedTask.ToObservable().Subscribe(completedTaskObserver);
+            completedTaskObserver.OnNextCalled.Should().BeTrue();
+            completedTaskObserver.OnCompletedCalled.Should().BeTrue();
+            completedTaskObserver.OnErrorCalled.Should().BeFalse();
+
+            var delayFrameTaskObserver = new ToObservableObserver<int>();
+            UniTask.DelayFrame(1).ToObservable().Subscribe(delayFrameTaskObserver);
+            delayFrameTaskObserver.OnNextCalled.Should().BeFalse();
+            delayFrameTaskObserver.OnCompletedCalled.Should().BeFalse();
+            delayFrameTaskObserver.OnErrorCalled.Should().BeFalse();
+            await UniTask.DelayFrame(1);
+            delayFrameTaskObserver.OnNextCalled.Should().BeTrue();
+            delayFrameTaskObserver.OnCompletedCalled.Should().BeTrue();
+            delayFrameTaskObserver.OnErrorCalled.Should().BeFalse();
+        });
+
+        class ToObservableObserver<T> : IObserver<T>
+        {
+            public bool OnNextCalled { get; private set; }
+            public bool OnCompletedCalled { get; private set; }
+            public bool OnErrorCalled { get; private set; }
+
+            public void OnNext(T value) => OnNextCalled = true;
+            public void OnCompleted() => OnCompletedCalled = true;
+            public void OnError(Exception error) => OnErrorCalled = true;
+        }
+
 #endif
 #endif
     }
