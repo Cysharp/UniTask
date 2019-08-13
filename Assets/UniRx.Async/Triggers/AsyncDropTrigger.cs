@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncDropTrigger : AsyncTriggerBase
+    public class AsyncDropTrigger : AsyncTriggerBase, IDropHandler
     {
         AsyncTriggerPromise<PointerEventData> onDrop;
         AsyncTriggerPromiseDictionary<PointerEventData> onDrops;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnDrop(PointerEventData eventData)
+        void IDropHandler.OnDrop(PointerEventData eventData)
         {
             TrySetResult(onDrop, onDrops, eventData);
         }

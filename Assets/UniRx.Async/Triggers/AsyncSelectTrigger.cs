@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncSelectTrigger : AsyncTriggerBase
+    public class AsyncSelectTrigger : AsyncTriggerBase, ISelectHandler
     {
         AsyncTriggerPromise<BaseEventData> onSelect;
         AsyncTriggerPromiseDictionary<BaseEventData> onSelects;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnSelect(BaseEventData eventData)
+        void ISelectHandler.OnSelect(BaseEventData eventData)
         {
             TrySetResult(onSelect, onSelects, eventData);
         }

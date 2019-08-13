@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncPointerDownTrigger : AsyncTriggerBase
+    public class AsyncPointerDownTrigger : AsyncTriggerBase, IPointerDownHandler
     {
         AsyncTriggerPromise<PointerEventData> onPointerDown;
         AsyncTriggerPromiseDictionary<PointerEventData> onPointerDowns;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnPointerDown(PointerEventData eventData)
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
             TrySetResult(onPointerDown, onPointerDowns, eventData);
         }

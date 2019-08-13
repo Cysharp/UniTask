@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncScrollTrigger : AsyncTriggerBase
+    public class AsyncScrollTrigger : AsyncTriggerBase, IScrollHandler
     {
         AsyncTriggerPromise<PointerEventData> onScroll;
         AsyncTriggerPromiseDictionary<PointerEventData> onScrolls;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnScroll(PointerEventData eventData)
+        void IScrollHandler.OnScroll(PointerEventData eventData)
         {
             TrySetResult(onScroll, onScrolls, eventData);
         }
