@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncBeginDragTrigger : AsyncTriggerBase
+    public class AsyncBeginDragTrigger : AsyncTriggerBase, IBeginDragHandler
     {
         AsyncTriggerPromise<PointerEventData> onBeginDrag;
         AsyncTriggerPromiseDictionary<PointerEventData> onBeginDrags;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnBeginDrag(PointerEventData eventData)
+        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
             TrySetResult(onBeginDrag, onBeginDrags, eventData);
         }

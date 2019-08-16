@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncMoveTrigger : AsyncTriggerBase
+    public class AsyncMoveTrigger : AsyncTriggerBase, IMoveHandler
     {
         AsyncTriggerPromise<AxisEventData> onMove;
         AsyncTriggerPromiseDictionary<AxisEventData> onMoves;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnMove(AxisEventData eventData)
+        void IMoveHandler.OnMove(AxisEventData eventData)
         {
             TrySetResult(onMove, onMoves, eventData);
         }

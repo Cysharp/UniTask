@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncPointerExitTrigger : AsyncTriggerBase
+    public class AsyncPointerExitTrigger : AsyncTriggerBase, IPointerExitHandler
     {
         AsyncTriggerPromise<PointerEventData> onPointerExit;
         AsyncTriggerPromiseDictionary<PointerEventData> onPointerExits;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnPointerExit(PointerEventData eventData)
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             TrySetResult(onPointerExit, onPointerExits, eventData);
         }

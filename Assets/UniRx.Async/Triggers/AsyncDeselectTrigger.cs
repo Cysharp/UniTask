@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncDeselectTrigger : AsyncTriggerBase
+    public class AsyncDeselectTrigger : AsyncTriggerBase, IDeselectHandler
     {
         AsyncTriggerPromise<BaseEventData> onDeselect;
         AsyncTriggerPromiseDictionary<BaseEventData> onDeselects;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnDeselect(BaseEventData eventData)
+        void IDeselectHandler.OnDeselect(BaseEventData eventData)
         {
             TrySetResult(onDeselect, onDeselects, eventData);
         }
