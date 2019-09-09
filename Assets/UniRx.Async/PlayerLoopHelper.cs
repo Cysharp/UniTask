@@ -123,8 +123,10 @@ namespace UniRx.Async
         [InitializeOnLoadMethod]
         static void InitOnEditor()
         {
+            //Execute the play mode init method
             Init();
 
+            //register an Editor update delegate, used to forcing playerLoop update
             EditorApplication.update += ForceEditorPlayerLoopUpdate;
         }
 
@@ -138,6 +140,7 @@ namespace UniRx.Async
                 return;
             }
 
+            //force unity to update PlayerLoop callbacks
             EditorApplication.QueuePlayerLoopUpdate();
         }
 
