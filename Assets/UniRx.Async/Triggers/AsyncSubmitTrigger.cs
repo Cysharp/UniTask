@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncSubmitTrigger : AsyncTriggerBase
+    public class AsyncSubmitTrigger : AsyncTriggerBase, ISubmitHandler
     {
         AsyncTriggerPromise<BaseEventData> onSubmit;
         AsyncTriggerPromiseDictionary<BaseEventData> onSubmits;
@@ -22,7 +22,7 @@ namespace UniRx.Async.Triggers
         }
 
 
-        void OnSubmit(BaseEventData eventData)
+        void ISubmitHandler.OnSubmit(BaseEventData eventData)
         {
             TrySetResult(onSubmit, onSubmits, eventData);
         }
