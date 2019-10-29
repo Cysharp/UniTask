@@ -13,7 +13,7 @@ namespace UniRx.Async.Triggers
         bool called = false;
         UniTaskCompletionSource promise;
         CancellationTokenSource cancellationTokenSource; // main cancellation
-        object canellationTokenSourceOrQueue;            // external from AddCancellationTriggerOnDestory
+        object canellationTokenSourceOrQueue;            // external from AddCancellationTriggerOnDestroy
 
         public CancellationToken CancellationToken
         {
@@ -63,7 +63,7 @@ namespace UniRx.Async.Triggers
         }
 
         /// <summary>Add Cancellation Triggers on destroy</summary>
-        public void AddCancellationTriggerOnDestory(CancellationTokenSource cts)
+        public void AddCancellationTriggerOnDestroy(CancellationTokenSource cts)
         {
             if (called)
             {
