@@ -96,21 +96,31 @@ namespace UniRx.Async
 #endif
             };
 
-            var dest = new PlayerLoopSystem[loopSystem.subSystemList.Length + 2];
-            Array.Copy(loopSystem.subSystemList, 0, dest, 2, loopSystem.subSystemList.Length);
+            var source = loopSystem.subSystemList // Remove items form previous initializations.
+                .Where(ls => ls.type != loopRunnerYieldType && ls.type != loopRunnerType).ToArray();
+            var dest = new PlayerLoopSystem[source.Length + 2];
+            Array.Copy(source, 0, dest, 2, source.Length);
             dest[0] = yieldLoop;
             dest[1] = runnerLoop;
             return dest;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void Init()
+        static void Init ()
         {
             // capture default(unity) sync-context.
             unitySynchronizationContetext = SynchronizationContext.Current;
             mainThreadId = Thread.CurrentThread.ManagedThreadId;
 
+#if UNITY_EDITOR && UNITY_2019_3_OR_NEWER
+            // When domain reload is disabled, re-initialization is required when entering play mode; 
+            // otherwise, pending tasks will leak between play mode sessions.
+            var domainReloadDisabled = UnityEditor.EditorSettings.enterPlayModeOptionsEnabled &&
+                UnityEditor.EditorSettings.enterPlayModeOptions.HasFlag(UnityEditor.EnterPlayModeOptions.DisableDomainReload);
+            if (!domainReloadDisabled && runners != null) return;
+#else
             if (runners != null) return; // already initialized
+#endif
 
             var playerLoop =
 #if UNITY_2019_3_OR_NEWER
