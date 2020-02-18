@@ -96,7 +96,7 @@ namespace UniRx.Async
 #endif
             };
 
-            var source = loopSystem.subSystemList // Remove items form previous initializations.
+            var source = loopSystem.subSystemList // Remove items from previous initializations.
                 .Where(ls => ls.type != loopRunnerYieldType && ls.type != loopRunnerType).ToArray();
             var dest = new PlayerLoopSystem[source.Length + 2];
             Array.Copy(source, 0, dest, 2, source.Length);
