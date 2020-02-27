@@ -69,17 +69,19 @@ namespace UniRx.Async
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem, Type loopRunnerYieldType,
             ContinuationQueue cq, Type loopRunnerType, PlayerLoopRunner runner)
         {
+#if UNITY_EDITOR
             EditorApplication.playModeStateChanged += (state) =>
             {
-                if (state==PlayModeStateChange.EnteredEditMode || state==PlayModeStateChange.EnteredPlayMode) return;
-                
+                if (state == PlayModeStateChange.EnteredEditMode ||
+                    state == PlayModeStateChange.EnteredPlayMode) return;
+
                 if (runner != null)
                     runner.Clear();
                 if (cq != null)
                     cq.Clear();
             };
-
-
+#endif
+            
             var yieldLoop = new PlayerLoopSystem
             {
                 type = loopRunnerYieldType,
