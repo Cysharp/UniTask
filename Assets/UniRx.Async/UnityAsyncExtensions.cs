@@ -792,14 +792,18 @@ namespace UniRx.Async
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                if(asyncOperation != null && asyncOperation.isDone)
-                {
-                    continuation?.Invoke();
-                    return;
-                }
+                
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
                 continuationAction = continuation.AsFuncOfT<AsyncOperation>();
-                asyncOperation.completed += continuationAction;
+                lock (asyncOperation)
+                {
+                    if (asyncOperation.isDone)
+                    {
+                        continuation?.Invoke();
+                        return;
+                    }
+                    asyncOperation.completed += continuationAction;
+                }
             }
         }
 
