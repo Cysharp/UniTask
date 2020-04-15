@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using UniRx.Async;
 using UnityEngine;
@@ -15,19 +16,11 @@ public class SandboxMain : MonoBehaviour
 
     async void Start()
     {
-        await UniTask.CompletedTask;  // ok
+        UnityEngine.Debug.Log("DOWNLOAD START:" + Time.frameCount);
 
-        // var subject = new Subject<Unit>();
-        //subject.OnCompleted();
-        IObservable<AsyncUnit> subject = default;
-        try
-        {
-            await subject.ToUniTask();  // exception
-        }
-        catch (Exception exception)
-        {
-            Debug.Log(exception);
-        }
+        var req = await UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, "test.txt")).SendWebRequest();
+
+        UnityEngine.Debug.Log("DOWNLOAD RESULT:" + Time.frameCount + ", " + req.downloadHandler.text);
     }
 }
 
