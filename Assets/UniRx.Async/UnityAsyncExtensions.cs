@@ -83,6 +83,30 @@ namespace UniRx.Async
             return new UniTask<UnityEngine.Object>(awaiter);
         }
 
+        public static AssetBundleCreateRequestAwaiter GetAwaiter(this AssetBundleCreateRequest resourceRequest)
+        {
+            Error.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
+            return new AssetBundleCreateRequestAwaiter(resourceRequest);
+        }
+
+        public static UniTask<AssetBundle> ToUniTask(this AssetBundleCreateRequest resourceRequest)
+        {
+            Error.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
+            return new UniTask<AssetBundle>(new AssetBundleCreateRequestAwaiter(resourceRequest));
+        }
+
+        public static UniTask<AssetBundle> ConfigureAwait(this AssetBundleCreateRequest resourceRequest, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        {
+            Error.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
+
+            var awaiter = new AssetBundleCreateRequestConfiguredAwaiter(resourceRequest, progress, cancellation);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(timing, awaiter);
+            }
+            return new UniTask<AssetBundle>(awaiter);
+        }
+
 #if ENABLE_WWW
 
 #if UNITY_2018_3_OR_NEWER
@@ -627,6 +651,165 @@ namespace UniRx.Async
             }
         }
 
+        public struct AssetBundleCreateRequestAwaiter : IAwaiter<AssetBundle>
+        {
+            AssetBundleCreateRequest asyncOperation;
+            Action<AsyncOperation> continuationAction;
+            AwaiterStatus status;
+            AssetBundle result;
+
+            public AssetBundleCreateRequestAwaiter(AssetBundleCreateRequest asyncOperation)
+            {
+                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
+                this.result = (this.status.IsCompletedSuccessfully()) ? asyncOperation.assetBundle : null;
+                this.continuationAction = null;
+            }
+
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
+
+            public AssetBundle GetResult()
+            {
+                if (status == AwaiterStatus.Succeeded) return this.result;
+
+                if (status == AwaiterStatus.Pending)
+                {
+                    // first timing of call
+                    if (asyncOperation.isDone)
+                    {
+                        status = AwaiterStatus.Succeeded;
+                    }
+                    else
+                    {
+                        Error.ThrowNotYetCompleted();
+                    }
+                }
+
+                this.result = asyncOperation.assetBundle;
+
+                if (continuationAction != null)
+                {
+                    asyncOperation.completed -= continuationAction;
+                    asyncOperation = null; // remove reference.
+                    continuationAction = null;
+                }
+                else
+                {
+                    asyncOperation = null; // remove reference.
+                }
+
+                return this.result;
+            }
+
+            void IAwaiter.GetResult() => GetResult();
+
+            public void OnCompleted(Action continuation)
+            {
+                UnsafeOnCompleted(continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
+                continuationAction = continuation.AsFuncOfT<AsyncOperation>();
+                asyncOperation.completed += continuationAction;
+            }
+        }
+
+        class AssetBundleCreateRequestConfiguredAwaiter : IAwaiter<AssetBundle>, IPlayerLoopItem
+        {
+            AssetBundleCreateRequest asyncOperation;
+            IProgress<float> progress;
+            CancellationToken cancellationToken;
+            AwaiterStatus status;
+            Action continuation;
+            AssetBundle result;
+
+            public AssetBundleCreateRequestConfiguredAwaiter(AssetBundleCreateRequest asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
+            {
+                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
+                            : AwaiterStatus.Pending;
+
+                if (this.status.IsCompletedSuccessfully()) this.result = asyncOperation.assetBundle;
+                if (this.status.IsCompleted()) return;
+
+                this.asyncOperation = asyncOperation;
+                this.progress = progress;
+                this.cancellationToken = cancellationToken;
+                this.continuation = null;
+                this.result = null;
+
+                TaskTracker.TrackActiveTask(this, 2);
+            }
+
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
+            void IAwaiter.GetResult() => GetResult();
+
+            public AssetBundle GetResult()
+            {
+                if (status == AwaiterStatus.Succeeded) return this.result;
+
+                if (status == AwaiterStatus.Canceled)
+                {
+                    Error.ThrowOperationCanceledException();
+                }
+
+                return Error.ThrowNotYetCompleted<AssetBundle>();
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    InvokeContinuation(AwaiterStatus.Canceled);
+                    return false;
+                }
+
+                if (progress != null)
+                {
+                    progress.Report(asyncOperation.progress);
+                }
+
+                if (asyncOperation.isDone)
+                {
+                    this.result = asyncOperation.assetBundle;
+                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    return false;
+                }
+
+                return true;
+            }
+
+            void InvokeContinuation(AwaiterStatus status)
+            {
+                this.status = status;
+                var cont = this.continuation;
+
+                // cleanup
+                TaskTracker.RemoveTracking(this);
+                this.continuation = null;
+                this.cancellationToken = CancellationToken.None;
+                this.progress = null;
+                this.asyncOperation = null;
+
+                if (cont != null) cont.Invoke();
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
+                this.continuation = continuation;
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
+                this.continuation = continuation;
+            }
+        }
 #if ENABLE_WWW
 
 #if UNITY_2018_3_OR_NEWER
