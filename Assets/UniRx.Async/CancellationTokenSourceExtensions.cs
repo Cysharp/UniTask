@@ -40,7 +40,7 @@ namespace UniRx.Async
         public static void RegisterRaiseCancelOnDestroy(this CancellationTokenSource cts, GameObject gameObject)
         {
             var trigger = gameObject.GetAsyncDestroyTrigger();
-            trigger.AddCancellationTriggerOnDestory(cts);
+            trigger.AddCancellationTriggerOnDestroy(cts);
         }
     }
 }
