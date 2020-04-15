@@ -6,6 +6,9 @@ executors:
       version: {type: string}
     docker:
       - image: gableroux/unity3d:<< parameters.version >>
+  go:
+    docker:
+      - image: circleci/golang      
 commands:
   unity_activate:
     parameters:
@@ -57,6 +60,17 @@ jobs:
       - store_artifacts:
           path: ./UniRx.Async.unitypackage
           destination: /UniRx.Async.unitypackage
+  # upload to github by ghr
+  upload-github:
+    executor: go
+    steps:
+      - attach_workspace:
+          at: .
+      - run: go get github.com/tcnksm/ghr
+      - run: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_TAG} .
+      - store_artifacts:
+          path: UniRx.Async.unitypackage
+          destination: UniRx.Async.unitypackage          
 workflows:
   version: 2
   build-unity:
@@ -82,3 +96,12 @@ workflows:
       # - build-and-test:
       #     unity_version: 2018.3.12f1
       #     unity_license: ${UNITY_LICENSE_2018_3}
+      - upload-github:
+          requires:
+            - build-and-test
+            - build-and-create-package
+          filters:
+            tags:
+              only: /^\d\.\d\.\d.*/
+            branches:
+              ignore: /.*/

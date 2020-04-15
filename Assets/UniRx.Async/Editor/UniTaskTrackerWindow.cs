@@ -18,7 +18,7 @@ namespace UniRx.Async.Editor
 
         static UniTaskTrackerWindow window;
 
-        [MenuItem("Window/UniRx/UniTask Tracker")]
+        [MenuItem("Window/UniTask Tracker")]
         public static void OpenWindow()
         {
             if (window != null)
