@@ -85,9 +85,15 @@ workflows:
       - build-and-create-package:
           unity_version: 2019.1.2f1
           unity_license: ${UNITY_LICENSE_2019_1}
+          filters:
+            tags:
+              only: /.*/
       - build-and-test:
           unity_version: 2019.1.2f1
           unity_license: ${UNITY_LICENSE_2019_1}
+          filters:
+            tags:
+              only: /.*/
       # test asmdef will not found.
       # - build-and-test:
       #     unity_version: 2018.4.0f1
@@ -96,10 +102,17 @@ workflows:
       # - build-and-test:
       #     unity_version: 2018.3.12f1
       #     unity_license: ${UNITY_LICENSE_2018_3}
+      - build-and-create-package-release:
+          unity_version: 2019.1.2f1
+          unity_license: ${UNITY_LICENSE_2019_1}
+          filters:
+            tags:
+              only: /^\d\.\d\.\d.*/
+            branches:
+              ignore: /.*/
       - upload-github:
           requires:
-            - build-and-test
-            - build-and-create-package
+            - build-and-create-package-release
           filters:
             tags:
               only: /^\d\.\d\.\d.*/
