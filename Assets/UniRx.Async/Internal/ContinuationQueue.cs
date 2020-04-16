@@ -64,6 +64,15 @@ namespace UniRx.Async.Internal
             }
         }
 
+        public void Clear()
+        {
+            actionListCount = 0;
+            actionList = new Action[InitialSize];
+
+            waitingListCount = 0;
+            waitingList = new Action[InitialSize];
+        }
+
         public void Run()
         {
             {

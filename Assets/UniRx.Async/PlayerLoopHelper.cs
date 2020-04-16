@@ -13,6 +13,10 @@ using UnityEngine.LowLevel;
 using UnityEngine.Experimental.LowLevel;
 #endif
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace UniRx.Async
 {
     public static class UniTaskLoopRunners
@@ -62,38 +66,32 @@ namespace UniRx.Async
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
 
-        static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem, Type loopRunnerYieldType, ContinuationQueue cq, Type loopRunnerType, PlayerLoopRunner runner)
+        static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem, Type loopRunnerYieldType,
+            ContinuationQueue cq, Type loopRunnerType, PlayerLoopRunner runner)
         {
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += (state) =>
+            {
+                if (state == PlayModeStateChange.EnteredEditMode ||
+                    state == PlayModeStateChange.EnteredPlayMode) return;
+
+                if (runner != null)
+                    runner.Clear();
+                if (cq != null)
+                    cq.Clear();
+            };
+#endif
+            
             var yieldLoop = new PlayerLoopSystem
             {
                 type = loopRunnerYieldType,
-#if UNITY_EDITOR
-                updateDelegate = () =>
-                {
-                    if (Application.isPlaying)
-                    {
-                        cq.Run();
-                    }
-                }
-#else
                 updateDelegate = cq.Run
-#endif
             };
 
             var runnerLoop = new PlayerLoopSystem
             {
                 type = loopRunnerType,
-#if UNITY_EDITOR
-                updateDelegate = () =>
-                {
-                    if (Application.isPlaying)
-                    {
-                        runner.Run();
-                    }
-                }
-#else
                 updateDelegate = runner.Run
-#endif
             };
 
             var source = loopSystem.subSystemList // Remove items from previous initializations.
@@ -131,6 +129,34 @@ namespace UniRx.Async
 
             Initialize(ref playerLoop);
         }
+
+
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+        static void InitOnEditor()
+        {
+            //Execute the play mode init method
+            Init();
+
+            //register an Editor update delegate, used to forcing playerLoop update
+            EditorApplication.update += ForceEditorPlayerLoopUpdate;
+        }
+
+
+        private static void ForceEditorPlayerLoopUpdate()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling ||
+                EditorApplication.isUpdating)
+            {
+                // Not in Edit mode, don't interfere
+                return;
+            }
+
+            //force unity to update PlayerLoop callbacks
+            EditorApplication.QueuePlayerLoopUpdate();
+        }
+
+#endif
 
         public static void Initialize(ref PlayerLoopSystem playerLoop)
         {
