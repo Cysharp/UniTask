@@ -1,5 +1,6 @@
 ﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 #pragma warning disable CS1591
+#pragma warning disable CS0436
 
 using System;
 using System.Diagnostics;
