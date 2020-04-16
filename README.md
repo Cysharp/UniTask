@@ -241,7 +241,7 @@ public class Foo : MonoBehaviour, IProgress<float>
 
 UniTaskTracker
 ---
-useful for check(leak) UniTasks. You can open tracker window in `Window -> UniRx -> UniTask Tracker`.
+useful for check(leak) UniTasks. You can open tracker window in `Window -> UniTask Tracker`.
 
 ![](https://user-images.githubusercontent.com/46207/50421527-abf1cf80-0883-11e9-928a-ffcd47b8c454.png)
 
