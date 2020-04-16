@@ -335,6 +335,16 @@ UniTask.DelayFrame
 UniTask.Delay(..., bool ignoreTimeScale = false, ...) parameter
 ```
 
+UPM Package
+---
+After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of git package. You can add `https://github.com/Cysharp/UniTask.git?path=Assets/UniRx.Async` to Package Manager
+
+![image](https://user-images.githubusercontent.com/46207/79450714-3aadd100-8020-11ea-8aae-b8d87fc4d7be.png)
+
+![image](https://user-images.githubusercontent.com/46207/79450774-56b17280-8020-11ea-91eb-21e1f51eb60c.png)
+
+or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=Assets/UniRx.Async"` to `Packages/manifest.json`.
+
 License
 ---
 This library is under the MIT License.
