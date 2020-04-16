@@ -145,3 +145,5 @@ RuntimeUnitTestToolkit\.csproj
 Assembly-CSharp-Editor\.csproj
 
 UniRx\.Async\.unitypackage
+
+UniRx.Async.Tests.Editor.csproj

@@ -3,6 +3,25 @@
 
 using System.Threading;
 using UnityEngine;
+using UniRx.Async.Triggers;
+
+namespace UniRx.Async
+{
+    public static class UniTaskCancellationExtensions
+    {
+        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
+        public static CancellationToken GetCancellationTokenOnDestroy(this GameObject gameObject)
+        {
+            return gameObject.GetAsyncDestroyTrigger().CancellationToken;
+        }
+
+        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
+        public static CancellationToken GetCancellationTokenOnDestroy(this Component component)
+        {
+            return component.GetAsyncDestroyTrigger().CancellationToken;
+        }
+    }
+}
 
 namespace UniRx.Async.Triggers
 {
@@ -34,18 +53,6 @@ namespace UniRx.Async.Triggers
         public static UniTask OnDestroyAsync(this Component component)
         {
             return component.GetAsyncDestroyTrigger().OnDestroyAsync();
-        }
-
-        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
-        public static CancellationToken GetCancellationTokenOnDestroy(this GameObject gameObject)
-        {
-            return gameObject.GetAsyncDestroyTrigger().CancellationToken;
-        }
-
-        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
-        public static CancellationToken GetCancellationTokenOnDestroy(this Component component)
-        {
-            return component.GetAsyncDestroyTrigger().CancellationToken;
         }
 
         public static UniTask StartAsync(this GameObject gameObject)

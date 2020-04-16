@@ -156,6 +156,13 @@ await UnityWebRequest.Get("http://google.co.jp").SendWebRequest().ConfigureAwait
 await UniTask.DelayFrame(1000, cancellationToken: cts.Token);
 ```
 
+CancellationToken can create by `CancellationTokenSource` or MonoBehaviour's extension method `GetCancellationTokenOnDestroy`.
+
+```csharp
+// this CancellationToken lifecycle is same as GameObject.
+await UniTask.DelayFrame(1000, cancellationToken: this.GetCancellationTokenOnDestroy());
+```
+
 When detect cancellation, all methods throws `OperationCanceledException` and propagate to upstream. `OperationCanceledException` is special exception, if not handled this exception, finally it is propagated to `UniTaskScheduler.UnobservedTaskException`.
 
 Default behaviour of received unhandled exception is write log as warning. Log level can change by `UniTaskScheduler.UnobservedExceptionWriteLogType`. If you want to change custom beavhiour, set action to `UniTaskScheduler.UnobservedTaskException.`
