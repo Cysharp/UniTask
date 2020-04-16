@@ -45,6 +45,17 @@ namespace UniRx.Async.Internal
             }
         }
 
+        public void Clear()
+        {
+            lock (arrayLock)
+            {
+                for (var index = 0; index < loopItems.Length; index++)
+                {
+                    loopItems[index] = null;
+                }
+            }
+        }
+
         public void Run()
         {
             lock (runningAndQueueLock)
