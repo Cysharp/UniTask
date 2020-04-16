@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SandboxMain.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/NextScene.unity
+    guid: dfced9d8875377c44a1d53620d36f0d5
   m_configObjects: {}
