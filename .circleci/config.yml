@@ -82,12 +82,6 @@ workflows:
       # - build-and-test:
       #     unity_version: 2019.2.0b2
       #     unity_license: ${UNITY_LICENSE_2019_2}
-      - build-and-create-package:
-          unity_version: 2019.1.2f1
-          unity_license: ${UNITY_LICENSE_2019_1}
-          filters:
-            tags:
-              only: /.*/
       - build-and-test:
           unity_version: 2019.1.2f1
           unity_license: ${UNITY_LICENSE_2019_1}
@@ -102,7 +96,7 @@ workflows:
       # - build-and-test:
       #     unity_version: 2018.3.12f1
       #     unity_license: ${UNITY_LICENSE_2018_3}
-      - build-and-create-package-release:
+      - build-and-create-package:
           unity_version: 2019.1.2f1
           unity_license: ${UNITY_LICENSE_2019_1}
           filters:
@@ -112,7 +106,7 @@ workflows:
               ignore: /.*/
       - upload-github:
           requires:
-            - build-and-create-package-release
+            - build-and-create-package
           filters:
             tags:
               only: /^\d\.\d\.\d.*/
