@@ -1,10 +1,13 @@
 ﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 #pragma warning disable CS1591
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace UniRx.Async
 {
+    // TODO:rename to UniTaskStatus
+
     public enum AwaiterStatus
     {
         /// <summary>The operation has not yet completed.</summary>
@@ -16,6 +19,24 @@ namespace UniRx.Async
         /// <summary>The operation completed due to cancellation.</summary>
         Canceled = 3
     }
+
+
+
+    // similar as IValueTaskSource
+    public interface IUniTaskSource
+    {
+        AwaiterStatus GetStatus(short token);
+        void OnCompleted(Action<object> continuation, object state, short token);
+        void GetResult(short token);
+
+        AwaiterStatus UnsafeGetStatus(); // only for debug use.
+    }
+
+    public interface IUniTaskSource<out T> : IUniTaskSource
+    {
+        new T GetResult(short token);
+    }
+
 
     public interface IAwaiter : ICriticalNotifyCompletion
     {

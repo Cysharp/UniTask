@@ -13,9 +13,11 @@ using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace UniRx.Async
 {
+    // TODO: Internal.
     public static class DiagnosticsExtensions
     {
         static bool displayFilenames = true;
@@ -44,36 +46,6 @@ namespace UniRx.Async
             { typeof(UniTask), "UniTask" },
             { typeof(UniTaskVoid), "UniTaskVoid" }
         };
-
-        public static string ToStringWithCleanupAsyncStackTrace(this Exception exception)
-        {
-            if (exception == null) return "";
-
-            String message = exception.Message;
-            String s;
-
-            if (message == null || message.Length <= 0)
-            {
-                s = exception.GetType().ToString();
-            }
-            else
-            {
-                s = exception.GetType().ToString() + ": " + message;
-            }
-
-            if (exception.InnerException != null)
-            {
-                s = s + " ---> " + exception.InnerException.ToString() + Environment.NewLine + "   Exception_EndOfInnerExceptionStack";
-            }
-
-            string stackTrace = new StackTrace(exception).CleanupAsyncStackTrace();
-            if (stackTrace != null)
-            {
-                s += Environment.NewLine + stackTrace;
-            }
-
-            return s;
-        }
 
         public static string CleanupAsyncStackTrace(this StackTrace stackTrace)
         {
@@ -143,7 +115,7 @@ namespace UniRx.Async
                     if (fileName != null)
                     {
                         sb.Append(' ');
-                        sb.AppendFormat(CultureInfo.InvariantCulture, "in {0}:{1}", SimplifyPath(fileName), sf.GetFileLineNumber());
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "(at {0})", AppendHyperLink(fileName, sf.GetFileLineNumber().ToString()));
                     }
                 }
 
@@ -212,7 +184,7 @@ namespace UniRx.Async
             {
                 return "(" + string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true))) + ")";
             }
-            if (!t.IsGenericType) return shortName ? t.Name : t.FullName ?? t.Name;
+            if (!t.IsGenericType) return shortName ? t.Name : t.FullName.Replace("UniRx.Async.Triggers.", "").Replace("UniRx.Async.Internal.", "").Replace("UniRx.Async.", "") ?? t.Name;
 
             var innerFormat = string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true)));
 
@@ -222,7 +194,7 @@ namespace UniRx.Async
                 genericType = "Task";
             }
 
-            return typeBeautifyRegex.Replace(genericType, "") + "<" + innerFormat + ">";
+            return typeBeautifyRegex.Replace(genericType, "").Replace("UniRx.Async.Triggers.", "").Replace("UniRx.Async.Internal.", "").Replace("UniRx.Async.", "") + "<" + innerFormat + ">";
         }
 
         static bool IgnoreLine(MethodBase methodInfo)
@@ -248,11 +220,19 @@ namespace UniRx.Async
             {
                 return true;
             }
+            else if (declareType.StartsWith("UniRx.Async.UniTaskCompletionSourceCore"))
+            {
+                return true;
+            }
+            else if (declareType.StartsWith("UniRx.Async.AwaiterActions"))
+            {
+                return true;
+            }
 
             return false;
         }
 
-        static string SimplifyPath(string path)
+        static string AppendHyperLink(string path, string line)
         {
             var fi = new FileInfo(path);
             if (fi.Directory == null)
@@ -261,7 +241,9 @@ namespace UniRx.Async
             }
             else
             {
-                return fi.Directory.Name + "/" + fi.Name;
+                var fname = fi.FullName.Replace(Path.DirectorySeparatorChar, '/').Replace(Application.dataPath, "");
+                var withAssetsPath = "Assets/" + fname;
+                return "<a href=\"" + withAssetsPath + "\" line=\"" + line + "\">" + withAssetsPath + ":" + line + "</a>";
             }
         }
     }

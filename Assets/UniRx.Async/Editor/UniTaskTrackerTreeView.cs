@@ -10,11 +10,14 @@ using System;
 using UnityEditor.IMGUI.Controls;
 using UniRx.Async.Internal;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace UniRx.Async.Editor
 {
     public class UniTaskTrackerViewItem : TreeViewItem
     {
+        static Regex removeHref = new Regex("<a href.+>(.+)</a>", RegexOptions.Compiled);
+
         public string TaskType { get; set; }
         public string Elapsed { get; set; }
         public string Status { get; set; }
@@ -43,7 +46,8 @@ namespace UniRx.Async.Editor
                 }
                 sb.Append(str[i]);
             }
-            return sb.ToString();
+
+            return removeHref.Replace(sb.ToString(), "$1");
         }
 
         public UniTaskTrackerViewItem(int id) : base(id)
@@ -128,7 +132,7 @@ namespace UniRx.Async.Editor
 
             var children = new List<TreeViewItem>();
 
-            TaskTracker.ForEachActiveTask((trackingId, awaiterType, status, created, stackTrace) =>
+            TaskTracker2.ForEachActiveTask((trackingId, awaiterType, status, created, stackTrace) =>
             {
                 children.Add(new UniTaskTrackerViewItem(trackingId) { TaskType = awaiterType, Status = status.ToString(), Elapsed = (DateTime.UtcNow - created).TotalSeconds.ToString("00.00"), Position = stackTrace });
             });

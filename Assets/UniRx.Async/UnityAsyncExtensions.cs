@@ -491,6 +491,127 @@ namespace UniRx.Async
             }
         }
 
+
+
+        // TODO: try to check API.
+        class ResourceRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, IPromisePoolItem
+        {
+            static readonly PromisePool<ResourceRequestConfiguredSource> pool = new PromisePool<ResourceRequestConfiguredSource>();
+
+            ResourceRequest asyncOperation;
+            IProgress<float> progress;
+            CancellationToken cancellationToken;
+
+            UniTaskCompletionSourceCore<UnityEngine.Object> core;
+
+            ResourceRequestConfiguredSource()
+            {
+
+            }
+
+            public static IUniTaskSource<UnityEngine.Object> Create(ResourceRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource<UnityEngine.Object>.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                var result = pool.TryRent() ?? new ResourceRequestConfiguredSource();
+
+                result.asyncOperation = asyncOperation;
+                result.progress = progress;
+                result.cancellationToken = cancellationToken;
+
+#if UNITY_EDITOR
+                // TODO:capture???
+                //var capturedStackTraceForDebugging = TaskTracker.CaptureStackTrace(2);
+                // TODO:Add ActiveTask?
+                // TaskTracker.TrackActiveTask(
+#endif
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public UnityEngine.Object GetResult(short token)
+            {
+                try
+                {
+                    return core.GetResult(token);
+                }
+                finally
+                {
+                    pool.TryReturn(this);
+                }
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            public AwaiterStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public AwaiterStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    // TODO:Remove Tracking
+                    // TaskTracker.RemoveTracking();
+                    core.SetCancellation(cancellationToken);
+                    return false;
+                }
+
+                if (progress != null)
+                {
+                    progress.Report(asyncOperation.progress);
+                }
+
+                if (asyncOperation.isDone)
+                {
+                    // TODO:Remove Tracking
+                    // TaskTracker.RemoveTracking();
+                    core.SetResult(asyncOperation.asset);
+                    return false;
+                }
+
+                return true;
+            }
+
+            public void Reset()
+            {
+                core.Reset();
+                asyncOperation = default;
+                progress = default;
+                cancellationToken = default;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
         public struct AssetBundleRequestAwaiter : IAwaiter<UnityEngine.Object>
         {
             AssetBundleRequest asyncOperation;

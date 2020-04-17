@@ -11,23 +11,38 @@ namespace UniRx.Async.CompilerServices
 {
     public struct AsyncUniTaskVoidMethodBuilder
     {
-        Action moveNext;
+        IMoveNextRunner runner;
 
         // 1. Static Create method.
         [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static AsyncUniTaskVoidMethodBuilder Create()
         {
-            var builder = new AsyncUniTaskVoidMethodBuilder();
-            return builder;
+            return default;
         }
 
         // 2. TaskLike Task property(void)
-        public UniTaskVoid Task => default(UniTaskVoid);
+        public UniTaskVoid Task
+        {
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return default;
+            }
+        }
 
         // 3. SetException
         [DebuggerHidden]
         public void SetException(Exception exception)
         {
+            // runner is finished, return first.
+            if (runner != null)
+            {
+                runner.Return();
+                runner = null;
+            }
+
             UniTaskScheduler.PublishUnobservedTaskException(exception);
         }
 
@@ -35,7 +50,12 @@ namespace UniRx.Async.CompilerServices
         [DebuggerHidden]
         public void SetResult()
         {
-            // do nothing
+            // runner is finished, return.
+            if (runner != null)
+            {
+                runner.Return();
+                runner = null;
+            }
         }
 
         // 5. AwaitOnCompleted
@@ -44,14 +64,12 @@ namespace UniRx.Async.CompilerServices
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            if (moveNext == null)
+            if (runner == null)
             {
-                var runner = new MoveNextRunner<TStateMachine>();
-                moveNext = runner.Run;
-                runner.StateMachine = stateMachine; // set after create delegate.
+                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
             }
 
-            awaiter.OnCompleted(moveNext);
+            awaiter.OnCompleted(runner.CallMoveNext);
         }
 
         // 6. AwaitUnsafeOnCompleted
@@ -61,14 +79,12 @@ namespace UniRx.Async.CompilerServices
             where TAwaiter : ICriticalNotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            if (moveNext == null)
+            if (runner == null)
             {
-                var runner = new MoveNextRunner<TStateMachine>();
-                moveNext = runner.Run;
-                runner.StateMachine = stateMachine; // set after create delegate.
+                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
             }
 
-            awaiter.UnsafeOnCompleted(moveNext);
+            awaiter.OnCompleted(runner.CallMoveNext);
         }
 
         // 7. Start
@@ -83,6 +99,7 @@ namespace UniRx.Async.CompilerServices
         [DebuggerHidden]
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
+            // don't use boxed stateMachine.
         }
     }
 }

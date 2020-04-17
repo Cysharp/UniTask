@@ -19,12 +19,12 @@ namespace UniRx.Async
         public static bool PropagateOperationCanceledException = false;
 
         /// <summary>
-        /// Write log type when catch unobserved exception and not registered UnobservedTaskException. Default is Warning.
+        /// Write log type when catch unobserved exception and not registered UnobservedTaskException. Default is Error.
         /// </summary>
-        public static UnityEngine.LogType UnobservedExceptionWriteLogType = UnityEngine.LogType.Warning;
+        public static UnityEngine.LogType UnobservedExceptionWriteLogType = UnityEngine.LogType.Error;
 
         /// <summary>
-        /// Dispatch exception event to Unity MainThread.
+        /// Dispatch exception event to Unity MainThread. Default is true.
         /// </summary>
         public static bool DispatchUnityMainThread = true;
 
@@ -42,7 +42,7 @@ namespace UniRx.Async
 
                 if (UnobservedTaskException != null)
                 {
-                    if (Thread.CurrentThread.ManagedThreadId == PlayerLoopHelper.MainThreadId)
+                    if (!DispatchUnityMainThread || Thread.CurrentThread.ManagedThreadId == PlayerLoopHelper.MainThreadId)
                     {
                         // allows inlining call.
                         UnobservedTaskException.Invoke(ex);

@@ -3,6 +3,7 @@
 
 using System;
 using System.Threading;
+using UnityEngine.Events;
 
 namespace UniRx.Async
 {
@@ -84,6 +85,16 @@ namespace UniRx.Async
         public static void Void(Func<UniTask> asyncAction)
         {
             asyncAction().Forget();
+        }
+
+        public static Action VoidAction(Func<UniTask> asyncAction)
+        {
+            return () => Void(asyncAction);
+        }
+
+        public static UnityAction VoidUnityAction(Func<UniTask> asyncAction)
+        {
+            return () => Void(asyncAction);
         }
 
         /// <summary>

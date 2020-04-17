@@ -5,10 +5,12 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security;
 
 namespace UniRx.Async.CompilerServices
 {
+    // TODO:Remove
     public struct AsyncUniTaskMethodBuilder
     {
         UniTaskCompletionSource promise;
@@ -138,7 +140,7 @@ namespace UniRx.Async.CompilerServices
         }
     }
 
-
+    // TODO:Remove
     public struct AsyncUniTaskMethodBuilder<T>
     {
         T result;
@@ -267,6 +269,247 @@ namespace UniRx.Async.CompilerServices
         [DebuggerHidden]
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
+        }
+    }
+
+
+
+
+
+    [StructLayout(LayoutKind.Auto)]
+    public struct AsyncUniTask2MethodBuilder
+    {
+        // cache items.
+        AutoResetUniTaskCompletionSource promise;
+        IMoveNextRunner runner;
+
+        // 1. Static Create method.
+        [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static AsyncUniTask2MethodBuilder Create()
+        {
+            return default;
+        }
+
+        // 2. TaskLike Task property.
+        public UniTask2 Task
+        {
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                if (promise == null)
+                {
+                    promise = AutoResetUniTaskCompletionSource.Create();
+                }
+                return promise.Task;
+            }
+        }
+
+        // 3. SetException
+        [DebuggerHidden]
+        public void SetException(Exception exception)
+        {
+            // runner is finished, return first.
+            if (runner != null)
+            {
+                runner.Return();
+                runner = null;
+            }
+
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource.Create();
+            }
+            promise.SetException(exception);
+        }
+
+        // 4. SetResult
+        [DebuggerHidden]
+        public void SetResult()
+        {
+            // runner is finished, return first.
+            if (runner != null)
+            {
+                runner.Return();
+                runner = null;
+            }
+
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource.Create();
+            }
+            promise.SetResult();
+        }
+
+        // 5. AwaitOnCompleted
+        [DebuggerHidden]
+        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : INotifyCompletion
+            where TStateMachine : IAsyncStateMachine
+        {
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource.Create();
+            }
+            if (runner == null)
+            {
+                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+            }
+
+            awaiter.OnCompleted(runner.CallMoveNext);
+        }
+
+        // 6. AwaitUnsafeOnCompleted
+        [DebuggerHidden]
+        [SecuritySafeCritical]
+        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : ICriticalNotifyCompletion
+            where TStateMachine : IAsyncStateMachine
+        {
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource.Create();
+            }
+            if (runner == null)
+            {
+                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+            }
+
+            awaiter.OnCompleted(runner.CallMoveNext);
+        }
+
+        // 7. Start
+        [DebuggerHidden]
+        public void Start<TStateMachine>(ref TStateMachine stateMachine)
+            where TStateMachine : IAsyncStateMachine
+        {
+            stateMachine.MoveNext();
+        }
+
+        // 8. SetStateMachine
+        [DebuggerHidden]
+        public void SetStateMachine(IAsyncStateMachine stateMachine)
+        {
+            // don't use boxed stateMachine.
+        }
+    }
+
+    [StructLayout(LayoutKind.Auto)]
+    public struct AsyncUniTask2MethodBuilder<T>
+    {
+        // cache items.
+        AutoResetUniTaskCompletionSource<T> promise;
+        IMoveNextRunner runner;
+
+        // 1. Static Create method.
+        [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static AsyncUniTask2MethodBuilder<T> Create()
+        {
+            return default;
+        }
+
+        // 2. TaskLike Task property.
+        [DebuggerHidden]
+        public UniTask2<T> Task
+        {
+            get
+            {
+                if (promise == null)
+                {
+                    promise = AutoResetUniTaskCompletionSource<T>.Create();
+                }
+                return promise.Task;
+            }
+        }
+
+        // 3. SetException
+        [DebuggerHidden]
+        public void SetException(Exception exception)
+        {
+            // runner is finished, return first.
+            if (runner != null)
+            {
+                runner.Return();
+                runner = null;
+            }
+
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource<T>.Create();
+            }
+            promise.SetException(exception);
+        }
+
+        // 4. SetResult
+        [DebuggerHidden]
+        public void SetResult(T result)
+        {
+            // runner is finished, return first.
+            if (runner != null)
+            {
+                runner.Return();
+                runner = null;
+            }
+
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource<T>.Create();
+            }
+            promise.SetResult(result);
+        }
+
+        // 5. AwaitOnCompleted
+        [DebuggerHidden]
+        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : INotifyCompletion
+            where TStateMachine : IAsyncStateMachine
+        {
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource<T>.Create();
+            }
+            if (runner == null)
+            {
+                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+            }
+
+            awaiter.OnCompleted(runner.CallMoveNext);
+        }
+
+        // 6. AwaitUnsafeOnCompleted
+        [DebuggerHidden]
+        [SecuritySafeCritical]
+        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : ICriticalNotifyCompletion
+            where TStateMachine : IAsyncStateMachine
+        {
+            if (promise == null)
+            {
+                promise = AutoResetUniTaskCompletionSource<T>.Create();
+            }
+            if (runner == null)
+            {
+                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+            }
+
+            awaiter.OnCompleted(runner.CallMoveNext);
+        }
+
+        // 7. Start
+        [DebuggerHidden]
+        public void Start<TStateMachine>(ref TStateMachine stateMachine)
+            where TStateMachine : IAsyncStateMachine
+        {
+            stateMachine.MoveNext();
+        }
+
+        // 8. SetStateMachine
+        [DebuggerHidden]
+        public void SetStateMachine(IAsyncStateMachine stateMachine)
+        {
+            // don't use boxed stateMachine.
         }
     }
 }
