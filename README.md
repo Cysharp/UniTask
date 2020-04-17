@@ -352,6 +352,8 @@ After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of gi
 
 or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=Assets/UniRx.Async"` to `Packages/manifest.json`.
 
+If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#1.3.0`. For example `https://github.com/Cysharp/UniTask.git?path=Assets/UniRx.Async#1.3.0`.
+
 License
 ---
 This library is under the MIT License.
