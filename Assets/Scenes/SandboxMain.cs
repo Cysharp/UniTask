@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UniRx.Async;
@@ -122,3 +123,26 @@ public class SandboxMain : MonoBehaviour
     }
 }
 
+public class ShowPlayerLoop
+{
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void Init()
+    {
+        var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetDefaultPlayerLoop();
+
+        var sb = new StringBuilder();
+        sb.AppendLine("Default Playerloop List");
+        foreach (var header in playerLoop.subSystemList)
+        {
+            sb.AppendFormat("------{0}------", header.type.Name);
+            sb.AppendLine();
+            foreach (var subSystem in header.subSystemList)
+            {
+                sb.AppendFormat("{0}.{1}", header.type.Name, subSystem.type.Name);
+                sb.AppendLine();
+            }
+        }
+
+        UnityEngine.Debug.Log(sb.ToString());
+    }
+}
