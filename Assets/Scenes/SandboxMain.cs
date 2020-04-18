@@ -17,7 +17,7 @@ public class SandboxMain : MonoBehaviour
 
     CancellationTokenSource cts;
 
-    UniTaskCompletionSource2 ucs;
+    UniTaskCompletionSource ucs;
 
     void Start()
     {
@@ -38,7 +38,7 @@ public class SandboxMain : MonoBehaviour
         Application.logMessageReceived += Application_logMessageReceived;
 
 
-        ucs = new UniTaskCompletionSource2();
+        ucs = new UniTaskCompletionSource();
 
         okButton.onClick.AddListener(async () =>
         {
@@ -60,7 +60,7 @@ public class SandboxMain : MonoBehaviour
         text.text += "\n" + condition;
     }
 
-    async UniTask2 OuterAsync(bool b)
+    async UniTask OuterAsync(bool b)
     {
         UnityEngine.Debug.Log("START OUTER");
 
@@ -72,14 +72,14 @@ public class SandboxMain : MonoBehaviour
         // throw new InvalidOperationException("NAZO ERROR!?"); // error!?
     }
 
-    async UniTask2 InnerAsync(bool b)
+    async UniTask InnerAsync(bool b)
     {
         if (b)
         {
             UnityEngine.Debug.Log("Start delay:" + Time.frameCount);
-            await UniTask2.DelayFrame(60);
+            await UniTask.DelayFrame(60);
             UnityEngine.Debug.Log("End delay:" + Time.frameCount);
-            await UniTask2.DelayFrame(60);
+            await UniTask.DelayFrame(60);
             UnityEngine.Debug.Log("Onemore end delay:" + Time.frameCount);
         }
         else

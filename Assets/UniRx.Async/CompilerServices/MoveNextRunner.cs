@@ -9,43 +9,30 @@ using UniRx.Async.Internal;
 
 namespace UniRx.Async.CompilerServices
 {
-    // TODO: Remove it.
-    internal class MoveNextRunner<TStateMachine>
-        where TStateMachine : IAsyncStateMachine
-    {
-        public TStateMachine StateMachine;
-
-        [DebuggerHidden]
-        public void Run()
-        {
-            StateMachine.MoveNext();
-        }
-    }
-
     internal interface IMoveNextRunner
     {
         Action CallMoveNext { get; }
         void Return();
     }
 
-    internal class MoveNextRunner2<TStateMachine> : IMoveNextRunner, IPromisePoolItem
+    internal class MoveNextRunner<TStateMachine> : IMoveNextRunner, IPromisePoolItem
         where TStateMachine : IAsyncStateMachine
     {
-        static PromisePool<MoveNextRunner2<TStateMachine>> pool = new PromisePool<MoveNextRunner2<TStateMachine>>();
+        static PromisePool<MoveNextRunner<TStateMachine>> pool = new PromisePool<MoveNextRunner<TStateMachine>>();
 
         TStateMachine stateMachine;
         internal readonly Action callMoveNext;
 
         public Action CallMoveNext => callMoveNext;
 
-        MoveNextRunner2()
+        MoveNextRunner()
         {
             callMoveNext = MoveNext;
         }
 
-        public static MoveNextRunner2<TStateMachine> Create(ref TStateMachine stateMachine)
+        public static MoveNextRunner<TStateMachine> Create(ref TStateMachine stateMachine)
         {
-            var result = pool.TryRent() ?? new MoveNextRunner2<TStateMachine>();
+            var result = pool.TryRent() ?? new MoveNextRunner<TStateMachine>();
             result.stateMachine = stateMachine;
             return result;
         }

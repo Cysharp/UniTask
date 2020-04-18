@@ -10,12 +10,12 @@ using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
-    public static partial class UniTaskExtensions2
+    public static partial class UniTaskExtensions
     {
         /// <summary>
         /// Convert UniTask -> UniTask[AsyncUnit].
         /// </summary>
-        public static UniTask2<AsyncUnit> AsAsyncUnitUniTask(this UniTask2 task)
+        public static UniTask<AsyncUnit> AsAsyncUnitUniTask(this UniTask task)
         {
             // use implicit conversion
             return task;
@@ -24,7 +24,7 @@ namespace UniRx.Async
         /// <summary>
         /// Convert UniTask[T] -> UniTask.
         /// </summary>
-        public static UniTask2 AsUniTask<T>(this UniTask2<T> task)
+        public static UniTask AsUniTask<T>(this UniTask<T> task)
         {
             // use implicit conversion
             return task;
@@ -33,13 +33,13 @@ namespace UniRx.Async
         /// <summary>
         /// Convert Task[T] -> UniTask[T].
         /// </summary>
-        public static UniTask2<T> AsUniTask<T>(this Task<T> task, bool useCurrentSynchronizationContext = true)
+        public static UniTask<T> AsUniTask<T>(this Task<T> task, bool useCurrentSynchronizationContext = true)
         {
-            var promise = new UniTaskCompletionSource2<T>();
+            var promise = new UniTaskCompletionSource<T>();
 
             task.ContinueWith((x, state) =>
             {
-                var p = (UniTaskCompletionSource2<T>)state;
+                var p = (UniTaskCompletionSource<T>)state;
 
                 switch (x.Status)
                 {
@@ -63,13 +63,13 @@ namespace UniRx.Async
         /// <summary>
         /// Convert Task -> UniTask.
         /// </summary>
-        public static UniTask2 AsUniTask(this Task task, bool useCurrentSynchronizationContext = true)
+        public static UniTask AsUniTask(this Task task, bool useCurrentSynchronizationContext = true)
         {
-            var promise = new UniTaskCompletionSource2();
+            var promise = new UniTaskCompletionSource();
 
             task.ContinueWith((x, state) =>
             {
-                var p = (UniTaskCompletionSource2)state;
+                var p = (UniTaskCompletionSource)state;
 
                 switch (x.Status)
                 {
@@ -90,7 +90,7 @@ namespace UniRx.Async
             return promise.Task;
         }
 
-        public static Task<T> AsTask<T>(this UniTask2<T> task)
+        public static Task<T> AsTask<T>(this UniTask<T> task)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace UniRx.Async
 
                 awaiter.SourceOnCompleted(state =>
                 {
-                    var (inTcs, inAwaiter) = ((TaskCompletionSource<T>, UniTask2<T>.Awaiter))state;
+                    var (inTcs, inAwaiter) = ((TaskCompletionSource<T>, UniTask<T>.Awaiter))state;
                     try
                     {
                         var result = inAwaiter.GetResult();
@@ -132,7 +132,7 @@ namespace UniRx.Async
             }
         }
 
-        public static Task AsTask(this UniTask2 task)
+        public static Task AsTask(this UniTask task)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace UniRx.Async
 
                 awaiter.SourceOnCompleted(state =>
                 {
-                    var (inTcs, inAwaiter) = ((TaskCompletionSource<object>, UniTask2.Awaiter))state;
+                    var (inTcs, inAwaiter) = ((TaskCompletionSource<object>, UniTask.Awaiter))state;
                     try
                     {
                         inAwaiter.GetResult();
@@ -174,481 +174,6 @@ namespace UniRx.Async
             }
         }
 
-        public static IEnumerator ToCoroutine<T>(this UniTask2<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
-        {
-            return new ToCoroutineEnumerator<T>(task, resultHandler, exceptionHandler);
-        }
-
-        public static IEnumerator ToCoroutine(this UniTask2 task, Action<Exception> exceptionHandler = null)
-        {
-            return new ToCoroutineEnumerator(task, exceptionHandler);
-        }
-
-        public static UniTask Timeout(this UniTask2 task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
-        {
-            return Timeout(task.AsAsyncUnitUniTask(), timeout, ignoreTimeScale, timeoutCheckTiming, taskCancellationTokenSource);
-        }
-
-        // TODO: require UniTask2.Delay, WhenAny, etc...
-
-        public static async UniTask<T> Timeout<T>(this UniTask2<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
-        {
-            // left, right both suppress operation canceled exception.
-
-            var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
-
-            var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
-
-            if (!hasValue)
-            {
-                if (taskCancellationTokenSource != null)
-                {
-                    taskCancellationTokenSource.Cancel();
-                    taskCancellationTokenSource.Dispose();
-                }
-
-                throw new TimeoutException("Exceed Timeout:" + timeout);
-            }
-            else
-            {
-                delayCancellationTokenSource.Cancel();
-                delayCancellationTokenSource.Dispose();
-            }
-
-            if (value.IsCanceled)
-            {
-                Error.ThrowOperationCanceledException();
-            }
-
-            return value.Result;
-        }
-
-        /// <summary>
-        /// Timeout with suppress OperationCanceledException. Returns (bool, IsCacneled).
-        /// </summary>
-        public static async UniTask2<bool> TimeoutWithoutException(this UniTask2 task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
-        {
-            var v = await TimeoutWithoutException(task.AsAsyncUnitUniTask(), timeout, ignoreTimeScale, timeoutCheckTiming, taskCancellationTokenSource);
-            return v.IsTimeout;
-        }
-
-
-        /// <summary>
-        /// Timeout with suppress OperationCanceledException. Returns (bool IsTimeout, T Result).
-        /// </summary>
-        public static async UniTask2<(bool IsTimeout, T Result)> TimeoutWithoutException<T>(this UniTask2<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
-        {
-            // left, right both suppress operation canceled exception.
-
-            var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
-
-            var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
-
-            if (!hasValue)
-            {
-                if (taskCancellationTokenSource != null)
-                {
-                    taskCancellationTokenSource.Cancel();
-                    taskCancellationTokenSource.Dispose();
-                }
-
-                return (true, default(T));
-            }
-            else
-            {
-                delayCancellationTokenSource.Cancel();
-                delayCancellationTokenSource.Dispose();
-            }
-
-            if (value.IsCanceled)
-            {
-                Error.ThrowOperationCanceledException();
-            }
-
-            return (false, value.Result);
-        }
-
-        public static void Forget(this UniTask2 task)
-        {
-            ForgetCore(task).Forget();
-        }
-
-        public static void Forget(this UniTask2 task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread = true)
-        {
-            if (exceptionHandler == null)
-            {
-                ForgetCore(task).Forget();
-            }
-            else
-            {
-                ForgetCoreWithCatch(task, exceptionHandler, handleExceptionOnMainThread).Forget();
-            }
-        }
-
-        // UniTask to UniTaskVoid
-        static async UniTaskVoid ForgetCore(UniTask2 task)
-        {
-            await task;
-        }
-
-        static async UniTaskVoid ForgetCoreWithCatch(UniTask2 task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (handleExceptionOnMainThread)
-                    {
-                        await UniTask2.SwitchToMainThread();
-                    }
-                    exceptionHandler(ex);
-                }
-                catch (Exception ex2)
-                {
-                    UniTaskScheduler.PublishUnobservedTaskException(ex2);
-                }
-            }
-        }
-
-        public static void Forget<T>(this UniTask2<T> task)
-        {
-            ForgetCore(task).Forget();
-        }
-
-        public static void Forget<T>(this UniTask2<T> task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread = true)
-        {
-            if (exceptionHandler == null)
-            {
-                ForgetCore(task).Forget();
-            }
-            else
-            {
-                ForgetCoreWithCatch(task, exceptionHandler, handleExceptionOnMainThread).Forget();
-            }
-        }
-
-        // UniTask to UniTaskVoid
-        static async UniTaskVoid ForgetCore<T>(UniTask2<T> task)
-        {
-            await task;
-        }
-
-        static async UniTaskVoid ForgetCoreWithCatch<T>(UniTask2<T> task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (handleExceptionOnMainThread)
-                    {
-                        await UniTask.SwitchToMainThread();
-                    }
-                    exceptionHandler(ex);
-                }
-                catch (Exception ex2)
-                {
-                    UniTaskScheduler.PublishUnobservedTaskException(ex2);
-                }
-            }
-        }
-
-        public static async UniTask2 ContinueWith<T>(this UniTask2<T> task, Action<T> continuationFunction)
-        {
-            continuationFunction(await task);
-        }
-
-        public static async UniTask2 ContinueWith<T>(this UniTask2<T> task, Func<T, UniTask2> continuationFunction)
-        {
-            await continuationFunction(await task);
-        }
-
-        public static async UniTask2<TR> ContinueWith<T, TR>(this UniTask2<T> task, Func<T, TR> continuationFunction)
-        {
-            return continuationFunction(await task);
-        }
-
-        public static async UniTask2<TR> ContinueWith<T, TR>(this UniTask2<T> task, Func<T, UniTask2<TR>> continuationFunction)
-        {
-            return await continuationFunction(await task);
-        }
-
-        public static async UniTask2 ContinueWith(this UniTask2 task, Action continuationFunction)
-        {
-            await task;
-            continuationFunction();
-        }
-
-        public static async UniTask2 ContinueWith(this UniTask2 task, Func<UniTask2> continuationFunction)
-        {
-            await task;
-            await continuationFunction();
-        }
-
-        public static async UniTask2<T> ContinueWith<T>(this UniTask2 task, Func<T> continuationFunction)
-        {
-            await task;
-            return continuationFunction();
-        }
-
-        public static async UniTask2<T> ContinueWith<T>(this UniTask2 task, Func<UniTask2<T>> continuationFunction)
-        {
-            await task;
-            return await continuationFunction();
-        }
-
-        public static async UniTask2 ConfigureAwait(this Task task, PlayerLoopTiming timing)
-        {
-            await task.ConfigureAwait(false);
-            await UniTask2.Yield(timing);
-        }
-
-        public static async UniTask2<T> ConfigureAwait<T>(this Task<T> task, PlayerLoopTiming timing)
-        {
-            var v = await task.ConfigureAwait(false);
-            await UniTask2.Yield(timing);
-            return v;
-        }
-
-        public static async UniTask2 ConfigureAwait(this UniTask2 task, PlayerLoopTiming timing)
-        {
-            await task;
-            await UniTask2.Yield(timing);
-        }
-
-        public static async UniTask2<T> ConfigureAwait<T>(this UniTask2<T> task, PlayerLoopTiming timing)
-        {
-            var v = await task;
-            await UniTask2.Yield(timing);
-            return v;
-        }
-
-        public static async UniTask2<T> Unwrap<T>(this UniTask2<UniTask2<T>> task)
-        {
-            return await await task;
-        }
-
-        public static async UniTask2 Unwrap<T>(this UniTask2<UniTask2> task)
-        {
-            await await task;
-        }
-
-        class ToCoroutineEnumerator : IEnumerator
-        {
-            bool completed;
-            UniTask2 task;
-            Action<Exception> exceptionHandler = null;
-            bool isStarted = false;
-            ExceptionDispatchInfo exception;
-
-            public ToCoroutineEnumerator(UniTask2 task, Action<Exception> exceptionHandler)
-            {
-                completed = false;
-                this.exceptionHandler = exceptionHandler;
-                this.task = task;
-            }
-
-            async UniTaskVoid RunTask(UniTask2 task)
-            {
-                try
-                {
-                    await task;
-                }
-                catch (Exception ex)
-                {
-                    if (exceptionHandler != null)
-                    {
-                        exceptionHandler(ex);
-                    }
-                    else
-                    {
-                        this.exception = ExceptionDispatchInfo.Capture(ex);
-                    }
-                }
-                finally
-                {
-                    completed = true;
-                }
-            }
-
-            public object Current => null;
-
-            public bool MoveNext()
-            {
-                if (!isStarted)
-                {
-                    isStarted = true;
-                    RunTask(task).Forget();
-                }
-
-                if (exception != null)
-                {
-                    // throw exception on iterator (main)thread.
-                    // unfortunately unity test-runner can not handle throw exception on hand-write IEnumerator.MoveNext.
-                    UnityEngine.Debug.LogException(exception.SourceException);
-                }
-
-                return !completed;
-            }
-
-            public void Reset()
-            {
-            }
-        }
-
-        class ToCoroutineEnumerator<T> : IEnumerator
-        {
-            bool completed;
-            Action<T> resultHandler = null;
-            Action<Exception> exceptionHandler = null;
-            bool isStarted = false;
-            UniTask2<T> task;
-            object current = null;
-            ExceptionDispatchInfo exception;
-
-            public ToCoroutineEnumerator(UniTask2<T> task, Action<T> resultHandler, Action<Exception> exceptionHandler)
-            {
-                completed = false;
-                this.task = task;
-                this.resultHandler = resultHandler;
-                this.exceptionHandler = exceptionHandler;
-            }
-
-            async UniTaskVoid RunTask(UniTask2<T> task)
-            {
-                try
-                {
-                    var value = await task;
-                    current = value; // boxed if T is struct...
-                    if (resultHandler != null)
-                    {
-                        resultHandler(value);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (exceptionHandler != null)
-                    {
-                        exceptionHandler(ex);
-                    }
-                    else
-                    {
-                        this.exception = ExceptionDispatchInfo.Capture(ex);
-                    }
-                }
-                finally
-                {
-                    completed = true;
-                }
-            }
-
-            public object Current => current;
-
-            public bool MoveNext()
-            {
-                if (!isStarted)
-                {
-                    isStarted = true;
-                    RunTask(task).Forget();
-                }
-
-                if (exception != null)
-                {
-                    // throw exception on iterator (main)thread.
-                    // unfortunately unity test-runner can not handle throw exception on hand-write IEnumerator.MoveNext.
-                    UnityEngine.Debug.LogException(exception.SourceException);
-                }
-
-                return !completed;
-            }
-
-            public void Reset()
-            {
-            }
-        }
-    }
-
-    // TODO:remove
-    public static partial class UniTaskExtensions
-    {
-        /// <summary>
-        /// Convert UniTask -> UniTask[AsyncUnit].
-        /// </summary>
-        public static UniTask<AsyncUnit> AsAsyncUnitUniTask(this UniTask task)
-        {
-            // use implicit conversion
-            return task;
-        }
-
-        /// <summary>
-        /// Convert Task[T] -> UniTask[T].
-        /// </summary>
-        public static UniTask<T> AsUniTask<T>(this Task<T> task, bool useCurrentSynchronizationContext = true)
-        {
-            var promise = new UniTaskCompletionSource<T>();
-
-            task.ContinueWith((x, state) =>
-            {
-                var p = (UniTaskCompletionSource<T>)state;
-
-                switch (x.Status)
-                {
-                    case TaskStatus.Canceled:
-                        p.TrySetCanceled();
-                        break;
-                    case TaskStatus.Faulted:
-                        p.TrySetException(x.Exception);
-                        break;
-                    case TaskStatus.RanToCompletion:
-                        p.TrySetResult(x.Result);
-                        break;
-                    default:
-                        throw new NotSupportedException();
-                }
-            }, promise, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
-
-            return new UniTask<T>(promise);
-        }
-
-        /// <summary>
-        /// Convert Task -> UniTask.
-        /// </summary>
-        public static UniTask AsUniTask(this Task task, bool useCurrentSynchronizationContext = true)
-        {
-            var promise = new UniTaskCompletionSource<AsyncUnit>();
-
-            task.ContinueWith((x, state) =>
-            {
-                var p = (UniTaskCompletionSource<AsyncUnit>)state;
-
-                switch (x.Status)
-                {
-                    case TaskStatus.Canceled:
-                        p.TrySetCanceled();
-                        break;
-                    case TaskStatus.Faulted:
-                        p.TrySetException(x.Exception);
-                        break;
-                    case TaskStatus.RanToCompletion:
-                        p.TrySetResult(default(AsyncUnit));
-                        break;
-                    default:
-                        throw new NotSupportedException();
-                }
-            }, promise, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
-
-            return new UniTask(promise);
-        }
-
         public static IEnumerator ToCoroutine<T>(this UniTask<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
         {
             return new ToCoroutineEnumerator<T>(task, resultHandler, exceptionHandler);
@@ -663,6 +188,8 @@ namespace UniRx.Async
         {
             return Timeout(task.AsAsyncUnitUniTask(), timeout, ignoreTimeScale, timeoutCheckTiming, taskCancellationTokenSource);
         }
+
+        // TODO: require UniTask2.Delay, WhenAny, etc...
 
         public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
@@ -1001,7 +528,7 @@ namespace UniRx.Async
                 try
                 {
                     var value = await task;
-                    current = value;
+                    current = value; // boxed if T is struct...
                     if (resultHandler != null)
                     {
                         resultHandler(value);

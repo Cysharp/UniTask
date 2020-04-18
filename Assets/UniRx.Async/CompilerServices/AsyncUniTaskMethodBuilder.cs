@@ -10,274 +10,8 @@ using System.Security;
 
 namespace UniRx.Async.CompilerServices
 {
-    // TODO:Remove
-    public struct AsyncUniTaskMethodBuilder
-    {
-        UniTaskCompletionSource promise;
-        Action moveNext;
-
-        // 1. Static Create method.
-        [DebuggerHidden]
-        public static AsyncUniTaskMethodBuilder Create()
-        {
-            var builder = new AsyncUniTaskMethodBuilder();
-            return builder;
-        }
-
-        // 2. TaskLike Task property.
-        [DebuggerHidden]
-        public UniTask Task
-        {
-            get
-            {
-                if (promise != null)
-                {
-                    return promise.Task;
-                }
-
-                if (moveNext == null)
-                {
-                    return UniTask.CompletedTask;
-                }
-                else
-                {
-                    promise = new UniTaskCompletionSource();
-                    return promise.Task;
-                }
-            }
-        }
-
-        // 3. SetException
-        [DebuggerHidden]
-        public void SetException(Exception exception)
-        {
-            if (promise == null)
-            {
-                promise = new UniTaskCompletionSource();
-            }
-            if (exception is OperationCanceledException ex)
-            {
-                promise.TrySetCanceled(ex);
-            }
-            else
-            {
-                promise.TrySetException(exception);
-            }
-        }
-
-        // 4. SetResult
-        [DebuggerHidden]
-        public void SetResult()
-        {
-            if (moveNext == null)
-            {
-            }
-            else
-            {
-                if (promise == null)
-                {
-                    promise = new UniTaskCompletionSource();
-                }
-                promise.TrySetResult();
-            }
-        }
-
-        // 5. AwaitOnCompleted
-        [DebuggerHidden]
-        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : INotifyCompletion
-            where TStateMachine : IAsyncStateMachine
-        {
-            if (moveNext == null)
-            {
-                if (promise == null)
-                {
-                    promise = new UniTaskCompletionSource(); // built future.
-                }
-
-                var runner = new MoveNextRunner<TStateMachine>();
-                moveNext = runner.Run;
-                runner.StateMachine = stateMachine; // set after create delegate.
-            }
-
-            awaiter.OnCompleted(moveNext);
-        }
-
-        // 6. AwaitUnsafeOnCompleted
-        [DebuggerHidden]
-        [SecuritySafeCritical]
-        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : ICriticalNotifyCompletion
-            where TStateMachine : IAsyncStateMachine
-        {
-            if (moveNext == null)
-            {
-                if (promise == null)
-                {
-                    promise = new UniTaskCompletionSource(); // built future.
-                }
-
-                var runner = new MoveNextRunner<TStateMachine>();
-                moveNext = runner.Run;
-                runner.StateMachine = stateMachine; // set after create delegate.
-            }
-
-            awaiter.UnsafeOnCompleted(moveNext);
-        }
-
-        // 7. Start
-        [DebuggerHidden]
-        public void Start<TStateMachine>(ref TStateMachine stateMachine)
-            where TStateMachine : IAsyncStateMachine
-        {
-            stateMachine.MoveNext();
-        }
-
-        // 8. SetStateMachine
-        [DebuggerHidden]
-        public void SetStateMachine(IAsyncStateMachine stateMachine)
-        {
-        }
-    }
-
-    // TODO:Remove
-    public struct AsyncUniTaskMethodBuilder<T>
-    {
-        T result;
-        UniTaskCompletionSource<T> promise;
-        Action moveNext;
-
-        // 1. Static Create method.
-        [DebuggerHidden]
-        public static AsyncUniTaskMethodBuilder<T> Create()
-        {
-            var builder = new AsyncUniTaskMethodBuilder<T>();
-            return builder;
-        }
-
-        // 2. TaskLike Task property.
-        [DebuggerHidden]
-        public UniTask<T> Task
-        {
-            get
-            {
-                if (promise != null)
-                {
-                    return new UniTask<T>(promise);
-                }
-
-                if (moveNext == null)
-                {
-                    return new UniTask<T>(result);
-                }
-                else
-                {
-                    promise = new UniTaskCompletionSource<T>();
-                    return new UniTask<T>(promise);
-                }
-            }
-        }
-
-        // 3. SetException
-        [DebuggerHidden]
-        public void SetException(Exception exception)
-        {
-            if (promise == null)
-            {
-                promise = new UniTaskCompletionSource<T>();
-            }
-            if (exception is OperationCanceledException ex)
-            {
-                promise.TrySetCanceled(ex);
-            }
-            else
-            {
-                promise.TrySetException(exception);
-            }
-        }
-
-        // 4. SetResult
-        [DebuggerHidden]
-        public void SetResult(T result)
-        {
-            if (moveNext == null)
-            {
-                this.result = result;
-            }
-            else
-            {
-                if (promise == null)
-                {
-                    promise = new UniTaskCompletionSource<T>();
-                }
-                promise.TrySetResult(result);
-            }
-        }
-
-        // 5. AwaitOnCompleted
-        [DebuggerHidden]
-        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : INotifyCompletion
-            where TStateMachine : IAsyncStateMachine
-        {
-            if (moveNext == null)
-            {
-                if (promise == null)
-                {
-                    promise = new UniTaskCompletionSource<T>(); // built future.
-                }
-
-                var runner = new MoveNextRunner<TStateMachine>();
-                moveNext = runner.Run;
-                runner.StateMachine = stateMachine; // set after create delegate.
-            }
-
-            awaiter.OnCompleted(moveNext);
-        }
-
-        // 6. AwaitUnsafeOnCompleted
-        [DebuggerHidden]
-        [SecuritySafeCritical]
-        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : ICriticalNotifyCompletion
-            where TStateMachine : IAsyncStateMachine
-        {
-            if (moveNext == null)
-            {
-                if (promise == null)
-                {
-                    promise = new UniTaskCompletionSource<T>(); // built future.
-                }
-
-                var runner = new MoveNextRunner<TStateMachine>();
-                moveNext = runner.Run;
-                runner.StateMachine = stateMachine; // set after create delegate.
-            }
-
-            awaiter.UnsafeOnCompleted(moveNext);
-        }
-
-        // 7. Start
-        [DebuggerHidden]
-        public void Start<TStateMachine>(ref TStateMachine stateMachine)
-            where TStateMachine : IAsyncStateMachine
-        {
-            stateMachine.MoveNext();
-        }
-
-        // 8. SetStateMachine
-        [DebuggerHidden]
-        public void SetStateMachine(IAsyncStateMachine stateMachine)
-        {
-        }
-    }
-
-
-
-
-
     [StructLayout(LayoutKind.Auto)]
-    public struct AsyncUniTask2MethodBuilder
+    public struct AsyncUniTaskMethodBuilder
     {
         // cache items.
         AutoResetUniTaskCompletionSource promise;
@@ -286,13 +20,13 @@ namespace UniRx.Async.CompilerServices
         // 1. Static Create method.
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AsyncUniTask2MethodBuilder Create()
+        public static AsyncUniTaskMethodBuilder Create()
         {
             return default;
         }
 
         // 2. TaskLike Task property.
-        public UniTask2 Task
+        public UniTask Task
         {
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -305,7 +39,7 @@ namespace UniRx.Async.CompilerServices
 
                 if (runner == null)
                 {
-                    return UniTask2.CompletedTask;
+                    return UniTask.CompletedTask;
                 }
 
                 promise = AutoResetUniTaskCompletionSource.Create();
@@ -363,7 +97,7 @@ namespace UniRx.Async.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -382,7 +116,7 @@ namespace UniRx.Async.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -405,7 +139,7 @@ namespace UniRx.Async.CompilerServices
     }
 
     [StructLayout(LayoutKind.Auto)]
-    public struct AsyncUniTask2MethodBuilder<T>
+    public struct AsyncUniTaskMethodBuilder<T>
     {
         // cache items.
         AutoResetUniTaskCompletionSource<T> promise;
@@ -415,14 +149,14 @@ namespace UniRx.Async.CompilerServices
         // 1. Static Create method.
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AsyncUniTask2MethodBuilder<T> Create()
+        public static AsyncUniTaskMethodBuilder<T> Create()
         {
             return default;
         }
 
         // 2. TaskLike Task property.
         [DebuggerHidden]
-        public UniTask2<T> Task
+        public UniTask<T> Task
         {
             get
             {
@@ -433,7 +167,7 @@ namespace UniRx.Async.CompilerServices
 
                 if (runner == null)
                 {
-                    return UniTask2.FromResult(result);
+                    return UniTask.FromResult(result);
                 }
 
                 promise = AutoResetUniTaskCompletionSource<T>.Create();
@@ -494,7 +228,7 @@ namespace UniRx.Async.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -513,7 +247,7 @@ namespace UniRx.Async.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);

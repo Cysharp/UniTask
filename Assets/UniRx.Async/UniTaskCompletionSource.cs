@@ -2,7 +2,6 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
@@ -12,52 +11,24 @@ using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
-    // TODO: Remove all?
-
-    internal class ExceptionHolder
-    {
-        ExceptionDispatchInfo exception;
-        bool calledGet = false;
-
-        public ExceptionHolder(ExceptionDispatchInfo exception)
-        {
-            this.exception = exception;
-        }
-
-        public ExceptionDispatchInfo GetException()
-        {
-            if (!calledGet)
-            {
-                calledGet = true;
-                GC.SuppressFinalize(this);
-            }
-            return exception;
-        }
-
-        ~ExceptionHolder()
-        {
-            UniTaskScheduler.PublishUnobservedTaskException(exception.SourceException);
-        }
-    }
-
     public interface IResolvePromise
     {
-        bool TrySetResult();
+        void SetResult();
     }
 
     public interface IResolvePromise<T>
     {
-        bool TrySetResult(T value);
+        void SetResult(T value);
     }
 
     public interface IRejectPromise
     {
-        bool TrySetException(Exception exception);
+        void SetException(Exception exception);
     }
 
     public interface ICancelPromise
     {
-        bool TrySetCanceled();
+        void SetCanceled(CancellationToken cancellationToken = default);
     }
 
     public interface IPromise<T> : IResolvePromise<T>, IRejectPromise, ICancelPromise
@@ -66,350 +37,6 @@ namespace UniRx.Async
 
     public interface IPromise : IResolvePromise, IRejectPromise, ICancelPromise
     {
-    }
-
-    public class UniTaskCompletionSource : IAwaiter, IPromise
-    {
-        // State(= AwaiterStatus)
-        const int Pending = 0;
-        const int Succeeded = 1;
-        const int Faulted = 2;
-        const int Canceled = 3;
-
-        int state = 0;
-        bool handled = false;
-        ExceptionHolder exception;
-        object continuation; // action or list
-
-        AwaiterStatus IAwaiter.Status => (AwaiterStatus)state;
-
-        bool IAwaiter.IsCompleted => state != Pending;
-
-        public UniTask Task => new UniTask(this);
-
-        public UniTaskCompletionSource()
-        {
-            TaskTracker.TrackActiveTask(this, 2);
-        }
-
-        [Conditional("UNITY_EDITOR")]
-        internal void MarkHandled()
-        {
-            if (!handled)
-            {
-                handled = true;
-                TaskTracker.RemoveTracking(this);
-            }
-        }
-
-        void IAwaiter.GetResult()
-        {
-            MarkHandled();
-
-            if (state == Succeeded)
-            {
-                return;
-            }
-            else if (state == Faulted)
-            {
-                exception.GetException().Throw();
-            }
-            else if (state == Canceled)
-            {
-                if (exception != null)
-                {
-                    exception.GetException().Throw(); // guranteed operation canceled exception.
-                }
-
-                throw new OperationCanceledException();
-            }
-            else // Pending
-            {
-                throw new NotSupportedException("UniTask does not allow call GetResult directly when task not completed. Please use 'await'.");
-            }
-        }
-
-        void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
-        {
-            if (Interlocked.CompareExchange(ref continuation, (object)action, null) == null)
-            {
-                if (state != Pending)
-                {
-                    TryInvokeContinuation();
-                }
-            }
-            else
-            {
-                var c = continuation;
-                if (c is Action)
-                {
-                    var list = new List<Action>();
-                    list.Add((Action)c);
-                    list.Add(action);
-                    if (Interlocked.CompareExchange(ref continuation, list, c) == c)
-                    {
-                        goto TRYINVOKE;
-                    }
-                }
-
-                var l = (List<Action>)continuation;
-                lock (l)
-                {
-                    l.Add(action);
-                }
-
-                TRYINVOKE:
-                if (state != Pending)
-                {
-                    TryInvokeContinuation();
-                }
-            }
-        }
-
-        void TryInvokeContinuation()
-        {
-            var c = Interlocked.Exchange(ref continuation, null);
-            if (c != null)
-            {
-                if (c is Action)
-                {
-                    ((Action)c).Invoke();
-                }
-                else
-                {
-                    var l = (List<Action>)c;
-                    var cnt = l.Count;
-                    for (int i = 0; i < cnt; i++)
-                    {
-                        l[i].Invoke();
-                    }
-                }
-            }
-        }
-
-        public bool TrySetResult()
-        {
-            if (Interlocked.CompareExchange(ref state, Succeeded, Pending) == Pending)
-            {
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        public bool TrySetException(Exception exception)
-        {
-            if (Interlocked.CompareExchange(ref state, Faulted, Pending) == Pending)
-            {
-                this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        public bool TrySetCanceled()
-        {
-            if (Interlocked.CompareExchange(ref state, Canceled, Pending) == Pending)
-            {
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        public bool TrySetCanceled(OperationCanceledException exception)
-        {
-            if (Interlocked.CompareExchange(ref state, Canceled, Pending) == Pending)
-            {
-                this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        void INotifyCompletion.OnCompleted(Action continuation)
-        {
-            ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(continuation);
-        }
-    }
-
-    public class UniTaskCompletionSource<T> : IAwaiter<T>, IPromise<T>
-    {
-        // State(= AwaiterStatus)
-        const int Pending = 0;
-        const int Succeeded = 1;
-        const int Faulted = 2;
-        const int Canceled = 3;
-
-        int state = 0;
-        T value;
-        bool handled = false;
-        ExceptionHolder exception;
-        object continuation; // action or list
-
-        bool IAwaiter.IsCompleted => state != Pending;
-
-        public UniTask<T> Task => new UniTask<T>(this);
-        public UniTask UnitTask => new UniTask(this);
-
-        AwaiterStatus IAwaiter.Status => (AwaiterStatus)state;
-
-        public UniTaskCompletionSource()
-        {
-            TaskTracker.TrackActiveTask(this, 2);
-        }
-
-        [Conditional("UNITY_EDITOR")]
-        internal void MarkHandled()
-        {
-            if (!handled)
-            {
-                handled = true;
-                TaskTracker.RemoveTracking(this);
-            }
-        }
-
-        T IAwaiter<T>.GetResult()
-        {
-            MarkHandled();
-
-            if (state == Succeeded)
-            {
-                return value;
-            }
-            else if (state == Faulted)
-            {
-                exception.GetException().Throw();
-            }
-            else if (state == Canceled)
-            {
-                if (exception != null)
-                {
-                    exception.GetException().Throw(); // guranteed operation canceled exception.
-                }
-
-                throw new OperationCanceledException();
-            }
-            else // Pending
-            {
-                throw new NotSupportedException("UniTask does not allow call GetResult directly when task not completed. Please use 'await'.");
-            }
-
-            return default(T);
-        }
-
-        void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
-        {
-            if (Interlocked.CompareExchange(ref continuation, (object)action, null) == null)
-            {
-                if (state != Pending)
-                {
-                    TryInvokeContinuation();
-                }
-            }
-            else
-            {
-                var c = continuation;
-                if (c is Action)
-                {
-                    var list = new List<Action>();
-                    list.Add((Action)c);
-                    list.Add(action);
-                    if (Interlocked.CompareExchange(ref continuation, list, c) == c)
-                    {
-                        goto TRYINVOKE;
-                    }
-                }
-
-                var l = (List<Action>)continuation;
-                lock (l)
-                {
-                    l.Add(action);
-                }
-
-                TRYINVOKE:
-                if (state != Pending)
-                {
-                    TryInvokeContinuation();
-                }
-            }
-        }
-
-        void TryInvokeContinuation()
-        {
-            var c = Interlocked.Exchange(ref continuation, null);
-            if (c != null)
-            {
-                if (c is Action)
-                {
-                    ((Action)c).Invoke();
-                }
-                else
-                {
-                    var l = (List<Action>)c;
-                    var cnt = l.Count;
-                    for (int i = 0; i < cnt; i++)
-                    {
-                        l[i].Invoke();
-                    }
-                }
-            }
-        }
-
-        public bool TrySetResult(T value)
-        {
-            if (Interlocked.CompareExchange(ref state, Succeeded, Pending) == Pending)
-            {
-                this.value = value;
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        public bool TrySetException(Exception exception)
-        {
-            if (Interlocked.CompareExchange(ref state, Faulted, Pending) == Pending)
-            {
-                this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        public bool TrySetCanceled()
-        {
-            if (Interlocked.CompareExchange(ref state, Canceled, Pending) == Pending)
-            {
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        public bool TrySetCanceled(OperationCanceledException exception)
-        {
-            if (Interlocked.CompareExchange(ref state, Canceled, Pending) == Pending)
-            {
-                this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        void IAwaiter.GetResult()
-        {
-            ((IAwaiter<T>)this).GetResult();
-        }
-
-        void INotifyCompletion.OnCompleted(Action continuation)
-        {
-            ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(continuation);
-        }
     }
 
     [StructLayout(LayoutKind.Auto)]
@@ -602,12 +229,22 @@ namespace UniRx.Async
         }
     }
 
-    public class UniTaskCompletionSource2 : IUniTaskSource
+    internal static class UniTaskCompletionSourceCoreShared // separated out of generic to avoid unnecessary duplication
+    {
+        internal static readonly Action<object> s_sentinel = CompletionSentinel;
+
+        private static void CompletionSentinel(object _) // named method to aid debugging
+        {
+            throw new InvalidOperationException("The sentinel delegate should never be invoked.");
+        }
+    }
+
+    public class UniTaskCompletionSource : IUniTaskSource, IPromise
     {
         UniTaskCompletionSourceCore<AsyncUnit> core;
         bool handled = false;
 
-        public UniTaskCompletionSource2()
+        public UniTaskCompletionSource()
         {
             TaskTracker2.TrackActiveTask(this, 2);
         }
@@ -622,11 +259,11 @@ namespace UniRx.Async
             }
         }
 
-        public UniTask2 Task
+        public UniTask Task
         {
             get
             {
-                return new UniTask2(this, core.Version);
+                return new UniTask(this, core.Version);
             }
         }
 
@@ -674,14 +311,14 @@ namespace UniRx.Async
             core.OnCompleted(continuation, state, token);
         }
 
-        ~UniTaskCompletionSource2()
+        ~UniTaskCompletionSource()
         {
             // clear error information.
             core.Reset();
         }
     }
 
-    public class AutoResetUniTaskCompletionSource : IUniTaskSource, IPromisePoolItem
+    public class AutoResetUniTaskCompletionSource : IUniTaskSource, IPromisePoolItem, IPromise
     {
         static readonly PromisePool<AutoResetUniTaskCompletionSource> pool = new PromisePool<AutoResetUniTaskCompletionSource>();
 
@@ -722,11 +359,11 @@ namespace UniRx.Async
             return source;
         }
 
-        public UniTask2 Task
+        public UniTask Task
         {
             get
             {
-                return new UniTask2(this, core.Version);
+                return new UniTask(this, core.Version);
             }
         }
 
@@ -737,7 +374,7 @@ namespace UniRx.Async
 
         public void SetCanceled(CancellationToken cancellationToken = default)
         {
-            core.SetCancellation(cancellationToken);
+            core.SetCanceled(cancellationToken);
         }
 
         public void SetException(Exception exception)
@@ -789,12 +426,12 @@ namespace UniRx.Async
         }
     }
 
-    public class UniTaskCompletionSource2<T> : IUniTaskSource<T>
+    public class UniTaskCompletionSource<T> : IUniTaskSource<T>, IPromise<T>
     {
         UniTaskCompletionSourceCore<T> core;
         bool handled = false;
 
-        public UniTaskCompletionSource2()
+        public UniTaskCompletionSource()
         {
             TaskTracker2.TrackActiveTask(this, 2);
         }
@@ -809,11 +446,11 @@ namespace UniRx.Async
             }
         }
 
-        public UniTask2<T> Task
+        public UniTask<T> Task
         {
             get
             {
-                return new UniTask2<T>(this, core.Version);
+                return new UniTask<T>(this, core.Version);
             }
         }
 
@@ -831,7 +468,7 @@ namespace UniRx.Async
 
         public void SetCanceled(CancellationToken cancellationToken = default)
         {
-            core.SetCancellation(cancellationToken);
+            core.SetCanceled(cancellationToken);
         }
 
         public void SetException(Exception exception)
@@ -865,14 +502,14 @@ namespace UniRx.Async
             core.OnCompleted(continuation, state, token);
         }
 
-        ~UniTaskCompletionSource2()
+        ~UniTaskCompletionSource()
         {
             // clear error information.
             core.Reset();
         }
     }
 
-    public class AutoResetUniTaskCompletionSource<T> : IUniTaskSource<T>, IPromisePoolItem
+    public class AutoResetUniTaskCompletionSource<T> : IUniTaskSource<T>, IPromisePoolItem, IPromise<T>
     {
         static readonly PromisePool<AutoResetUniTaskCompletionSource<T>> pool = new PromisePool<AutoResetUniTaskCompletionSource<T>>();
 
@@ -892,7 +529,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource<T> CreateFromCanceled(CancellationToken cancellationToken, out short token)
         {
             var source = Create();
-            source.SetCancellation(cancellationToken);
+            source.SetCanceled(cancellationToken);
             token = source.core.Version;
             return source;
         }
@@ -913,11 +550,11 @@ namespace UniRx.Async
             return source;
         }
 
-        public UniTask2<T> Task
+        public UniTask<T> Task
         {
             get
             {
-                return new UniTask2<T>(this, core.Version);
+                return new UniTask<T>(this, core.Version);
             }
         }
 
@@ -928,7 +565,7 @@ namespace UniRx.Async
 
         public void SetCanceled(CancellationToken cancellationToken = default)
         {
-            core.SetCancellation(cancellationToken);
+            core.SetCanceled(cancellationToken);
         }
 
         public void SetException(Exception exception)
@@ -981,16 +618,6 @@ namespace UniRx.Async
                 GC.ReRegisterForFinalize(this);
                 return;
             }
-        }
-    }
-
-    internal static class UniTaskCompletionSourceCoreShared // separated out of generic to avoid unnecessary duplication
-    {
-        internal static readonly Action<object> s_sentinel = CompletionSentinel;
-
-        private static void CompletionSentinel(object _) // named method to aid debugging
-        {
-            throw new InvalidOperationException("The sentinel delegate should never be invoked.");
         }
     }
 }

@@ -8,14 +8,6 @@ namespace UniRx.Async
 {
     // UnityEngine Bridges.
 
-    public partial struct UniTask2
-    {
-        public static IEnumerator ToCoroutine(Func<UniTask2> taskFactory)
-        {
-            return taskFactory().ToCoroutine();
-        }
-    }
-
     public partial struct UniTask
     {
         public static IEnumerator ToCoroutine(Func<UniTask> taskFactory)

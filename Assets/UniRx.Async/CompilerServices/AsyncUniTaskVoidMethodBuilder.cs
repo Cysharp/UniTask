@@ -66,7 +66,7 @@ namespace UniRx.Async.CompilerServices
         {
             if (runner == null)
             {
-                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -81,7 +81,7 @@ namespace UniRx.Async.CompilerServices
         {
             if (runner == null)
             {
-                runner = MoveNextRunner2<TStateMachine>.Create(ref stateMachine);
+                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
