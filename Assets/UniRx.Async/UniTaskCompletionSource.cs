@@ -693,8 +693,9 @@ namespace UniRx.Async
 
         public static AutoResetUniTaskCompletionSource Create()
         {
-            // TODO:Add TaskTracker
-            return pool.TryRent() ?? new AutoResetUniTaskCompletionSource();
+            var value = pool.TryRent() ?? new AutoResetUniTaskCompletionSource();
+            TaskTracker2.TrackActiveTask(value, 2);
+            return value;
         }
 
         public static AutoResetUniTaskCompletionSource CreateFromCanceled(CancellationToken cancellationToken, out short token)
@@ -748,7 +749,7 @@ namespace UniRx.Async
         {
             try
             {
-                // TODO:Remove TaskTracker
+                TaskTracker2.RemoveTracking(this);
                 core.GetResult(token);
             }
             finally
@@ -795,7 +796,7 @@ namespace UniRx.Async
 
         public UniTaskCompletionSource2()
         {
-            // TODO: TaskTracker.TrackActiveTask
+            TaskTracker2.TrackActiveTask(this, 2);
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -804,8 +805,7 @@ namespace UniRx.Async
             if (!handled)
             {
                 handled = true;
-                // TODO:
-                // TaskTracker.RemoveTracking(this);
+                TaskTracker2.RemoveTracking(this);
             }
         }
 
@@ -819,9 +819,9 @@ namespace UniRx.Async
 
         public void Reset()
         {
-            // TODO:Reset, reactive tracker: TaskTracker.TrackActiveTask
             handled = false;
             core.Reset();
+            TaskTracker2.TrackActiveTask(this, 2);
         }
 
         public void SetResult(T result)
@@ -884,8 +884,9 @@ namespace UniRx.Async
 
         public static AutoResetUniTaskCompletionSource<T> Create()
         {
-            // TODO:Add TaskTracker
-            return pool.TryRent() ?? new AutoResetUniTaskCompletionSource<T>();
+            var result =  pool.TryRent() ?? new AutoResetUniTaskCompletionSource<T>();
+            TaskTracker2.TrackActiveTask(result, 2);
+            return result;
         }
 
         public static AutoResetUniTaskCompletionSource<T> CreateFromCanceled(CancellationToken cancellationToken, out short token)
@@ -939,7 +940,7 @@ namespace UniRx.Async
         {
             try
             {
-                // TODO:Remove TaskTracker
+                TaskTracker2.RemoveTracking(this);
                 return core.GetResult(token);
             }
             finally

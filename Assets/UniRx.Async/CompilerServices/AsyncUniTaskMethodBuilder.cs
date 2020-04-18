@@ -298,10 +298,17 @@ namespace UniRx.Async.CompilerServices
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (promise == null)
+                if (promise != null)
                 {
-                    promise = AutoResetUniTaskCompletionSource.Create();
+                    return promise.Task;
                 }
+
+                if (runner == null)
+                {
+                    return UniTask2.CompletedTask;
+                }
+
+                promise = AutoResetUniTaskCompletionSource.Create();
                 return promise.Task;
             }
         }
@@ -317,11 +324,14 @@ namespace UniRx.Async.CompilerServices
                 runner = null;
             }
 
-            if (promise == null)
+            if (promise != null)
             {
-                promise = AutoResetUniTaskCompletionSource.Create();
+                promise.SetException(exception);
             }
-            promise.SetException(exception);
+            else
+            {
+                promise = AutoResetUniTaskCompletionSource.CreateFromException(exception, out _);
+            }
         }
 
         // 4. SetResult
@@ -335,11 +345,10 @@ namespace UniRx.Async.CompilerServices
                 runner = null;
             }
 
-            if (promise == null)
+            if (promise != null)
             {
-                promise = AutoResetUniTaskCompletionSource.Create();
+                promise.SetResult();
             }
-            promise.SetResult();
         }
 
         // 5. AwaitOnCompleted
@@ -401,6 +410,7 @@ namespace UniRx.Async.CompilerServices
         // cache items.
         AutoResetUniTaskCompletionSource<T> promise;
         IMoveNextRunner runner;
+        T result;
 
         // 1. Static Create method.
         [DebuggerHidden]
@@ -416,10 +426,17 @@ namespace UniRx.Async.CompilerServices
         {
             get
             {
-                if (promise == null)
+                if (promise != null)
                 {
-                    promise = AutoResetUniTaskCompletionSource<T>.Create();
+                    return promise.Task;
                 }
+
+                if (runner == null)
+                {
+                    return UniTask2.FromResult(result);
+                }
+
+                promise = AutoResetUniTaskCompletionSource<T>.Create();
                 return promise.Task;
             }
         }
@@ -437,9 +454,12 @@ namespace UniRx.Async.CompilerServices
 
             if (promise == null)
             {
-                promise = AutoResetUniTaskCompletionSource<T>.Create();
+                promise = AutoResetUniTaskCompletionSource<T>.CreateFromException(exception, out _);
             }
-            promise.SetException(exception);
+            else
+            {
+                promise.SetException(exception);
+            }
         }
 
         // 4. SetResult
@@ -455,8 +475,10 @@ namespace UniRx.Async.CompilerServices
 
             if (promise == null)
             {
-                promise = AutoResetUniTaskCompletionSource<T>.Create();
+                this.result = result;
+                return;
             }
+
             promise.SetResult(result);
         }
 

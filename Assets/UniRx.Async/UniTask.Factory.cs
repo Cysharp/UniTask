@@ -128,5 +128,18 @@ namespace UniRx.Async
         public static readonly UniTask<int> MinusOne = UniTask.FromResult(-1);
         public static readonly UniTask<int> One = UniTask.FromResult(1);
     }
+
+
+
+    internal static class CompletedTasks2
+    {
+        public static readonly UniTask2 Completed = new UniTask2();
+        public static readonly UniTask2<AsyncUnit> AsyncUnit = UniTask2.FromResult(UniRx.Async.AsyncUnit.Default);
+        public static readonly UniTask2<bool> True = UniTask2.FromResult(true);
+        public static readonly UniTask2<bool> False = UniTask2.FromResult(false);
+        public static readonly UniTask2<int> Zero = UniTask2.FromResult(0);
+        public static readonly UniTask2<int> MinusOne = UniTask2.FromResult(-1);
+        public static readonly UniTask2<int> One = UniTask2.FromResult(1);
+    }
 }
 #endif

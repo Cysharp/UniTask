@@ -29,7 +29,15 @@ namespace UniRx.Async
             //return new ValueTask<int>(DelayPromiseCore2.Create(frameCount, timing, cancellationToken, out var token), token);
         }
 
+        public static readonly UniTask2 CompletedTask = new UniTask2();
+
+        public static UniTask2<T> FromResult<T>(T result)
+        {
+            return new UniTask2<T>(result);
+        }
     }
+
+
 
 
     public class DelayPromiseCore2 : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
@@ -70,6 +78,7 @@ namespace UniRx.Async
         {
             try
             {
+                TaskTracker2.RemoveTracking(this);
                 core.GetResult(token);
             }
             finally
@@ -97,14 +106,12 @@ namespace UniRx.Async
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                TaskTracker2.RemoveTracking(this);
                 core.SetCancellation(cancellationToken);
                 return false;
             }
 
             if (currentFrameCount == delayFrameCount)
             {
-                TaskTracker2.RemoveTracking(this);
                 core.SetResult(null);
                 return false;
             }
@@ -126,25 +133,30 @@ namespace UniRx.Async
 
 
 
+    internal static class AwaiterActions
+    {
+        internal static readonly Action<object> InvokeActionDelegate = InvokeAction;
 
-
+        static void InvokeAction(object state)
+        {
+            ((Action)state).Invoke();
+        }
+    }
 
     /// <summary>
     /// Lightweight unity specified task-like object.
     /// </summary>
-    [AsyncMethodBuilder(typeof(AsyncUniTask2MethodBuilder))] // TODO:AsyncUniTask2
-    public partial struct UniTask2
+    [AsyncMethodBuilder(typeof(AsyncUniTask2MethodBuilder))]
+    public readonly partial struct UniTask2
     {
-        // static readonly UniTask<AsyncUnit> DefaultAsyncUnitTask = new UniTask<AsyncUnit>(AsyncUnit.Default);
-
-        readonly IUniTaskSource awaiter;
+        readonly IUniTaskSource source;
         readonly short token;
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public UniTask2(IUniTaskSource awaiter, short token)
+        public UniTask2(IUniTaskSource source, short token)
         {
-            this.awaiter = awaiter;
+            this.source = source;
             this.token = token;
         }
 
@@ -154,7 +166,8 @@ namespace UniRx.Async
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                return awaiter.GetStatus(token);
+                if (source == null) return AwaiterStatus.Succeeded;
+                return source.GetStatus(token);
             }
         }
 
@@ -165,154 +178,112 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
-        [DebuggerHidden]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void GetResult()
+        /// <summary>
+        /// returns (bool IsCanceled) instead of throws OperationCanceledException.
+        /// </summary>
+        public UniTask2<bool> SuppressCancellationThrow()
         {
-            awaiter.GetResult(token);
+            var status = Status;
+            if (status == AwaiterStatus.Succeeded) return CompletedTasks2.False;
+            if (status == AwaiterStatus.Canceled) return CompletedTasks2.True;
+            return new UniTask2<bool>(new IsCanceledSource(source), token);
         }
-
-        // TODO:can be suppress?
-
-        ///// <summary>
-        ///// returns (bool IsCanceled) instead of throws OperationCanceledException.
-        ///// </summary>
-        //public UniTask<bool> SuppressCancellationThrow()
-        //{
-        //    var status = Status;
-        //    if (status == AwaiterStatus.Succeeded) return CompletedTasks.False;
-        //    if (status == AwaiterStatus.Canceled) return CompletedTasks.True;
-        //    //return new UniTask<bool>(new IsCanceledAwaiter(awaiter));
-        //}
 
         public override string ToString()
         {
-            var status = this.awaiter.UnsafeGetStatus();
-            return (status == AwaiterStatus.Succeeded) ? "()" : "(" + status + ")";
+            if (source == null) return "()";
+            return "(" + source.UnsafeGetStatus() + ")";
         }
 
-        //public static implicit operator UniTask<AsyncUnit>(UniTask2 task)
-        //{
-        //    // TODO:
-        //    throw new NotImplementedException();
+        // TODO:AsTask???
 
-        //    //if (task.awaiter != null)
-        //    //{
-        //    //    if (task.awaiter.IsCompleted)
-        //    //    {
-        //    //        return DefaultAsyncUnitTask;
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        // UniTask<T> -> UniTask is free but UniTask -> UniTask<T> requires wrapping cost.
-        //    //        return new UniTask<AsyncUnit>(new AsyncUnitAwaiter(task.awaiter));
-        //    //    }
-        //    //}
-        //    //else
-        //    //{
-        //    //    return DefaultAsyncUnitTask;
-        //    //}
-        //}
-
-        //class AsyncUnitAwaiter : IAwaiter<AsyncUnit>
-        //{
-        //    readonly IAwaiter2 awaiter;
-
-        //    public AsyncUnitAwaiter(IAwaiter2 awaiter)
-        //    {
-        //        this.awaiter = awaiter;
-        //    }
-
-        //    public bool IsCompleted => awaiter.IsCompleted;
-
-        //    public AwaiterStatus Status => awaiter.Status;
-
-        //    public AsyncUnit GetResult()
-        //    {
-        //        awaiter.GetResult();
-        //        return AsyncUnit.Default;
-        //    }
-
-        //    public void OnCompleted(Action continuation)
-        //    {
-        //        awaiter.OnCompleted(continuation);
-        //    }
-
-        //    public void UnsafeOnCompleted(Action continuation)
-        //    {
-        //        awaiter.UnsafeOnCompleted(continuation);
-        //    }
-
-        //    void IAwaiter.GetResult()
-        //    {
-        //        awaiter.GetResult();
-        //    }
-        //}
-
-        class IsCanceledAwaiter : IUniTaskSource
+        public static implicit operator UniTask2<AsyncUnit>(UniTask2 task)
         {
-            readonly IUniTaskSource awaiter;
+            if (task.source == null) return CompletedTasks2.AsyncUnit;
 
-            public IsCanceledAwaiter(IUniTaskSource awaiter)
+            var status = task.source.GetStatus(task.token);
+            if (status.IsCompletedSuccessfully())
             {
-                this.awaiter = awaiter;
+                return CompletedTasks2.AsyncUnit;
             }
 
-            //public bool IsCompleted => awaiter.IsCompleted;
+            return new UniTask2<AsyncUnit>(new AsyncUnitSource(task.source), task.token);
+        }
 
-            //public AwaiterStatus Status => awaiter.Status;
+        class AsyncUnitSource : IUniTaskSource<AsyncUnit>
+        {
+            readonly IUniTaskSource source;
 
-            //public bool GetResult()
-            //{
-            //    if (awaiter.Status == AwaiterStatus.Canceled)
-            //    {
-            //        return true;
-            //    }
-            //    awaiter.GetResult();
-            //    return false;
-            //}
-
-            //public void OnCompleted(Action continuation)
-            //{
-            //    awaiter.OnCompleted(continuation);
-            //}
-
-            //public void UnsafeOnCompleted(Action continuation)
-            //{
-            //    awaiter.UnsafeOnCompleted(continuation);
-            //}
-
-            //void IAwaiter.GetResult()
-            //{
-            //    awaiter.GetResult();
-            //}
-
-            public void GetResult(short token)
+            public AsyncUnitSource(IUniTaskSource source)
             {
-                // TODO: bool
-                if (awaiter.GetStatus(token) == AwaiterStatus.Canceled)
-                {
-                    //return true;
-                }
+                this.source = source;
+            }
 
-                awaiter.GetResult(token);
-                // return false
-                throw new NotImplementedException();
+            public AsyncUnit GetResult(short token)
+            {
+                source.GetResult(token);
+                return AsyncUnit.Default;
             }
 
             public AwaiterStatus GetStatus(short token)
             {
-                return awaiter.GetStatus(token);
-            }
-
-            public AwaiterStatus UnsafeGetStatus()
-            {
-                return awaiter.UnsafeGetStatus();
+                return source.GetStatus(token);
             }
 
             public void OnCompleted(Action<object> continuation, object state, short token)
             {
-                awaiter.OnCompleted(continuation, state, token);
+                source.OnCompleted(continuation, state, token);
+            }
+
+            public AwaiterStatus UnsafeGetStatus()
+            {
+                return source.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+        }
+
+        class IsCanceledSource : IUniTaskSource<bool>
+        {
+            readonly IUniTaskSource source;
+
+            public IsCanceledSource(IUniTaskSource source)
+            {
+                this.source = source;
+            }
+
+            public bool GetResult(short token)
+            {
+                if (source.GetStatus(token) == AwaiterStatus.Canceled)
+                {
+                    return true;
+                }
+
+                source.GetResult(token);
+                return false;
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            public AwaiterStatus GetStatus(short token)
+            {
+                return source.GetStatus(token);
+            }
+
+            public AwaiterStatus UnsafeGetStatus()
+            {
+                return source.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                source.OnCompleted(continuation, state, token);
             }
         }
 
@@ -337,69 +308,70 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus Status
-            {
-                [DebuggerHidden]
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    return task.Status;
-                }
-            }
-
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetResult()
             {
-                task.GetResult();
+                if (task.source == null) return;
+                task.source.GetResult(task.token);
             }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void OnCompleted(Action continuation)
             {
-                task.awaiter.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                if (task.source == null)
+                {
+                    continuation();
+                }
+                else
+                {
+                    task.source.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                }
             }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void UnsafeOnCompleted(Action continuation)
             {
-                task.awaiter.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                if (task.source == null)
+                {
+                    continuation();
+                }
+                else
+                {
+                    task.source.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                }
             }
         }
     }
 
-    internal static class AwaiterActions
-    {
-        internal static readonly Action<object> InvokeActionDelegate = InvokeAction;
-
-        static void InvokeAction(object state)
-        {
-            ((Action)state).Invoke();
-        }
-    }
-
-
-
-
     /// <summary>
     /// Lightweight unity specified task-like object.
     /// </summary>
-    [AsyncMethodBuilder(typeof(AsyncUniTask2MethodBuilder))] // TODO:AsyncUniTask2~T
-    public struct UniTask2<T>
+    [AsyncMethodBuilder(typeof(AsyncUniTask2MethodBuilder<>))]
+    public readonly struct UniTask2<T>
     {
-        // static readonly UniTask<AsyncUnit> DefaultAsyncUnitTask = new UniTask<AsyncUnit>(AsyncUnit.Default);
-
-        readonly IUniTaskSource<T> awaiter;
+        readonly IUniTaskSource<T> source;
+        readonly T result;
         readonly short token;
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public UniTask2(IUniTaskSource<T> awaiter, short token)
+        public UniTask2(T result)
         {
-            this.awaiter = awaiter;
+            this.source = default;
+            this.token = default;
+            this.result = result;
+        }
+
+        [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public UniTask2(IUniTaskSource<T> source, short token)
+        {
+            this.source = source;
             this.token = token;
+            this.result = default;
         }
 
         public AwaiterStatus Status
@@ -408,7 +380,7 @@ namespace UniRx.Async
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                return awaiter.GetStatus(token);
+                return (source == null) ? AwaiterStatus.Succeeded : source.GetStatus(token);
             }
         }
 
@@ -419,154 +391,77 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
-        [DebuggerHidden]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        T GetResult()
+        // TODO:AsTask???
+
+        /// <summary>
+        /// returns (bool IsCanceled, T Result) instead of throws OperationCanceledException.
+        /// </summary>
+        public UniTask2<(bool IsCanceled, T Result)> SuppressCancellationThrow()
         {
-            return awaiter.GetResult(token);
+            if (source == null)
+            {
+                return new UniTask2<(bool IsCanceled, T Result)>((false, result));
+            }
+
+            return new UniTask2<(bool, T)>(new IsCanceledSource(source), token);
         }
-
-        // TODO:can be suppress?
-
-        ///// <summary>
-        ///// returns (bool IsCanceled) instead of throws OperationCanceledException.
-        ///// </summary>
-        //public UniTask<bool> SuppressCancellationThrow()
-        //{
-        //    var status = Status;
-        //    if (status == AwaiterStatus.Succeeded) return CompletedTasks.False;
-        //    if (status == AwaiterStatus.Canceled) return CompletedTasks.True;
-        //    //return new UniTask<bool>(new IsCanceledAwaiter(awaiter));
-        //}
 
         public override string ToString()
         {
-            var status = this.awaiter.UnsafeGetStatus();
-            return (status == AwaiterStatus.Succeeded) ? "()" : "(" + status + ")";
+            return (this.source == null) ? result?.ToString()
+                 : "(" + this.source.UnsafeGetStatus() + ")";
         }
 
-        //public static implicit operator UniTask<AsyncUnit>(UniTask2 task)
-        //{
-        //    // TODO:
-        //    throw new NotImplementedException();
-
-        //    //if (task.awaiter != null)
-        //    //{
-        //    //    if (task.awaiter.IsCompleted)
-        //    //    {
-        //    //        return DefaultAsyncUnitTask;
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        // UniTask<T> -> UniTask is free but UniTask -> UniTask<T> requires wrapping cost.
-        //    //        return new UniTask<AsyncUnit>(new AsyncUnitAwaiter(task.awaiter));
-        //    //    }
-        //    //}
-        //    //else
-        //    //{
-        //    //    return DefaultAsyncUnitTask;
-        //    //}
-        //}
-
-        //class AsyncUnitAwaiter : IAwaiter<AsyncUnit>
-        //{
-        //    readonly IAwaiter2 awaiter;
-
-        //    public AsyncUnitAwaiter(IAwaiter2 awaiter)
-        //    {
-        //        this.awaiter = awaiter;
-        //    }
-
-        //    public bool IsCompleted => awaiter.IsCompleted;
-
-        //    public AwaiterStatus Status => awaiter.Status;
-
-        //    public AsyncUnit GetResult()
-        //    {
-        //        awaiter.GetResult();
-        //        return AsyncUnit.Default;
-        //    }
-
-        //    public void OnCompleted(Action continuation)
-        //    {
-        //        awaiter.OnCompleted(continuation);
-        //    }
-
-        //    public void UnsafeOnCompleted(Action continuation)
-        //    {
-        //        awaiter.UnsafeOnCompleted(continuation);
-        //    }
-
-        //    void IAwaiter.GetResult()
-        //    {
-        //        awaiter.GetResult();
-        //    }
-        //}
-
-        class IsCanceledAwaiter : IUniTaskSource
+        class IsCanceledSource : IUniTaskSource<(bool, T)>
         {
-            readonly IUniTaskSource awaiter;
+            readonly IUniTaskSource<T> source;
 
-            public IsCanceledAwaiter(IUniTaskSource awaiter)
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public IsCanceledSource(IUniTaskSource<T> source)
             {
-                this.awaiter = awaiter;
+                this.source = source;
             }
 
-            //public bool IsCompleted => awaiter.IsCompleted;
-
-            //public AwaiterStatus Status => awaiter.Status;
-
-            //public bool GetResult()
-            //{
-            //    if (awaiter.Status == AwaiterStatus.Canceled)
-            //    {
-            //        return true;
-            //    }
-            //    awaiter.GetResult();
-            //    return false;
-            //}
-
-            //public void OnCompleted(Action continuation)
-            //{
-            //    awaiter.OnCompleted(continuation);
-            //}
-
-            //public void UnsafeOnCompleted(Action continuation)
-            //{
-            //    awaiter.UnsafeOnCompleted(continuation);
-            //}
-
-            //void IAwaiter.GetResult()
-            //{
-            //    awaiter.GetResult();
-            //}
-
-            public void GetResult(short token)
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public (bool, T) GetResult(short token)
             {
-                // TODO: bool
-                if (awaiter.GetStatus(token) == AwaiterStatus.Canceled)
+                if (source.GetStatus(token) == AwaiterStatus.Canceled)
                 {
-                    //return true;
+                    return (true, default);
                 }
 
-                awaiter.GetResult(token);
-                // return false
-                throw new NotImplementedException();
+                var result = source.GetResult(token);
+                return (false, result);
             }
 
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public AwaiterStatus GetStatus(short token)
             {
-                return awaiter.GetStatus(token);
+                return source.GetStatus(token);
             }
 
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public AwaiterStatus UnsafeGetStatus()
             {
-                return awaiter.UnsafeGetStatus();
+                return source.UnsafeGetStatus();
             }
 
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void OnCompleted(Action<object> continuation, object state, short token)
             {
-                awaiter.OnCompleted(continuation, state, token);
+                source.OnCompleted(continuation, state, token);
             }
         }
 
@@ -591,35 +486,49 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus Status
-            {
-                [DebuggerHidden]
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    return task.Status;
-                }
-            }
-
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public T GetResult()
             {
-                return task.GetResult();
+                var s = task.source;
+                if (s == null)
+                {
+                    return task.result;
+                }
+                else
+                {
+                    return s.GetResult(task.token);
+                }
             }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void OnCompleted(Action continuation)
             {
-                task.awaiter.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                var s = task.source;
+                if (s == null)
+                {
+                    continuation();
+                }
+                else
+                {
+                    s.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                }
             }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void UnsafeOnCompleted(Action continuation)
             {
-                task.awaiter.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                var s = task.source;
+                if (s == null)
+                {
+                    continuation();
+                }
+                else
+                {
+                    s.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                }
             }
         }
     }
@@ -1045,7 +954,7 @@ namespace UniRx.Async
             readonly UniTask<T> task;
 
             [DebuggerHidden]
-            public Awaiter(UniTask<T> task)
+            public Awaiter(in UniTask<T> task)
             {
                 this.task = task;
             }

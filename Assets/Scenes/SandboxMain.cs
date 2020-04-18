@@ -40,10 +40,10 @@ public class SandboxMain : MonoBehaviour
 
         ucs = new UniTaskCompletionSource2();
 
-        okButton.onClick.AddListener(UniTask.VoidUnityAction(async () =>
+        okButton.onClick.AddListener(async () =>
         {
-            await OuterAsync(true);
-        }));
+            await InnerAsync(false);
+        });
 
         cancelButton.onClick.AddListener(async () =>
         {
@@ -84,7 +84,8 @@ public class SandboxMain : MonoBehaviour
         }
         else
         {
-            //UnityEngine.Debug.Log("Empty END");
+            UnityEngine.Debug.Log("Empty END");
+            throw new InvalidOperationException("FOOBARBAZ");
         }
     }
 
