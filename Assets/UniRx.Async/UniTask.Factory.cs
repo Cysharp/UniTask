@@ -7,6 +7,121 @@ using UnityEngine.Events;
 
 namespace UniRx.Async
 {
+    public partial struct UniTask2
+    {
+        static readonly UniTask2 CanceledUniTask = new Func<UniTask2>(() =>
+        {
+            var promise = new UniTaskCompletionSource2();
+            promise.SetCanceled(CancellationToken.None);
+            promise.MarkHandled();
+            return promise.Task;
+        })();
+
+        static class CanceledUniTaskCache<T>
+        {
+            public static readonly UniTask2<T> Task;
+
+            static CanceledUniTaskCache()
+            {
+                var promise = new UniTaskCompletionSource2<T>();
+                promise.SetCanceled(CancellationToken.None);
+                promise.MarkHandled();
+                Task = promise.Task;
+            }
+        }
+
+        public static readonly UniTask2 CompletedTask = new UniTask2();
+
+        public static UniTask2 FromException(Exception ex)
+        {
+            var promise = new UniTaskCompletionSource2();
+            promise.SetException(ex);
+            promise.MarkHandled();
+            return promise.Task;
+        }
+
+        public static UniTask2<T> FromException<T>(Exception ex)
+        {
+            var promise = new UniTaskCompletionSource2<T>();
+            promise.SetException(ex);
+            promise.MarkHandled();
+            return promise.Task;
+        }
+
+        public static UniTask2<T> FromResult<T>(T value)
+        {
+            return new UniTask2<T>(value);
+        }
+
+        public static UniTask2 FromCanceled(CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken == CancellationToken.None)
+            {
+                return CanceledUniTask;
+            }
+            else
+            {
+                var promise = new UniTaskCompletionSource2();
+                promise.SetCanceled(cancellationToken);
+                promise.MarkHandled();
+                return promise.Task;
+            }
+        }
+
+        public static UniTask2<T> FromCanceled<T>(CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken == CancellationToken.None)
+            {
+                return CanceledUniTaskCache<T>.Task;
+            }
+            else
+            {
+                var promise = new UniTaskCompletionSource2<T>();
+                promise.SetCanceled(cancellationToken);
+                promise.MarkHandled();
+                return promise.Task;
+            }
+        }
+
+        // TODO:...
+
+        /// <summary>shorthand of new UniTask[T](Func[UniTask[T]] factory)</summary>
+        public static UniTask<T> Lazy<T>(Func<UniTask<T>> factory)
+        {
+            return new UniTask<T>(factory);
+        }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// For example: FooEvent += () => UniTask.Void(async () => { /* */ })
+        /// </summary>
+        public static void Void(Func<UniTask> asyncAction)
+        {
+            asyncAction().Forget();
+        }
+
+        public static Action VoidAction(Func<UniTask> asyncAction)
+        {
+            return () => Void(asyncAction);
+        }
+
+        public static UnityAction VoidUnityAction(Func<UniTask> asyncAction)
+        {
+            return () => Void(asyncAction);
+        }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// For example: FooEvent += (sender, e) => UniTask.Void(async arg => { /* */ }, (sender, e))
+        /// </summary>
+        public static void Void<T>(Func<T, UniTask> asyncAction, T state)
+        {
+            asyncAction(state).Forget();
+        }
+    }
+
+
+    // TODO:remove
     public partial struct UniTask
     {
         static readonly UniTask CanceledUniTask = new Func<UniTask>(() =>
@@ -120,6 +235,8 @@ namespace UniRx.Async
         }
     }
 
+
+    // TODO:remove
     internal static class CompletedTasks
     {
         public static readonly UniTask<bool> True = UniTask.FromResult(true);
@@ -130,7 +247,7 @@ namespace UniRx.Async
     }
 
 
-
+    // TODO:rename
     internal static class CompletedTasks2
     {
         public static readonly UniTask2 Completed = new UniTask2();

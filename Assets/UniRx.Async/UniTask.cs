@@ -3,136 +3,15 @@
 #pragma warning disable CS0436
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Sources;
 using UniRx.Async.CompilerServices;
 using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
-
-
-    public partial struct UniTask2
-    {
-        public static UniTask2 DelayFrame(int frameCount, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default)
-        {
-            return new UniTask2(DelayPromiseCore2.Create(frameCount, timing, cancellationToken, out var token), token);
-
-
-            //return new ValueTask<int>(DelayPromiseCore2.Create(frameCount, timing, cancellationToken, out var token), token);
-        }
-
-        public static readonly UniTask2 CompletedTask = new UniTask2();
-
-        public static UniTask2<T> FromResult<T>(T result)
-        {
-            return new UniTask2<T>(result);
-        }
-    }
-
-
-
-
-    public class DelayPromiseCore2 : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
-    {
-        static readonly PromisePool<DelayPromiseCore2> pool = new PromisePool<DelayPromiseCore2>();
-
-        int delayFrameCount;
-        CancellationToken cancellationToken;
-
-        int currentFrameCount;
-        UniTaskCompletionSourceCore<object> core;
-
-        DelayPromiseCore2()
-        {
-        }
-
-        public static IUniTaskSource Create(int delayFrameCount, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
-            }
-
-            var result = pool.TryRent() ?? new DelayPromiseCore2();
-
-            result.delayFrameCount = delayFrameCount;
-            result.cancellationToken = cancellationToken;
-
-            TaskTracker2.TrackActiveTask(result, 3);
-
-            PlayerLoopHelper.AddAction(timing, result);
-
-            token = result.core.Version;
-            return result;
-        }
-
-        public void GetResult(short token)
-        {
-            try
-            {
-                TaskTracker2.RemoveTracking(this);
-                core.GetResult(token);
-            }
-            finally
-            {
-                pool.TryReturn(this);
-            }
-        }
-
-        public AwaiterStatus GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
-
-        public AwaiterStatus UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
-
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
-
-        public bool MoveNext()
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                core.SetCancellation(cancellationToken);
-                return false;
-            }
-
-            if (currentFrameCount == delayFrameCount)
-            {
-                core.SetResult(null);
-                return false;
-            }
-
-            currentFrameCount++;
-            return true;
-        }
-
-        public void Reset()
-        {
-            core.Reset();
-            currentFrameCount = default;
-            delayFrameCount = default;
-            cancellationToken = default;
-        }
-    }
-
-
-
-
-
     internal static class AwaiterActions
     {
         internal static readonly Action<object> InvokeActionDelegate = InvokeAction;
@@ -195,7 +74,20 @@ namespace UniRx.Async
             return "(" + source.UnsafeGetStatus() + ")";
         }
 
-        // TODO:AsTask???
+        /// <summary>
+        /// Memoizing inner IValueTaskSource. The result UniTask can await multiple.
+        /// </summary>
+        public UniTask2 Preserve()
+        {
+            if (source == null)
+            {
+                return this;
+            }
+            else
+            {
+                return new UniTask2(new MemoizeSource(source), token);
+            }
+        }
 
         public static implicit operator UniTask2<AsyncUnit>(UniTask2 task)
         {
@@ -287,6 +179,86 @@ namespace UniRx.Async
             }
         }
 
+        class MemoizeSource : IUniTaskSource
+        {
+            IUniTaskSource source;
+            ExceptionDispatchInfo exception;
+            AwaiterStatus status;
+
+            public MemoizeSource(IUniTaskSource source)
+            {
+                this.source = source;
+            }
+
+            public void GetResult(short token)
+            {
+                if (source == null)
+                {
+                    if (exception != null)
+                    {
+                        exception.Throw();
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        source.GetResult(token);
+                        status = AwaiterStatus.Succeeded;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        if (ex is OperationCanceledException)
+                        {
+                            status = AwaiterStatus.Canceled;
+                        }
+                        else
+                        {
+                            status = AwaiterStatus.Faulted;
+                        }
+                        throw;
+                    }
+                    finally
+                    {
+                        source = null;
+                    }
+                }
+            }
+
+            public AwaiterStatus GetStatus(short token)
+            {
+                if (source == null)
+                {
+                    return status;
+                }
+
+                return source.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                if (source == null)
+                {
+                    continuation(state);
+                }
+                else
+                {
+                    source.OnCompleted(continuation, state, token);
+                }
+            }
+
+            public AwaiterStatus UnsafeGetStatus()
+            {
+                if (source == null)
+                {
+                    return status;
+                }
+
+                return source.UnsafeGetStatus();
+            }
+        }
+
         public readonly struct Awaiter : ICriticalNotifyCompletion
         {
             readonly UniTask2 task;
@@ -343,6 +315,21 @@ namespace UniRx.Async
                     task.source.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
                 }
             }
+
+            /// <summary>
+            /// If register manually continuation, you can use it instead of for compiler OnCompleted methods.
+            /// </summary>
+            public void SourceOnCompleted(Action<object> continuation, object state)
+            {
+                if (task.source == null)
+                {
+                    continuation(state);
+                }
+                else
+                {
+                    task.source.OnCompleted(continuation, state, task.token);
+                }
+            }
         }
     }
 
@@ -391,7 +378,33 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
-        // TODO:AsTask???
+        /// <summary>
+        /// Memoizing inner IValueTaskSource. The result UniTask can await multiple.
+        /// </summary>
+        public UniTask2<T> Preserve()
+        {
+            if (source == null)
+            {
+                return this;
+            }
+            else
+            {
+                return new UniTask2<T>(new MemoizeSource(source), token);
+            }
+        }
+
+        public static implicit operator UniTask2(UniTask2<T> task)
+        {
+            if (task.source == null) return UniTask2.CompletedTask;
+
+            var status = task.source.GetStatus(task.token);
+            if (status.IsCompletedSuccessfully())
+            {
+                return UniTask2.CompletedTask;
+            }
+
+            return new UniTask2(task.source, task.token);
+        }
 
         /// <summary>
         /// returns (bool IsCanceled, T Result) instead of throws OperationCanceledException.
@@ -465,6 +478,94 @@ namespace UniRx.Async
             }
         }
 
+        class MemoizeSource : IUniTaskSource<T>
+        {
+            IUniTaskSource<T> source;
+            T result;
+            ExceptionDispatchInfo exception;
+            AwaiterStatus status;
+
+            public MemoizeSource(IUniTaskSource<T> source)
+            {
+                this.source = source;
+            }
+
+            public T GetResult(short token)
+            {
+                if (source == null)
+                {
+                    if (exception != null)
+                    {
+                        exception.Throw();
+                    }
+                    return result;
+                }
+                else
+                {
+                    try
+                    {
+                        result = source.GetResult(token);
+                        status = AwaiterStatus.Succeeded;
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        if (ex is OperationCanceledException)
+                        {
+                            status = AwaiterStatus.Canceled;
+                        }
+                        else
+                        {
+                            status = AwaiterStatus.Faulted;
+                        }
+                        throw;
+                    }
+                    finally
+                    {
+                        source = null;
+                    }
+                }
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            public AwaiterStatus GetStatus(short token)
+            {
+                if (source == null)
+                {
+                    return status;
+                }
+
+                return source.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                if (source == null)
+                {
+                    continuation(state);
+                }
+                else
+                {
+                    source.OnCompleted(continuation, state, token);
+                }
+            }
+
+            public AwaiterStatus UnsafeGetStatus()
+            {
+                if (source == null)
+                {
+                    return status;
+                }
+
+                return source.UnsafeGetStatus();
+            }
+        }
+
         public readonly struct Awaiter : ICriticalNotifyCompletion
         {
             readonly UniTask2<T> task;
@@ -528,6 +629,22 @@ namespace UniRx.Async
                 else
                 {
                     s.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                }
+            }
+
+            /// <summary>
+            /// If register manually continuation, you can use it instead of for compiler OnCompleted methods.
+            /// </summary>
+            public void SourceOnCompleted(Action<object> continuation, object state)
+            {
+                var s = task.source;
+                if (s == null)
+                {
+                    continuation(state);
+                }
+                else
+                {
+                    s.OnCompleted(continuation, state, task.token);
                 }
             }
         }

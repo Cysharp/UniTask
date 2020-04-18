@@ -480,7 +480,7 @@ namespace UniRx.Async
             SignalCompletion();
         }
 
-        public void SetCancellation(CancellationToken cancellationToken)
+        public void SetCanceled(CancellationToken cancellationToken = default)
         {
             this.error = new OperationCanceledException(cancellationToken);
             SignalCompletion();
@@ -613,7 +613,7 @@ namespace UniRx.Async
         }
 
         [Conditional("UNITY_EDITOR")]
-        void MarkHandled()
+        internal void MarkHandled()
         {
             if (!handled)
             {
@@ -643,9 +643,9 @@ namespace UniRx.Async
             core.SetResult(AsyncUnit.Default);
         }
 
-        public void SetCancellation(CancellationToken cancellationToken)
+        public void SetCanceled(CancellationToken cancellationToken = default)
         {
-            core.SetCancellation(cancellationToken);
+            core.SetCanceled(cancellationToken);
         }
 
         public void SetException(Exception exception)
@@ -701,7 +701,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource CreateFromCanceled(CancellationToken cancellationToken, out short token)
         {
             var source = Create();
-            source.SetCancellation(cancellationToken);
+            source.SetCanceled(cancellationToken);
             token = source.core.Version;
             return source;
         }
@@ -735,7 +735,7 @@ namespace UniRx.Async
             core.SetResult(AsyncUnit.Default);
         }
 
-        public void SetCancellation(CancellationToken cancellationToken)
+        public void SetCanceled(CancellationToken cancellationToken = default)
         {
             core.SetCancellation(cancellationToken);
         }
@@ -800,7 +800,7 @@ namespace UniRx.Async
         }
 
         [Conditional("UNITY_EDITOR")]
-        void MarkHandled()
+        internal void MarkHandled()
         {
             if (!handled)
             {
@@ -829,7 +829,7 @@ namespace UniRx.Async
             core.SetResult(result);
         }
 
-        public void SetCancellation(CancellationToken cancellationToken)
+        public void SetCanceled(CancellationToken cancellationToken = default)
         {
             core.SetCancellation(cancellationToken);
         }
@@ -884,7 +884,7 @@ namespace UniRx.Async
 
         public static AutoResetUniTaskCompletionSource<T> Create()
         {
-            var result =  pool.TryRent() ?? new AutoResetUniTaskCompletionSource<T>();
+            var result = pool.TryRent() ?? new AutoResetUniTaskCompletionSource<T>();
             TaskTracker2.TrackActiveTask(result, 2);
             return result;
         }
@@ -926,7 +926,7 @@ namespace UniRx.Async
             core.SetResult(result);
         }
 
-        public void SetCancellation(CancellationToken cancellationToken)
+        public void SetCanceled(CancellationToken cancellationToken = default)
         {
             core.SetCancellation(cancellationToken);
         }
