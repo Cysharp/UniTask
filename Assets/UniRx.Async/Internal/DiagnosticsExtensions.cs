@@ -15,10 +15,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace UniRx.Async
+namespace UniRx.Async.Internal
 {
-    // TODO: Internal.
-    public static class DiagnosticsExtensions
+    internal static class DiagnosticsExtensions
     {
         static bool displayFilenames = true;
 
