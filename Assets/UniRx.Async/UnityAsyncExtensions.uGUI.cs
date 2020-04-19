@@ -265,7 +265,7 @@ namespace UniRx.Async
         }
 
         bool IAwaiter.IsCompleted => isDisposed ? true : false;
-        AwaiterStatus IAwaiter.Status => isDisposed ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
+        UniTaskStatus IAwaiter.Status => isDisposed ? UniTaskStatus.Canceled : UniTaskStatus.Pending;
         void IAwaiter.GetResult()
         {
             if (isDisposed) throw new OperationCanceledException();
@@ -381,7 +381,7 @@ namespace UniRx.Async
         }
 
         bool IAwaiter.IsCompleted => isDisposed ? true : false;
-        AwaiterStatus IAwaiter.Status => isDisposed ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
+        UniTaskStatus IAwaiter.Status => isDisposed ? UniTaskStatus.Canceled : UniTaskStatus.Pending;
 
         T IAwaiter<T>.GetResult()
         {

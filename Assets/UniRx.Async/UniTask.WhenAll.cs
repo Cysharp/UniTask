@@ -62,12 +62,12 @@ namespace UniRx.Async
 
                 for (int i = 0; i < tasksLength; i++)
                 {
-                    if (tasks[i].IsCompleted)
+                    if (tasks[i].Status.IsCompleted())
                     {
                         T value = default(T);
                         try
                         {
-                            value = tasks[i].Result;
+                            value = tasks[i].GetAwaiter().GetResult();
                         }
                         catch (Exception ex)
                         {
@@ -189,11 +189,11 @@ namespace UniRx.Async
 
                 for (int i = 0; i < tasksLength; i++)
                 {
-                    if (tasks[i].IsCompleted)
+                    if (tasks[i].Status.IsCompleted())
                     {
                         try
                         {
-                            tasks[i].GetResult();
+                            tasks[i].GetAwaiter().GetResult();
                         }
                         catch (Exception ex)
                         {

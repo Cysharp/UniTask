@@ -13,136 +13,117 @@ namespace UniRx.Async
 {
     public static class EnumeratorAsyncExtensions
     {
-        public static IAwaiter GetAwaiter(this IEnumerator enumerator)
+        public static UniTask.Awaiter GetAwaiter(this IEnumerator enumerator)
         {
-            var awaiter = new EnumeratorAwaiter(enumerator, CancellationToken.None);
-            if (!awaiter.IsCompleted)
-            {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
-            }
-            return awaiter;
+            return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, CancellationToken.None, out var token), token).GetAwaiter();
         }
 
         public static UniTask ToUniTask(this IEnumerator enumerator)
         {
-            var awaiter = new EnumeratorAwaiter(enumerator, CancellationToken.None);
-            if (!awaiter.IsCompleted)
-            {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
-            }
-            return new UniTask(awaiter);
+            return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, CancellationToken.None, out var token), token);
         }
 
         public static UniTask ConfigureAwait(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var awaiter = new EnumeratorAwaiter(enumerator, cancellationToken);
-            if (!awaiter.IsCompleted)
-            {
-                PlayerLoopHelper.AddAction(timing, awaiter);
-            }
-            return new UniTask(awaiter);
+            return new UniTask(EnumeratorPromise.Create(enumerator, timing, cancellationToken, out var token), token);
         }
 
-        class EnumeratorAwaiter : IAwaiter, IPlayerLoopItem
+        class EnumeratorPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
         {
+            static readonly PromisePool<EnumeratorPromise> pool = new PromisePool<EnumeratorPromise>();
+
             IEnumerator innerEnumerator;
             CancellationToken cancellationToken;
+
             Action continuation;
-            AwaiterStatus status;
             ExceptionDispatchInfo exception;
 
-            public EnumeratorAwaiter(IEnumerator innerEnumerator, CancellationToken cancellationToken)
+            UniTaskCompletionSourceCore<object> core;
+
+            EnumeratorPromise()
+            {
+            }
+
+            public static IUniTaskSource Create(IEnumerator innerEnumerator, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    status = AwaiterStatus.Canceled;
-                    return;
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                this.innerEnumerator = ConsumeEnumerator(innerEnumerator);
-                this.status = AwaiterStatus.Pending;
-                this.cancellationToken = cancellationToken;
-                this.continuation = null;
+                var result = pool.TryRent() ?? new EnumeratorPromise();
 
-                TaskTracker.TrackActiveTask(this, 2);
+                result.innerEnumerator = ConsumeEnumerator(innerEnumerator);
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker2.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
             }
 
-            public bool IsCompleted => status.IsCompleted();
-
-            public AwaiterStatus Status => status;
-
-            public void GetResult()
+            public void GetResult(short token)
             {
-                switch (status)
+                try
                 {
-                    case AwaiterStatus.Succeeded:
-                        break;
-                    case AwaiterStatus.Pending:
-                        Error.ThrowNotYetCompleted();
-                        break;
-                    case AwaiterStatus.Faulted:
-                        exception.Throw();
-                        break;
-                    case AwaiterStatus.Canceled:
-                        Error.ThrowOperationCanceledException();
-                        break;
-                    default:
-                        break;
+                    TaskTracker2.RemoveTracking(this);
+                    core.GetResult(token);
                 }
+                finally
+                {
+                    pool.TryReturn(this);
+                }
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
             }
 
             public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    core.SetCanceled(cancellationToken);
                     return false;
                 }
 
-                var success = false;
                 try
                 {
                     if (innerEnumerator.MoveNext())
                     {
                         return true;
                     }
-                    else
-                    {
-                        success = true;
-                    }
                 }
                 catch (Exception ex)
                 {
-                    exception = ExceptionDispatchInfo.Capture(ex);
+                    core.SetException(ex);
+                    return false;
                 }
 
-                InvokeContinuation(success ? AwaiterStatus.Succeeded : AwaiterStatus.Faulted);
+                core.SetResult(null);
                 return false;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            public void Reset()
             {
-                this.status = status;
-                var cont = this.continuation;
-
-                // cleanup
-                TaskTracker.RemoveTracking(this);
-                this.continuation = null;
-                this.cancellationToken = CancellationToken.None;
-                this.innerEnumerator = null;
-
-                if (cont != null) cont.Invoke();
-            }
-
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
-
-            public void UnsafeOnCompleted(Action continuation)
-            {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
-                this.continuation = continuation;
+                core.Reset();
+                innerEnumerator = default;
+                cancellationToken = default;
+                continuation = default;
+                exception = default;
             }
 
             // Unwrap YieldInstructions

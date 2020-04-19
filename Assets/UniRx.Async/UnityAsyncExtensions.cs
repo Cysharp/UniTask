@@ -187,28 +187,28 @@ namespace UniRx.Async
         {
             AsyncOperation asyncOperation;
             Action<AsyncOperation> continuationAction;
-            AwaiterStatus status;
+            UniTaskStatus status;
 
             public AsyncOperationAwaiter(AsyncOperation asyncOperation)
             {
-                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.status = asyncOperation.isDone ? UniTaskStatus.Succeeded : UniTaskStatus.Pending;
                 this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
                 this.continuationAction = null;
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public void GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return;
+                if (status == UniTaskStatus.Succeeded) return;
 
-                if (status == AwaiterStatus.Pending)
+                if (status == UniTaskStatus.Pending)
                 {
                     // first timing of call
                     if (asyncOperation.isDone)
                     {
-                        status = AwaiterStatus.Succeeded;
+                        status = UniTaskStatus.Succeeded;
                     }
                     else
                     {
@@ -246,14 +246,14 @@ namespace UniRx.Async
             AsyncOperation asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
-            AwaiterStatus status;
+            UniTaskStatus status;
             Action continuation;
 
             public AsyncOperationConfiguredAwaiter(AsyncOperation asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
-                            : AwaiterStatus.Pending;
+                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
+                            : asyncOperation.isDone ? UniTaskStatus.Succeeded
+                            : UniTaskStatus.Pending;
 
                 if (this.status.IsCompleted()) return;
 
@@ -266,15 +266,15 @@ namespace UniRx.Async
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public void GetResult()
             {
-                if (status == AwaiterStatus.Succeeded)
+                if (status == UniTaskStatus.Succeeded)
                 {
                     return;
                 }
-                else if (status == AwaiterStatus.Canceled)
+                else if (status == UniTaskStatus.Canceled)
                 {
                     Error.ThrowOperationCanceledException();
                 }
@@ -286,7 +286,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    InvokeContinuation(UniTaskStatus.Canceled);
                     return false;
                 }
 
@@ -297,14 +297,14 @@ namespace UniRx.Async
 
                 if (asyncOperation.isDone)
                 {
-                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    InvokeContinuation(UniTaskStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            void InvokeContinuation(UniTaskStatus status)
             {
                 this.status = status;
                 var cont = this.continuation;
@@ -335,30 +335,30 @@ namespace UniRx.Async
         {
             ResourceRequest asyncOperation;
             Action<AsyncOperation> continuationAction;
-            AwaiterStatus status;
+            UniTaskStatus status;
             UnityEngine.Object result;
 
             public ResourceRequestAwaiter(ResourceRequest asyncOperation)
             {
-                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.status = asyncOperation.isDone ? UniTaskStatus.Succeeded : UniTaskStatus.Pending;
                 this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
                 this.result = (this.status.IsCompletedSuccessfully()) ? asyncOperation.asset : null;
                 this.continuationAction = null;
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public UnityEngine.Object GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Pending)
+                if (status == UniTaskStatus.Pending)
                 {
                     // first timing of call
                     if (asyncOperation.isDone)
                     {
-                        status = AwaiterStatus.Succeeded;
+                        status = UniTaskStatus.Succeeded;
                     }
                     else
                     {
@@ -402,15 +402,15 @@ namespace UniRx.Async
             ResourceRequest asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
-            AwaiterStatus status;
+            UniTaskStatus status;
             Action continuation;
             UnityEngine.Object result;
 
             public ResourceRequestConfiguredAwaiter(ResourceRequest asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
-                            : AwaiterStatus.Pending;
+                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
+                            : asyncOperation.isDone ? UniTaskStatus.Succeeded
+                            : UniTaskStatus.Pending;
 
                 if (this.status.IsCompletedSuccessfully()) this.result = asyncOperation.asset;
                 if (this.status.IsCompleted()) return;
@@ -425,14 +425,14 @@ namespace UniRx.Async
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
             void IAwaiter.GetResult() => GetResult();
 
             public UnityEngine.Object GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Canceled)
+                if (status == UniTaskStatus.Canceled)
                 {
                     Error.ThrowOperationCanceledException();
                 }
@@ -444,7 +444,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    InvokeContinuation(UniTaskStatus.Canceled);
                     return false;
                 }
 
@@ -456,14 +456,14 @@ namespace UniRx.Async
                 if (asyncOperation.isDone)
                 {
                     this.result = asyncOperation.asset;
-                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    InvokeContinuation(UniTaskStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            void InvokeContinuation(UniTaskStatus status)
             {
                 this.status = status;
                 var cont = this.continuation;
@@ -552,12 +552,12 @@ namespace UniRx.Async
                 GetResult(token);
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return core.GetStatus(token);
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return core.UnsafeGetStatus();
             }
@@ -616,30 +616,30 @@ namespace UniRx.Async
         {
             AssetBundleRequest asyncOperation;
             Action<AsyncOperation> continuationAction;
-            AwaiterStatus status;
+            UniTaskStatus status;
             UnityEngine.Object result;
 
             public AssetBundleRequestAwaiter(AssetBundleRequest asyncOperation)
             {
-                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.status = asyncOperation.isDone ? UniTaskStatus.Succeeded : UniTaskStatus.Pending;
                 this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
                 this.result = (this.status.IsCompletedSuccessfully()) ? asyncOperation.asset : null;
                 this.continuationAction = null;
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public UnityEngine.Object GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Pending)
+                if (status == UniTaskStatus.Pending)
                 {
                     // first timing of call
                     if (asyncOperation.isDone)
                     {
-                        status = AwaiterStatus.Succeeded;
+                        status = UniTaskStatus.Succeeded;
                     }
                     else
                     {
@@ -683,15 +683,15 @@ namespace UniRx.Async
             AssetBundleRequest asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
-            AwaiterStatus status;
+            UniTaskStatus status;
             Action continuation;
             UnityEngine.Object result;
 
             public AssetBundleRequestConfiguredAwaiter(AssetBundleRequest asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
-                            : AwaiterStatus.Pending;
+                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
+                            : asyncOperation.isDone ? UniTaskStatus.Succeeded
+                            : UniTaskStatus.Pending;
 
                 if (this.status.IsCompletedSuccessfully()) this.result = asyncOperation.asset;
                 if (this.status.IsCompleted()) return;
@@ -706,14 +706,14 @@ namespace UniRx.Async
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
             void IAwaiter.GetResult() => GetResult();
 
             public UnityEngine.Object GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Canceled)
+                if (status == UniTaskStatus.Canceled)
                 {
                     Error.ThrowOperationCanceledException();
                 }
@@ -725,7 +725,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    InvokeContinuation(UniTaskStatus.Canceled);
                     return false;
                 }
 
@@ -737,14 +737,14 @@ namespace UniRx.Async
                 if (asyncOperation.isDone)
                 {
                     this.result = asyncOperation.asset;
-                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    InvokeContinuation(UniTaskStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            void InvokeContinuation(UniTaskStatus status)
             {
                 this.status = status;
                 var cont = this.continuation;
@@ -776,30 +776,30 @@ namespace UniRx.Async
         {
             AssetBundleCreateRequest asyncOperation;
             Action<AsyncOperation> continuationAction;
-            AwaiterStatus status;
+            UniTaskStatus status;
             AssetBundle result;
 
             public AssetBundleCreateRequestAwaiter(AssetBundleCreateRequest asyncOperation)
             {
-                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.status = asyncOperation.isDone ? UniTaskStatus.Succeeded : UniTaskStatus.Pending;
                 this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
                 this.result = (this.status.IsCompletedSuccessfully()) ? asyncOperation.assetBundle : null;
                 this.continuationAction = null;
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public AssetBundle GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Pending)
+                if (status == UniTaskStatus.Pending)
                 {
                     // first timing of call
                     if (asyncOperation.isDone)
                     {
-                        status = AwaiterStatus.Succeeded;
+                        status = UniTaskStatus.Succeeded;
                     }
                     else
                     {
@@ -843,15 +843,15 @@ namespace UniRx.Async
             AssetBundleCreateRequest asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
-            AwaiterStatus status;
+            UniTaskStatus status;
             Action continuation;
             AssetBundle result;
 
             public AssetBundleCreateRequestConfiguredAwaiter(AssetBundleCreateRequest asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
-                            : AwaiterStatus.Pending;
+                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
+                            : asyncOperation.isDone ? UniTaskStatus.Succeeded
+                            : UniTaskStatus.Pending;
 
                 if (this.status.IsCompletedSuccessfully()) this.result = asyncOperation.assetBundle;
                 if (this.status.IsCompleted()) return;
@@ -866,14 +866,14 @@ namespace UniRx.Async
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
             void IAwaiter.GetResult() => GetResult();
 
             public AssetBundle GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Canceled)
+                if (status == UniTaskStatus.Canceled)
                 {
                     Error.ThrowOperationCanceledException();
                 }
@@ -885,7 +885,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    InvokeContinuation(UniTaskStatus.Canceled);
                     return false;
                 }
 
@@ -897,14 +897,14 @@ namespace UniRx.Async
                 if (asyncOperation.isDone)
                 {
                     this.result = asyncOperation.assetBundle;
-                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    InvokeContinuation(UniTaskStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            void InvokeContinuation(UniTaskStatus status)
             {
                 this.status = status;
                 var cont = this.continuation;
@@ -942,14 +942,14 @@ namespace UniRx.Async
             WWW asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
-            AwaiterStatus status;
+            UniTaskStatus status;
             Action continuation;
 
             public WWWConfiguredAwaiter(WWW asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
-                            : AwaiterStatus.Pending;
+                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
+                            : asyncOperation.isDone ? UniTaskStatus.Succeeded
+                            : UniTaskStatus.Pending;
 
                 if (this.status.IsCompleted()) return;
 
@@ -962,15 +962,15 @@ namespace UniRx.Async
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public void GetResult()
             {
-                if (status == AwaiterStatus.Succeeded)
+                if (status == UniTaskStatus.Succeeded)
                 {
                     return;
                 }
-                else if (status == AwaiterStatus.Canceled)
+                else if (status == UniTaskStatus.Canceled)
                 {
                     Error.ThrowOperationCanceledException();
                 }
@@ -982,7 +982,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    InvokeContinuation(UniTaskStatus.Canceled);
                     return false;
                 }
 
@@ -993,14 +993,14 @@ namespace UniRx.Async
 
                 if (asyncOperation.isDone)
                 {
-                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    InvokeContinuation(UniTaskStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            void InvokeContinuation(UniTaskStatus status)
             {
                 this.status = status;
                 var cont = this.continuation;
@@ -1039,30 +1039,30 @@ namespace UniRx.Async
         {
             UnityWebRequestAsyncOperation asyncOperation;
             Action<AsyncOperation> continuationAction;
-            AwaiterStatus status;
+            UniTaskStatus status;
             UnityWebRequest result;
 
             public UnityWebRequestAsyncOperationAwaiter(UnityWebRequestAsyncOperation asyncOperation)
             {
-                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.status = asyncOperation.isDone ? UniTaskStatus.Succeeded : UniTaskStatus.Pending;
                 this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
                 this.result = (this.status.IsCompletedSuccessfully()) ? asyncOperation.webRequest : null;
                 this.continuationAction = null;
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public UnityWebRequest GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Pending)
+                if (status == UniTaskStatus.Pending)
                 {
                     // first timing of call
                     if (asyncOperation.isDone)
                     {
-                        status = AwaiterStatus.Succeeded;
+                        status = UniTaskStatus.Succeeded;
                     }
                     else
                     {
@@ -1107,15 +1107,15 @@ namespace UniRx.Async
             UnityWebRequestAsyncOperation asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
-            AwaiterStatus status;
+            UniTaskStatus status;
             Action continuation;
             UnityWebRequest result;
 
             public UnityWebRequestAsyncOperationConfiguredAwaiter(UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
-                            : AwaiterStatus.Pending;
+                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
+                            : asyncOperation.isDone ? UniTaskStatus.Succeeded
+                            : UniTaskStatus.Pending;
 
                 if (this.status.IsCompletedSuccessfully()) this.result = asyncOperation.webRequest;
                 if (this.status.IsCompleted()) return;
@@ -1130,14 +1130,14 @@ namespace UniRx.Async
             }
 
             public bool IsCompleted => status.IsCompleted();
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
             void IAwaiter.GetResult() => GetResult();
 
             public UnityWebRequest GetResult()
             {
-                if (status == AwaiterStatus.Succeeded) return this.result;
+                if (status == UniTaskStatus.Succeeded) return this.result;
 
-                if (status == AwaiterStatus.Canceled)
+                if (status == UniTaskStatus.Canceled)
                 {
                     Error.ThrowOperationCanceledException();
                 }
@@ -1149,7 +1149,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    InvokeContinuation(UniTaskStatus.Canceled);
                     return false;
                 }
 
@@ -1161,14 +1161,14 @@ namespace UniRx.Async
                 if (asyncOperation.isDone)
                 {
                     this.result = asyncOperation.webRequest;
-                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    InvokeContinuation(UniTaskStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            void InvokeContinuation(UniTaskStatus status)
             {
                 this.status = status;
                 var cont = this.continuation;

@@ -13,24 +13,6 @@ namespace UniRx.Async
     public static partial class UniTaskExtensions
     {
         /// <summary>
-        /// Convert UniTask -> UniTask[AsyncUnit].
-        /// </summary>
-        public static UniTask<AsyncUnit> AsAsyncUnitUniTask(this UniTask task)
-        {
-            // use implicit conversion
-            return task;
-        }
-
-        /// <summary>
-        /// Convert UniTask[T] -> UniTask.
-        /// </summary>
-        public static UniTask AsUniTask<T>(this UniTask<T> task)
-        {
-            // use implicit conversion
-            return task;
-        }
-
-        /// <summary>
         /// Convert Task[T] -> UniTask[T].
         /// </summary>
         public static UniTask<T> AsUniTask<T>(this Task<T> task, bool useCurrentSynchronizationContext = true)
@@ -112,17 +94,20 @@ namespace UniRx.Async
 
                 awaiter.SourceOnCompleted(state =>
                 {
-                    var (inTcs, inAwaiter) = ((TaskCompletionSource<T>, UniTask<T>.Awaiter))state;
-                    try
+                    using (var tuple = (StateTuple<TaskCompletionSource<T>, UniTask<T>.Awaiter>)state)
                     {
-                        var result = inAwaiter.GetResult();
-                        inTcs.SetResult(result);
+                        var (inTcs, inAwaiter) = tuple;
+                        try
+                        {
+                            var result = inAwaiter.GetResult();
+                            inTcs.SetResult(result);
+                        }
+                        catch (Exception ex)
+                        {
+                            inTcs.SetException(ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        inTcs.SetException(ex);
-                    }
-                }, (tcs, awaiter));
+                }, StateTuple.Create(tcs, awaiter));
 
                 return tcs.Task;
             }
@@ -154,17 +139,20 @@ namespace UniRx.Async
 
                 awaiter.SourceOnCompleted(state =>
                 {
-                    var (inTcs, inAwaiter) = ((TaskCompletionSource<object>, UniTask.Awaiter))state;
-                    try
+                    using (var tuple = (StateTuple<TaskCompletionSource<object>, UniTask.Awaiter>)state)
                     {
-                        inAwaiter.GetResult();
-                        inTcs.SetResult(null);
+                        var (inTcs, inAwaiter) = tuple;
+                        try
+                        {
+                            inAwaiter.GetResult();
+                            inTcs.SetResult(null);
+                        }
+                        catch (Exception ex)
+                        {
+                            inTcs.SetException(ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        inTcs.SetException(ex);
-                    }
-                }, (tcs, awaiter));
+                }, StateTuple.Create(tcs, awaiter));
 
                 return tcs.Task;
             }
@@ -196,7 +184,7 @@ namespace UniRx.Async
             // left, right both suppress operation canceled exception.
 
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
+            var timeoutTask = UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
 
             var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
 
@@ -242,7 +230,7 @@ namespace UniRx.Async
             // left, right both suppress operation canceled exception.
 
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
+            var timeoutTask = UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
 
             var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
 

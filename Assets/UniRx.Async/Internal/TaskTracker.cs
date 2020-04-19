@@ -116,7 +116,7 @@ namespace UniRx.Async.Internal
         }
 
         /// <summary>(trackingId, awaiterType, awaiterStatus, createdTime, stackTrace)</summary>
-        public static void ForEachActiveTask(Action<int, string, AwaiterStatus, DateTime, string> action)
+        public static void ForEachActiveTask(Action<int, string, UniTaskStatus, DateTime, string> action)
         {
             lock (listPool)
             {
@@ -233,7 +233,7 @@ namespace UniRx.Async.Internal
         }
 
         /// <summary>(trackingId, awaiterType, awaiterStatus, createdTime, stackTrace)</summary>
-        public static void ForEachActiveTask(Action<int, string, AwaiterStatus, DateTime, string> action)
+        public static void ForEachActiveTask(Action<int, string, UniTaskStatus, DateTime, string> action)
         {
             lock (listPool)
             {

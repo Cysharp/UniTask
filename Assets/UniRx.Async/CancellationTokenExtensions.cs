@@ -17,14 +17,14 @@ namespace UniRx.Async
                 return (UniTask.FromCanceled(cts), default(CancellationTokenRegistration));
             }
 
-            var promise = new UniTaskCompletionSource<AsyncUnit>();
+            var promise = new UniTaskCompletionSource();
             return (promise.Task, cts.RegisterWithoutCaptureExecutionContext(cancellationTokenCallback, promise));
         }
 
         static void Callback(object state)
         {
-            var promise = (UniTaskCompletionSource<AsyncUnit>)state;
-            promise.TrySetResult(AsyncUnit.Default);
+            var promise = (UniTaskCompletionSource)state;
+            promise.SetResult();
         }
 
         public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(this CancellationToken cancellationToken, Action callback)

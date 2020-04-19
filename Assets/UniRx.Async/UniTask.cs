@@ -39,13 +39,13 @@ namespace UniRx.Async
             this.token = token;
         }
 
-        public AwaiterStatus Status
+        public UniTaskStatus Status
         {
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (source == null) return AwaiterStatus.Succeeded;
+                if (source == null) return UniTaskStatus.Succeeded;
                 return source.GetStatus(token);
             }
         }
@@ -63,8 +63,8 @@ namespace UniRx.Async
         public UniTask<bool> SuppressCancellationThrow()
         {
             var status = Status;
-            if (status == AwaiterStatus.Succeeded) return CompletedTasks.False;
-            if (status == AwaiterStatus.Canceled) return CompletedTasks.True;
+            if (status == UniTaskStatus.Succeeded) return CompletedTasks.False;
+            if (status == UniTaskStatus.Canceled) return CompletedTasks.True;
             return new UniTask<bool>(new IsCanceledSource(source), token);
         }
 
@@ -89,20 +89,20 @@ namespace UniRx.Async
             }
         }
 
-        public static implicit operator UniTask<AsyncUnit>(UniTask task)
+        public UniTask<AsyncUnit> AsAsyncUnitUniTask()
         {
-            if (task.source == null) return CompletedTasks.AsyncUnit;
+            if (this.source == null) return CompletedTasks.AsyncUnit;
 
-            var status = task.source.GetStatus(task.token);
+            var status = this.source.GetStatus(this.token);
             if (status.IsCompletedSuccessfully())
             {
                 return CompletedTasks.AsyncUnit;
             }
 
-            return new UniTask<AsyncUnit>(new AsyncUnitSource(task.source), task.token);
+            return new UniTask<AsyncUnit>(new AsyncUnitSource(this.source), this.token);
         }
 
-        class AsyncUnitSource : IUniTaskSource<AsyncUnit>
+        sealed class AsyncUnitSource : IUniTaskSource<AsyncUnit>
         {
             readonly IUniTaskSource source;
 
@@ -117,7 +117,7 @@ namespace UniRx.Async
                 return AsyncUnit.Default;
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return source.GetStatus(token);
             }
@@ -127,7 +127,7 @@ namespace UniRx.Async
                 source.OnCompleted(continuation, state, token);
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return source.UnsafeGetStatus();
             }
@@ -138,7 +138,7 @@ namespace UniRx.Async
             }
         }
 
-        class IsCanceledSource : IUniTaskSource<bool>
+        sealed class IsCanceledSource : IUniTaskSource<bool>
         {
             readonly IUniTaskSource source;
 
@@ -149,7 +149,7 @@ namespace UniRx.Async
 
             public bool GetResult(short token)
             {
-                if (source.GetStatus(token) == AwaiterStatus.Canceled)
+                if (source.GetStatus(token) == UniTaskStatus.Canceled)
                 {
                     return true;
                 }
@@ -163,12 +163,12 @@ namespace UniRx.Async
                 GetResult(token);
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return source.GetStatus(token);
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return source.UnsafeGetStatus();
             }
@@ -179,11 +179,11 @@ namespace UniRx.Async
             }
         }
 
-        class MemoizeSource : IUniTaskSource
+        sealed class MemoizeSource : IUniTaskSource
         {
             IUniTaskSource source;
             ExceptionDispatchInfo exception;
-            AwaiterStatus status;
+            UniTaskStatus status;
 
             public MemoizeSource(IUniTaskSource source)
             {
@@ -204,18 +204,18 @@ namespace UniRx.Async
                     try
                     {
                         source.GetResult(token);
-                        status = AwaiterStatus.Succeeded;
+                        status = UniTaskStatus.Succeeded;
                     }
                     catch (Exception ex)
                     {
                         exception = ExceptionDispatchInfo.Capture(ex);
                         if (ex is OperationCanceledException)
                         {
-                            status = AwaiterStatus.Canceled;
+                            status = UniTaskStatus.Canceled;
                         }
                         else
                         {
-                            status = AwaiterStatus.Faulted;
+                            status = UniTaskStatus.Faulted;
                         }
                         throw;
                     }
@@ -226,7 +226,7 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 if (source == null)
                 {
@@ -248,7 +248,7 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 if (source == null)
                 {
@@ -361,13 +361,13 @@ namespace UniRx.Async
             this.result = default;
         }
 
-        public AwaiterStatus Status
+        public UniTaskStatus Status
         {
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                return (source == null) ? AwaiterStatus.Succeeded : source.GetStatus(token);
+                return (source == null) ? UniTaskStatus.Succeeded : source.GetStatus(token);
             }
         }
 
@@ -393,17 +393,17 @@ namespace UniRx.Async
             }
         }
 
-        public static implicit operator UniTask(UniTask<T> task)
+        public UniTask AsUniTask()
         {
-            if (task.source == null) return UniTask.CompletedTask;
+            if (this.source == null) return UniTask.CompletedTask;
 
-            var status = task.source.GetStatus(task.token);
+            var status = this.source.GetStatus(this.token);
             if (status.IsCompletedSuccessfully())
             {
                 return UniTask.CompletedTask;
             }
 
-            return new UniTask(task.source, task.token);
+            return new UniTask(this.source, this.token);
         }
 
         /// <summary>
@@ -425,7 +425,7 @@ namespace UniRx.Async
                  : "(" + this.source.UnsafeGetStatus() + ")";
         }
 
-        class IsCanceledSource : IUniTaskSource<(bool, T)>
+        sealed class IsCanceledSource : IUniTaskSource<(bool, T)>
         {
             readonly IUniTaskSource<T> source;
 
@@ -440,7 +440,7 @@ namespace UniRx.Async
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public (bool, T) GetResult(short token)
             {
-                if (source.GetStatus(token) == AwaiterStatus.Canceled)
+                if (source.GetStatus(token) == UniTaskStatus.Canceled)
                 {
                     return (true, default);
                 }
@@ -458,14 +458,14 @@ namespace UniRx.Async
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return source.GetStatus(token);
             }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return source.UnsafeGetStatus();
             }
@@ -478,12 +478,12 @@ namespace UniRx.Async
             }
         }
 
-        class MemoizeSource : IUniTaskSource<T>
+        sealed class MemoizeSource : IUniTaskSource<T>
         {
             IUniTaskSource<T> source;
             T result;
             ExceptionDispatchInfo exception;
-            AwaiterStatus status;
+            UniTaskStatus status;
 
             public MemoizeSource(IUniTaskSource<T> source)
             {
@@ -505,7 +505,7 @@ namespace UniRx.Async
                     try
                     {
                         result = source.GetResult(token);
-                        status = AwaiterStatus.Succeeded;
+                        status = UniTaskStatus.Succeeded;
                         return result;
                     }
                     catch (Exception ex)
@@ -513,11 +513,11 @@ namespace UniRx.Async
                         exception = ExceptionDispatchInfo.Capture(ex);
                         if (ex is OperationCanceledException)
                         {
-                            status = AwaiterStatus.Canceled;
+                            status = UniTaskStatus.Canceled;
                         }
                         else
                         {
-                            status = AwaiterStatus.Faulted;
+                            status = UniTaskStatus.Faulted;
                         }
                         throw;
                     }
@@ -533,7 +533,7 @@ namespace UniRx.Async
                 GetResult(token);
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 if (source == null)
                 {
@@ -555,7 +555,7 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 if (source == null)
                 {

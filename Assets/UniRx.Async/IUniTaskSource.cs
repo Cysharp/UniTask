@@ -6,9 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace UniRx.Async
 {
-    // TODO:rename to UniTaskStatus
-
-    public enum AwaiterStatus
+    public enum UniTaskStatus
     {
         /// <summary>The operation has not yet completed.</summary>
         Pending = 0,
@@ -20,16 +18,14 @@ namespace UniRx.Async
         Canceled = 3
     }
 
-
-
     // similar as IValueTaskSource
     public interface IUniTaskSource
     {
-        AwaiterStatus GetStatus(short token);
+        UniTaskStatus GetStatus(short token);
         void OnCompleted(Action<object> continuation, object state, short token);
         void GetResult(short token);
 
-        AwaiterStatus UnsafeGetStatus(); // only for debug use.
+        UniTaskStatus UnsafeGetStatus(); // only for debug use.
     }
 
     public interface IUniTaskSource<out T> : IUniTaskSource
@@ -37,47 +33,34 @@ namespace UniRx.Async
         new T GetResult(short token);
     }
 
-
-    public interface IAwaiter : ICriticalNotifyCompletion
-    {
-        AwaiterStatus Status { get; }
-        bool IsCompleted { get; }
-        void GetResult();
-    }
-
-    public interface IAwaiter<out T> : IAwaiter
-    {
-        new T GetResult();
-    }
-
-    public static class AwaiterStatusExtensions
+    public static class UniTaskStatusExtensions
     {
         /// <summary>!= Pending.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCompleted(this AwaiterStatus status)
+        public static bool IsCompleted(this UniTaskStatus status)
         {
-            return status != AwaiterStatus.Pending;
+            return status != UniTaskStatus.Pending;
         }
 
         /// <summary>== Succeeded.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCompletedSuccessfully(this AwaiterStatus status)
+        public static bool IsCompletedSuccessfully(this UniTaskStatus status)
         {
-            return status == AwaiterStatus.Succeeded;
+            return status == UniTaskStatus.Succeeded;
         }
 
         /// <summary>== Canceled.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCanceled(this AwaiterStatus status)
+        public static bool IsCanceled(this UniTaskStatus status)
         {
-            return status == AwaiterStatus.Canceled;
+            return status == UniTaskStatus.Canceled;
         }
 
         /// <summary>== Faulted.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFaulted(this AwaiterStatus status)
+        public static bool IsFaulted(this UniTaskStatus status)
         {
-            return status == AwaiterStatus.Faulted;
+            return status == UniTaskStatus.Faulted;
         }
     }
 }

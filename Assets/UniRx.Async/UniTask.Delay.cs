@@ -24,6 +24,8 @@ namespace UniRx.Async
 
         public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
+            PlayerLoopHelper.Initialize(
+
             if (delayFrameCount < 0)
             {
                 throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. delayFrameCount:" + delayFrameCount);
@@ -57,7 +59,7 @@ namespace UniRx.Async
                 : new UniTask(DelayPromise.Create(delayTimeSpan, delayTiming, cancellationToken, out token), token);
         }
 
-        class YieldPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class YieldPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
         {
             static readonly PromisePool<YieldPromise> pool = new PromisePool<YieldPromise>();
 
@@ -100,12 +102,12 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return core.GetStatus(token);
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return core.UnsafeGetStatus();
             }
@@ -134,7 +136,7 @@ namespace UniRx.Async
             }
         }
 
-        class DelayFramePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class DelayFramePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
         {
             static readonly PromisePool<DelayFramePromise> pool = new PromisePool<DelayFramePromise>();
 
@@ -181,12 +183,12 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return core.GetStatus(token);
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return core.UnsafeGetStatus();
             }
@@ -223,7 +225,7 @@ namespace UniRx.Async
             }
         }
 
-        class DelayPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class DelayPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
         {
             static readonly PromisePool<DelayPromise> pool = new PromisePool<DelayPromise>();
 
@@ -271,12 +273,12 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return core.GetStatus(token);
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return core.UnsafeGetStatus();
             }
@@ -313,7 +315,7 @@ namespace UniRx.Async
             }
         }
 
-        class DelayIgnoreTimeScalePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class DelayIgnoreTimeScalePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
         {
             static readonly PromisePool<DelayIgnoreTimeScalePromise> pool = new PromisePool<DelayIgnoreTimeScalePromise>();
 
@@ -361,12 +363,12 @@ namespace UniRx.Async
                 }
             }
 
-            public AwaiterStatus GetStatus(short token)
+            public UniTaskStatus GetStatus(short token)
             {
                 return core.GetStatus(token);
             }
 
-            public AwaiterStatus UnsafeGetStatus()
+            public UniTaskStatus UnsafeGetStatus()
             {
                 return core.UnsafeGetStatus();
             }
@@ -404,7 +406,7 @@ namespace UniRx.Async
         }
     }
 
-    public struct YieldAwaitable
+    public readonly struct YieldAwaitable
     {
         readonly PlayerLoopTiming timing;
 
@@ -423,7 +425,7 @@ namespace UniRx.Async
             return UniTask.Yield(timing, CancellationToken.None);
         }
 
-        public struct Awaiter : ICriticalNotifyCompletion
+        public readonly struct Awaiter : ICriticalNotifyCompletion
         {
             readonly PlayerLoopTiming timing;
 

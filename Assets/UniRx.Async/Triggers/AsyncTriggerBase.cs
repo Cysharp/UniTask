@@ -32,13 +32,13 @@ namespace UniRx.Async.Triggers
 
         public override T GetResult()
         {
-            if (Status == AwaiterStatus.Pending) return RawResult;
+            if (Status == UniTaskStatus.Pending) return RawResult;
             return base.GetResult();
         }
 
         public override bool TrySetResult(T result)
         {
-            if (Status == AwaiterStatus.Pending)
+            if (Status == UniTaskStatus.Pending)
             {
                 // keep status as Pending.
                 this.ForceSetResult(result);
@@ -50,7 +50,7 @@ namespace UniRx.Async.Triggers
 
         public override bool TrySetCanceled()
         {
-            if (Status == AwaiterStatus.Canceled) return false;
+            if (Status == UniTaskStatus.Canceled) return false;
             TaskTracker.RemoveTracking(this);
             return base.TrySetCanceled();
         }

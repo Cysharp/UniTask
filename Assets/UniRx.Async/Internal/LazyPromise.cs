@@ -34,7 +34,7 @@ namespace UniRx.Async.Internal
             }
         }
 
-        public AwaiterStatus Status
+        public UniTaskStatus Status
         {
             get
             {
@@ -94,7 +94,7 @@ namespace UniRx.Async.Internal
             }
         }
 
-        public AwaiterStatus Status
+        public UniTaskStatus Status
         {
             get
             {

@@ -52,20 +52,20 @@ namespace UniRx.Async
         {
             JobHandle jobHandle;
             CancellationToken cancellationToken;
-            AwaiterStatus status;
+            UniTaskStatus status;
             Action continuation;
 
             public JobHandleAwaiter(JobHandle jobHandle, CancellationToken cancellationToken, int skipFrame = 2)
             {
-                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                            : jobHandle.IsCompleted ? AwaiterStatus.Succeeded
-                            : AwaiterStatus.Pending;
+                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
+                            : jobHandle.IsCompleted ? UniTaskStatus.Succeeded
+                            : UniTaskStatus.Pending;
 
                 if (this.status.IsCompleted()) return;
 
                 this.jobHandle = jobHandle;
                 this.cancellationToken = cancellationToken;
-                this.status = AwaiterStatus.Pending;
+                this.status = UniTaskStatus.Pending;
                 this.continuation = null;
 
                 TaskTracker.TrackActiveTask(this, skipFrame);
@@ -73,15 +73,15 @@ namespace UniRx.Async
 
             public bool IsCompleted => status.IsCompleted();
 
-            public AwaiterStatus Status => status;
+            public UniTaskStatus Status => status;
 
             public void GetResult()
             {
-                if (status == AwaiterStatus.Succeeded)
+                if (status == UniTaskStatus.Succeeded)
                 {
                     return;
                 }
-                else if (status == AwaiterStatus.Canceled)
+                else if (status == UniTaskStatus.Canceled)
                 {
                     Error.ThrowOperationCanceledException();
                 }
@@ -95,21 +95,21 @@ namespace UniRx.Async
                 {
                     // Call jobHandle.Complete after finished.
                     PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, new JobHandleAwaiter(jobHandle, CancellationToken.None, 1));
-                    InvokeContinuation(AwaiterStatus.Canceled);
+                    InvokeContinuation(UniTaskStatus.Canceled);
                     return false;
                 }
 
                 if (jobHandle.IsCompleted)
                 {
                     jobHandle.Complete();
-                    InvokeContinuation(AwaiterStatus.Succeeded);
+                    InvokeContinuation(UniTaskStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
-            void InvokeContinuation(AwaiterStatus status)
+            void InvokeContinuation(UniTaskStatus status)
             {
                 this.status = status;
                 var cont = this.continuation;

@@ -45,7 +45,7 @@ namespace UniRx.Async
         // Struct Size: TResult + (8 + 2 + 1 + 1 + 8 + 8)
 
         TResult result;
-        object error; // Exception or OperationCanceledException
+        object error; // ExceptionDispatchInfo or OperationCanceledException
         short version;
         bool completed;
         bool hasUnhandledError;
@@ -119,23 +119,23 @@ namespace UniRx.Async
         /// <summary>Gets the status of the operation.</summary>
         /// <param name="token">Opaque value that was provided to the <see cref="UniTask"/>'s constructor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public AwaiterStatus GetStatus(short token)
+        public UniTaskStatus GetStatus(short token)
         {
             ValidateToken(token);
-            return (continuation == null || !completed) ? AwaiterStatus.Pending
-                 : (error == null) ? AwaiterStatus.Succeeded
-                 : (error is OperationCanceledException) ? AwaiterStatus.Canceled
-                 : AwaiterStatus.Faulted;
+            return (continuation == null || !completed) ? UniTaskStatus.Pending
+                 : (error == null) ? UniTaskStatus.Succeeded
+                 : (error is OperationCanceledException) ? UniTaskStatus.Canceled
+                 : UniTaskStatus.Faulted;
         }
 
         /// <summary>Gets the status of the operation without token validation.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public AwaiterStatus UnsafeGetStatus()
+        public UniTaskStatus UnsafeGetStatus()
         {
-            return (continuation == null || !completed) ? AwaiterStatus.Pending
-                 : (error == null) ? AwaiterStatus.Succeeded
-                 : (error is OperationCanceledException) ? AwaiterStatus.Canceled
-                 : AwaiterStatus.Faulted;
+            return (continuation == null || !completed) ? UniTaskStatus.Pending
+                 : (error == null) ? UniTaskStatus.Succeeded
+                 : (error is OperationCanceledException) ? UniTaskStatus.Canceled
+                 : UniTaskStatus.Faulted;
         }
 
         /// <summary>Gets the result of the operation.</summary>
@@ -296,12 +296,12 @@ namespace UniRx.Async
             core.GetResult(token);
         }
 
-        public AwaiterStatus GetStatus(short token)
+        public UniTaskStatus GetStatus(short token)
         {
             return core.GetStatus(token);
         }
 
-        public AwaiterStatus UnsafeGetStatus()
+        public UniTaskStatus UnsafeGetStatus()
         {
             return core.UnsafeGetStatus();
         }
@@ -396,12 +396,12 @@ namespace UniRx.Async
 
         }
 
-        public AwaiterStatus GetStatus(short token)
+        public UniTaskStatus GetStatus(short token)
         {
             return core.GetStatus(token);
         }
 
-        public AwaiterStatus UnsafeGetStatus()
+        public UniTaskStatus UnsafeGetStatus()
         {
             return core.UnsafeGetStatus();
         }
@@ -487,12 +487,12 @@ namespace UniRx.Async
             GetResult(token);
         }
 
-        public AwaiterStatus GetStatus(short token)
+        public UniTaskStatus GetStatus(short token)
         {
             return core.GetStatus(token);
         }
 
-        public AwaiterStatus UnsafeGetStatus()
+        public UniTaskStatus UnsafeGetStatus()
         {
             return core.UnsafeGetStatus();
         }
@@ -591,12 +591,12 @@ namespace UniRx.Async
             GetResult(token);
         }
 
-        public AwaiterStatus GetStatus(short token)
+        public UniTaskStatus GetStatus(short token)
         {
             return core.GetStatus(token);
         }
 
-        public AwaiterStatus UnsafeGetStatus()
+        public UniTaskStatus UnsafeGetStatus()
         {
             return core.UnsafeGetStatus();
         }

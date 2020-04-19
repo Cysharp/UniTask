@@ -15,7 +15,7 @@ namespace UniRx.Async.CompilerServices
         void Return();
     }
 
-    internal class MoveNextRunner<TStateMachine> : IMoveNextRunner, IPromisePoolItem
+    internal sealed class MoveNextRunner<TStateMachine> : IMoveNextRunner, IPromisePoolItem
         where TStateMachine : IAsyncStateMachine
     {
         static PromisePool<MoveNextRunner<TStateMachine>> pool = new PromisePool<MoveNextRunner<TStateMachine>>();

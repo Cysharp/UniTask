@@ -83,12 +83,19 @@ namespace UniRx.Async
             }
         }
 
-        // TODO:...
-
-        /// <summary>shorthand of new UniTask[T](Func[UniTask[T]] factory)</summary>
-        public static UniTask<T> Lazy<T>(Func<UniTask<T>> factory)
+        public static UniTask Create(Func<UniTask> factory)
         {
-            return new UniTask<T>(factory);
+            return factory();
+        }
+
+        public static UniTask<T> Create<T>(Func<UniTask<T>> factory)
+        {
+            return factory();
+        }
+
+        public static AsyncLazy<T> Lazy<T>(Func<UniTask<T>> factory)
+        {
+            return new AsyncLazy<T>(factory);
         }
 
         /// <summary>
@@ -122,7 +129,6 @@ namespace UniRx.Async
 
     internal static class CompletedTasks
     {
-        public static readonly UniTask Completed = new UniTask();
         public static readonly UniTask<AsyncUnit> AsyncUnit = UniTask.FromResult(UniRx.Async.AsyncUnit.Default);
         public static readonly UniTask<bool> True = UniTask.FromResult(true);
         public static readonly UniTask<bool> False = UniTask.FromResult(false);
