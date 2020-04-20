@@ -1,6 +1,7 @@
 # UniTask
 
 [![CircleCI](https://circleci.com/gh/Cysharp/UniTask.svg?style=svg)](https://circleci.com/gh/Cysharp/UniTask)
+[![openupm](https://img.shields.io/npm/v/com.cysharp.unitask?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.cysharp.unitask/)
 
 Provides an efficient async/await integration to Unity.
 
@@ -8,7 +9,7 @@ Provides an efficient async/await integration to Unity.
 
 Getting started
 ---
-Install package(`UniRx.Async.unitypackage`) is available in [UniTask/releases](https://github.com/Cysharp/UniTask/releases) page.
+Install via [UPM package](#upm-package) or asset package(`UniRx.Async.unitypackage`) available in [UniTask/releases](https://github.com/Cysharp/UniTask/releases) page.
 
 ```csharp
 // extension awaiter/methods can be used by this namespace
@@ -344,6 +345,15 @@ UniTask.Delay(..., bool ignoreTimeScale = false, ...) parameter
 
 UPM Package
 ---
+
+### Install via OpenUPM
+The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+
+```
+openupm add com.cysharp.unitask
+```
+
+### Install via Git URL
 After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of git package. You can add `https://github.com/Cysharp/UniTask.git?path=Assets/UniRx.Async` to Package Manager
 
 ![image](https://user-images.githubusercontent.com/46207/79450714-3aadd100-8020-11ea-8aae-b8d87fc4d7be.png)
