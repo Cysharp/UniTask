@@ -573,7 +573,7 @@ namespace UniRx.Async
                 {
                     // TODO:Remove Tracking
                     // TaskTracker.RemoveTracking();
-                    core.SetCanceled(cancellationToken);
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -586,7 +586,7 @@ namespace UniRx.Async
                 {
                     // TODO:Remove Tracking
                     // TaskTracker.RemoveTracking();
-                    core.SetResult(asyncOperation.asset);
+                    core.TrySetResult(asyncOperation.asset);
                     return false;
                 }
 

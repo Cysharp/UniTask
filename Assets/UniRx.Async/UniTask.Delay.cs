@@ -24,8 +24,6 @@ namespace UniRx.Async
 
         public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            PlayerLoopHelper.Initialize(
-
             if (delayFrameCount < 0)
             {
                 throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. delayFrameCount:" + delayFrameCount);
@@ -121,11 +119,11 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    core.SetCanceled(cancellationToken);
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
-                core.SetResult(null);
+                core.TrySetResult(null);
                 return false;
             }
 
@@ -133,6 +131,14 @@ namespace UniRx.Async
             {
                 core.Reset();
                 cancellationToken = default;
+            }
+
+            ~YieldPromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
         }
 
@@ -202,13 +208,13 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    core.SetCanceled(cancellationToken);
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
                 if (currentFrameCount == delayFrameCount)
                 {
-                    core.SetResult(null);
+                    core.TrySetResult(null);
                     return false;
                 }
 
@@ -222,6 +228,14 @@ namespace UniRx.Async
                 currentFrameCount = default;
                 delayFrameCount = default;
                 cancellationToken = default;
+            }
+
+            ~DelayFramePromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
         }
 
@@ -292,14 +306,14 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    core.SetCanceled(cancellationToken);
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
                 elapsed += Time.deltaTime;
                 if (elapsed >= delayFrameTimeSpan)
                 {
-                    core.SetResult(null);
+                    core.TrySetResult(null);
                     return false;
                 }
 
@@ -312,6 +326,14 @@ namespace UniRx.Async
                 delayFrameTimeSpan = default;
                 elapsed = default;
                 cancellationToken = default;
+            }
+
+            ~DelayPromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
         }
 
@@ -382,14 +404,14 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    core.SetCanceled(cancellationToken);
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
                 elapsed += Time.unscaledDeltaTime;
                 if (elapsed >= delayFrameTimeSpan)
                 {
-                    core.SetResult(null);
+                    core.TrySetResult(null);
                     return false;
                 }
 
@@ -402,6 +424,14 @@ namespace UniRx.Async
                 delayFrameTimeSpan = default;
                 elapsed = default;
                 cancellationToken = default;
+            }
+
+            ~DelayIgnoreTimeScalePromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
         }
     }

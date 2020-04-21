@@ -40,7 +40,7 @@ namespace UniRx.Async.Internal
                 return new RentArray<T>(array, array.Length, null);
             }
 
-            var defaultCount = 4;
+            var defaultCount = 32;
             if (source is ICollection<T> coll)
             {
                 defaultCount = coll.Count;

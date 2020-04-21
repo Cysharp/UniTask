@@ -12,14 +12,12 @@ namespace UniRx.Async
     {
         public static UniTask WaitUntil(Func<bool> predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var promise = new WaitUntilPromise(predicate, timing, cancellationToken);
-            return promise.Task;
+            return new UniTask(WaitUntilPromise.Create(predicate, timing, cancellationToken, out var token), token);
         }
 
         public static UniTask WaitWhile(Func<bool> predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var promise = new WaitWhilePromise(predicate, timing, cancellationToken);
-            return promise.Task;
+            return new UniTask(WaitWhilePromise.Create(predicate, timing, cancellationToken, out var token), token);
         }
 
         public static UniTask<U> WaitUntilValueChanged<T, U>(T target, Func<T, U> monitorFunction, PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update, IEqualityComparer<U> equalityComparer = null, CancellationToken cancellationToken = default(CancellationToken))
@@ -28,130 +26,293 @@ namespace UniRx.Async
             var unityObject = target as UnityEngine.Object;
             var isUnityObject = !object.ReferenceEquals(target, null); // don't use (unityObject == null)
 
-            return (isUnityObject)
-                ? new WaitUntilValueChangedUnityObjectPromise<T, U>(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken).Task
-                : new WaitUntilValueChangedStandardObjectPromise<T, U>(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken).Task;
+            return new UniTask<U>(isUnityObject
+                ? WaitUntilValueChangedUnityObjectPromise<T, U>.Create(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken, out var token)
+                : WaitUntilValueChangedStandardObjectPromise<T, U>.Create(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken, out token), token);
         }
 
-        class WaitUntilPromise : PlayerLoopReusablePromiseBase
+        sealed class WaitUntilPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
         {
-            readonly Func<bool> predicate;
+            static readonly PromisePool<WaitUntilPromise> pool = new PromisePool<WaitUntilPromise>();
 
-            public WaitUntilPromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
+            Func<bool> predicate;
+            CancellationToken cancellationToken;
+
+            UniTaskCompletionSourceCore<object> core;
+
+            WaitUntilPromise()
             {
-                this.predicate = predicate;
             }
 
-            protected override void OnRunningStart()
-            {
-            }
-
-            public override bool MoveNext()
+            public static IUniTaskSource Create(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    Complete();
-                    TrySetCanceled();
-                    return false;
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                bool result = default(bool);
+                var result = pool.TryRent() ?? new WaitUntilPromise();
+
+                result.predicate = predicate;
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker2.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public void GetResult(short token)
+            {
                 try
                 {
-                    result = predicate();
+                    TaskTracker2.RemoveTracking(this);
+                    core.GetResult(token);
                 }
-                catch (Exception ex)
+                finally
                 {
-                    Complete();
-                    TrySetException(ex);
-                    return false;
+                    pool.TryReturn(this);
                 }
-
-                if (result)
-                {
-                    Complete();
-                    TrySetResult();
-                    return false;
-                }
-
-                return true;
             }
-        }
 
-        class WaitWhilePromise : PlayerLoopReusablePromiseBase
-        {
-            readonly Func<bool> predicate;
-
-            public WaitWhilePromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
+            public UniTaskStatus GetStatus(short token)
             {
-                this.predicate = predicate;
+                return core.GetStatus(token);
             }
 
-            protected override void OnRunningStart()
+            public UniTaskStatus UnsafeGetStatus()
             {
+                return core.UnsafeGetStatus();
             }
 
-            public override bool MoveNext()
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    Complete();
-                    TrySetCanceled();
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
-                bool result = default(bool);
                 try
                 {
-                    result = predicate();
+                    if (!predicate())
+                    {
+                        return true;
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Complete();
-                    TrySetException(ex);
+                    core.TrySetException(ex);
                     return false;
                 }
 
-                if (!result)
+                core.TrySetResult(null);
+                return false;
+            }
+
+            public void Reset()
+            {
+                core.Reset();
+                predicate = default;
+                cancellationToken = default;
+            }
+
+            ~WaitUntilPromise()
+            {
+                if (pool.TryReturn(this))
                 {
-                    Complete();
-                    TrySetResult();
+                    GC.ReRegisterForFinalize(this);
+                }
+            }
+        }
+
+        sealed class WaitWhilePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        {
+            static readonly PromisePool<WaitWhilePromise> pool = new PromisePool<WaitWhilePromise>();
+
+            Func<bool> predicate;
+            CancellationToken cancellationToken;
+
+            UniTaskCompletionSourceCore<object> core;
+
+            WaitWhilePromise()
+            {
+            }
+
+            public static IUniTaskSource Create(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                var result = pool.TryRent() ?? new WaitWhilePromise();
+
+                result.predicate = predicate;
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker2.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public void GetResult(short token)
+            {
+                try
+                {
+                    TaskTracker2.RemoveTracking(this);
+                    core.GetResult(token);
+                }
+                finally
+                {
+                    pool.TryReturn(this);
+                }
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
-                return true;
+                try
+                {
+                    if (predicate())
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    core.TrySetException(ex);
+                    return false;
+                }
+
+                core.TrySetResult(null);
+                return false;
+            }
+
+            public void Reset()
+            {
+                core.Reset();
+                predicate = default;
+                cancellationToken = default;
+            }
+
+            ~WaitWhilePromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
         }
 
         // where T : UnityEngine.Object, can not add constraint
-        class WaitUntilValueChangedUnityObjectPromise<T, U> : PlayerLoopReusablePromiseBase<U>
+        sealed class WaitUntilValueChangedUnityObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, IPromisePoolItem
         {
-            readonly T target;
-            readonly Func<T, U> monitorFunction;
-            readonly IEqualityComparer<U> equalityComparer;
+            static readonly PromisePool<WaitUntilValueChangedUnityObjectPromise<T, U>> pool = new PromisePool<WaitUntilValueChangedUnityObjectPromise<T, U>>();
+
+            T target;
             U currentValue;
+            Func<T, U> monitorFunction;
+            IEqualityComparer<U> equalityComparer;
+            CancellationToken cancellationToken;
 
-            public WaitUntilValueChangedUnityObjectPromise(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
-            {
-                this.target = target;
-                this.monitorFunction = monitorFunction;
-                this.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
-                this.currentValue = monitorFunction(target);
-            }
+            UniTaskCompletionSourceCore<U> core;
 
-            protected override void OnRunningStart()
+            WaitUntilValueChangedUnityObjectPromise()
             {
             }
 
-            public override bool MoveNext()
+            public static IUniTaskSource<U> Create(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource<U>.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                var result = pool.TryRent() ?? new WaitUntilValueChangedUnityObjectPromise<T, U>();
+
+                result.target = target;
+                result.monitorFunction = monitorFunction;
+                result.currentValue = monitorFunction(target);
+                result.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker2.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public U GetResult(short token)
+            {
+                try
+                {
+                    TaskTracker2.RemoveTracking(this);
+                    return core.GetResult(token);
+                }
+                finally
+                {
+                    pool.TryReturn(this);
+                }
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested || target == null) // destroyed = cancel.
                 {
-                    Complete();
-                    TrySetCanceled();
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -166,45 +327,112 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    Complete();
-                    TrySetException(ex);
+                    core.TrySetException(ex);
                     return false;
                 }
 
-                Complete();
-                currentValue = nextValue;
-                TrySetResult(nextValue);
+                core.TrySetResult(nextValue);
                 return false;
+            }
+
+            public void Reset()
+            {
+                core.Reset();
+                target = default;
+                currentValue = default;
+                monitorFunction = default;
+                equalityComparer = default;
+                cancellationToken = default;
+            }
+
+            ~WaitUntilValueChangedUnityObjectPromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
         }
 
-        class WaitUntilValueChangedStandardObjectPromise<T, U> : PlayerLoopReusablePromiseBase<U>
+
+        sealed class WaitUntilValueChangedStandardObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, IPromisePoolItem
             where T : class
         {
-            readonly WeakReference<T> target;
-            readonly Func<T, U> monitorFunction;
-            readonly IEqualityComparer<U> equalityComparer;
+            static readonly PromisePool<WaitUntilValueChangedStandardObjectPromise<T, U>> pool = new PromisePool<WaitUntilValueChangedStandardObjectPromise<T, U>>();
+
+            WeakReference<T> target;
             U currentValue;
+            Func<T, U> monitorFunction;
+            IEqualityComparer<U> equalityComparer;
+            CancellationToken cancellationToken;
 
-            public WaitUntilValueChangedStandardObjectPromise(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
-            {
-                this.target = new WeakReference<T>(target, false); // wrap in WeakReference.
-                this.monitorFunction = monitorFunction;
-                this.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
-                this.currentValue = monitorFunction(target);
-            }
+            UniTaskCompletionSourceCore<U> core;
 
-            protected override void OnRunningStart()
+            WaitUntilValueChangedStandardObjectPromise()
             {
             }
 
-            public override bool MoveNext()
+            public static IUniTaskSource<U> Create(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
             {
-                if (cancellationToken.IsCancellationRequested || !target.TryGetTarget(out var t))
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    Complete();
-                    TrySetCanceled();
+                    return AutoResetUniTaskCompletionSource<U>.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                var result = pool.TryRent() ?? new WaitUntilValueChangedStandardObjectPromise<T, U>();
+
+                result.target = new WeakReference<T>(target, false); // wrap in WeakReference.
+                result.monitorFunction = monitorFunction;
+                result.currentValue = monitorFunction(target);
+                result.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker2.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public U GetResult(short token)
+            {
+                try
+                {
+                    TaskTracker2.RemoveTracking(this);
+                    return core.GetResult(token);
+                }
+                finally
+                {
+                    pool.TryReturn(this);
+                }
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested || !target.TryGetTarget(out var t)) // doesn't find = cancel.
+                {
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -219,15 +447,30 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    Complete();
-                    TrySetException(ex);
+                    core.TrySetException(ex);
                     return false;
                 }
 
-                Complete();
-                currentValue = nextValue;
-                TrySetResult(nextValue);
+                core.TrySetResult(nextValue);
                 return false;
+            }
+
+            public void Reset()
+            {
+                core.Reset();
+                target = default;
+                currentValue = default;
+                monitorFunction = default;
+                equalityComparer = default;
+                cancellationToken = default;
+            }
+
+            ~WaitUntilValueChangedStandardObjectPromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
         }
     }

@@ -76,7 +76,16 @@ namespace UniRx.Async
         {
             try
             {
-                var awaiter = task.GetAwaiter();
+                UniTask<T>.Awaiter awaiter;
+                try
+                {
+                    awaiter = task.GetAwaiter();
+                }
+                catch (Exception ex)
+                {
+                    return Task.FromException<T>(ex);
+                }
+
                 if (awaiter.IsCompleted)
                 {
                     try
@@ -121,7 +130,16 @@ namespace UniRx.Async
         {
             try
             {
-                var awaiter = task.GetAwaiter();
+                UniTask.Awaiter awaiter;
+                try
+                {
+                    awaiter = task.GetAwaiter();
+                }
+                catch (Exception ex)
+                {
+                    return Task.FromException(ex);
+                }
+
                 if (awaiter.IsCompleted)
                 {
                     try

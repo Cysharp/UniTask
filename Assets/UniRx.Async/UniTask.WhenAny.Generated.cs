@@ -1,1527 +1,5130 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
     public partial struct UniTask
     {
-        public static async UniTask<(int winArgumentIndex, (bool hasResult, T0 result0), (bool hasResult, T1 result1))> WhenAny<T0, T1>(UniTask<T0> task0, UniTask<T1> task1)
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2))> WhenAny<T1, T2>(UniTask<T1> task1, UniTask<T2> task2)
         {
-            return await new WhenAnyPromise<T0, T1>(task0, task1);
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2))>(new WhenAnyPromise<T1, T2>(task1, task2), 0);
         }
 
-        public static async UniTask<(int winArgumentIndex, (bool hasResult, T0 result0), (bool hasResult, T1 result1), (bool hasResult, T2 result2))> WhenAny<T0, T1, T2>(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2)
+        sealed class WhenAnyPromise<T1, T2> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2))>
         {
-            return await new WhenAnyPromise<T0, T1, T2>(task0, task1, task2);
-        }
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2))> core;
 
-        public static async UniTask<(int winArgumentIndex, (bool hasResult, T0 result0), (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))> WhenAny<T0, T1, T2, T3>(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
-        {
-            return await new WhenAnyPromise<T0, T1, T2, T3>(task0, task1, task2, task3);
-        }
-
-        public static async UniTask<(int winArgumentIndex, (bool hasResult, T0 result0), (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))> WhenAny<T0, T1, T2, T3, T4>(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
-        {
-            return await new WhenAnyPromise<T0, T1, T2, T3, T4>(task0, task1, task2, task3, task4);
-        }
-
-        public static async UniTask<(int winArgumentIndex, (bool hasResult, T0 result0), (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))> WhenAny<T0, T1, T2, T3, T4, T5>(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
-        {
-            return await new WhenAnyPromise<T0, T1, T2, T3, T4, T5>(task0, task1, task2, task3, task4, task5);
-        }
-
-        public static async UniTask<(int winArgumentIndex, (bool hasResult, T0 result0), (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))> WhenAny<T0, T1, T2, T3, T4, T5, T6>(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
-        {
-            return await new WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6>(task0, task1, task2, task3, task4, task5, task6);
-        }
-
-        public static async UniTask<(int winArgumentIndex, (bool hasResult, T0 result0), (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))> WhenAny<T0, T1, T2, T3, T4, T5, T6, T7>(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
-        {
-            return await new WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6, T7>(task0, task1, task2, task3, task4, task5, task6, task7);
-        }
-
-        class WhenAnyPromise<T0, T1>
-        {
-            T0 result0;
-            T1 result1;
-            ExceptionDispatchInfo exception;
-            Action whenComplete;
-            int completeCount;
-            int winArgumentIndex;
-
-            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
-
-            public WhenAnyPromise(UniTask<T0> task0, UniTask<T1> task1)
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2)
             {
-                this.whenComplete = null;
-                this.exception = null;
-                this.completeCount = 0;
-                this.winArgumentIndex = -1;
-                this.result0 = default(T0);
-                this.result1 = default(T1);
+                TaskTracker2.TrackActiveTask(this, 3);
 
-                RunTask0(task0).Forget();
-                RunTask1(task1).Forget();
-            }
-
-            void TryCallContinuation()
-            {
-                var action = Interlocked.Exchange(ref whenComplete, null);
-                if (action != null)
+                this.completedCount = 0;
                 {
-                    action.Invoke();
-                }
-            }
+                    var awaiter = task1.GetAwaiter();
 
-            async UniTaskVoid RunTask0(UniTask<T0> task)
-            {
-                T0 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result0 = value;
-                    Volatile.Write(ref winArgumentIndex, 0);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask1(UniTask<T1> task)
-            {
-                T1 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result1 = value;
-                    Volatile.Write(ref winArgumentIndex, 1);
-                    TryCallContinuation();
-                }
-            }
-
-
-            public Awaiter GetAwaiter()
-            {
-                return new Awaiter(this);
-            }
-
-            public struct Awaiter : ICriticalNotifyCompletion
-            {
-                WhenAnyPromise<T0, T1> parent;
-
-                public Awaiter(WhenAnyPromise<T0, T1> parent)
-                {
-                    this.parent = parent;
-                }
-
-                public bool IsCompleted
-                {
-                    get
+                    if (awaiter.IsCompleted)
                     {
-                        return parent.IsCompleted;
+                        TryInvokeContinuationT1(this, awaiter);
                     }
-                }
-
-                public (int, (bool, T0), (bool, T1)) GetResult()
-                {
-                    if (parent.exception != null)
+                    else
                     {
-                        parent.exception.Throw();
-                    }
-
-                    var i = parent.winArgumentIndex;
-                    return (i, (i == 0, parent.result0), (i == 1, parent.result1));
-                }
-
-                public void OnCompleted(Action continuation)
-                {
-                    UnsafeOnCompleted(continuation);
-                }
-
-                public void UnsafeOnCompleted(Action continuation)
-                {
-                    parent.whenComplete = continuation;
-                    if (IsCompleted)
-                    {
-                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
-                        if (action != null)
+                        awaiter.SourceOnCompleted(state =>
                         {
-                            action();
-                        }
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
                     }
                 }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
             }
         }
 
-        class WhenAnyPromise<T0, T1, T2>
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))> WhenAny<T1, T2, T3>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
         {
-            T0 result0;
-            T1 result1;
-            T2 result2;
-            ExceptionDispatchInfo exception;
-            Action whenComplete;
-            int completeCount;
-            int winArgumentIndex;
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))>(new WhenAnyPromise<T1, T2, T3>(task1, task2, task3), 0);
+        }
 
-            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
+        sealed class WhenAnyPromise<T1, T2, T3> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))> core;
 
-            public WhenAnyPromise(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2)
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
             {
-                this.whenComplete = null;
-                this.exception = null;
-                this.completeCount = 0;
-                this.winArgumentIndex = -1;
-                this.result0 = default(T0);
-                this.result1 = default(T1);
-                this.result2 = default(T2);
+                TaskTracker2.TrackActiveTask(this, 3);
 
-                RunTask0(task0).Forget();
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-            }
-
-            void TryCallContinuation()
-            {
-                var action = Interlocked.Exchange(ref whenComplete, null);
-                if (action != null)
+                this.completedCount = 0;
                 {
-                    action.Invoke();
-                }
-            }
+                    var awaiter = task1.GetAwaiter();
 
-            async UniTaskVoid RunTask0(UniTask<T0> task)
-            {
-                T0 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result0 = value;
-                    Volatile.Write(ref winArgumentIndex, 0);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask1(UniTask<T1> task)
-            {
-                T1 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result1 = value;
-                    Volatile.Write(ref winArgumentIndex, 1);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask2(UniTask<T2> task)
-            {
-                T2 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result2 = value;
-                    Volatile.Write(ref winArgumentIndex, 2);
-                    TryCallContinuation();
-                }
-            }
-
-
-            public Awaiter GetAwaiter()
-            {
-                return new Awaiter(this);
-            }
-
-            public struct Awaiter : ICriticalNotifyCompletion
-            {
-                WhenAnyPromise<T0, T1, T2> parent;
-
-                public Awaiter(WhenAnyPromise<T0, T1, T2> parent)
-                {
-                    this.parent = parent;
-                }
-
-                public bool IsCompleted
-                {
-                    get
+                    if (awaiter.IsCompleted)
                     {
-                        return parent.IsCompleted;
+                        TryInvokeContinuationT1(this, awaiter);
                     }
-                }
-
-                public (int, (bool, T0), (bool, T1), (bool, T2)) GetResult()
-                {
-                    if (parent.exception != null)
+                    else
                     {
-                        parent.exception.Throw();
-                    }
-
-                    var i = parent.winArgumentIndex;
-                    return (i, (i == 0, parent.result0), (i == 1, parent.result1), (i == 2, parent.result2));
-                }
-
-                public void OnCompleted(Action continuation)
-                {
-                    UnsafeOnCompleted(continuation);
-                }
-
-                public void UnsafeOnCompleted(Action continuation)
-                {
-                    parent.whenComplete = continuation;
-                    if (IsCompleted)
-                    {
-                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
-                        if (action != null)
+                        awaiter.SourceOnCompleted(state =>
                         {
-                            action();
-                        }
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
                     }
                 }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
             }
         }
 
-        class WhenAnyPromise<T0, T1, T2, T3>
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))> WhenAny<T1, T2, T3, T4>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
         {
-            T0 result0;
-            T1 result1;
-            T2 result2;
-            T3 result3;
-            ExceptionDispatchInfo exception;
-            Action whenComplete;
-            int completeCount;
-            int winArgumentIndex;
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))>(new WhenAnyPromise<T1, T2, T3, T4>(task1, task2, task3, task4), 0);
+        }
 
-            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
+        sealed class WhenAnyPromise<T1, T2, T3, T4> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))> core;
 
-            public WhenAnyPromise(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
             {
-                this.whenComplete = null;
-                this.exception = null;
-                this.completeCount = 0;
-                this.winArgumentIndex = -1;
-                this.result0 = default(T0);
-                this.result1 = default(T1);
-                this.result2 = default(T2);
-                this.result3 = default(T3);
+                TaskTracker2.TrackActiveTask(this, 3);
 
-                RunTask0(task0).Forget();
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-            }
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
 
-            void TryCallContinuation()
-            {
-                var action = Interlocked.Exchange(ref whenComplete, null);
-                if (action != null)
-                {
-                    action.Invoke();
-                }
-            }
-
-            async UniTaskVoid RunTask0(UniTask<T0> task)
-            {
-                T0 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result0 = value;
-                    Volatile.Write(ref winArgumentIndex, 0);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask1(UniTask<T1> task)
-            {
-                T1 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result1 = value;
-                    Volatile.Write(ref winArgumentIndex, 1);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask2(UniTask<T2> task)
-            {
-                T2 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result2 = value;
-                    Volatile.Write(ref winArgumentIndex, 2);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask3(UniTask<T3> task)
-            {
-                T3 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result3 = value;
-                    Volatile.Write(ref winArgumentIndex, 3);
-                    TryCallContinuation();
-                }
-            }
-
-
-            public Awaiter GetAwaiter()
-            {
-                return new Awaiter(this);
-            }
-
-            public struct Awaiter : ICriticalNotifyCompletion
-            {
-                WhenAnyPromise<T0, T1, T2, T3> parent;
-
-                public Awaiter(WhenAnyPromise<T0, T1, T2, T3> parent)
-                {
-                    this.parent = parent;
-                }
-
-                public bool IsCompleted
-                {
-                    get
+                    if (awaiter.IsCompleted)
                     {
-                        return parent.IsCompleted;
+                        TryInvokeContinuationT1(this, awaiter);
                     }
-                }
-
-                public (int, (bool, T0), (bool, T1), (bool, T2), (bool, T3)) GetResult()
-                {
-                    if (parent.exception != null)
+                    else
                     {
-                        parent.exception.Throw();
-                    }
-
-                    var i = parent.winArgumentIndex;
-                    return (i, (i == 0, parent.result0), (i == 1, parent.result1), (i == 2, parent.result2), (i == 3, parent.result3));
-                }
-
-                public void OnCompleted(Action continuation)
-                {
-                    UnsafeOnCompleted(continuation);
-                }
-
-                public void UnsafeOnCompleted(Action continuation)
-                {
-                    parent.whenComplete = continuation;
-                    if (IsCompleted)
-                    {
-                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
-                        if (action != null)
+                        awaiter.SourceOnCompleted(state =>
                         {
-                            action();
-                        }
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
                     }
                 }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
             }
         }
 
-        class WhenAnyPromise<T0, T1, T2, T3, T4>
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))> WhenAny<T1, T2, T3, T4, T5>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
         {
-            T0 result0;
-            T1 result1;
-            T2 result2;
-            T3 result3;
-            T4 result4;
-            ExceptionDispatchInfo exception;
-            Action whenComplete;
-            int completeCount;
-            int winArgumentIndex;
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))>(new WhenAnyPromise<T1, T2, T3, T4, T5>(task1, task2, task3, task4, task5), 0);
+        }
 
-            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))> core;
 
-            public WhenAnyPromise(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
             {
-                this.whenComplete = null;
-                this.exception = null;
-                this.completeCount = 0;
-                this.winArgumentIndex = -1;
-                this.result0 = default(T0);
-                this.result1 = default(T1);
-                this.result2 = default(T2);
-                this.result3 = default(T3);
-                this.result4 = default(T4);
+                TaskTracker2.TrackActiveTask(this, 3);
 
-                RunTask0(task0).Forget();
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
-            }
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
 
-            void TryCallContinuation()
-            {
-                var action = Interlocked.Exchange(ref whenComplete, null);
-                if (action != null)
-                {
-                    action.Invoke();
-                }
-            }
-
-            async UniTaskVoid RunTask0(UniTask<T0> task)
-            {
-                T0 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result0 = value;
-                    Volatile.Write(ref winArgumentIndex, 0);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask1(UniTask<T1> task)
-            {
-                T1 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result1 = value;
-                    Volatile.Write(ref winArgumentIndex, 1);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask2(UniTask<T2> task)
-            {
-                T2 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result2 = value;
-                    Volatile.Write(ref winArgumentIndex, 2);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask3(UniTask<T3> task)
-            {
-                T3 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result3 = value;
-                    Volatile.Write(ref winArgumentIndex, 3);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask4(UniTask<T4> task)
-            {
-                T4 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result4 = value;
-                    Volatile.Write(ref winArgumentIndex, 4);
-                    TryCallContinuation();
-                }
-            }
-
-
-            public Awaiter GetAwaiter()
-            {
-                return new Awaiter(this);
-            }
-
-            public struct Awaiter : ICriticalNotifyCompletion
-            {
-                WhenAnyPromise<T0, T1, T2, T3, T4> parent;
-
-                public Awaiter(WhenAnyPromise<T0, T1, T2, T3, T4> parent)
-                {
-                    this.parent = parent;
-                }
-
-                public bool IsCompleted
-                {
-                    get
+                    if (awaiter.IsCompleted)
                     {
-                        return parent.IsCompleted;
+                        TryInvokeContinuationT1(this, awaiter);
                     }
-                }
-
-                public (int, (bool, T0), (bool, T1), (bool, T2), (bool, T3), (bool, T4)) GetResult()
-                {
-                    if (parent.exception != null)
+                    else
                     {
-                        parent.exception.Throw();
-                    }
-
-                    var i = parent.winArgumentIndex;
-                    return (i, (i == 0, parent.result0), (i == 1, parent.result1), (i == 2, parent.result2), (i == 3, parent.result3), (i == 4, parent.result4));
-                }
-
-                public void OnCompleted(Action continuation)
-                {
-                    UnsafeOnCompleted(continuation);
-                }
-
-                public void UnsafeOnCompleted(Action continuation)
-                {
-                    parent.whenComplete = continuation;
-                    if (IsCompleted)
-                    {
-                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
-                        if (action != null)
+                        awaiter.SourceOnCompleted(state =>
                         {
-                            action();
-                        }
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
                     }
                 }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
             }
         }
 
-        class WhenAnyPromise<T0, T1, T2, T3, T4, T5>
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))> WhenAny<T1, T2, T3, T4, T5, T6>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
         {
-            T0 result0;
-            T1 result1;
-            T2 result2;
-            T3 result3;
-            T4 result4;
-            T5 result5;
-            ExceptionDispatchInfo exception;
-            Action whenComplete;
-            int completeCount;
-            int winArgumentIndex;
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6>(task1, task2, task3, task4, task5, task6), 0);
+        }
 
-            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))> core;
 
-            public WhenAnyPromise(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
             {
-                this.whenComplete = null;
-                this.exception = null;
-                this.completeCount = 0;
-                this.winArgumentIndex = -1;
-                this.result0 = default(T0);
-                this.result1 = default(T1);
-                this.result2 = default(T2);
-                this.result3 = default(T3);
-                this.result4 = default(T4);
-                this.result5 = default(T5);
+                TaskTracker2.TrackActiveTask(this, 3);
 
-                RunTask0(task0).Forget();
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
-                RunTask5(task5).Forget();
-            }
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
 
-            void TryCallContinuation()
-            {
-                var action = Interlocked.Exchange(ref whenComplete, null);
-                if (action != null)
-                {
-                    action.Invoke();
-                }
-            }
-
-            async UniTaskVoid RunTask0(UniTask<T0> task)
-            {
-                T0 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result0 = value;
-                    Volatile.Write(ref winArgumentIndex, 0);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask1(UniTask<T1> task)
-            {
-                T1 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result1 = value;
-                    Volatile.Write(ref winArgumentIndex, 1);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask2(UniTask<T2> task)
-            {
-                T2 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result2 = value;
-                    Volatile.Write(ref winArgumentIndex, 2);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask3(UniTask<T3> task)
-            {
-                T3 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result3 = value;
-                    Volatile.Write(ref winArgumentIndex, 3);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask4(UniTask<T4> task)
-            {
-                T4 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result4 = value;
-                    Volatile.Write(ref winArgumentIndex, 4);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask5(UniTask<T5> task)
-            {
-                T5 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result5 = value;
-                    Volatile.Write(ref winArgumentIndex, 5);
-                    TryCallContinuation();
-                }
-            }
-
-
-            public Awaiter GetAwaiter()
-            {
-                return new Awaiter(this);
-            }
-
-            public struct Awaiter : ICriticalNotifyCompletion
-            {
-                WhenAnyPromise<T0, T1, T2, T3, T4, T5> parent;
-
-                public Awaiter(WhenAnyPromise<T0, T1, T2, T3, T4, T5> parent)
-                {
-                    this.parent = parent;
-                }
-
-                public bool IsCompleted
-                {
-                    get
+                    if (awaiter.IsCompleted)
                     {
-                        return parent.IsCompleted;
+                        TryInvokeContinuationT1(this, awaiter);
                     }
-                }
-
-                public (int, (bool, T0), (bool, T1), (bool, T2), (bool, T3), (bool, T4), (bool, T5)) GetResult()
-                {
-                    if (parent.exception != null)
+                    else
                     {
-                        parent.exception.Throw();
-                    }
-
-                    var i = parent.winArgumentIndex;
-                    return (i, (i == 0, parent.result0), (i == 1, parent.result1), (i == 2, parent.result2), (i == 3, parent.result3), (i == 4, parent.result4), (i == 5, parent.result5));
-                }
-
-                public void OnCompleted(Action continuation)
-                {
-                    UnsafeOnCompleted(continuation);
-                }
-
-                public void UnsafeOnCompleted(Action continuation)
-                {
-                    parent.whenComplete = continuation;
-                    if (IsCompleted)
-                    {
-                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
-                        if (action != null)
+                        awaiter.SourceOnCompleted(state =>
                         {
-                            action();
-                        }
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
                     }
                 }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
             }
         }
 
-        class WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6>
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))> WhenAny<T1, T2, T3, T4, T5, T6, T7>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
         {
-            T0 result0;
-            T1 result1;
-            T2 result2;
-            T3 result3;
-            T4 result4;
-            T5 result5;
-            T6 result6;
-            ExceptionDispatchInfo exception;
-            Action whenComplete;
-            int completeCount;
-            int winArgumentIndex;
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>(task1, task2, task3, task4, task5, task6, task7), 0);
+        }
 
-            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))> core;
 
-            public WhenAnyPromise(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
             {
-                this.whenComplete = null;
-                this.exception = null;
-                this.completeCount = 0;
-                this.winArgumentIndex = -1;
-                this.result0 = default(T0);
-                this.result1 = default(T1);
-                this.result2 = default(T2);
-                this.result3 = default(T3);
-                this.result4 = default(T4);
-                this.result5 = default(T5);
-                this.result6 = default(T6);
+                TaskTracker2.TrackActiveTask(this, 3);
 
-                RunTask0(task0).Forget();
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
-                RunTask5(task5).Forget();
-                RunTask6(task6).Forget();
-            }
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
 
-            void TryCallContinuation()
-            {
-                var action = Interlocked.Exchange(ref whenComplete, null);
-                if (action != null)
-                {
-                    action.Invoke();
-                }
-            }
-
-            async UniTaskVoid RunTask0(UniTask<T0> task)
-            {
-                T0 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result0 = value;
-                    Volatile.Write(ref winArgumentIndex, 0);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask1(UniTask<T1> task)
-            {
-                T1 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result1 = value;
-                    Volatile.Write(ref winArgumentIndex, 1);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask2(UniTask<T2> task)
-            {
-                T2 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result2 = value;
-                    Volatile.Write(ref winArgumentIndex, 2);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask3(UniTask<T3> task)
-            {
-                T3 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result3 = value;
-                    Volatile.Write(ref winArgumentIndex, 3);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask4(UniTask<T4> task)
-            {
-                T4 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result4 = value;
-                    Volatile.Write(ref winArgumentIndex, 4);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask5(UniTask<T5> task)
-            {
-                T5 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result5 = value;
-                    Volatile.Write(ref winArgumentIndex, 5);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask6(UniTask<T6> task)
-            {
-                T6 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result6 = value;
-                    Volatile.Write(ref winArgumentIndex, 6);
-                    TryCallContinuation();
-                }
-            }
-
-
-            public Awaiter GetAwaiter()
-            {
-                return new Awaiter(this);
-            }
-
-            public struct Awaiter : ICriticalNotifyCompletion
-            {
-                WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6> parent;
-
-                public Awaiter(WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6> parent)
-                {
-                    this.parent = parent;
-                }
-
-                public bool IsCompleted
-                {
-                    get
+                    if (awaiter.IsCompleted)
                     {
-                        return parent.IsCompleted;
+                        TryInvokeContinuationT1(this, awaiter);
                     }
-                }
-
-                public (int, (bool, T0), (bool, T1), (bool, T2), (bool, T3), (bool, T4), (bool, T5), (bool, T6)) GetResult()
-                {
-                    if (parent.exception != null)
+                    else
                     {
-                        parent.exception.Throw();
-                    }
-
-                    var i = parent.winArgumentIndex;
-                    return (i, (i == 0, parent.result0), (i == 1, parent.result1), (i == 2, parent.result2), (i == 3, parent.result3), (i == 4, parent.result4), (i == 5, parent.result5), (i == 6, parent.result6));
-                }
-
-                public void OnCompleted(Action continuation)
-                {
-                    UnsafeOnCompleted(continuation);
-                }
-
-                public void UnsafeOnCompleted(Action continuation)
-                {
-                    parent.whenComplete = continuation;
-                    if (IsCompleted)
-                    {
-                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
-                        if (action != null)
+                        awaiter.SourceOnCompleted(state =>
                         {
-                            action();
-                        }
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
                     }
                 }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
             }
         }
 
-        class WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6, T7>
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8)
         {
-            T0 result0;
-            T1 result1;
-            T2 result2;
-            T3 result3;
-            T4 result4;
-            T5 result5;
-            T6 result6;
-            T7 result7;
-            ExceptionDispatchInfo exception;
-            Action whenComplete;
-            int completeCount;
-            int winArgumentIndex;
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>(task1, task2, task3, task4, task5, task6, task7, task8), 0);
+        }
 
-            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))> core;
 
-            public WhenAnyPromise(UniTask<T0> task0, UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8)
             {
-                this.whenComplete = null;
-                this.exception = null;
-                this.completeCount = 0;
-                this.winArgumentIndex = -1;
-                this.result0 = default(T0);
-                this.result1 = default(T1);
-                this.result2 = default(T2);
-                this.result3 = default(T3);
-                this.result4 = default(T4);
-                this.result5 = default(T5);
-                this.result6 = default(T6);
-                this.result7 = default(T7);
+                TaskTracker2.TrackActiveTask(this, 3);
 
-                RunTask0(task0).Forget();
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
-                RunTask5(task5).Forget();
-                RunTask6(task6).Forget();
-                RunTask7(task7).Forget();
-            }
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
 
-            void TryCallContinuation()
-            {
-                var action = Interlocked.Exchange(ref whenComplete, null);
-                if (action != null)
-                {
-                    action.Invoke();
-                }
-            }
-
-            async UniTaskVoid RunTask0(UniTask<T0> task)
-            {
-                T0 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result0 = value;
-                    Volatile.Write(ref winArgumentIndex, 0);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask1(UniTask<T1> task)
-            {
-                T1 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result1 = value;
-                    Volatile.Write(ref winArgumentIndex, 1);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask2(UniTask<T2> task)
-            {
-                T2 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result2 = value;
-                    Volatile.Write(ref winArgumentIndex, 2);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask3(UniTask<T3> task)
-            {
-                T3 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result3 = value;
-                    Volatile.Write(ref winArgumentIndex, 3);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask4(UniTask<T4> task)
-            {
-                T4 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result4 = value;
-                    Volatile.Write(ref winArgumentIndex, 4);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask5(UniTask<T5> task)
-            {
-                T5 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result5 = value;
-                    Volatile.Write(ref winArgumentIndex, 5);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask6(UniTask<T6> task)
-            {
-                T6 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result6 = value;
-                    Volatile.Write(ref winArgumentIndex, 6);
-                    TryCallContinuation();
-                }
-            }
-
-            async UniTaskVoid RunTask7(UniTask<T7> task)
-            {
-                T7 value;
-                try
-                {
-                    value = await task;
-                }
-                catch (Exception ex)
-                {
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryCallContinuation();
-                    return;
-                }
-
-                var count = Interlocked.Increment(ref completeCount);
-                if (count == 1)
-                {
-                    result7 = value;
-                    Volatile.Write(ref winArgumentIndex, 7);
-                    TryCallContinuation();
-                }
-            }
-
-
-            public Awaiter GetAwaiter()
-            {
-                return new Awaiter(this);
-            }
-
-            public struct Awaiter : ICriticalNotifyCompletion
-            {
-                WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6, T7> parent;
-
-                public Awaiter(WhenAnyPromise<T0, T1, T2, T3, T4, T5, T6, T7> parent)
-                {
-                    this.parent = parent;
-                }
-
-                public bool IsCompleted
-                {
-                    get
+                    if (awaiter.IsCompleted)
                     {
-                        return parent.IsCompleted;
+                        TryInvokeContinuationT1(this, awaiter);
                     }
-                }
-
-                public (int, (bool, T0), (bool, T1), (bool, T2), (bool, T3), (bool, T4), (bool, T5), (bool, T6), (bool, T7)) GetResult()
-                {
-                    if (parent.exception != null)
+                    else
                     {
-                        parent.exception.Throw();
-                    }
-
-                    var i = parent.winArgumentIndex;
-                    return (i, (i == 0, parent.result0), (i == 1, parent.result1), (i == 2, parent.result2), (i == 3, parent.result3), (i == 4, parent.result4), (i == 5, parent.result5), (i == 6, parent.result6), (i == 7, parent.result7));
-                }
-
-                public void OnCompleted(Action continuation)
-                {
-                    UnsafeOnCompleted(continuation);
-                }
-
-                public void UnsafeOnCompleted(Action continuation)
-                {
-                    parent.whenComplete = continuation;
-                    if (IsCompleted)
-                    {
-                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
-                        if (action != null)
+                        awaiter.SourceOnCompleted(state =>
                         {
-                            action();
-                        }
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
                     }
                 }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
+            }
+        }
+
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9)
+        {
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>(task1, task2, task3, task4, task5, task6, task7, task8, task9), 0);
+        }
+
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))> core;
+
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT1(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task9.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT9(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>, UniTask<T9>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT9(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT9(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> self, in UniTask<T9>.Awaiter awaiter)
+            {
+                T9 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
+            }
+        }
+
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10)
+        {
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10), 0);
+        }
+
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))> core;
+
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT1(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task9.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT9(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T9>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT9(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task10.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT10(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, UniTask<T10>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT10(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT9(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T9>.Awaiter awaiter)
+            {
+                T9 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT10(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> self, in UniTask<T10>.Awaiter awaiter)
+            {
+                T10 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
+            }
+        }
+
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11)
+        {
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11), 0);
+        }
+
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))> core;
+
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT1(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task9.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT9(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T9>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT9(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task10.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT10(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T10>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT10(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task11.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT11(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, UniTask<T11>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT11(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT9(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T9>.Awaiter awaiter)
+            {
+                T9 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT10(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T10>.Awaiter awaiter)
+            {
+                T10 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT11(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> self, in UniTask<T11>.Awaiter awaiter)
+            {
+                T11 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
+            }
+        }
+
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12)
+        {
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12), 0);
+        }
+
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))> core;
+
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT1(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task9.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT9(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T9>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT9(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task10.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT10(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T10>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT10(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task11.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT11(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T11>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT11(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task12.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT12(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, UniTask<T12>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT12(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT9(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T9>.Awaiter awaiter)
+            {
+                T9 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT10(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T10>.Awaiter awaiter)
+            {
+                T10 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT11(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T11>.Awaiter awaiter)
+            {
+                T11 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT12(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> self, in UniTask<T12>.Awaiter awaiter)
+            {
+                T12 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
+            }
+        }
+
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13)
+        {
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13), 0);
+        }
+
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))> core;
+
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT1(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task9.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT9(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T9>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT9(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task10.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT10(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T10>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT10(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task11.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT11(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T11>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT11(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task12.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT12(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T12>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT12(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task13.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT13(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, UniTask<T13>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT13(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT9(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T9>.Awaiter awaiter)
+            {
+                T9 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT10(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T10>.Awaiter awaiter)
+            {
+                T10 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT11(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T11>.Awaiter awaiter)
+            {
+                T11 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT12(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T12>.Awaiter awaiter)
+            {
+                T12 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT13(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> self, in UniTask<T13>.Awaiter awaiter)
+            {
+                T13 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((12, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
+            }
+        }
+
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14)
+        {
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14), 0);
+        }
+
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))> core;
+
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT1(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task9.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT9(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T9>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT9(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task10.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT10(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T10>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT10(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task11.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT11(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T11>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT11(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task12.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT12(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T12>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT12(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task13.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT13(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T13>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT13(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task14.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT14(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, UniTask<T14>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT14(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT9(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T9>.Awaiter awaiter)
+            {
+                T9 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT10(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T10>.Awaiter awaiter)
+            {
+                T10 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT11(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T11>.Awaiter awaiter)
+            {
+                T11 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT12(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T12>.Awaiter awaiter)
+            {
+                T12 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT13(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T13>.Awaiter awaiter)
+            {
+                T13 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((12, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT14(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> self, in UniTask<T14>.Awaiter awaiter)
+            {
+                T14 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((13, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
+            }
+        }
+
+        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14, UniTask<T15> task15)
+        {
+            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14, task15), 0);
+        }
+
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))>
+        {
+            int completedCount;
+            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))> core;
+
+            public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14, UniTask<T15> task15)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+                {
+                    var awaiter = task1.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT1(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T1>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT1(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task2.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT2(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T2>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT2(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task3.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT3(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T3>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT3(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task4.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT4(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T4>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT4(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task5.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT5(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T5>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT5(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task6.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT6(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T6>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT6(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task7.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT7(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T7>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT7(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task8.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT8(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T8>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT8(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task9.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT9(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T9>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT9(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task10.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT10(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T10>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT10(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task11.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT11(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T11>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT11(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task12.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT12(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T12>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT12(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task13.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT13(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T13>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT13(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task14.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT14(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T14>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT14(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+                {
+                    var awaiter = task15.GetAwaiter();
+
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT15(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, UniTask<T15>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT15(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+            }
+
+            static void TryInvokeContinuationT1(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T1>.Awaiter awaiter)
+            {
+                T1 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT2(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T2>.Awaiter awaiter)
+            {
+                T2 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT3(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T3>.Awaiter awaiter)
+            {
+                T3 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT4(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T4>.Awaiter awaiter)
+            {
+                T4 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT5(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T5>.Awaiter awaiter)
+            {
+                T5 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT6(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T6>.Awaiter awaiter)
+            {
+                T6 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT7(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T7>.Awaiter awaiter)
+            {
+                T7 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT8(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T8>.Awaiter awaiter)
+            {
+                T8 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT9(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T9>.Awaiter awaiter)
+            {
+                T9 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT10(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T10>.Awaiter awaiter)
+            {
+                T10 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT11(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T11>.Awaiter awaiter)
+            {
+                T11 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT12(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T12>.Awaiter awaiter)
+            {
+                T12 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT13(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T13>.Awaiter awaiter)
+            {
+                T13 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((12, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT14(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T14>.Awaiter awaiter)
+            {
+                T14 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((13, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                }
+            }
+
+            static void TryInvokeContinuationT15(WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> self, in UniTask<T15>.Awaiter awaiter)
+            {
+                T15 result;
+                try
+                {
+                    result = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+
+                if (Interlocked.Increment(ref self.completedCount) == 1)
+                {
+                    self.core.TrySetResult((14, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                }
+            }
+
+
+            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15)) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            ~WhenAnyPromise()
+            {
+                core.Reset();
             }
         }
 
     }
 }
-#endif

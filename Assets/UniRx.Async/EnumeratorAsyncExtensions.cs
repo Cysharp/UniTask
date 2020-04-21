@@ -96,7 +96,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    core.SetCanceled(cancellationToken);
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -109,11 +109,11 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    core.SetException(ex);
+                    core.TrySetException(ex);
                     return false;
                 }
 
-                core.SetResult(null);
+                core.TrySetResult(null);
                 return false;
             }
 
@@ -124,6 +124,14 @@ namespace UniRx.Async
                 cancellationToken = default;
                 continuation = default;
                 exception = default;
+            }
+
+            ~EnumeratorPromise()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
             }
 
             // Unwrap YieldInstructions

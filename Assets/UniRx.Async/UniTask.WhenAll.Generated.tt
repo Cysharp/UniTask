@@ -1,0 +1,127 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
+using System.Threading;
+using UniRx.Async.Internal;
+
+namespace UniRx.Async
+{
+    public partial struct UniTask
+    {
+<# for(var i = 2; i <= 15; i++ ) {
+    var range = Enumerable.Range(1, i);
+    var t = string.Join(", ", range.Select(x => "T" + x));
+    var args = string.Join(", ", range.Select(x => $"UniTask<T{x}> task{x}"));
+    var targs = string.Join(", ", range.Select(x => $"task{x}"));
+    var tresult = string.Join(", ", range.Select(x => $"task{x}.GetAwaiter().GetResult()"));
+    var completedSuccessfullyAnd = string.Join(" && ", range.Select(x => $"task{x}.Status.IsCompletedSuccessfully()"));
+    var tfield = string.Join(", ", range.Select(x => $"self.t{x}"));
+#>
+        
+        public static UniTask<(<#= t #>)> WhenAll<<#= t #>>(<#= args #>)
+        {
+            if (<#= completedSuccessfullyAnd #>)
+            {
+                return new UniTask<(<#= t #>)>((<#= tresult #>));
+            }
+
+            return new UniTask<(<#= t #>)>(new WhenAllPromise<<#= t #>>(<#= targs #>), 0);
+        }
+
+        sealed class WhenAllPromise<<#= t #>> : IUniTaskSource<(<#= t #>)>
+        {
+<# for(var j = 1; j <= i; j++) { #>
+            T<#= j #> t<#= j #> = default;
+<# } #>
+            int completedCount;
+            UniTaskCompletionSourceCore<(<#= t #>)> core;
+
+            public WhenAllPromise(<#= args #>)
+            {
+                TaskTracker2.TrackActiveTask(this, 3);
+
+                this.completedCount = 0;
+<# for(var j = 1; j <= i; j++) { #>
+                {
+                    var awaiter = task<#= j #>.GetAwaiter();
+                    if (awaiter.IsCompleted)
+                    {
+                        TryInvokeContinuationT<#= j #>(this, awaiter);
+                    }
+                    else
+                    {
+                        awaiter.SourceOnCompleted(state =>
+                        {
+                            using (var t = (StateTuple<WhenAllPromise<<#= t #>>, UniTask<T<#= j #>>.Awaiter>)state)
+                            {
+                                TryInvokeContinuationT<#= j #>(t.Item1, t.Item2);
+                            }
+                        }, StateTuple.Create(this, awaiter));
+                    }
+                }
+<# } #>
+            }
+
+<# for(var j = 1; j <= i; j++) { #>
+            static void TryInvokeContinuationT<#= j #>(WhenAllPromise<<#= t #>> self, in UniTask<T<#= j #>>.Awaiter awaiter)
+            {
+                try
+                {
+                    self.t<#= j #> = awaiter.GetResult();
+                }
+                catch (Exception ex)
+                {
+                    self.core.TrySetException(ex);
+                    return;
+                }
+                
+                if (Interlocked.Increment(ref self.completedCount) == <#= i #>)
+                {
+                    self.core.TrySetResult((<#= tfield #>));
+                }
+            }
+
+<# } #>
+
+            public (<#= t #>) GetResult(short token)
+            {
+                TaskTracker2.RemoveTracking(this);
+                GC.SuppressFinalize(this);
+                return core.GetResult(token);
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            ~WhenAllPromise()
+            {
+                core.Reset();
+            }
+        }
+<# } #>
+    }
+}
