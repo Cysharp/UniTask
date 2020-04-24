@@ -101,7 +101,7 @@ namespace UniRx.Async
             // left, right both suppress operation canceled exception.
 
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
+            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
 
             var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
 
@@ -147,7 +147,7 @@ namespace UniRx.Async
             // left, right both suppress operation canceled exception.
 
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
+            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
 
             var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
 
