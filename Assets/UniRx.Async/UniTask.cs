@@ -403,6 +403,7 @@ namespace UniRx.Async
                 return UniTask.CompletedTask;
             }
 
+            // Converting UniTask<T> -> UniTask is zero overhead.
             return new UniTask(this.source, this.token);
         }
 

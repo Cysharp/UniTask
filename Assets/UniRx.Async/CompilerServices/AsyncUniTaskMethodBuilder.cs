@@ -60,7 +60,7 @@ namespace UniRx.Async.CompilerServices
 
             if (promise != null)
             {
-                promise.SetException(exception);
+                promise.TrySetException(exception);
             }
             else
             {
@@ -81,7 +81,7 @@ namespace UniRx.Async.CompilerServices
 
             if (promise != null)
             {
-                promise.SetResult();
+                promise.TrySetResult();
             }
         }
 
@@ -192,7 +192,7 @@ namespace UniRx.Async.CompilerServices
             }
             else
             {
-                promise.SetException(exception);
+                promise.TrySetException(exception);
             }
         }
 
@@ -213,7 +213,7 @@ namespace UniRx.Async.CompilerServices
                 return;
             }
 
-            promise.SetResult(result);
+            promise.TrySetResult(result);
         }
 
         // 5. AwaitOnCompleted

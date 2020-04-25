@@ -9,15 +9,15 @@ namespace UniRx.Async
 {
     public partial struct UniTask
     {
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2))> WhenAny<T1, T2>(UniTask<T1> task1, UniTask<T2> task2)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2)> WhenAny<T1, T2>(UniTask<T1> task1, UniTask<T2> task2)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2))>(new WhenAnyPromise<T1, T2>(task1, task2), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2)>(new WhenAnyPromise<T1, T2>(task1, task2), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2))>
+        sealed class WhenAnyPromise<T1, T2> : IUniTaskSource<(int, T1 result1, T2 result2)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2)
             {
@@ -77,7 +77,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default)));
+                    self.core.TrySetResult((0, result, default));
                 }
             }
 
@@ -96,12 +96,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result)));
+                    self.core.TrySetResult((1, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2)) GetResult(short token)
+            public (int, T1 result1, T2 result2) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -134,15 +134,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))> WhenAny<T1, T2, T3>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3)> WhenAny<T1, T2, T3>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))>(new WhenAnyPromise<T1, T2, T3>(task1, task2, task3), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3)>(new WhenAnyPromise<T1, T2, T3>(task1, task2, task3), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))>
+        sealed class WhenAnyPromise<T1, T2, T3> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
             {
@@ -220,7 +220,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default));
                 }
             }
 
@@ -239,7 +239,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((1, default, result, default));
                 }
             }
 
@@ -258,12 +258,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((2, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -296,15 +296,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))> WhenAny<T1, T2, T3, T4>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4)> WhenAny<T1, T2, T3, T4>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))>(new WhenAnyPromise<T1, T2, T3, T4>(task1, task2, task3, task4), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4)>(new WhenAnyPromise<T1, T2, T3, T4>(task1, task2, task3, task4), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
             {
@@ -400,7 +400,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default));
                 }
             }
 
@@ -419,7 +419,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default));
                 }
             }
 
@@ -438,7 +438,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default));
                 }
             }
 
@@ -457,12 +457,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((3, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -495,15 +495,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))> WhenAny<T1, T2, T3, T4, T5>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5)> WhenAny<T1, T2, T3, T4, T5>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))>(new WhenAnyPromise<T1, T2, T3, T4, T5>(task1, task2, task3, task4, task5), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5)>(new WhenAnyPromise<T1, T2, T3, T4, T5>(task1, task2, task3, task4, task5), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
             {
@@ -617,7 +617,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default));
                 }
             }
 
@@ -636,7 +636,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default));
                 }
             }
 
@@ -655,7 +655,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default));
                 }
             }
 
@@ -674,7 +674,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default));
                 }
             }
 
@@ -693,12 +693,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((4, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -731,15 +731,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))> WhenAny<T1, T2, T3, T4, T5, T6>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6)> WhenAny<T1, T2, T3, T4, T5, T6>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6>(task1, task2, task3, task4, task5, task6), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6>(task1, task2, task3, task4, task5, task6), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
             {
@@ -871,7 +871,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default));
                 }
             }
 
@@ -890,7 +890,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default));
                 }
             }
 
@@ -909,7 +909,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default));
                 }
             }
 
@@ -928,7 +928,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default));
                 }
             }
 
@@ -947,7 +947,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default));
                 }
             }
 
@@ -966,12 +966,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -1004,15 +1004,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))> WhenAny<T1, T2, T3, T4, T5, T6, T7>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7)> WhenAny<T1, T2, T3, T4, T5, T6, T7>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>(task1, task2, task3, task4, task5, task6, task7), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7>(task1, task2, task3, task4, task5, task6, task7), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
             {
@@ -1162,7 +1162,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default));
                 }
             }
 
@@ -1181,7 +1181,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default));
                 }
             }
 
@@ -1200,7 +1200,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default));
                 }
             }
 
@@ -1219,7 +1219,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default));
                 }
             }
 
@@ -1238,7 +1238,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default));
                 }
             }
 
@@ -1257,7 +1257,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default));
                 }
             }
 
@@ -1276,12 +1276,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -1314,15 +1314,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>(task1, task2, task3, task4, task5, task6, task7, task8), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8>(task1, task2, task3, task4, task5, task6, task7, task8), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8)
             {
@@ -1490,7 +1490,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -1509,7 +1509,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -1528,7 +1528,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -1547,7 +1547,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -1566,7 +1566,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -1585,7 +1585,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -1604,7 +1604,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -1623,12 +1623,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -1661,15 +1661,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>(task1, task2, task3, task4, task5, task6, task7, task8, task9), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9>(task1, task2, task3, task4, task5, task6, task7, task8, task9), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9)
             {
@@ -1855,7 +1855,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -1874,7 +1874,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -1893,7 +1893,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -1912,7 +1912,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -1931,7 +1931,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -1950,7 +1950,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -1969,7 +1969,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -1988,7 +1988,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -2007,12 +2007,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((8, default, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -2045,15 +2045,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10)
             {
@@ -2257,7 +2257,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -2276,7 +2276,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -2295,7 +2295,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -2314,7 +2314,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -2333,7 +2333,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -2352,7 +2352,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -2371,7 +2371,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -2390,7 +2390,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -2409,7 +2409,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((8, default, default, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -2428,12 +2428,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((9, default, default, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -2466,15 +2466,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11)
             {
@@ -2696,7 +2696,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -2715,7 +2715,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -2734,7 +2734,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -2753,7 +2753,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -2772,7 +2772,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -2791,7 +2791,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -2810,7 +2810,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -2829,7 +2829,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -2848,7 +2848,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((8, default, default, default, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -2867,7 +2867,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((9, default, default, default, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -2886,12 +2886,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((10, default, default, default, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -2924,15 +2924,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12)
             {
@@ -3172,7 +3172,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3191,7 +3191,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3210,7 +3210,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3229,7 +3229,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3248,7 +3248,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3267,7 +3267,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -3286,7 +3286,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -3305,7 +3305,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -3324,7 +3324,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((8, default, default, default, default, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -3343,7 +3343,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((9, default, default, default, default, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -3362,7 +3362,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((10, default, default, default, default, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -3381,12 +3381,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((11, default, default, default, default, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -3419,15 +3419,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13)
             {
@@ -3685,7 +3685,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3704,7 +3704,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3723,7 +3723,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3742,7 +3742,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3761,7 +3761,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3780,7 +3780,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -3799,7 +3799,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -3818,7 +3818,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -3837,7 +3837,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((8, default, default, default, default, default, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -3856,7 +3856,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((9, default, default, default, default, default, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -3875,7 +3875,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((10, default, default, default, default, default, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -3894,7 +3894,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((11, default, default, default, default, default, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -3913,12 +3913,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((12, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((12, default, default, default, default, default, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -3951,15 +3951,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14)
             {
@@ -4235,7 +4235,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4254,7 +4254,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4273,7 +4273,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4292,7 +4292,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4311,7 +4311,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4330,7 +4330,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4349,7 +4349,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4368,7 +4368,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -4387,7 +4387,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((8, default, default, default, default, default, default, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -4406,7 +4406,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((9, default, default, default, default, default, default, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -4425,7 +4425,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((10, default, default, default, default, default, default, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -4444,7 +4444,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((11, default, default, default, default, default, default, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -4463,7 +4463,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((12, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((12, default, default, default, default, default, default, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -4482,12 +4482,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((13, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((13, default, default, default, default, default, default, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);
@@ -4520,15 +4520,15 @@ namespace UniRx.Async
             }
         }
 
-        public static UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14, UniTask<T15> task15)
+        public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14, T15 result15)> WhenAny<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14, UniTask<T15> task15)
         {
-            return new UniTask<(int winArgumentIndex, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14, task15), 0);
+            return new UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14, T15 result15)>(new WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14, task15), 0);
         }
 
-        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> : IUniTaskSource<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))>
+        sealed class WhenAnyPromise<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> : IUniTaskSource<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14, T15 result15)>
         {
             int completedCount;
-            UniTaskCompletionSourceCore<(int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15))> core;
+            UniTaskCompletionSourceCore<(int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14, T15 result15)> core;
 
             public WhenAnyPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14, UniTask<T15> task15)
             {
@@ -4822,7 +4822,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((0, (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((0, result, default, default, default, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4841,7 +4841,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((1, (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((1, default, result, default, default, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4860,7 +4860,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((2, (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((2, default, default, result, default, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4879,7 +4879,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((3, (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((3, default, default, default, result, default, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4898,7 +4898,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((4, (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((4, default, default, default, default, result, default, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4917,7 +4917,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((5, (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((5, default, default, default, default, default, result, default, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4936,7 +4936,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((6, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((6, default, default, default, default, default, default, result, default, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4955,7 +4955,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((7, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((7, default, default, default, default, default, default, default, result, default, default, default, default, default, default, default));
                 }
             }
 
@@ -4974,7 +4974,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((8, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((8, default, default, default, default, default, default, default, default, result, default, default, default, default, default, default));
                 }
             }
 
@@ -4993,7 +4993,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((9, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((9, default, default, default, default, default, default, default, default, default, result, default, default, default, default, default));
                 }
             }
 
@@ -5012,7 +5012,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((10, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((10, default, default, default, default, default, default, default, default, default, default, result, default, default, default, default));
                 }
             }
 
@@ -5031,7 +5031,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((11, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default), (false, default)));
+                    self.core.TrySetResult((11, default, default, default, default, default, default, default, default, default, default, default, result, default, default, default));
                 }
             }
 
@@ -5050,7 +5050,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((12, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default), (false, default)));
+                    self.core.TrySetResult((12, default, default, default, default, default, default, default, default, default, default, default, default, result, default, default));
                 }
             }
 
@@ -5069,7 +5069,7 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((13, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result), (false, default)));
+                    self.core.TrySetResult((13, default, default, default, default, default, default, default, default, default, default, default, default, default, result, default));
                 }
             }
 
@@ -5088,12 +5088,12 @@ namespace UniRx.Async
 
                 if (Interlocked.Increment(ref self.completedCount) == 1)
                 {
-                    self.core.TrySetResult((14, (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (false, default), (true, result)));
+                    self.core.TrySetResult((14, default, default, default, default, default, default, default, default, default, default, default, default, default, default, result));
                 }
             }
 
 
-            public (int, (bool hasResult, T1 result1), (bool hasResult, T2 result2), (bool hasResult, T3 result3), (bool hasResult, T4 result4), (bool hasResult, T5 result5), (bool hasResult, T6 result6), (bool hasResult, T7 result7), (bool hasResult, T8 result8), (bool hasResult, T9 result9), (bool hasResult, T10 result10), (bool hasResult, T11 result11), (bool hasResult, T12 result12), (bool hasResult, T13 result13), (bool hasResult, T14 result14), (bool hasResult, T15 result15)) GetResult(short token)
+            public (int, T1 result1, T2 result2, T3 result3, T4 result4, T5 result5, T6 result6, T7 result7, T8 result8, T9 result9, T10 result10, T11 result11, T12 result12, T13 result13, T14 result14, T15 result15) GetResult(short token)
             {
                 TaskTracker2.RemoveTracking(this);
                 GC.SuppressFinalize(this);

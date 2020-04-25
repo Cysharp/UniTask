@@ -2,6 +2,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using UniRx.Async.Internal;
 using UnityEngine;
@@ -183,11 +184,11 @@ namespace UniRx.Async
 
 #endif
 
-        public struct AsyncOperationAwaiter : IAwaiter
+        public struct AsyncOperationAwaiter : ICriticalNotifyCompletion
         {
             AsyncOperation asyncOperation;
             Action<AsyncOperation> continuationAction;
-            UniTaskStatus status;
+            // UniTaskStatus status;
 
             public AsyncOperationAwaiter(AsyncOperation asyncOperation)
             {
@@ -196,13 +197,12 @@ namespace UniRx.Async
                 this.continuationAction = null;
             }
 
-            public bool IsCompleted => status.IsCompleted();
-            public UniTaskStatus Status => status;
+            public bool IsCompleted => asyncOperation.isDone;
 
             public void GetResult()
             {
-                if (status == UniTaskStatus.Succeeded) return;
-
+                //*/ if (status == UniTaskStatus.Succeeded) return;
+                /*
                 if (status == UniTaskStatus.Pending)
                 {
                     // first timing of call
@@ -215,6 +215,7 @@ namespace UniRx.Async
                         Error.ThrowNotYetCompleted();
                     }
                 }
+                */
 
                 if (continuationAction != null)
                 {
@@ -236,7 +237,7 @@ namespace UniRx.Async
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperation>();
+                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
                 asyncOperation.completed += continuationAction;
             }
         }

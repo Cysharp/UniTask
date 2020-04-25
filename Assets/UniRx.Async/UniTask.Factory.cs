@@ -12,7 +12,7 @@ namespace UniRx.Async
         static readonly UniTask CanceledUniTask = new Func<UniTask>(() =>
         {
             var promise = new UniTaskCompletionSource();
-            promise.SetCanceled(CancellationToken.None);
+            promise.TrySetCanceled(CancellationToken.None);
             promise.MarkHandled();
             return promise.Task;
         })();
@@ -24,7 +24,7 @@ namespace UniRx.Async
             static CanceledUniTaskCache()
             {
                 var promise = new UniTaskCompletionSource<T>();
-                promise.SetCanceled(CancellationToken.None);
+                promise.TrySetCanceled(CancellationToken.None);
                 promise.MarkHandled();
                 Task = promise.Task;
             }
@@ -35,7 +35,7 @@ namespace UniRx.Async
         public static UniTask FromException(Exception ex)
         {
             var promise = new UniTaskCompletionSource();
-            promise.SetException(ex);
+            promise.TrySetException(ex);
             promise.MarkHandled();
             return promise.Task;
         }
@@ -43,7 +43,7 @@ namespace UniRx.Async
         public static UniTask<T> FromException<T>(Exception ex)
         {
             var promise = new UniTaskCompletionSource<T>();
-            promise.SetException(ex);
+            promise.TrySetException(ex);
             promise.MarkHandled();
             return promise.Task;
         }
@@ -62,7 +62,7 @@ namespace UniRx.Async
             else
             {
                 var promise = new UniTaskCompletionSource();
-                promise.SetCanceled(cancellationToken);
+                promise.TrySetCanceled(cancellationToken);
                 promise.MarkHandled();
                 return promise.Task;
             }
@@ -77,7 +77,7 @@ namespace UniRx.Async
             else
             {
                 var promise = new UniTaskCompletionSource<T>();
-                promise.SetCanceled(cancellationToken);
+                promise.TrySetCanceled(cancellationToken);
                 promise.MarkHandled();
                 return promise.Task;
             }

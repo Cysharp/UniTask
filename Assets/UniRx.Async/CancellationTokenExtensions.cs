@@ -24,7 +24,7 @@ namespace UniRx.Async
         static void Callback(object state)
         {
             var promise = (UniTaskCompletionSource)state;
-            promise.SetResult();
+            promise.TrySetResult();
         }
 
         public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(this CancellationToken cancellationToken, Action callback)

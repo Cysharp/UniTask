@@ -33,7 +33,7 @@ namespace UniRx.Async
 
         public static IObservable<T> ToObservable<T>(this UniTask<T> task)
         {
-            if (task.IsCompleted)
+            if (task.Status.IsCompleted())
             {
                 try
                 {
@@ -55,7 +55,7 @@ namespace UniRx.Async
         /// </summary>
         public static IObservable<AsyncUnit> ToObservable(this UniTask task)
         {
-            if (task.IsCompleted)
+            if (task.Status.IsCompleted())
             {
                 try
                 {

@@ -21,9 +21,9 @@ namespace UniRx.Async
     var args = string.Join(", ", range.Select(x => $"UniTask<T{x}> task{x}"));
     var targs = string.Join(", ", range.Select(x => $"task{x}"));
     var tresult = string.Join(", ", range.Select(x => $"task{x}.GetAwaiter().GetResult()"));
-    var tBool = string.Join(", ", range.Select(x => $"(bool hasResult, T{x} result{x})"));
+    var tBool = string.Join(", ", range.Select(x => $"T{x} result{x}"));
     var tfield = string.Join(", ", range.Select(x => $"self.t{x}"));
-    Func<int, string> getResult = j => string.Join(", ", range.Select(x => (x == j) ? "(true, result)" : "(false, default)"));
+    Func<int, string> getResult = j => string.Join(", ", range.Select(x => (x == j) ? "result" : "default"));
 #>
         public static UniTask<(int winArgumentIndex, <#= tBool #>)> WhenAny<<#= t #>>(<#= args #>)
         {

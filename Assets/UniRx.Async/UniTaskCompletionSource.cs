@@ -13,22 +13,22 @@ namespace UniRx.Async
 {
     public interface IResolvePromise
     {
-        void SetResult();
+        bool TrySetResult();
     }
 
     public interface IResolvePromise<T>
     {
-        void SetResult(T value);
+        bool TrySetResult(T value);
     }
 
     public interface IRejectPromise
     {
-        void SetException(Exception exception);
+        bool TrySetException(Exception exception);
     }
 
     public interface ICancelPromise
     {
-        void SetCanceled(CancellationToken cancellationToken = default);
+        bool TrySetCanceled(CancellationToken cancellationToken = default);
     }
 
     public interface IPromise<T> : IResolvePromise<T>, IRejectPromise, ICancelPromise
@@ -301,19 +301,19 @@ namespace UniRx.Async
             core.Reset();
         }
 
-        public void SetResult()
+        public bool TrySetResult()
         {
-            core.TrySetResult(AsyncUnit.Default);
+            return core.TrySetResult(AsyncUnit.Default);
         }
 
-        public void SetCanceled(CancellationToken cancellationToken = default)
+        public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            core.TrySetCanceled(cancellationToken);
+            return core.TrySetCanceled(cancellationToken);
         }
 
-        public void SetException(Exception exception)
+        public bool TrySetException(Exception exception)
         {
-            core.TrySetException(exception);
+            return core.TrySetException(exception);
         }
 
         public void GetResult(short token)
@@ -364,7 +364,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource CreateFromCanceled(CancellationToken cancellationToken, out short token)
         {
             var source = Create();
-            source.SetCanceled(cancellationToken);
+            source.TrySetCanceled(cancellationToken);
             token = source.core.Version;
             return source;
         }
@@ -372,7 +372,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource CreateFromException(Exception exception, out short token)
         {
             var source = Create();
-            source.SetException(exception);
+            source.TrySetException(exception);
             token = source.core.Version;
             return source;
         }
@@ -380,7 +380,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource CreateCompleted(out short token)
         {
             var source = Create();
-            source.SetResult();
+            source.TrySetResult();
             token = source.core.Version;
             return source;
         }
@@ -393,19 +393,19 @@ namespace UniRx.Async
             }
         }
 
-        public void SetResult()
+        public bool TrySetResult()
         {
-            core.TrySetResult(AsyncUnit.Default);
+            return core.TrySetResult(AsyncUnit.Default);
         }
 
-        public void SetCanceled(CancellationToken cancellationToken = default)
+        public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            core.TrySetCanceled(cancellationToken);
+            return core.TrySetCanceled(cancellationToken);
         }
 
-        public void SetException(Exception exception)
+        public bool TrySetException(Exception exception)
         {
-            core.TrySetException(exception);
+            return core.TrySetException(exception);
         }
 
         public void GetResult(short token)
@@ -487,19 +487,19 @@ namespace UniRx.Async
             TaskTracker2.TrackActiveTask(this, 2);
         }
 
-        public void SetResult(T result)
+        public bool TrySetResult(T result)
         {
-            core.TrySetResult(result);
+            return core.TrySetResult(result);
         }
 
-        public void SetCanceled(CancellationToken cancellationToken = default)
+        public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            core.TrySetCanceled(cancellationToken);
+            return core.TrySetCanceled(cancellationToken);
         }
 
-        public void SetException(Exception exception)
+        public bool TrySetException(Exception exception)
         {
-            core.TrySetException(exception);
+            return core.TrySetException(exception);
         }
 
         public T GetResult(short token)
@@ -555,7 +555,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource<T> CreateFromCanceled(CancellationToken cancellationToken, out short token)
         {
             var source = Create();
-            source.SetCanceled(cancellationToken);
+            source.TrySetCanceled(cancellationToken);
             token = source.core.Version;
             return source;
         }
@@ -563,7 +563,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource<T> CreateFromException(Exception exception, out short token)
         {
             var source = Create();
-            source.SetException(exception);
+            source.TrySetException(exception);
             token = source.core.Version;
             return source;
         }
@@ -571,7 +571,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource<T> CreateFromResult(T result, out short token)
         {
             var source = Create();
-            source.SetResult(result);
+            source.TrySetResult(result);
             token = source.core.Version;
             return source;
         }
@@ -584,19 +584,19 @@ namespace UniRx.Async
             }
         }
 
-        public void SetResult(T result)
+        public bool TrySetResult(T result)
         {
-            core.TrySetResult(result);
+            return core.TrySetResult(result);
         }
 
-        public void SetCanceled(CancellationToken cancellationToken = default)
+        public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            core.TrySetCanceled(cancellationToken);
+            return core.TrySetCanceled(cancellationToken);
         }
 
-        public void SetException(Exception exception)
+        public bool TrySetException(Exception exception)
         {
-            core.TrySetException(exception);
+            return core.TrySetException(exception);
         }
 
         public T GetResult(short token)

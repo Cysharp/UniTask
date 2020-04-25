@@ -50,7 +50,7 @@ public class SandboxMain : MonoBehaviour
         {
             text.text = "";
 
-            ucs.SetResult();
+            ucs.TrySetResult();
 
             await ucs.Task;
         });
