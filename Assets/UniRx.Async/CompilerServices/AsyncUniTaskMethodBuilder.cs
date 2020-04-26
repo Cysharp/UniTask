@@ -136,6 +136,22 @@ namespace UniRx.Async.CompilerServices
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
         }
+
+#if UNITY_EDITOR
+        // Important for IDE debugger.
+        object debuggingId;
+        private object ObjectIdForDebugger 
+        {
+            get
+            {
+                if (debuggingId == null)
+                {
+                    debuggingId = new object();
+                }
+                return debuggingId; 
+            }
+        }
+#endif
     }
 
 
@@ -268,6 +284,22 @@ namespace UniRx.Async.CompilerServices
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
         }
+
+#if UNITY_EDITOR
+        // Important for IDE debugger.
+        object debuggingId;
+        private object ObjectIdForDebugger
+        {
+            get
+            {
+                if (debuggingId == null)
+                {
+                    debuggingId = new object();
+                }
+                return debuggingId;
+            }
+        }
+#endif
     }
 }
 
