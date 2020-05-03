@@ -22,17 +22,6 @@ public class SandboxMain : MonoBehaviour
 
     void Start()
     {
-        // Setup unobserverd tskexception handling
-        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-
-        // Optional: disable ExecutionContext if you don't use AsyncLocal.
-        //if (!ExecutionContext.IsFlowSuppressed())
-        //{
-        //    ExecutionContext.SuppressFlow();
-        //}
-
-        //// Optional: disable SynchronizationContext(to boostup performance) if you completely use UniTask only
-        //SynchronizationContext.SetSynchronizationContext(null);
 
         // -----
 
@@ -50,7 +39,7 @@ public class SandboxMain : MonoBehaviour
         {
             text.text = "";
 
-            ucs.TrySetResult();
+            // ucs.TrySetResult();
 
             await ucs.Task;
         });

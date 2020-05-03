@@ -8,7 +8,8 @@ using System.Runtime.CompilerServices;
 namespace UniRx.Async.Internal
 {
     // optimized version of Standard Queue<T>.
-    internal class MinimumQueue<T>
+    // TODO: to internal.
+    public class MinimumQueue<T>
     {
         const int MinimumGrow = 4;
         const int GrowFactor = 200;
@@ -28,7 +29,7 @@ namespace UniRx.Async.Internal
         public int Count
         {
 #if NET_4_6 || NET_STANDARD_2_0
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
             get { return size; }
         }

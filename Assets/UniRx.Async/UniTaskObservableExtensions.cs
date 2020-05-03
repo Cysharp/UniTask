@@ -86,12 +86,12 @@ namespace UniRx.Async
             }
         }
 
-        static async UniTaskVoid Fire(AsyncSubject<object> subject, UniTask task)
+        static async UniTaskVoid Fire(AsyncSubject<AsyncUnit> subject, UniTask task)
         {
             try
             {
                 await task;
-                subject.OnNext(null);
+                subject.OnNext(AsyncUnit.Default);
                 subject.OnCompleted();
             }
             catch (Exception ex)

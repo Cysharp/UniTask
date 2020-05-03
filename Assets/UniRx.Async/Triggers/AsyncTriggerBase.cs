@@ -15,46 +15,6 @@ namespace UniRx.Async.Triggers
         bool TrySetCanceled();
     }
 
-    public class AsyncTriggerPromise<T> : ReusablePromise<T>, IPromise<T>, ICancelablePromise
-    {
-        public CancellationToken RegisteredCancellationToken { get; private set; }
-
-        public AsyncTriggerPromise()
-            : this(CancellationToken.None)
-        {
-        }
-
-        public AsyncTriggerPromise(CancellationToken cancellationToken)
-        {
-            this.RegisteredCancellationToken = cancellationToken;
-            TaskTracker.TrackActiveTask(this);
-        }
-
-        public override T GetResult()
-        {
-            if (Status == UniTaskStatus.Pending) return RawResult;
-            return base.GetResult();
-        }
-
-        public override bool TrySetResult(T result)
-        {
-            if (Status == UniTaskStatus.Pending)
-            {
-                // keep status as Pending.
-                this.ForceSetResult(result);
-                TryInvokeContinuation();
-                return true;
-            }
-            return false;
-        }
-
-        public override bool TrySetCanceled()
-        {
-            if (Status == UniTaskStatus.Canceled) return false;
-            TaskTracker.RemoveTracking(this);
-            return base.TrySetCanceled();
-        }
-    }
 
     public interface ICancellationTokenKeyDictionary
     {
@@ -62,7 +22,7 @@ namespace UniRx.Async.Triggers
     }
 
     public class AsyncTriggerPromiseDictionary<TPromiseType> :
-        Dictionary<CancellationToken, AsyncTriggerPromise<TPromiseType>>,
+        Dictionary<CancellationToken, AutoResetUniTaskCompletionSource<TPromiseType>>,
         ICancellationTokenKeyDictionary,
         IEnumerable<ICancelablePromise>
     {
@@ -73,7 +33,9 @@ namespace UniRx.Async.Triggers
 
         IEnumerator<ICancelablePromise> IEnumerable<ICancelablePromise>.GetEnumerator()
         {
-            return Values.GetEnumerator();
+            // TODO:
+            throw new NotImplementedException();
+            //return Values.GetEnumerator();
         }
 
         void ICancellationTokenKeyDictionary.Remove(CancellationToken token)

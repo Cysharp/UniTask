@@ -35,9 +35,6 @@ namespace UniRx.Async
             IEnumerator innerEnumerator;
             CancellationToken cancellationToken;
 
-            Action continuation;
-            ExceptionDispatchInfo exception;
-
             UniTaskCompletionSourceCore<object> core;
 
             EnumeratorPromise()
@@ -122,8 +119,6 @@ namespace UniRx.Async
                 core.Reset();
                 innerEnumerator = default;
                 cancellationToken = default;
-                continuation = default;
-                exception = default;
             }
 
             ~EnumeratorPromise()

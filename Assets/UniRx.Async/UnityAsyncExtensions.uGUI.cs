@@ -1,14 +1,11 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using UniRx.Async.Internal;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using UniRx.Async.Triggers;
 
 namespace UniRx.Async
 {
@@ -168,86 +165,72 @@ namespace UniRx.Async
     public interface IAsyncClickEventHandler : IDisposable
     {
         UniTask OnClickAsync();
-        UniTask<bool> OnClickAsyncSuppressCancellationThrow();
     }
 
     public interface IAsyncValueChangedEventHandler<T> : IDisposable
     {
         UniTask<T> OnValueChangedAsync();
-        UniTask<(bool IsCanceled, T Result)> OnValueChangedAsyncSuppressCancellationThrow();
     }
 
     public interface IAsyncEndEditEventHandler<T> : IDisposable
     {
         UniTask<T> OnEndEditAsync();
-        UniTask<(bool IsCanceled, T Result)> OnEndEditAsyncSuppressCancellationThrow();
     }
 
-    // event handler is reusable when callOnce = false.
-    public class AsyncUnityEventHandler : IAwaiter, IDisposable, IAsyncClickEventHandler
+    public class AsyncUnityEventHandler : IUniTaskSource, IDisposable, IAsyncClickEventHandler
     {
         static Action<object> cancellationCallback = CancellationCallback;
 
         readonly UnityAction action;
         readonly UnityEvent unityEvent;
-        Action continuation;
+
+        CancellationToken cancellationToken;
         CancellationTokenRegistration registration;
         bool isDisposed;
         bool callOnce;
-        UniTask<bool>? suppressCancellationThrowTask;
+
+        UniTaskCompletionSourceCore<AsyncUnit> core;
 
         public AsyncUnityEventHandler(UnityEvent unityEvent, CancellationToken cancellationToken, bool callOnce)
         {
-            this.callOnce = callOnce;
-
             if (cancellationToken.IsCancellationRequested)
             {
                 isDisposed = true;
                 return;
             }
 
-            action = Invoke;
-            unityEvent.AddListener(action);
+            this.action = Invoke;
             this.unityEvent = unityEvent;
+            this.cancellationToken = cancellationToken;
+            this.callOnce = callOnce;
+
+            unityEvent.AddListener(action);
 
             if (cancellationToken.CanBeCanceled)
             {
                 registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
             }
 
-            TaskTracker.TrackActiveTask(this, 3);
+            TaskTracker2.TrackActiveTask(this, 3);
         }
 
         public UniTask OnInvokeAsync()
         {
-            // zero allocation wait handler.
-            return new UniTask(this);
-        }
-
-        public UniTask<bool> OnInvokeAsyncSuppressCancellationThrow()
-        {
-            if (suppressCancellationThrowTask == null)
-            {
-                suppressCancellationThrowTask = OnInvokeAsync().SuppressCancellationThrow();
-            }
-            return suppressCancellationThrowTask.Value;
+            core.Reset();
+            return new UniTask(this, core.Version);
         }
 
         void Invoke()
         {
-            var c = continuation;
-            continuation = null;
-            if (c != null)
-            {
-                c.Invoke();
-            }
+            core.TrySetResult(AsyncUnit.Default);
         }
 
         static void CancellationCallback(object state)
         {
             var self = (AsyncUnityEventHandler)state;
             self.Dispose();
-            self.Invoke(); // call continuation if exists yet(GetResult -> throw OperationCanceledException).
+
+            self.core.TrySetCanceled(self.cancellationToken);
         }
 
         public void Dispose()
@@ -255,7 +238,7 @@ namespace UniRx.Async
             if (!isDisposed)
             {
                 isDisposed = true;
-                TaskTracker.RemoveTracking(this);
+                TaskTracker2.RemoveTracking(this);
                 registration.Dispose();
                 if (unityEvent != null)
                 {
@@ -263,107 +246,97 @@ namespace UniRx.Async
                 }
             }
         }
-
-        bool IAwaiter.IsCompleted => isDisposed ? true : false;
-        UniTaskStatus IAwaiter.Status => isDisposed ? UniTaskStatus.Canceled : UniTaskStatus.Pending;
-        void IAwaiter.GetResult()
-        {
-            if (isDisposed) throw new OperationCanceledException();
-            if (callOnce) Dispose();
-        }
-
-        void INotifyCompletion.OnCompleted(Action action)
-        {
-            ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(action);
-        }
-
-        void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
-        {
-            Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
-            this.continuation = action;
-        }
-
-        // Interface events.
 
         UniTask IAsyncClickEventHandler.OnClickAsync()
         {
             return OnInvokeAsync();
         }
 
-        UniTask<bool> IAsyncClickEventHandler.OnClickAsyncSuppressCancellationThrow()
+        void IUniTaskSource.GetResult(short token)
         {
-            return OnInvokeAsyncSuppressCancellationThrow();
+            try
+            {
+                core.GetResult(token);
+            }
+            finally
+            {
+                if (callOnce)
+                {
+                    Dispose();
+                }
+            }
+        }
+
+        UniTaskStatus IUniTaskSource.GetStatus(short token)
+        {
+            return core.GetStatus(token);
+        }
+
+        UniTaskStatus IUniTaskSource.UnsafeGetStatus()
+        {
+            return core.UnsafeGetStatus();
+        }
+
+        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
+        {
+            core.OnCompleted(continuation, state, token);
         }
     }
 
-    // event handler is reusable when callOnce = false.
-    public class AsyncUnityEventHandler<T> : IAwaiter<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
+    public class AsyncUnityEventHandler<T> : IUniTaskSource<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
     {
         static Action<object> cancellationCallback = CancellationCallback;
 
         readonly UnityAction<T> action;
         readonly UnityEvent<T> unityEvent;
-        Action continuation;
+
+        CancellationToken cancellationToken;
         CancellationTokenRegistration registration;
         bool isDisposed;
-        T eventValue;
         bool callOnce;
-        UniTask<(bool, T)>? suppressCancellationThrowTask;
+
+        UniTaskCompletionSourceCore<T> core;
 
         public AsyncUnityEventHandler(UnityEvent<T> unityEvent, CancellationToken cancellationToken, bool callOnce)
         {
-            this.callOnce = callOnce;
-
             if (cancellationToken.IsCancellationRequested)
             {
                 isDisposed = true;
                 return;
             }
 
-            action = Invoke;
-            unityEvent.AddListener(action);
+            this.action = Invoke;
             this.unityEvent = unityEvent;
+            this.cancellationToken = cancellationToken;
+            this.callOnce = callOnce;
+
+            unityEvent.AddListener(action);
 
             if (cancellationToken.CanBeCanceled)
             {
                 registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
             }
 
-            TaskTracker.TrackActiveTask(this, 3);
+            TaskTracker2.TrackActiveTask(this, 3);
         }
 
         public UniTask<T> OnInvokeAsync()
         {
-            // zero allocation wait handler.
-            return new UniTask<T>(this);
+            core.Reset();
+            return new UniTask<T>(this, core.Version);
         }
 
-        public UniTask<(bool IsCanceled, T Result)> OnInvokeAsyncSuppressCancellationThrow()
+        void Invoke(T result)
         {
-            if (suppressCancellationThrowTask == null)
-            {
-                suppressCancellationThrowTask = OnInvokeAsync().SuppressCancellationThrow();
-            }
-            return suppressCancellationThrowTask.Value;
-        }
-
-        void Invoke(T value)
-        {
-            this.eventValue = value;
-
-            var c = continuation;
-            continuation = null;
-            if (c != null)
-            {
-                c.Invoke();
-            }
+            core.TrySetResult(result);
         }
 
         static void CancellationCallback(object state)
         {
             var self = (AsyncUnityEventHandler<T>)state;
             self.Dispose();
-            self.Invoke(default(T)); // call continuation if exists yet(GetResult -> throw OperationCanceledException).
+
+            self.core.TrySetCanceled(self.cancellationToken);
         }
 
         public void Dispose()
@@ -371,7 +344,7 @@ namespace UniRx.Async
             if (!isDisposed)
             {
                 isDisposed = true;
-                TaskTracker.RemoveTracking(this);
+                TaskTracker2.RemoveTracking(this);
                 registration.Dispose();
                 if (unityEvent != null)
                 {
@@ -380,43 +353,9 @@ namespace UniRx.Async
             }
         }
 
-        bool IAwaiter.IsCompleted => isDisposed ? true : false;
-        UniTaskStatus IAwaiter.Status => isDisposed ? UniTaskStatus.Canceled : UniTaskStatus.Pending;
-
-        T IAwaiter<T>.GetResult()
-        {
-            if (isDisposed) throw new OperationCanceledException();
-            if (callOnce) Dispose();
-            return eventValue;
-        }
-
-        void IAwaiter.GetResult()
-        {
-            if (isDisposed) throw new OperationCanceledException();
-            if (callOnce) Dispose();
-        }
-
-        void INotifyCompletion.OnCompleted(Action action)
-        {
-            ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(action);
-        }
-
-        void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
-        {
-            Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
-            this.continuation = action;
-        }
-
-        // Interface events.
-
         UniTask<T> IAsyncValueChangedEventHandler<T>.OnValueChangedAsync()
         {
             return OnInvokeAsync();
-        }
-
-        UniTask<(bool IsCanceled, T Result)> IAsyncValueChangedEventHandler<T>.OnValueChangedAsyncSuppressCancellationThrow()
-        {
-            return OnInvokeAsyncSuppressCancellationThrow();
         }
 
         UniTask<T> IAsyncEndEditEventHandler<T>.OnEndEditAsync()
@@ -424,11 +363,39 @@ namespace UniRx.Async
             return OnInvokeAsync();
         }
 
-        UniTask<(bool IsCanceled, T Result)> IAsyncEndEditEventHandler<T>.OnEndEditAsyncSuppressCancellationThrow()
+        T IUniTaskSource<T>.GetResult(short token)
         {
-            return OnInvokeAsyncSuppressCancellationThrow();
+            try
+            {
+                return core.GetResult(token);
+            }
+            finally
+            {
+                if (callOnce)
+                {
+                    Dispose();
+                }
+            }
+        }
+
+        void IUniTaskSource.GetResult(short token)
+        {
+            ((IUniTaskSource<T>)this).GetResult(token);
+        }
+
+        UniTaskStatus IUniTaskSource.GetStatus(short token)
+        {
+            return core.GetStatus(token);
+        }
+
+        UniTaskStatus IUniTaskSource.UnsafeGetStatus()
+        {
+            return core.UnsafeGetStatus();
+        }
+
+        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
+        {
+            core.OnCompleted(continuation, state, token);
         }
     }
 }
-
-#endif
