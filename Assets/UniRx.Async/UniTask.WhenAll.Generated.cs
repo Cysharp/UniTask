@@ -29,7 +29,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -107,7 +107,7 @@ namespace UniRx.Async
 
             public (T1, T2) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -158,7 +158,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -271,7 +271,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -323,7 +323,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -471,7 +471,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -524,7 +524,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -707,7 +707,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -761,7 +761,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -979,7 +979,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -1034,7 +1034,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -1287,7 +1287,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -1343,7 +1343,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -1631,7 +1631,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -1688,7 +1688,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -2011,7 +2011,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8, T9) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -2069,7 +2069,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -2427,7 +2427,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -2486,7 +2486,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -2879,7 +2879,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -2939,7 +2939,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -3367,7 +3367,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -3428,7 +3428,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -3891,7 +3891,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -3953,7 +3953,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -4451,7 +4451,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -4514,7 +4514,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9, UniTask<T10> task10, UniTask<T11> task11, UniTask<T12> task12, UniTask<T13> task13, UniTask<T14> task14, UniTask<T15> task15)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
                 {
@@ -5047,7 +5047,7 @@ namespace UniRx.Async
 
             public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }

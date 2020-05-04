@@ -104,7 +104,7 @@ namespace UniRx.Async
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -116,7 +116,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     
                     core.GetResult(token);
                 }
@@ -277,7 +277,7 @@ namespace UniRx.Async
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -289,7 +289,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     
                     return core.GetResult(token);
                 }
@@ -454,7 +454,7 @@ namespace UniRx.Async
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -466,7 +466,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     
                     return core.GetResult(token);
                 }
@@ -631,7 +631,7 @@ namespace UniRx.Async
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -643,7 +643,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     
                     return core.GetResult(token);
                 }
@@ -809,7 +809,7 @@ namespace UniRx.Async
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -821,7 +821,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     
                     return core.GetResult(token);
                 }

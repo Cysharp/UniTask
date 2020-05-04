@@ -8,8 +8,7 @@ using System.Runtime.CompilerServices;
 namespace UniRx.Async.Internal
 {
     // optimized version of Standard Queue<T>.
-    // TODO: to internal.
-    public class MinimumQueue<T>
+    internal class MinimumQueue<T>
     {
         const int MinimumGrow = 4;
         const int GrowFactor = 200;
@@ -28,9 +27,7 @@ namespace UniRx.Async.Internal
 
         public int Count
         {
-#if NET_4_6 || NET_STANDARD_2_0
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
             get { return size; }
         }
 
@@ -40,9 +37,7 @@ namespace UniRx.Async.Internal
             return array[head];
         }
 
-#if NET_4_6 || NET_STANDARD_2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public void Enqueue(T item)
         {
             if (size == array.Length)
@@ -55,9 +50,7 @@ namespace UniRx.Async.Internal
             size++;
         }
 
-#if NET_4_6 || NET_STANDARD_2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public T Dequeue()
         {
             if (size == 0) ThrowForEmptyQueue();
@@ -102,9 +95,7 @@ namespace UniRx.Async.Internal
             tail = (size == capacity) ? 0 : size;
         }
 
-#if NET_4_6 || NET_STANDARD_2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         void MoveNext(ref int index)
         {
             int tmp = index + 1;

@@ -2,18 +2,30 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System.Threading;
-using UniRx.Async.Internal;
 using UnityEngine;
 
 namespace UniRx.Async.Triggers
 {
+    public static partial class AsyncTriggerExtensions
+    {
+        public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this GameObject gameObject)
+        {
+            return GetOrAddComponent<AsyncDestroyTrigger>(gameObject);
+        }
+
+        public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this Component component)
+        {
+            return component.gameObject.GetAsyncDestroyTrigger();
+        }
+    }
+
     [DisallowMultipleComponent]
     public class AsyncDestroyTrigger : MonoBehaviour
     {
+        bool awakeCalled = false;
         bool called = false;
-        UniTaskCompletionSource promise;
-        CancellationTokenSource cancellationTokenSource; // main cancellation
-        object canellationTokenSourceOrQueue;            // external from AddCancellationTriggerOnDestroy
+        TriggerEvent<AsyncUnit> triggerEvent;
+        CancellationTokenSource cancellationTokenSource;
 
         public CancellationToken CancellationToken
         {
@@ -27,64 +39,57 @@ namespace UniRx.Async.Triggers
             }
         }
 
-        /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
+        void Awake()
+        {
+            awakeCalled = true;
+        }
+
         void OnDestroy()
         {
             called = true;
-            promise?.TrySetResult();
+
+            triggerEvent?.TrySetResult(AsyncUnit.Default);
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
-            if (canellationTokenSourceOrQueue != null)
-            {
-                if (canellationTokenSourceOrQueue is CancellationTokenSource cts)
-                {
-                    cts.Cancel();
-                    cts.Dispose();
-                }
-                else
-                {
-                    var q = (MinimumQueue<CancellationTokenSource>)canellationTokenSourceOrQueue;
-                    while (q.Count != 0)
-                    {
-                        var c = q.Dequeue();
-                        c.Cancel();
-                        c.Dispose();
-                    }
-                }
-                canellationTokenSourceOrQueue = null;
-            }
+
+            triggerEvent = null;
         }
 
-        /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
         public UniTask OnDestroyAsync()
         {
             if (called) return UniTask.CompletedTask;
-            return new UniTask(promise ?? (promise = new UniTaskCompletionSource()));
+
+            if (!awakeCalled)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
+            }
+
+            if (triggerEvent == null)
+            {
+                triggerEvent = new TriggerEvent<AsyncUnit>();
+            }
+
+            return ((IAsyncOneShotTrigger)new AsyncTriggerHandler<AsyncUnit>(triggerEvent, true)).OneShotAsync();
         }
 
-        /// <summary>Add Cancellation Triggers on destroy</summary>
-        public void AddCancellationTriggerOnDestroy(CancellationTokenSource cts)
+        class AwakeMonitor : IPlayerLoopItem
         {
-            if (called)
+            readonly AsyncDestroyTrigger trigger;
+
+            public AwakeMonitor(AsyncDestroyTrigger trigger)
             {
-                cts.Cancel();
-                cts.Dispose();
+                this.trigger = trigger;
             }
 
-            if (canellationTokenSourceOrQueue == null)
+            public bool MoveNext()
             {
-                canellationTokenSourceOrQueue = cts;
-            }
-            else if (canellationTokenSourceOrQueue is CancellationTokenSource c)
-            {
-                var q = new MinimumQueue<CancellationTokenSource>(4);
-                q.Enqueue(c);
-                q.Enqueue(cts);
-                canellationTokenSourceOrQueue = q;
-            }
-            else
-            {
-                ((MinimumQueue<CancellationTokenSource>)canellationTokenSourceOrQueue).Enqueue(cts);
+                if (trigger.called) return false;
+                if (trigger == null)
+                {
+                    trigger.OnDestroy();
+                    return false;
+                }
+                return true;
             }
         }
     }

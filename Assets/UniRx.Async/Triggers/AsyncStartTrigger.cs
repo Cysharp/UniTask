@@ -1,16 +1,30 @@
 ﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using System.Threading;
 using UnityEngine;
 
 namespace UniRx.Async.Triggers
 {
+    public static partial class AsyncTriggerExtensions
+    {
+        public static AsyncStartTrigger GetAsyncStartTrigger(this GameObject gameObject)
+        {
+            return GetOrAddComponent<AsyncStartTrigger>(gameObject);
+        }
+
+        public static AsyncStartTrigger GetAsyncStartTrigger(this Component component)
+        {
+            return component.gameObject.GetAsyncStartTrigger();
+        }
+    }
+
     [DisallowMultipleComponent]
     public class AsyncStartTrigger : MonoBehaviour
     {
         bool awakeCalled = false;
         bool called = false;
-        UniTaskCompletionSource promise;
+        TriggerEvent<AsyncUnit> triggerEvent;
 
         void Awake()
         {
@@ -20,22 +34,30 @@ namespace UniRx.Async.Triggers
         void Start()
         {
             called = true;
-            promise?.TrySetResult();
+            triggerEvent?.TrySetResult(AsyncUnit.Default);
+            triggerEvent = null;
         }
 
         public UniTask StartAsync()
         {
             if (called) return UniTask.CompletedTask;
+
             if (!awakeCalled)
             {
                 PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
             }
-            return new UniTask(promise ?? (promise = new UniTaskCompletionSource()));
+
+            if (triggerEvent == null)
+            {
+                triggerEvent = new TriggerEvent<AsyncUnit>();
+            }
+
+            return ((IAsyncOneShotTrigger)new AsyncTriggerHandler<AsyncUnit>(triggerEvent, true)).OneShotAsync();
         }
 
         private void OnDestroy()
         {
-            promise?.TrySetCanceled();
+            triggerEvent?.TrySetCanceled(CancellationToken.None);
         }
 
         class AwakeMonitor : IPlayerLoopItem
@@ -49,7 +71,7 @@ namespace UniRx.Async.Triggers
 
             public bool MoveNext()
             {
-                if (trigger.awakeCalled) return false;
+                if (trigger.called) return false;
                 if (trigger == null)
                 {
                     trigger.OnDestroy();
@@ -59,6 +81,7 @@ namespace UniRx.Async.Triggers
             }
         }
     }
+
 }
 
 #endif

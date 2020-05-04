@@ -17,7 +17,7 @@ namespace UniRx.Async
 
         public static UniTask<T[]> WhenAll<T>(IEnumerable<UniTask<T>> tasks)
         {
-            using (var span = ArrayPoolUtil.Materialize(tasks))
+            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
             {
                 var promise = new WhenAllPromise<T>(span.Array, span.Length); // consumed array in constructor.
                 return new UniTask<T[]>(promise, 0);
@@ -31,7 +31,7 @@ namespace UniRx.Async
 
         public static UniTask WhenAll(IEnumerable<UniTask> tasks)
         {
-            using (var span = ArrayPoolUtil.Materialize(tasks))
+            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
             {
                 var promise = new WhenAllPromise(span.Array, span.Length); // consumed array in constructor.
                 return new UniTask(promise, 0);
@@ -46,7 +46,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask<T>[] tasks, int tasksLength)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completeCount = 0;
                 this.result = new T[tasksLength];
@@ -101,7 +101,7 @@ namespace UniRx.Async
 
             public T[] GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -140,7 +140,7 @@ namespace UniRx.Async
 
             public WhenAllPromise(UniTask[] tasks, int tasksLength)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.tasksLength = tasksLength;
                 this.completeCount = 0;
@@ -195,7 +195,7 @@ namespace UniRx.Async
 
             public void GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 core.GetResult(token);
             }

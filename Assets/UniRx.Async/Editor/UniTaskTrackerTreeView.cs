@@ -132,7 +132,7 @@ namespace UniRx.Async.Editor
 
             var children = new List<TreeViewItem>();
 
-            TaskTracker2.ForEachActiveTask((trackingId, awaiterType, status, created, stackTrace) =>
+            TaskTracker.ForEachActiveTask((trackingId, awaiterType, status, created, stackTrace) =>
             {
                 children.Add(new UniTaskTrackerViewItem(trackingId) { TaskType = awaiterType, Status = status.ToString(), Elapsed = (DateTime.UtcNow - created).TotalSeconds.ToString("00.00"), Position = stackTrace });
             });

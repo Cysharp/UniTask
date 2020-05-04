@@ -56,7 +56,7 @@ namespace UniRx.Async
                 result.predicate = predicate;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -68,7 +68,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
@@ -158,7 +158,7 @@ namespace UniRx.Async
                 result.predicate = predicate;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -170,7 +170,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
@@ -267,7 +267,7 @@ namespace UniRx.Async
                 result.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -279,7 +279,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     return core.GetResult(token);
                 }
                 finally
@@ -387,7 +387,7 @@ namespace UniRx.Async
                 result.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -399,7 +399,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     return core.GetResult(token);
                 }
                 finally

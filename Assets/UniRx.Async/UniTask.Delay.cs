@@ -79,7 +79,7 @@ namespace UniRx.Async
 
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -91,7 +91,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
@@ -168,7 +168,7 @@ namespace UniRx.Async
                 result.delayFrameCount = delayFrameCount;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -180,7 +180,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
@@ -266,7 +266,7 @@ namespace UniRx.Async
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -278,7 +278,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
@@ -364,7 +364,7 @@ namespace UniRx.Async
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker2.TrackActiveTask(result, 3);
+                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -376,7 +376,7 @@ namespace UniRx.Async
             {
                 try
                 {
-                    TaskTracker2.RemoveTracking(this);
+                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally

@@ -35,28 +35,28 @@ namespace UniRx.Async
 
     public static class UniTaskStatusExtensions
     {
-        /// <summary>!= Pending.</summary>
+        /// <summary>status != Pending.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCompleted(this UniTaskStatus status)
         {
             return status != UniTaskStatus.Pending;
         }
 
-        /// <summary>== Succeeded.</summary>
+        /// <summary>status == Succeeded.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCompletedSuccessfully(this UniTaskStatus status)
         {
             return status == UniTaskStatus.Succeeded;
         }
 
-        /// <summary>== Canceled.</summary>
+        /// <summary>status == Canceled.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCanceled(this UniTaskStatus status)
         {
             return status == UniTaskStatus.Canceled;
         }
 
-        /// <summary>== Faulted.</summary>
+        /// <summary>status == Faulted.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFaulted(this UniTaskStatus status)
         {

@@ -272,7 +272,7 @@ namespace UniRx.Async
 
         public UniTaskCompletionSource()
         {
-            TaskTracker2.TrackActiveTask(this, 2);
+            TaskTracker.TrackActiveTask(this, 2);
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -281,7 +281,7 @@ namespace UniRx.Async
             if (!handled)
             {
                 handled = true;
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
             }
         }
 
@@ -297,7 +297,7 @@ namespace UniRx.Async
         {
             // Reset, re-active tracker
             handled = false;
-            TaskTracker2.TrackActiveTask(this, 2);
+            TaskTracker.TrackActiveTask(this, 2);
             core.Reset();
         }
 
@@ -357,7 +357,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource Create()
         {
             var value = pool.TryRent() ?? new AutoResetUniTaskCompletionSource();
-            TaskTracker2.TrackActiveTask(value, 2);
+            TaskTracker.TrackActiveTask(value, 2);
             return value;
         }
 
@@ -412,7 +412,7 @@ namespace UniRx.Async
         {
             try
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 core.GetResult(token);
             }
             finally
@@ -459,7 +459,7 @@ namespace UniRx.Async
 
         public UniTaskCompletionSource()
         {
-            TaskTracker2.TrackActiveTask(this, 2);
+            TaskTracker.TrackActiveTask(this, 2);
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -468,7 +468,7 @@ namespace UniRx.Async
             if (!handled)
             {
                 handled = true;
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
             }
         }
 
@@ -484,7 +484,7 @@ namespace UniRx.Async
         {
             handled = false;
             core.Reset();
-            TaskTracker2.TrackActiveTask(this, 2);
+            TaskTracker.TrackActiveTask(this, 2);
         }
 
         public bool TrySetResult(T result)
@@ -548,7 +548,7 @@ namespace UniRx.Async
         public static AutoResetUniTaskCompletionSource<T> Create()
         {
             var result = pool.TryRent() ?? new AutoResetUniTaskCompletionSource<T>();
-            TaskTracker2.TrackActiveTask(result, 2);
+            TaskTracker.TrackActiveTask(result, 2);
             return result;
         }
 
@@ -603,7 +603,7 @@ namespace UniRx.Async
         {
             try
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 return core.GetResult(token);
             }
             finally

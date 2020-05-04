@@ -211,7 +211,7 @@ namespace UniRx.Async
                 registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
             }
 
-            TaskTracker2.TrackActiveTask(this, 3);
+            TaskTracker.TrackActiveTask(this, 3);
         }
 
         public UniTask OnInvokeAsync()
@@ -238,7 +238,7 @@ namespace UniRx.Async
             if (!isDisposed)
             {
                 isDisposed = true;
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 registration.Dispose();
                 if (unityEvent != null)
                 {
@@ -317,7 +317,7 @@ namespace UniRx.Async
                 registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
             }
 
-            TaskTracker2.TrackActiveTask(this, 3);
+            TaskTracker.TrackActiveTask(this, 3);
         }
 
         public UniTask<T> OnInvokeAsync()
@@ -344,7 +344,7 @@ namespace UniRx.Async
             if (!isDisposed)
             {
                 isDisposed = true;
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 registration.Dispose();
                 if (unityEvent != null)
                 {

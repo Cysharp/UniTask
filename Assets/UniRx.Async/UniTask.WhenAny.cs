@@ -22,7 +22,7 @@ namespace UniRx.Async
 
         public static UniTask<(int winArgumentIndex, T result)> WhenAny<T>(IEnumerable<UniTask<T>> tasks)
         {
-            using (var span = ArrayPoolUtil.Materialize(tasks))
+            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
             {
                 return new UniTask<(int, T)>(new WhenAnyPromise<T>(span.Array, span.Length), 0);
             }
@@ -37,7 +37,7 @@ namespace UniRx.Async
         /// <summary>Return value is winArgumentIndex</summary>
         public static UniTask<int> WhenAny(IEnumerable<UniTask> tasks)
         {
-            using (var span = ArrayPoolUtil.Materialize(tasks))
+            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
             {
                 return new UniTask<int>(new WhenAnyPromise(span.Array, span.Length), 0);
             }
@@ -51,7 +51,7 @@ namespace UniRx.Async
 
             public WhenAnyLRPromise(UniTask<T> leftTask, UniTask rightTask)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 {
                     UniTask<T>.Awaiter awaiter;
@@ -149,7 +149,7 @@ namespace UniRx.Async
 
             public (bool, T) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -189,7 +189,7 @@ namespace UniRx.Async
 
             public WhenAnyPromise(UniTask<T>[] tasks, int tasksLength)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 for (int i = 0; i < tasksLength; i++)
                 {
@@ -242,7 +242,7 @@ namespace UniRx.Async
 
             public (int, T) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -281,7 +281,7 @@ namespace UniRx.Async
 
             public WhenAnyPromise(UniTask[] tasks, int tasksLength)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 for (int i = 0; i < tasksLength; i++)
                 {
@@ -333,7 +333,7 @@ namespace UniRx.Async
 
             public int GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }

@@ -3,135 +3,116 @@
 
 using System;
 using System.Threading;
-using UniRx.Async.Internal;
 using Unity.Jobs;
 
 namespace UniRx.Async
 {
     public static partial class UnityAsyncExtensions
     {
-        public static IAwaiter GetAwaiter(this JobHandle jobHandle)
+        public static UniTask.Awaiter GetAwaiter(this JobHandle jobHandle)
         {
-            var awaiter = new JobHandleAwaiter(jobHandle, CancellationToken.None);
-            if (!awaiter.IsCompleted)
+            var handler = JobHandlePromise.Create(jobHandle, CancellationToken.None, out var token);
+            if (handler.GetStatus(token).IsCompleted() && handler is JobHandlePromise loopItem)
             {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, awaiter);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, loopItem);
             }
-            return awaiter;
+
+            return new UniTask(handler, token).GetAwaiter();
         }
 
         public static UniTask ToUniTask(this JobHandle jobHandle, CancellationToken cancellation = default(CancellationToken))
         {
-            var awaiter = new JobHandleAwaiter(jobHandle, cancellation);
-            if (!awaiter.IsCompleted)
+            var handler = JobHandlePromise.Create(jobHandle, cancellation, out var token);
+            if (handler.GetStatus(token).IsCompleted() && handler is JobHandlePromise loopItem)
             {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, awaiter);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, awaiter);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, loopItem);
             }
-            return new UniTask(awaiter);
+
+            return new UniTask(handler, token);
         }
 
         public static UniTask ConfigureAwait(this JobHandle jobHandle, PlayerLoopTiming waitTiming, CancellationToken cancellation = default(CancellationToken))
         {
-            var awaiter = new JobHandleAwaiter(jobHandle, cancellation);
-            if (!awaiter.IsCompleted)
+            var handler = JobHandlePromise.Create(jobHandle, cancellation, out var token);
+            if (handler.GetStatus(token).IsCompleted() && handler is JobHandlePromise loopItem)
             {
-                PlayerLoopHelper.AddAction(waitTiming, awaiter);
+                PlayerLoopHelper.AddAction(waitTiming, loopItem);
             }
-            return new UniTask(awaiter);
+
+            return new UniTask(handler, token);
         }
 
-        class JobHandleAwaiter : IAwaiter, IPlayerLoopItem
+        sealed class JobHandlePromise : IUniTaskSource, IPlayerLoopItem
         {
             JobHandle jobHandle;
             CancellationToken cancellationToken;
-            UniTaskStatus status;
-            Action continuation;
 
-            public JobHandleAwaiter(JobHandle jobHandle, CancellationToken cancellationToken, int skipFrame = 2)
+            UniTaskCompletionSourceCore<AsyncUnit> core;
+
+            public static IUniTaskSource Create(JobHandle jobHandle, CancellationToken cancellationToken, out short token)
             {
-                this.status = cancellationToken.IsCancellationRequested ? UniTaskStatus.Canceled
-                            : jobHandle.IsCompleted ? UniTaskStatus.Succeeded
-                            : UniTaskStatus.Pending;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
+                }
 
-                if (this.status.IsCompleted()) return;
+                // not use pool.
+                var result = new JobHandlePromise();
 
-                this.jobHandle = jobHandle;
-                this.cancellationToken = cancellationToken;
-                this.status = UniTaskStatus.Pending;
-                this.continuation = null;
+                result.jobHandle = jobHandle;
+                result.cancellationToken = cancellationToken;
 
-                TaskTracker.TrackActiveTask(this, skipFrame);
+                TaskTracker.TrackActiveTask(result, 3);
+
+                token = result.core.Version;
+                return result;
             }
 
-            public bool IsCompleted => status.IsCompleted();
-
-            public UniTaskStatus Status => status;
-
-            public void GetResult()
+            public void GetResult(short token)
             {
-                if (status == UniTaskStatus.Succeeded)
-                {
-                    return;
-                }
-                else if (status == UniTaskStatus.Canceled)
-                {
-                    Error.ThrowOperationCanceledException();
-                }
+                TaskTracker.RemoveTracking(this);
+                core.GetResult(token);
+            }
 
-                Error.ThrowNotYetCompleted();
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
             }
 
             public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    // Call jobHandle.Complete after finished.
-                    PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, new JobHandleAwaiter(jobHandle, CancellationToken.None, 1));
-                    InvokeContinuation(UniTaskStatus.Canceled);
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
                 if (jobHandle.IsCompleted)
                 {
                     jobHandle.Complete();
-                    InvokeContinuation(UniTaskStatus.Succeeded);
+                    core.TrySetResult(AsyncUnit.Default);
                     return false;
                 }
 
                 return true;
-            }
-
-            void InvokeContinuation(UniTaskStatus status)
-            {
-                this.status = status;
-                var cont = this.continuation;
-
-                // cleanup
-                TaskTracker.RemoveTracking(this);
-                this.continuation = null;
-                this.cancellationToken = CancellationToken.None;
-                this.jobHandle = default(JobHandle);
-
-                if (cont != null) cont.Invoke();
-            }
-
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
-
-            public void UnsafeOnCompleted(Action continuation)
-            {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
-                this.continuation = continuation;
             }
         }
     }

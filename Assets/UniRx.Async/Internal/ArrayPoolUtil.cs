@@ -33,13 +33,8 @@ namespace UniRx.Async.Internal
             }
         }
 
-        public static RentArray<T> Materialize<T>(IEnumerable<T> source)
+        public static RentArray<T> CopyToRentArray<T>(IEnumerable<T> source)
         {
-            if (source is T[] array)
-            {
-                return new RentArray<T>(array, array.Length, null);
-            }
-
             var defaultCount = 32;
             if (source is ICollection<T> coll)
             {
