@@ -180,6 +180,16 @@ namespace UniRx.Async
             }
         }
 
+        public static AsyncLazy ToAsyncLazy(this UniTask task)
+        {
+            return new AsyncLazy(task.Preserve()); // require Preserve
+        }
+
+        public static AsyncLazy<T> ToAsyncLazy<T>(this UniTask<T> task)
+        {
+            return new AsyncLazy<T>(task.Preserve()); // require Preserve
+        }
+
         public static IEnumerator ToCoroutine<T>(this UniTask<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
         {
             return new ToCoroutineEnumerator<T>(task, resultHandler, exceptionHandler);

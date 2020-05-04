@@ -93,6 +93,11 @@ namespace UniRx.Async
             return factory();
         }
 
+        public static AsyncLazy Lazy(Func<UniTask> factory)
+        {
+            return new AsyncLazy(factory);
+        }
+
         public static AsyncLazy<T> Lazy<T>(Func<UniTask<T>> factory)
         {
             return new AsyncLazy<T>(factory);
