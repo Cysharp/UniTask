@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace UniRx.Async.Internal
 {
-    internal class ContinuationQueue
+    internal sealed class ContinuationQueue
     {
         const int MaxArrayLength = 0X7FEFFFFF;
         const int InitialSize = 16;

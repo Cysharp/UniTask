@@ -178,7 +178,7 @@ namespace UniRx.Async
         public TResult GetResult(short token)
         {
             ValidateToken(token);
-            if (!(completedCount == 0))
+            if (completedCount == 0)
             {
                 throw new InvalidOperationException("not yet completed.");
             }
