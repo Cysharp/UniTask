@@ -29,6 +29,16 @@ namespace UniRx.Async
         public struct UniTaskLoopRunnerPreLateUpdate { };
         public struct UniTaskLoopRunnerPostLateUpdate { };
 
+        // Last
+
+        public struct UniTaskLoopRunnerLastInitialization { };
+        public struct UniTaskLoopRunnerLastEarlyUpdate { };
+        public struct UniTaskLoopRunnerLastFixedUpdate { };
+        public struct UniTaskLoopRunnerLastPreUpdate { };
+        public struct UniTaskLoopRunnerLastUpdate { };
+        public struct UniTaskLoopRunnerLastPreLateUpdate { };
+        public struct UniTaskLoopRunnerLastPostLateUpdate { };
+
         // Yield
 
         public struct UniTaskLoopRunnerYieldInitialization { };
@@ -38,17 +48,40 @@ namespace UniRx.Async
         public struct UniTaskLoopRunnerYieldUpdate { };
         public struct UniTaskLoopRunnerYieldPreLateUpdate { };
         public struct UniTaskLoopRunnerYieldPostLateUpdate { };
+
+        // Yield Last
+
+        public struct UniTaskLoopRunnerLastYieldInitialization { };
+        public struct UniTaskLoopRunnerLastYieldEarlyUpdate { };
+        public struct UniTaskLoopRunnerLastYieldFixedUpdate { };
+        public struct UniTaskLoopRunnerLastYieldPreUpdate { };
+        public struct UniTaskLoopRunnerLastYieldUpdate { };
+        public struct UniTaskLoopRunnerLastYieldPreLateUpdate { };
+        public struct UniTaskLoopRunnerLastYieldPostLateUpdate { };
     }
 
     public enum PlayerLoopTiming
     {
         Initialization = 0,
-        EarlyUpdate = 1,
-        FixedUpdate = 2,
-        PreUpdate = 3,
-        Update = 4,
-        PreLateUpdate = 5,
-        PostLateUpdate = 6
+        LastInitialization = 1,
+
+        EarlyUpdate = 2,
+        LastEarlyUpdate = 3,
+
+        FixedUpdate = 4,
+        LastFixedUpdate = 5,
+
+        PreUpdate = 6,
+        LastPreUpdate = 7,
+
+        Update = 8,
+        LastUpdate = 9,
+
+        PreLateUpdate = 10,
+        LastPreLateUpdate = 11,
+
+        PostLateUpdate = 12,
+        LastPostLateUpdate = 13
     }
 
     public interface IPlayerLoopItem
@@ -66,26 +99,49 @@ namespace UniRx.Async
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
 
-        static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem, Type loopRunnerYieldType,
-            ContinuationQueue cq, Type loopRunnerType, PlayerLoopRunner runner)
+        static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
+            Type loopRunnerYieldType, ContinuationQueue cq, Type lastLoopRunnerYieldType, ContinuationQueue lastCq,
+            Type loopRunnerType, PlayerLoopRunner runner, Type lastLoopRunnerType, PlayerLoopRunner lastRunner)
         {
+
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += (state) =>
             {
-                if (state == PlayModeStateChange.EnteredEditMode ||
-                    state == PlayModeStateChange.EnteredPlayMode) return;
+                if (state == PlayModeStateChange.EnteredEditMode || state == PlayModeStateChange.EnteredPlayMode)
+                {
+                    return;
+                }
 
                 if (runner != null)
+                {
                     runner.Clear();
+                }
+                if (lastRunner != null)
+                {
+                    lastRunner.Clear();
+                }
+
                 if (cq != null)
+                {
                     cq.Clear();
+                }
+                if (lastCq != null)
+                {
+                    lastCq.Clear();
+                }
             };
 #endif
-            
+
             var yieldLoop = new PlayerLoopSystem
             {
                 type = loopRunnerYieldType,
                 updateDelegate = cq.Run
+            };
+
+            var lastYieldLoop = new PlayerLoopSystem
+            {
+                type = lastLoopRunnerYieldType,
+                updateDelegate = lastCq.Run
             };
 
             var runnerLoop = new PlayerLoopSystem
@@ -94,12 +150,25 @@ namespace UniRx.Async
                 updateDelegate = runner.Run
             };
 
-            var source = loopSystem.subSystemList // Remove items from previous initializations.
-                .Where(ls => ls.type != loopRunnerYieldType && ls.type != loopRunnerType).ToArray();
-            var dest = new PlayerLoopSystem[source.Length + 2];
+            var lastRunnerLoop = new PlayerLoopSystem
+            {
+                type = lastLoopRunnerType,
+                updateDelegate = lastRunner.Run
+            };
+
+            // Remove items from previous initializations.
+            var source = loopSystem.subSystemList
+                .Where(ls => ls.type != loopRunnerYieldType && ls.type != loopRunnerType && ls.type != lastLoopRunnerYieldType && ls.type != lastLoopRunnerType)
+                .ToArray();
+
+            var dest = new PlayerLoopSystem[source.Length + 4];
+
             Array.Copy(source, 0, dest, 2, source.Length);
             dest[0] = yieldLoop;
             dest[1] = runnerLoop;
+            dest[dest.Length - 2] = lastYieldLoop;
+            dest[dest.Length - 1] = lastRunnerLoop;
+
             return dest;
         }
 
@@ -142,7 +211,6 @@ namespace UniRx.Async
             EditorApplication.update += ForceEditorPlayerLoopUpdate;
         }
 
-
         private static void ForceEditorPlayerLoopUpdate()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling ||
@@ -160,18 +228,46 @@ namespace UniRx.Async
 
         public static void Initialize(ref PlayerLoopSystem playerLoop)
         {
-            yielders = new ContinuationQueue[7];
-            runners = new PlayerLoopRunner[7];
+            yielders = new ContinuationQueue[14];
+            runners = new PlayerLoopRunner[14];
 
             var copyList = playerLoop.subSystemList.ToArray();
 
-            copyList[0].subSystemList = InsertRunner(copyList[0], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldInitialization), yielders[0] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerInitialization), runners[0] = new PlayerLoopRunner());
-            copyList[1].subSystemList = InsertRunner(copyList[1], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldEarlyUpdate), yielders[1] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerEarlyUpdate), runners[1] = new PlayerLoopRunner());
-            copyList[2].subSystemList = InsertRunner(copyList[2], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldFixedUpdate), yielders[2] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerFixedUpdate), runners[2] = new PlayerLoopRunner());
-            copyList[3].subSystemList = InsertRunner(copyList[3], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPreUpdate), yielders[3] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerPreUpdate), runners[3] = new PlayerLoopRunner());
-            copyList[4].subSystemList = InsertRunner(copyList[4], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldUpdate), yielders[4] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerUpdate), runners[4] = new PlayerLoopRunner());
-            copyList[5].subSystemList = InsertRunner(copyList[5], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPreLateUpdate), yielders[5] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerPreLateUpdate), runners[5] = new PlayerLoopRunner());
-            copyList[6].subSystemList = InsertRunner(copyList[6], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPostLateUpdate), yielders[6] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerPostLateUpdate), runners[6] = new PlayerLoopRunner());
+            // Initialization
+            copyList[0].subSystemList = InsertRunner(copyList[0], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldInitialization), yielders[0] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldInitialization), yielders[1] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerInitialization), runners[1] = new PlayerLoopRunner(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastInitialization), runners[1] = new PlayerLoopRunner());
+            // EarlyUpdate
+            copyList[1].subSystemList = InsertRunner(copyList[1], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldEarlyUpdate), yielders[2] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldEarlyUpdate), yielders[3] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerEarlyUpdate), runners[2] = new PlayerLoopRunner(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastEarlyUpdate), runners[3] = new PlayerLoopRunner());
+            // FixedUpdate
+            copyList[2].subSystemList = InsertRunner(copyList[2], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldFixedUpdate), yielders[4] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldFixedUpdate), yielders[5] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerFixedUpdate), runners[4] = new PlayerLoopRunner(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastFixedUpdate), runners[5] = new PlayerLoopRunner());
+            // PreUpdate
+            copyList[3].subSystemList = InsertRunner(copyList[3], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPreUpdate), yielders[6] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreUpdate), yielders[7] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerPreUpdate), runners[6] = new PlayerLoopRunner(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastPreUpdate), runners[7] = new PlayerLoopRunner());
+            // Update
+            copyList[4].subSystemList = InsertRunner(copyList[4], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldUpdate), yielders[8] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldUpdate), yielders[9] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerUpdate), runners[8] = new PlayerLoopRunner(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastUpdate), runners[9] = new PlayerLoopRunner());
+            // PreLateUpdate
+            copyList[5].subSystemList = InsertRunner(copyList[5], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPreLateUpdate), yielders[10] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreLateUpdate), yielders[11] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerPreLateUpdate), runners[10] = new PlayerLoopRunner(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastPreLateUpdate), runners[11] = new PlayerLoopRunner());
+            // PostLateUpdate
+            copyList[6].subSystemList = InsertRunner(copyList[6], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPostLateUpdate), yielders[12] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPostLateUpdate), yielders[13] = new ContinuationQueue(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerPostLateUpdate), runners[12] = new PlayerLoopRunner(),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastPostLateUpdate), runners[13] = new PlayerLoopRunner());
 
             playerLoop.subSystemList = copyList;
             PlayerLoop.SetPlayerLoop(playerLoop);

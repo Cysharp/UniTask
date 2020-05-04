@@ -22,6 +22,17 @@ public class SandboxMain : MonoBehaviour
 
     void Start()
     {
+        var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
+        ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
+
+        //for (int i = 0; i < 14; i++)
+        //{
+        //    TimingDump((PlayerLoopTiming)i).Forget();
+        //}
+
+        //StartCoroutine(CoroutineDump("yield WaitForEndOfFrame", new WaitForEndOfFrame()));
+        //StartCoroutine(CoroutineDump("yield WaitForFixedUpdate", new WaitForFixedUpdate()));
+        //StartCoroutine(CoroutineDump("yield null", null));
 
         // -----
 
@@ -44,6 +55,40 @@ public class SandboxMain : MonoBehaviour
             await ucs.Task;
         });
     }
+
+    async UniTask TimingDump(PlayerLoopTiming timing)
+    {
+        while (true)
+        {
+            await UniTask.Yield(timing);
+            Debug.Log("PlayerLoopTiming." + timing);
+        }
+    }
+
+    IEnumerator CoroutineDump(string msg, YieldInstruction waitObj)
+    {
+        while (true)
+        {
+            yield return waitObj;
+            Debug.Log(msg);
+        }
+    }
+
+    //private void Update()
+    //{
+    //    Debug.Log("Update");
+    //}
+
+    //private void LateUpdate()
+    //{
+    //    Debug.Log("LateUpdate");
+    //}
+
+    //private void FixedUpdate()
+    //{
+    //    Debug.Log("FixedUpdate");
+    //}
+
 
     private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
     {
@@ -79,9 +124,33 @@ public class SandboxMain : MonoBehaviour
         }
     }
 
+/*
+PlayerLoopTiming.Initialization
+PlayerLoopTiming.LastInitialization
+PlayerLoopTiming.EarlyUpdate
+PlayerLoopTiming.LastEarlyUpdate
+PlayerLoopTiming.PreUpdate
+PlayerLoopTiming.LastPreUpdate
+PlayerLoopTiming.Update
+Update
+yield null
+yield WaitForSeconds
+yield WWW
+yield StartCoroutine
+PlayerLoopTiming.LastUpdate
+PlayerLoopTiming.PreLateUpdate
+LateUpdate
+PlayerLoopTiming.LastPreLateUpdate
+PlayerLoopTiming.PostLateUpdate
+PlayerLoopTiming.LastPostLateUpdate
+yield WaitForEndOfFrame
 
-
-
+// --- Physics Loop
+PlayerLoopTiming.FixedUpdate
+FixedUpdate
+yield WaitForFixedUpdate
+PlayerLoopTiming.LastFixedUpdate
+*/
 
 
 
@@ -114,13 +183,17 @@ public class SandboxMain : MonoBehaviour
 
 public class ShowPlayerLoop
 {
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void Init()
     {
         var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetDefaultPlayerLoop();
+        DumpPlayerLoop("Default", playerLoop);
+    }
 
+    public static void DumpPlayerLoop(string which, UnityEngine.LowLevel.PlayerLoopSystem playerLoop)
+    {
         var sb = new StringBuilder();
-        sb.AppendLine("Default Playerloop List");
+        sb.AppendLine($"{which} PlayerLoop List");
         foreach (var header in playerLoop.subSystemList)
         {
             sb.AppendFormat("------{0}------", header.type.Name);
@@ -129,6 +202,11 @@ public class ShowPlayerLoop
             {
                 sb.AppendFormat("{0}.{1}", header.type.Name, subSystem.type.Name);
                 sb.AppendLine();
+
+                if (subSystem.subSystemList != null)
+                {
+                    UnityEngine.Debug.LogWarning("More Subsystem:" + subSystem.subSystemList.Length);
+                }
             }
         }
 

@@ -14,7 +14,7 @@ namespace RuntimeUnitTestToolkit
     public class UnitTestRunner : MonoBehaviour
     {
         // object is IEnumerator or Func<IEnumerator>
-        Dictionary<string, List<KeyValuePair<string, object>>> tests = new Dictionary<string, List<KeyValuePair<string, object>>>();
+        Dictionary<string, List<TestKeyValuePair>> tests = new Dictionary<string, List<TestKeyValuePair>>();
 
         List<Pair> additionalActionsOnFirst = new List<Pair>();
 
@@ -30,6 +30,7 @@ namespace RuntimeUnitTestToolkit
         readonly Color normalColor = new Color(1f, 1f, 1f, 1f); // white
 
         bool allTestGreen = true;
+        bool logClear = false;
 
         void Start()
         {
@@ -37,7 +38,15 @@ namespace RuntimeUnitTestToolkit
             {
                 UnityEngine.Application.logMessageReceived += (a, b, c) =>
                 {
-                    logText.text += "[" + c + "]" + a + "\n";
+                    if (a.Contains("Mesh can not have more than 65000 vertices"))
+                    {
+                        logClear = true;
+                    }
+                    else
+                    {
+                        AppendToGraphicText("[" + c + "]" + a + "\n");
+                        WriteToConsole("[" + c + "]" + a);
+                    }
                 };
 
                 // register all test types
@@ -133,13 +142,34 @@ namespace RuntimeUnitTestToolkit
                 {
                     foreach (var method in item.GetMethods())
                     {
-                        var t1 = method.GetCustomAttribute<TestAttribute>(true);
+                        TestAttribute t1 = null;
+                        try
+                        {
+                            t1 = method.GetCustomAttribute<TestAttribute>(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.Log("TestAttribute Load Fail, Assembly:" + assembly.FullName);
+                            Debug.LogException(ex);
+                            goto NEXT_ASSEMBLY;
+                        }
                         if (t1 != null)
                         {
                             yield return item;
                             break;
                         }
-                        var t2 = method.GetCustomAttribute<UnityTestAttribute>(true);
+
+                        UnityTestAttribute t2 = null;
+                        try
+                        {
+                            t2 = method.GetCustomAttribute<UnityTestAttribute>(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.Log("UnityTestAttribute Load Fail, Assembly:" + assembly.FullName);
+                            Debug.LogException(ex);
+                            goto NEXT_ASSEMBLY;
+                        }
                         if (t2 != null)
                         {
                             yield return item;
@@ -147,31 +177,34 @@ namespace RuntimeUnitTestToolkit
                         }
                     }
                 }
+
+NEXT_ASSEMBLY:
+                continue;
             }
         }
 
-        public void AddTest(string group, string title, Action test)
+        public void AddTest(string group, string title, Action test, List<Action> setups, List<Action> teardowns)
         {
-            List<KeyValuePair<string, object>> list;
+            List<TestKeyValuePair> list;
             if (!tests.TryGetValue(group, out list))
             {
-                list = new List<KeyValuePair<string, object>>();
+                list = new List<TestKeyValuePair>();
                 tests[group] = list;
             }
 
-            list.Add(new KeyValuePair<string, object>(title, test));
+            list.Add(new TestKeyValuePair(title, test, setups, teardowns));
         }
 
-        public void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
+        public void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine, List<Action> setups, List<Action> teardowns)
         {
-            List<KeyValuePair<string, object>> list;
+            List<TestKeyValuePair> list;
             if (!tests.TryGetValue(group, out list))
             {
-                list = new List<KeyValuePair<string, object>>();
+                list = new List<TestKeyValuePair>();
                 tests[group] = list;
             }
 
-            list.Add(new KeyValuePair<string, object>(title, asyncTestCoroutine));
+            list.Add(new TestKeyValuePair(title, asyncTestCoroutine, setups, teardowns));
         }
 
         public void AddCutomAction(string name, UnityAction action)
@@ -193,6 +226,29 @@ namespace RuntimeUnitTestToolkit
                 var test = Activator.CreateInstance(testType);
 
                 var methods = testType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                List<Action> setups = new List<Action>();
+                List<Action> teardowns = new List<Action>();
+                foreach (var item in methods)
+                {
+                    try
+                    {
+                        var setup = item.GetCustomAttribute<NUnit.Framework.SetUpAttribute>(true);
+                        if (setup != null)
+                        {
+                            setups.Add((Action)Delegate.CreateDelegate(typeof(Action), test, item));
+                        }
+                        var teardown = item.GetCustomAttribute<NUnit.Framework.TearDownAttribute>(true);
+                        if (teardown != null)
+                        {
+                            teardowns.Add((Action)Delegate.CreateDelegate(typeof(Action), test, item));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        UnityEngine.Debug.LogError(testType.Name + "." + item.Name + " failed to register setup/teardown method, exception: " + e.ToString());
+                    }
+                }
+
                 foreach (var item in methods)
                 {
                     try
@@ -203,11 +259,34 @@ namespace RuntimeUnitTestToolkit
                             if (item.GetParameters().Length == 0 && item.ReturnType == typeof(IEnumerator))
                             {
                                 var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
-                                AddAsyncTest(factory.Target.GetType().Name, factory.Method.Name, factory);
+                                AddAsyncTest(factory.Target.GetType().Name, factory.Method.Name, factory, setups, teardowns);
                             }
                             else
                             {
-                                UnityEngine.Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter or return type is invalid).");
+                                var testData = GetTestData(item);
+                                if (testData.Count != 0)
+                                {
+                                    foreach (var item2 in testData)
+                                    {
+                                        Func<IEnumerator> factory;
+                                        if (item.IsGenericMethod)
+                                        {
+                                            var method2 = InferGenericType(item, item2);
+                                            factory = () => (IEnumerator)method2.Invoke(test, item2);
+                                        }
+                                        else
+                                        {
+                                            factory = () => (IEnumerator)item.Invoke(test, item2);
+                                        }
+                                        var name = item.Name + "(" + string.Join(", ", item2.Select(x => x?.ToString() ?? "null")) + ")";
+                                        name = name.Replace(Char.MinValue, ' ').Replace(Char.MaxValue, ' ').Replace("<", "[").Replace(">", "]");
+                                        AddAsyncTest(test.GetType().Name, name, factory, setups, teardowns);
+                                    }
+                                }
+                                else
+                                {
+                                    UnityEngine.Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter without TestCase or return type is invalid).");
+                                }
                             }
                         }
 
@@ -217,11 +296,34 @@ namespace RuntimeUnitTestToolkit
                             if (item.GetParameters().Length == 0 && item.ReturnType == typeof(void))
                             {
                                 var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
-                                AddTest(invoke.Target.GetType().Name, invoke.Method.Name, invoke);
+                                AddTest(invoke.Target.GetType().Name, invoke.Method.Name, invoke, setups, teardowns);
                             }
                             else
                             {
-                                UnityEngine.Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter or return type is invalid).");
+                                var testData = GetTestData(item);
+                                if (testData.Count != 0)
+                                {
+                                    foreach (var item2 in testData)
+                                    {
+                                        Action invoke = null;
+                                        if (item.IsGenericMethod)
+                                        {
+                                            var method2 = InferGenericType(item, item2);
+                                            invoke = () => method2.Invoke(test, item2);
+                                        }
+                                        else
+                                        {
+                                            invoke = () => item.Invoke(test, item2);
+                                        }
+                                        var name = item.Name + "(" + string.Join(", ", item2.Select(x => x?.ToString() ?? "null")) + ")";
+                                        name = name.Replace(Char.MinValue, ' ').Replace(Char.MaxValue, ' ').Replace("<", "[").Replace(">", "]");
+                                        AddTest(test.GetType().Name, name, invoke, setups, teardowns);
+                                    }
+                                }
+                                else
+                                {
+                                    UnityEngine.Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter without TestCase or return type is invalid).");
+                                }
                             }
                         }
                     }
@@ -237,6 +339,88 @@ namespace RuntimeUnitTestToolkit
             }
         }
 
+        List<object[]> GetTestData(MethodInfo methodInfo)
+        {
+            List<object[]> testCases = new List<object[]>();
+
+            var inlineData = methodInfo.GetCustomAttributes<NUnit.Framework.TestCaseAttribute>(true);
+            foreach (var item in inlineData)
+            {
+                testCases.Add(item.Arguments);
+            }
+
+            var sourceData = methodInfo.GetCustomAttributes<NUnit.Framework.TestCaseSourceAttribute>(true);
+            foreach (var item in sourceData)
+            {
+                var enumerator = GetTestCaseSource(methodInfo, item.SourceType, item.SourceName, item.MethodParams);
+                foreach (var item2 in enumerator)
+                {
+                    var item3 = item2 as IEnumerable; // object[][]
+                    if (item3 != null)
+                    {
+                        var l = new List<object>();
+                        foreach (var item4 in item3)
+                        {
+                            l.Add(item4);
+                        }
+                        testCases.Add(l.ToArray());
+                    }
+                }
+            }
+
+            return testCases;
+        }
+
+        IEnumerable GetTestCaseSource(MethodInfo method, Type sourceType, string sourceName, object[] methodParams)
+        {
+            Type type = sourceType ?? method.DeclaringType;
+
+            MemberInfo[] member = type.GetMember(sourceName, BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+            if (member.Length == 1)
+            {
+                MemberInfo memberInfo = member[0];
+                FieldInfo fieldInfo = memberInfo as FieldInfo;
+                if ((object)fieldInfo != null)
+                {
+                    return (!fieldInfo.IsStatic) ? ReturnErrorAsParameter("The sourceName specified on a TestCaseSourceAttribute must refer to a static field, property or method.") : ((methodParams == null) ? ((IEnumerable)fieldInfo.GetValue(null)) : ReturnErrorAsParameter("You have specified a data source field but also given a set of parameters. Fields cannot take parameters, please revise the 3rd parameter passed to the TestCaseSourceAttribute and either remove it or specify a method."));
+                }
+                PropertyInfo propertyInfo = memberInfo as PropertyInfo;
+                if ((object)propertyInfo != null)
+                {
+                    return (!propertyInfo.GetGetMethod(nonPublic: true).IsStatic) ? ReturnErrorAsParameter("The sourceName specified on a TestCaseSourceAttribute must refer to a static field, property or method.") : ((methodParams == null) ? ((IEnumerable)propertyInfo.GetValue(null, null)) : ReturnErrorAsParameter("You have specified a data source property but also given a set of parameters. Properties cannot take parameters, please revise the 3rd parameter passed to the TestCaseSource attribute and either remove it or specify a method."));
+                }
+                MethodInfo methodInfo = memberInfo as MethodInfo;
+                if ((object)methodInfo != null)
+                {
+                    return (!methodInfo.IsStatic) ? ReturnErrorAsParameter("The sourceName specified on a TestCaseSourceAttribute must refer to a static field, property or method.") : ((methodParams == null || methodInfo.GetParameters().Length == methodParams.Length) ? ((IEnumerable)methodInfo.Invoke(null, methodParams)) : ReturnErrorAsParameter("You have given the wrong number of arguments to the method in the TestCaseSourceAttribute, please check the number of parameters passed in the object is correct in the 3rd parameter for the TestCaseSourceAttribute and this matches the number of parameters in the target method and try again."));
+                }
+            }
+            return null;
+        }
+
+        MethodInfo InferGenericType(MethodInfo methodInfo, object[] parameters)
+        {
+            var set = new HashSet<Type>();
+            List<Type> genericParameters = new List<Type>();
+            foreach (var item in methodInfo.GetParameters()
+                .Select((x, i) => new { x.ParameterType, i })
+                .Where(x => x.ParameterType.IsGenericParameter)
+                .OrderBy(x => x.ParameterType.GenericParameterPosition))
+            {
+                if (set.Add(item.ParameterType)) // DistinctBy
+                {
+                    genericParameters.Add(parameters[item.i].GetType());
+                }
+            }
+
+            return methodInfo.MakeGenericMethod(genericParameters.ToArray());
+        }
+
+        IEnumerable ReturnErrorAsParameter(string name)
+        {
+            throw new Exception(name);
+        }
+
         System.Collections.IEnumerator ScrollLogToEndNextFrame()
         {
             yield return null;
@@ -244,7 +428,7 @@ namespace RuntimeUnitTestToolkit
             logScrollBar.value = 0;
         }
 
-        IEnumerator RunTestInCoroutine(KeyValuePair<string, List<KeyValuePair<string, object>>> actionList)
+        IEnumerator RunTestInCoroutine(KeyValuePair<string, List<TestKeyValuePair>> actionList)
         {
             Button self = null;
             foreach (var btn in list.GetComponentsInChildren<Button>())
@@ -259,77 +443,89 @@ namespace RuntimeUnitTestToolkit
 
             var allGreen = true;
 
-            logText.text += "<color=yellow>" + actionList.Key + "</color>\n";
+            AppendToGraphicText("<color=yellow>" + actionList.Key + "</color>\n");
             WriteToConsole("Begin Test Class: " + actionList.Key);
             yield return null;
 
             var totalExecutionTime = new List<double>();
             foreach (var item2 in actionList.Value)
             {
-                // before start, cleanup
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-
-                logText.text += "<color=teal>" + item2.Key + "</color>\n";
-                yield return null;
-
-                var v = item2.Value;
-
-                var methodStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                Exception exception = null;
-                if (v is Action)
+                // setup
+                try
                 {
-                    try
+                    foreach (var setup in item2.Setups)
                     {
-                        ((Action)v).Invoke();
+                        setup();
                     }
-                    catch (Exception ex)
+
+                    // before start, cleanup
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+
+                    AppendToGraphicText("<color=teal>" + item2.Key + "</color>\n");
+                    yield return null;
+
+                    var v = item2.Value;
+
+                    var methodStopwatch = System.Diagnostics.Stopwatch.StartNew();
+                    Exception exception = null;
+                    if (v is Action)
                     {
-                        exception = ex;
-                    }
-                }
-                else
-                {
-                    var coroutineFactory = (Func<IEnumerator>)v;
-                    IEnumerator coroutine = null;
-                    try
-                    {
-                        coroutine = coroutineFactory();
-                    }
-                    catch (Exception ex)
-                    {
-                        exception = ex;
-                    }
-                    if (exception == null)
-                    {
-                        yield return StartCoroutine(UnwrapEnumerator(coroutine, ex =>
+                        try
+                        {
+                            ((Action)v).Invoke();
+                        }
+                        catch (Exception ex)
                         {
                             exception = ex;
-                        }));
+                        }
+                    }
+                    else
+                    {
+                        var coroutineFactory = (Func<IEnumerator>)v;
+                        IEnumerator coroutine = null;
+                        try
+                        {
+                            coroutine = coroutineFactory();
+                        }
+                        catch (Exception ex)
+                        {
+                            exception = ex;
+                        }
+                        if (exception == null)
+                        {
+                            yield return StartCoroutine(UnwrapEnumerator(coroutine, ex =>
+                            {
+                                exception = ex;
+                            }));
+                        }
+                    }
+                    methodStopwatch.Stop();
+                    totalExecutionTime.Add(methodStopwatch.Elapsed.TotalMilliseconds);
+                    if (exception == null)
+                    {
+                        AppendToGraphicText("OK, " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n");
+                        WriteToConsoleResult(item2.Key + ", " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms", true);
+                    }
+                    else
+                    {
+                        AppendToGraphicText("<color=red>" + exception.ToString() + "</color>\n");
+                        WriteToConsoleResult(item2.Key + ", " + exception.ToString(), false);
+                        allGreen = false;
+                        allTestGreen = false;
                     }
                 }
-
-                methodStopwatch.Stop();
-                totalExecutionTime.Add(methodStopwatch.Elapsed.TotalMilliseconds);
-                if (exception == null)
+                finally
                 {
-                    logText.text += "OK, " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n";
-                    WriteToConsoleResult(item2.Key + ", " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms", true);
-                }
-                else
-                {
-                    // found match line...
-                    var line = string.Join("\n", exception.StackTrace.Split('\n').Where(x => x.Contains(actionList.Key) || x.Contains(item2.Key)).ToArray());
-                    logText.text += "<color=red>" + exception.Message + "\n" + line + "</color>\n";
-                    WriteToConsoleResult(item2.Key + ", " + exception.Message, false);
-                    WriteToConsole(line);
-                    allGreen = false;
-                    allTestGreen = false;
+                    foreach (var teardown in item2.Teardowns)
+                    {
+                        teardown();
+                    }
                 }
             }
 
-            logText.text += "[" + actionList.Key + "]" + totalExecutionTime.Sum().ToString("0.00") + "ms\n\n";
+            AppendToGraphicText("[" + actionList.Key + "]" + totalExecutionTime.Sum().ToString("0.00") + "ms\n\n");
             foreach (var btn in list.GetComponentsInChildren<Button>()) btn.interactable = true;
             if (self != null)
             {
@@ -418,6 +614,27 @@ namespace RuntimeUnitTestToolkit
             }
         }
 
+        void AppendToGraphicText(string msg)
+        {
+            if (!Application.isBatchMode)
+            {
+                if (logClear)
+                {
+                    logText.text = "";
+                    logClear = false;
+                }
+
+                try
+                {
+                    logText.text += msg;
+                }
+                catch
+                {
+                    logClear = true;
+                }
+            }
+        }
+
         static void WriteToConsoleResult(string msg, bool green)
         {
             if (Application.isBatchMode)
@@ -445,6 +662,23 @@ namespace RuntimeUnitTestToolkit
         {
             public string Name;
             public UnityAction Action;
+        }
+    }
+
+    public class TestKeyValuePair
+    {
+        public string Key;
+        /// <summary>IEnumerator or Func[IEnumerator]</summary>
+        public object Value;
+        public List<Action> Setups;
+        public List<Action> Teardowns;
+
+        public TestKeyValuePair(string key, object value, List<Action> setups, List<Action> teardowns)
+        {
+            this.Key = key;
+            this.Value = value;
+            this.Setups = setups;
+            this.Teardowns = teardowns;
         }
     }
 }

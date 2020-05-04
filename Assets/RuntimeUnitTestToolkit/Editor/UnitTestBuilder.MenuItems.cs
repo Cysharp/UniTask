@@ -169,21 +169,25 @@ Switch,
         SaveSettings(settings);
     }
 
-    //[MenuItem("Test/Settings/BuildTarget/StandaloneLinux", validate = true, priority = 3)]
-    //static bool ValidateBuildTargetStandaloneLinux()
-    //{
-    //    Menu.SetChecked("Test/Settings/BuildTarget/StandaloneLinux", LoadOrGetDefaultSettings().BuildTarget == BuildTarget.StandaloneLinux);
-    //    return true;
-    //}
+#if !UNITY_2019_2_OR_NEWER
 
-    //[MenuItem("Test/Settings/BuildTarget/StandaloneLinux", validate = false, priority = 3)]
-    //static void BuildTargetStandaloneLinux()
-    //{
-    //    var settings = LoadOrGetDefaultSettings();
-    //    settings.UseCurrentBuildTarget = false;
-    //    settings.BuildTarget = BuildTarget.StandaloneLinux;
-    //    SaveSettings(settings);
-    //}
+    [MenuItem("Test/Settings/BuildTarget/StandaloneLinux", validate = true, priority = 3)]
+    static bool ValidateBuildTargetStandaloneLinux()
+    {
+        Menu.SetChecked("Test/Settings/BuildTarget/StandaloneLinux", LoadOrGetDefaultSettings().BuildTarget == BuildTarget.StandaloneLinux);
+        return true;
+    }
+
+    [MenuItem("Test/Settings/BuildTarget/StandaloneLinux", validate = false, priority = 3)]
+    static void BuildTargetStandaloneLinux()
+    {
+        var settings = LoadOrGetDefaultSettings();
+        settings.UseCurrentBuildTarget = false;
+        settings.BuildTarget = BuildTarget.StandaloneLinux;
+        SaveSettings(settings);
+    }
+
+#endif
 
     [MenuItem("Test/Settings/BuildTarget/StandaloneLinux64", validate = true, priority = 4)]
     static bool ValidateBuildTargetStandaloneLinux64()
