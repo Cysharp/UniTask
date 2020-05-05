@@ -9,8 +9,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine.UI;
 using UnityEngine.Scripting;
-using UniRx;
-using UniRx.Async;
+using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 #if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ using NUnit.Framework;
 using UnityEngine.TestTools;
 using FluentAssertions;
 
-namespace UniRx.AsyncTests
+namespace Cysharp.Threading.TasksTests
 {
     public class AsyncTest
     {

@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using UniRx.Async;
+using Cysharp.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;

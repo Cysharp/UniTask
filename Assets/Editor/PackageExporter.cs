@@ -12,8 +12,8 @@ public static class PackageExporter
     public static void Export()
     {
         // configure
-        var root = "UniRx.Async";
-        var exportPath = "./UniRx.Async.unitypackage";
+        var root = "UniTask";
+        var exportPath = "./UniTask.unitypackage";
 
         var path = Path.Combine(Application.dataPath, root);
         var assets = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories)

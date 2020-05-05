@@ -9,15 +9,14 @@ using System.Linq;
 using System.Text;
 using UnityEngine.UI;
 using UnityEngine.Scripting;
-using UniRx;
-using UniRx.Async;
+using Cysharp.Threading.Tasks;
 using Unity.Collections;
 using System.Threading;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 using FluentAssertions;
 
-namespace UniRx.AsyncTests
+namespace Cysharp.Threading.TasksTests
 {
     public class WhenAnyTest
     {
