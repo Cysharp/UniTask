@@ -9,9 +9,15 @@ namespace NetCoreSandbox
         static async Task Main(string[] args)
         {
             Console.WriteLine("Foo");
-            var v = await DoAsync().AsTask();
+            var v = await outer().AsTask();
 
             Console.WriteLine("Bar:" + v);
+        }
+
+        static async UniTask<int> outer()
+        {
+            var v = await DoAsync();
+            return v;
         }
 
 

@@ -100,6 +100,26 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             // don't use boxed stateMachine.
         }
+
+#if DEBUG || !UNITY_2018_3_OR_NEWER
+
+        object id;
+
+        // 9. For Debugger Attach
+        [DebuggerHidden]
+        public object ObjectIdForDebugger
+        {
+            get
+            {
+                if (id == null)
+                {
+                    id = new object();
+                }
+                return id;
+            }
+        }
+
+#endif
     }
 }
 

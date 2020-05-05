@@ -135,6 +135,20 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             // don't use boxed stateMachine.
         }
+
+        // 9. For Debugger Attach
+        [DebuggerHidden]
+        public object ObjectIdForDebugger
+        {
+            get
+            {
+                if (promise == null)
+                {
+                    promise = AutoResetUniTaskCompletionSource.Create();
+                }
+                return promise;
+            }
+        }
     }
 
     [StructLayout(LayoutKind.Auto)]
@@ -266,6 +280,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             // don't use boxed stateMachine.
         }
+
+        // 9. For Debugger Attach
+        [DebuggerHidden]
+        public object ObjectIdForDebugger
+        {
+            get
+            {
+                if (promise == null)
+                {
+                    promise = AutoResetUniTaskCompletionSource<T>.Create();
+                }
+                return promise;
+            }
+        }
     }
 }
-
