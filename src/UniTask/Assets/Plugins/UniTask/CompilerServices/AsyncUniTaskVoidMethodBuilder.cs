@@ -102,22 +102,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         }
 
 #if DEBUG || !UNITY_2018_3_OR_NEWER
-
-        object id;
-
-        // 9. For Debugger Attach
-        public object ObjectIdForDebugger
+        // Important for IDE debugger.
+        object debuggingId;
+        private object ObjectIdForDebugger
         {
             get
             {
-                if (id == null)
+                if (debuggingId == null)
                 {
-                    id = new object();
+                    debuggingId = new object();
                 }
-                return id;
+                return debuggingId;
             }
         }
-
 #endif
     }
 }
