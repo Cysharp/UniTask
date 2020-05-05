@@ -20,9 +20,9 @@ namespace Cysharp.Threading.Tasks
 #if UNITY_2018_3_OR_NEWER
 
         /// <summary>
-        /// Write log type when catch unobserved exception and not registered UnobservedTaskException. Default is Error.
+        /// Write log type when catch unobserved exception and not registered UnobservedTaskException. Default is Exception.
         /// </summary>
-        public static UnityEngine.LogType UnobservedExceptionWriteLogType = UnityEngine.LogType.Error;
+        public static UnityEngine.LogType UnobservedExceptionWriteLogType = UnityEngine.LogType.Exception;
 
         /// <summary>
         /// Dispatch exception event to Unity MainThread. Default is true.
