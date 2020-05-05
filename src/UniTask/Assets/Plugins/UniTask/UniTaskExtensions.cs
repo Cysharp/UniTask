@@ -1,5 +1,4 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Collections;
@@ -190,6 +189,8 @@ namespace Cysharp.Threading.Tasks
             return new AsyncLazy<T>(task.Preserve()); // require Preserve
         }
 
+#if UNITY_2018_3_OR_NEWER
+
         public static IEnumerator ToCoroutine<T>(this UniTask<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
         {
             return new ToCoroutineEnumerator<T>(task, resultHandler, exceptionHandler);
@@ -376,6 +377,8 @@ namespace Cysharp.Threading.Tasks
             return (false, taskResult.Result);
         }
 
+#endif
+
         public static void Forget(this UniTask task)
         {
             var awaiter = task.GetAwaiter();
@@ -431,7 +434,9 @@ namespace Cysharp.Threading.Tasks
                 {
                     if (handleExceptionOnMainThread)
                     {
+#if UNITY_2018_3_OR_NEWER
                         await UniTask.SwitchToMainThread();
+#endif
                     }
                     exceptionHandler(ex);
                 }
@@ -497,7 +502,9 @@ namespace Cysharp.Threading.Tasks
                 {
                     if (handleExceptionOnMainThread)
                     {
+#if UNITY_2018_3_OR_NEWER
                         await UniTask.SwitchToMainThread();
+#endif
                     }
                     exceptionHandler(ex);
                 }
@@ -552,6 +559,8 @@ namespace Cysharp.Threading.Tasks
             return await continuationFunction();
         }
 
+#if UNITY_2018_3_OR_NEWER
+
         public static async UniTask ConfigureAwait(this Task task, PlayerLoopTiming timing)
         {
             await task.ConfigureAwait(false);
@@ -578,6 +587,8 @@ namespace Cysharp.Threading.Tasks
             return v;
         }
 
+#endif
+
         public static async UniTask<T> Unwrap<T>(this UniTask<UniTask<T>> task)
         {
             return await await task;
@@ -587,6 +598,8 @@ namespace Cysharp.Threading.Tasks
         {
             await await task;
         }
+
+#if UNITY_2018_3_OR_NEWER
 
         class ToCoroutineEnumerator : IEnumerator
         {
@@ -721,7 +734,8 @@ namespace Cysharp.Threading.Tasks
             {
             }
         }
+    
+#endif
     }
 }
 
-#endif

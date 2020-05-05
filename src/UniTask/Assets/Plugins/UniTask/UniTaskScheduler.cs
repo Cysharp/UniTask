@@ -1,5 +1,4 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Threading;
@@ -18,6 +17,8 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static bool PropagateOperationCanceledException = false;
 
+#if UNITY_2018_3_OR_NEWER
+
         /// <summary>
         /// Write log type when catch unobserved exception and not registered UnobservedTaskException. Default is Error.
         /// </summary>
@@ -27,9 +28,15 @@ namespace Cysharp.Threading.Tasks
         /// Dispatch exception event to Unity MainThread. Default is true.
         /// </summary>
         public static bool DispatchUnityMainThread = true;
-
+        
         // cache delegate.
         static readonly SendOrPostCallback handleExceptionInvoke = InvokeUnobservedTaskException;
+
+        static void InvokeUnobservedTaskException(object state)
+        {
+            UnobservedTaskException((Exception)state);
+        }
+#endif
 
         internal static void PublishUnobservedTaskException(Exception ex)
         {
@@ -42,6 +49,7 @@ namespace Cysharp.Threading.Tasks
 
                 if (UnobservedTaskException != null)
                 {
+#if UNITY_2018_3_OR_NEWER
                     if (!DispatchUnityMainThread || Thread.CurrentThread.ManagedThreadId == PlayerLoopHelper.MainThreadId)
                     {
                         // allows inlining call.
@@ -52,9 +60,13 @@ namespace Cysharp.Threading.Tasks
                         // Post to MainThread.
                         PlayerLoopHelper.UnitySynchronizationContext.Post(handleExceptionInvoke, ex);
                     }
+#else
+                    UnobservedTaskException.Invoke(ex);
+#endif
                 }
                 else
                 {
+#if UNITY_2018_3_OR_NEWER
                     string msg = null;
                     if (UnobservedExceptionWriteLogType != UnityEngine.LogType.Exception)
                     {
@@ -80,15 +92,12 @@ namespace Cysharp.Threading.Tasks
                         default:
                             break;
                     }
+#else
+                    Console.WriteLine(ex.ToString());
+#endif
                 }
             }
-        }
-
-        static void InvokeUnobservedTaskException(object state)
-        {
-            UnobservedTaskException((Exception)state);
         }
     }
 }
 
-#endif

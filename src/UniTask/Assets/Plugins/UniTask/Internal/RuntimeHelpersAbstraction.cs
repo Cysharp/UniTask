@@ -1,8 +1,9 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+#if UNITY_2018_3_OR_NEWER
 using UnityEngine;
+#endif
 
 namespace Cysharp.Threading.Tasks.Internal
 {
@@ -31,6 +32,8 @@ namespace Cysharp.Threading.Tasks.Internal
                 return WellKnownNoReferenceContainsTypeInitialize(t.GetGenericArguments()[0]);
             }
 
+#if UNITY_2018_3_OR_NEWER
+
             // or add other wellknown types(Vector, etc...) here
             if (t == typeof(Vector2)) return true;
             if (t == typeof(Vector3)) return true;
@@ -41,6 +44,8 @@ namespace Cysharp.Threading.Tasks.Internal
             if (t == typeof(Quaternion)) return true;
             if (t == typeof(Vector2Int)) return true;
             if (t == typeof(Vector3Int)) return true;
+
+#endif
 
             return false;
         }
@@ -57,4 +62,3 @@ namespace Cysharp.Threading.Tasks.Internal
     }
 }
 
-#endif

@@ -1,5 +1,4 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Collections.Generic;
@@ -46,7 +45,6 @@ namespace Cysharp.Threading.Tasks
         sealed class WhenAnyLRPromise<T> : IUniTaskSource<(bool, T)>
         {
             int completedCount;
-            int winArgumentIndex;
             UniTaskCompletionSourceCore<(bool, T)> core;
 
             public WhenAnyLRPromise(UniTask<T> leftTask, UniTask rightTask)
@@ -184,7 +182,6 @@ namespace Cysharp.Threading.Tasks
         sealed class WhenAnyPromise<T> : IUniTaskSource<(int, T)>
         {
             int completedCount;
-            int winArgumentIndex;
             UniTaskCompletionSourceCore<(int, T)> core;
 
             public WhenAnyPromise(UniTask<T>[] tasks, int tasksLength)
@@ -276,7 +273,6 @@ namespace Cysharp.Threading.Tasks
         sealed class WhenAnyPromise : IUniTaskSource<int>
         {
             int completedCount;
-            int winArgumentIndex;
             UniTaskCompletionSourceCore<int> core;
 
             public WhenAnyPromise(UniTask[] tasks, int tasksLength)
@@ -366,4 +362,3 @@ namespace Cysharp.Threading.Tasks
     }
 }
 
-#endif

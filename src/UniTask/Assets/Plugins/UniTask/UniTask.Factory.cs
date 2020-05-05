@@ -1,9 +1,7 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Threading;
-using UnityEngine.Events;
 
 namespace Cysharp.Threading.Tasks
 {
@@ -117,10 +115,14 @@ namespace Cysharp.Threading.Tasks
             return () => Void(asyncAction);
         }
 
-        public static UnityAction VoidUnityAction(Func<UniTask> asyncAction)
+#if UNITY_2018_3_OR_NEWER
+
+        public static UnityEngine.Events.UnityAction VoidUnityAction(Func<UniTask> asyncAction)
         {
             return () => Void(asyncAction);
         }
+
+#endif
 
         /// <summary>
         /// helper of create add UniTaskVoid to delegate.
@@ -142,4 +144,3 @@ namespace Cysharp.Threading.Tasks
         public static readonly UniTask<int> One = UniTask.FromResult(1);
     }
 }
-#endif

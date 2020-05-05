@@ -1,5 +1,4 @@
-﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Runtime.CompilerServices;
@@ -11,6 +10,8 @@ namespace Cysharp.Threading.Tasks
 {
     public partial struct UniTask
     {
+#if UNITY_2018_3_OR_NEWER
+
         /// <summary>
         /// If running on mainthread, do nothing. Otherwise, same as UniTask.Yield(PlayerLoopTiming.Update).
         /// </summary>
@@ -18,6 +19,8 @@ namespace Cysharp.Threading.Tasks
         {
             return new SwitchToMainThreadAwaitable();
         }
+
+#endif
 
         public static SwitchToThreadPoolAwaitable SwitchToThreadPool()
         {
@@ -35,6 +38,8 @@ namespace Cysharp.Threading.Tasks
             return new SwitchToSynchronizationContextAwaitable(syncContext);
         }
     }
+
+#if UNITY_2018_3_OR_NEWER
 
     public struct SwitchToMainThreadAwaitable
     {
@@ -71,6 +76,8 @@ namespace Cysharp.Threading.Tasks
             }
         }
     }
+
+#endif
 
     public struct SwitchToThreadPoolAwaitable
     {
@@ -173,4 +180,3 @@ namespace Cysharp.Threading.Tasks
     }
 }
 
-#endif
