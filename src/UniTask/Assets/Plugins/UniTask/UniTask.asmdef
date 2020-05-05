@@ -1,7 +1,6 @@
 {
     "name": "UniTask",
     "references": [
-        "Unity.Addressables",
         "Unity.ResourceManager"
     ],
     "includePlatforms": [],
@@ -11,6 +10,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.addressables",
+            "expression": "",
+            "define": "UNITASK_ADDRESSABLE_SUPPORT"
+        }
+    ],
     "noEngineReferences": false
 }

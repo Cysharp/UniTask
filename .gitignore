@@ -147,3 +147,11 @@ Assembly-CSharp-Editor\.csproj
 UniRx\.Async\.unitypackage
 
 UniRx.Async.Tests.Editor.csproj
+
+src/UniTask/UniTask.csproj
+
+src/UniTask/UniTask.Editor.csproj
+
+src/UniTask/UniTask.Tests.csproj
+
+src/UniTask/UniTask.Tests.Editor.csproj

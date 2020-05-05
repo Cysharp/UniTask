@@ -4,7 +4,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "UniTask.Tests",
-        "UniTask"
+        "UniTask",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [
         "Editor"
