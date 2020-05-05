@@ -12,7 +12,7 @@ public static class PackageExporter
     public static void Export()
     {
         // configure
-        var root = "UniTask";
+        var root = "Plugins/UniTask";
         var exportPath = "./UniTask.unitypackage";
 
         var path = Path.Combine(Application.dataPath, root);

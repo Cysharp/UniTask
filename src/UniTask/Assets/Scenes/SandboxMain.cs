@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks.Triggers;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +39,19 @@ public class SandboxMain : MonoBehaviour
     CancellationTokenSource cts;
 
     UniTaskCompletionSource ucs;
+    async UniTask<int> FooAsync()
+    {
+        // use F10, will crash.
+        var loop = int.Parse("9");
+        await UniTask.DelayFrame(loop);
 
+        Debug.Log("OK");
+        await UniTask.DelayFrame(loop);
+
+        Debug.Log("Again");
+
+        return 10;
+    }
 
 
     async UniTask RunStandardDelayAsync()
@@ -57,7 +70,7 @@ public class SandboxMain : MonoBehaviour
 
         var scheduled = job.Schedule();
 
-      
+
 
 
         UnityEngine.Debug.Log("OK");
@@ -76,7 +89,7 @@ public class SandboxMain : MonoBehaviour
         ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
 
 
-        RunStandardDelayAsync().Forget();
+        //RunStandardDelayAsync().Forget();
 
         //for (int i = 0; i < 14; i++)
         //{
@@ -89,7 +102,10 @@ public class SandboxMain : MonoBehaviour
 
         // -----
 
-        RunJobAsync().Forget();
+        // RunJobAsync().Forget();
+
+        //ClickOnce().Forget();
+        //ClickForever().Forget();
 
         //var cor = UniTask.ToCoroutine(async () =>
         // {
@@ -102,24 +118,99 @@ public class SandboxMain : MonoBehaviour
         //StartCoroutine(cor);
 
 
+        //this.TryGetComponent(
+
+
+        CancellationTokenSource cts = new CancellationTokenSource();
+
+        var trigger = this.GetAsyncUpdateTrigger();
+        Go(trigger, cts.Token).Forget();
+        //Go(trigger).Forget();
+        //Go(trigger).Forget();
+
+
         Application.logMessageReceived += Application_logMessageReceived;
 
 
-        ucs = new UniTaskCompletionSource();
+        //ucs = new UniTaskCompletionSource();
 
-        okButton.onClick.AddListener(async () =>
+        //okButton.onClick.AddListener(async () =>
+        //{
+        //    await InnerAsync(false);
+        //});
+
+        okButton.onClick.AddListener(() =>
         {
-            await InnerAsync(false);
+            FooAsync().Forget();
         });
 
-        cancelButton.onClick.AddListener(async () =>
+        cancelButton.onClick.AddListener(() =>
         {
             text.text = "";
 
             // ucs.TrySetResult();
 
-            await ucs.Task;
+            cts.Cancel();
         });
+    }
+
+    async UniTaskVoid Go(AsyncUpdateTrigger trigger, CancellationToken ct)
+    {
+        await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+        UnityEngine.Debug.Log("AWAIT BEFO:" + Time.frameCount);
+        var handler = trigger.GetUpdateAsyncHandler(ct);
+
+        try
+        {
+            while (true)
+            {
+                await handler.UpdateAsync();
+            }
+        }
+        finally
+        {
+            UnityEngine.Debug.Log("AWAIT END:" + Time.frameCount);
+        }
+    }
+
+    async UniTaskVoid ClickOnce()
+    {
+        try
+        {
+            await okButton.OnClickAsync();
+            UnityEngine.Debug.Log("CLICKED ONCE");
+        }
+        catch (Exception ex)
+        {
+            UnityEngine.Debug.Log(ex.ToString());
+        }
+        finally
+        {
+            UnityEngine.Debug.Log("END ONCE");
+        }
+    }
+
+    async UniTaskVoid ClickForever()
+    {
+        try
+        {
+            using (var handler = okButton.GetAsyncClickEventHandler())
+            {
+                while (true)
+                {
+                    await handler.OnClickAsync();
+                    UnityEngine.Debug.Log("Clicked");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            UnityEngine.Debug.Log(ex.ToString());
+        }
+        finally
+        {
+            UnityEngine.Debug.Log("END");
+        }
     }
 
     async UniTask SimpleAwait()
@@ -174,7 +265,10 @@ public class SandboxMain : MonoBehaviour
 
     private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
     {
-        text.text += "\n" + condition;
+        if (text != null)
+        {
+            text.text += "\n" + condition;
+        }
     }
 
     async UniTask OuterAsync(bool b)

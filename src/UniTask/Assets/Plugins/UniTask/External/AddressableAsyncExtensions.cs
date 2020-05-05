@@ -1,4 +1,6 @@
-﻿#if UNITASK_ADDRESSABLE_SUPPORT
+﻿// asmdef Version Defines, enabled when com.unity.addressables is imported.
+
+#if UNITASK_ADDRESSABLE_SUPPORT
 
 using Cysharp.Threading.Tasks.Internal;
 using System;

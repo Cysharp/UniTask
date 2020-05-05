@@ -31,11 +31,18 @@ namespace Cysharp.Threading.Tasks.Triggers
         static T GetOrAddComponent<T>(GameObject gameObject)
             where T : Component
         {
+#if UNITY_2019_2_OR_NEWER
+            if (!gameObject.TryGetComponent<T>(out var component))
+            {
+                component = gameObject.AddComponent<T>();
+            }
+#else
             var component = gameObject.GetComponent<T>();
             if (component == null)
             {
                 component = gameObject.AddComponent<T>();
             }
+#endif
 
             return component;
         }

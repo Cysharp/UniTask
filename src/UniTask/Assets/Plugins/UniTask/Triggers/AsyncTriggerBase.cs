@@ -356,11 +356,11 @@ namespace Cysharp.Threading.Tasks.Triggers
             }
             else
             {
-                if (handlers != null)
+                if (handlers == null)
                 {
                     handlers = new List<AsyncTriggerHandler<T>>();
-                    handlers.Add(handler);
                 }
+                handlers.Add(handler);
             }
         }
 

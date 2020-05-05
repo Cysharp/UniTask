@@ -106,7 +106,6 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         object id;
 
         // 9. For Debugger Attach
-        [DebuggerHidden]
         public object ObjectIdForDebugger
         {
             get
