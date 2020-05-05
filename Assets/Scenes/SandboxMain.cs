@@ -6,9 +6,28 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UniRx.Async;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+
+public struct MyJob : IJob
+{
+    public int loopCount;
+    public NativeArray<int> inOut;
+    public int result;
+
+    public void Execute()
+    {
+        result = 0;
+        for (int i = 0; i < loopCount; i++)
+        {
+            result++;
+        }
+        inOut[0] = result;
+    }
+}
 
 public class SandboxMain : MonoBehaviour
 {
@@ -20,10 +39,44 @@ public class SandboxMain : MonoBehaviour
 
     UniTaskCompletionSource ucs;
 
+
+
+    async UniTask RunStandardDelayAsync()
+    {
+        UnityEngine.Debug.Log("DEB");
+
+        await UniTask.DelayFrame(30);
+
+        UnityEngine.Debug.Log("DEB END");
+    }
+
+    async UniTask RunJobAsync()
+    {
+        var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
+        JobHandle.ScheduleBatchedJobs();
+
+        var scheduled = job.Schedule();
+
+      
+
+
+        UnityEngine.Debug.Log("OK");
+        await scheduled; // .ConfigureAwait(PlayerLoopTiming.Update); // .WaitAsync(PlayerLoopTiming.Update);
+        UnityEngine.Debug.Log("OK2");
+
+        job.inOut.Dispose();
+    }
+
     void Start()
     {
+        Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
+        Application.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
+
         var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
         ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
+
+
+        RunStandardDelayAsync().Forget();
 
         //for (int i = 0; i < 14; i++)
         //{
@@ -35,6 +88,19 @@ public class SandboxMain : MonoBehaviour
         //StartCoroutine(CoroutineDump("yield null", null));
 
         // -----
+
+        RunJobAsync().Forget();
+
+        //var cor = UniTask.ToCoroutine(async () =>
+        // {
+        //     var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
+        //     JobHandle.ScheduleBatchedJobs();
+        //     await job.Schedule().WaitAsync(PlayerLoopTiming.Update);
+        //     job.inOut.Dispose();
+        // });
+
+        //StartCoroutine(cor);
+
 
         Application.logMessageReceived += Application_logMessageReceived;
 
@@ -54,6 +120,22 @@ public class SandboxMain : MonoBehaviour
 
             await ucs.Task;
         });
+    }
+
+    async UniTask SimpleAwait()
+    {
+        await UniTask.Yield();
+        await UniTask.Yield();
+        await UniTask.Yield();
+        throw new InvalidOperationException("bar!!!");
+    }
+
+    IEnumerator SimpleCoroutine()
+    {
+        yield return null;
+        yield return null;
+        yield return null;
+        throw new InvalidOperationException("foo!!!");
     }
 
     async UniTask TimingDump(PlayerLoopTiming timing)
@@ -124,33 +206,33 @@ public class SandboxMain : MonoBehaviour
         }
     }
 
-/*
-PlayerLoopTiming.Initialization
-PlayerLoopTiming.LastInitialization
-PlayerLoopTiming.EarlyUpdate
-PlayerLoopTiming.LastEarlyUpdate
-PlayerLoopTiming.PreUpdate
-PlayerLoopTiming.LastPreUpdate
-PlayerLoopTiming.Update
-Update
-yield null
-yield WaitForSeconds
-yield WWW
-yield StartCoroutine
-PlayerLoopTiming.LastUpdate
-PlayerLoopTiming.PreLateUpdate
-LateUpdate
-PlayerLoopTiming.LastPreLateUpdate
-PlayerLoopTiming.PostLateUpdate
-PlayerLoopTiming.LastPostLateUpdate
-yield WaitForEndOfFrame
+    /*
+    PlayerLoopTiming.Initialization
+    PlayerLoopTiming.LastInitialization
+    PlayerLoopTiming.EarlyUpdate
+    PlayerLoopTiming.LastEarlyUpdate
+    PlayerLoopTiming.PreUpdate
+    PlayerLoopTiming.LastPreUpdate
+    PlayerLoopTiming.Update
+    Update
+    yield null
+    yield WaitForSeconds
+    yield WWW
+    yield StartCoroutine
+    PlayerLoopTiming.LastUpdate
+    PlayerLoopTiming.PreLateUpdate
+    LateUpdate
+    PlayerLoopTiming.LastPreLateUpdate
+    PlayerLoopTiming.PostLateUpdate
+    PlayerLoopTiming.LastPostLateUpdate
+    yield WaitForEndOfFrame
 
-// --- Physics Loop
-PlayerLoopTiming.FixedUpdate
-FixedUpdate
-yield WaitForFixedUpdate
-PlayerLoopTiming.LastFixedUpdate
-*/
+    // --- Physics Loop
+    PlayerLoopTiming.FixedUpdate
+    FixedUpdate
+    yield WaitForFixedUpdate
+    PlayerLoopTiming.LastFixedUpdate
+    */
 
 
 

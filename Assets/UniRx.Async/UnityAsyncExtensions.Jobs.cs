@@ -9,42 +9,45 @@ namespace UniRx.Async
 {
     public static partial class UnityAsyncExtensions
     {
+        public static async UniTask WaitAsync(this JobHandle jobHandle, PlayerLoopTiming waitTiming)
+        {
+            await UniTask.Yield(waitTiming);
+            jobHandle.Complete();
+        }
+
         public static UniTask.Awaiter GetAwaiter(this JobHandle jobHandle)
         {
-            var handler = JobHandlePromise.Create(jobHandle, CancellationToken.None, out var token);
-            if (handler.GetStatus(token).IsCompleted() && handler is JobHandlePromise loopItem)
+            var handler = JobHandlePromise.Create(jobHandle, out var token);
             {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, handler);
             }
 
             return new UniTask(handler, token).GetAwaiter();
         }
 
-        public static UniTask ToUniTask(this JobHandle jobHandle, CancellationToken cancellation = default(CancellationToken))
+        public static UniTask ToUniTask(this JobHandle jobHandle)
         {
-            var handler = JobHandlePromise.Create(jobHandle, cancellation, out var token);
-            if (handler.GetStatus(token).IsCompleted() && handler is JobHandlePromise loopItem)
+            var handler = JobHandlePromise.Create(jobHandle, out var token);
             {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, loopItem);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, loopItem);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, handler);
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, handler);
             }
 
             return new UniTask(handler, token);
         }
 
-        public static UniTask ConfigureAwait(this JobHandle jobHandle, PlayerLoopTiming waitTiming, CancellationToken cancellation = default(CancellationToken))
+        public static UniTask ConfigureAwait(this JobHandle jobHandle, PlayerLoopTiming waitTiming)
         {
-            var handler = JobHandlePromise.Create(jobHandle, cancellation, out var token);
-            if (handler.GetStatus(token).IsCompleted() && handler is JobHandlePromise loopItem)
+            var handler = JobHandlePromise.Create(jobHandle, out var token);
             {
-                PlayerLoopHelper.AddAction(waitTiming, loopItem);
+                PlayerLoopHelper.AddAction(waitTiming, handler);
             }
 
             return new UniTask(handler, token);
@@ -53,22 +56,16 @@ namespace UniRx.Async
         sealed class JobHandlePromise : IUniTaskSource, IPlayerLoopItem
         {
             JobHandle jobHandle;
-            CancellationToken cancellationToken;
 
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
-            public static IUniTaskSource Create(JobHandle jobHandle, CancellationToken cancellationToken, out short token)
+            // Cancellation is not supported.
+            public static JobHandlePromise Create(JobHandle jobHandle, out short token)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
-                }
-
                 // not use pool.
                 var result = new JobHandlePromise();
 
                 result.jobHandle = jobHandle;
-                result.cancellationToken = cancellationToken;
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -99,12 +96,6 @@ namespace UniRx.Async
 
             public bool MoveNext()
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    core.TrySetCanceled(cancellationToken);
-                    return false;
-                }
-
                 if (jobHandle.IsCompleted)
                 {
                     jobHandle.Complete();
