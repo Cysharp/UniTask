@@ -53,14 +53,13 @@ namespace Cysharp.Threading.Tasks
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
-                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+                    asyncOperation = null;
                 }
                 else
                 {
-                    asyncOperation = null; // remove reference.
+                    asyncOperation = null;
                 }
-
             }
 
             public void OnCompleted(Action continuation)
@@ -209,13 +208,11 @@ namespace Cysharp.Threading.Tasks
         {
             ResourceRequest asyncOperation;
             Action<AsyncOperation> continuationAction;
-            UnityEngine.Object result;
 
             public ResourceRequestAwaiter(ResourceRequest asyncOperation)
             {
                 this.asyncOperation = asyncOperation;
                 this.continuationAction = null;
-                this.result = default;
             }
 
             public bool IsCompleted => asyncOperation.isDone;
@@ -225,15 +222,17 @@ namespace Cysharp.Threading.Tasks
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
-                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+                    var result = asyncOperation.asset;
+                    asyncOperation = null;
+                    return result;
                 }
                 else
                 {
-                    asyncOperation = null; // remove reference.
+                    var result = asyncOperation.asset;
+                    asyncOperation = null;
+                    return result;
                 }
-
-                return this.result;
             }
 
             public void OnCompleted(Action continuation)
@@ -386,13 +385,11 @@ namespace Cysharp.Threading.Tasks
         {
             AssetBundleRequest asyncOperation;
             Action<AsyncOperation> continuationAction;
-            UnityEngine.Object result;
 
             public AssetBundleRequestAwaiter(AssetBundleRequest asyncOperation)
             {
                 this.asyncOperation = asyncOperation;
                 this.continuationAction = null;
-                this.result = default;
             }
 
             public bool IsCompleted => asyncOperation.isDone;
@@ -402,15 +399,17 @@ namespace Cysharp.Threading.Tasks
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
-                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+                    var result = asyncOperation.asset;
+                    asyncOperation = null;
+                    return result;
                 }
                 else
                 {
-                    asyncOperation = null; // remove reference.
+                    var result = asyncOperation.asset;
+                    asyncOperation = null;
+                    return result;
                 }
-
-                return this.result;
             }
 
             public void OnCompleted(Action continuation)
@@ -563,13 +562,11 @@ namespace Cysharp.Threading.Tasks
         {
             AssetBundleCreateRequest asyncOperation;
             Action<AsyncOperation> continuationAction;
-            AssetBundle result;
 
             public AssetBundleCreateRequestAwaiter(AssetBundleCreateRequest asyncOperation)
             {
                 this.asyncOperation = asyncOperation;
                 this.continuationAction = null;
-                this.result = default;
             }
 
             public bool IsCompleted => asyncOperation.isDone;
@@ -579,15 +576,17 @@ namespace Cysharp.Threading.Tasks
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
-                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+                    var result = asyncOperation.assetBundle;
+                    asyncOperation = null;
+                    return result;
                 }
                 else
                 {
-                    asyncOperation = null; // remove reference.
+                    var result = asyncOperation.assetBundle;
+                    asyncOperation = null;
+                    return result;
                 }
-
-                return this.result;
             }
 
             public void OnCompleted(Action continuation)
@@ -741,13 +740,11 @@ namespace Cysharp.Threading.Tasks
         {
             UnityWebRequestAsyncOperation asyncOperation;
             Action<AsyncOperation> continuationAction;
-            UnityWebRequest result;
 
             public UnityWebRequestAsyncOperationAwaiter(UnityWebRequestAsyncOperation asyncOperation)
             {
                 this.asyncOperation = asyncOperation;
                 this.continuationAction = null;
-                this.result = default;
             }
 
             public bool IsCompleted => asyncOperation.isDone;
@@ -757,15 +754,17 @@ namespace Cysharp.Threading.Tasks
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
-                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+                    var result = asyncOperation.webRequest;
+                    asyncOperation = null;
+                    return result;
                 }
                 else
                 {
-                    asyncOperation = null; // remove reference.
+                    var result = asyncOperation.webRequest;
+                    asyncOperation = null;
+                    return result;
                 }
-
-                return this.result;
             }
 
             public void OnCompleted(Action continuation)

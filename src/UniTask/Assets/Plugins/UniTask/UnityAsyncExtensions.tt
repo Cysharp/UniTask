@@ -63,17 +63,11 @@ namespace Cysharp.Threading.Tasks
         {
             <#= t.typeName #> asyncOperation;
             Action<AsyncOperation> continuationAction;
-<# if (!IsVoid(t)) { #>
-            <#= t.returnType #> result;
-<# } #>
 
             public <#= t.typeName #>Awaiter(<#= t.typeName #> asyncOperation)
             {
                 this.asyncOperation = asyncOperation;
                 this.continuationAction = null;
-<# if (!IsVoid(t)) { #>
-                this.result = default;
-<# } #>
             }
 
             public bool IsCompleted => asyncOperation.isDone;
@@ -83,17 +77,25 @@ namespace Cysharp.Threading.Tasks
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
-                    asyncOperation = null; // remove reference.
                     continuationAction = null;
+<# if (!IsVoid(t)) { #>
+                    var result = <#= $"asyncOperation.{t.returnField}" #>;
+                    asyncOperation = null;
+                    return result;
+<# } else { #>
+                    asyncOperation = null;
+<# } #>
                 }
                 else
                 {
-                    asyncOperation = null; // remove reference.
-                }
-
 <# if (!IsVoid(t)) { #>
-                return this.result;
+                    var result = <#= $"asyncOperation.{t.returnField}" #>;
+                    asyncOperation = null;
+                    return result;
+<# } else { #>
+                    asyncOperation = null;
 <# } #>
+                }
             }
 
             public void OnCompleted(Action continuation)

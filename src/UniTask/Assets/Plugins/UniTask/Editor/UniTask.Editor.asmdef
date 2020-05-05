@@ -1,12 +1,17 @@
 {
-    "name": "UniRx.Async",
-    "references": [],
-    "includePlatforms": [],
+    "name": "UniTask.Editor",
+    "references": [
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

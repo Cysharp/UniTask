@@ -1,14 +1,12 @@
 {
-    "name": "UniRx.Async.Tests.Editor",
+    "name": "UniTask.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "UniRx.Async",
-        "UniRx.Async.Tests"
+        "UniTask",
+        "Unity.ResourceManager"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
@@ -19,5 +17,6 @@
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }
