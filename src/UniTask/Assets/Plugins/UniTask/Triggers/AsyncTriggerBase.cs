@@ -212,11 +212,16 @@ namespace Cysharp.Threading.Tasks.Triggers
         // optimize: many cases, handler is single.
         AsyncTriggerHandler<T> singleHandler;
 
-        List<AsyncTriggerHandler<T>> handlers;
+        AsyncTriggerHandler<T>[] handlers;
+
+        // when running(in TrySetResult), does not add immediately.
+        bool isRunning;
+        AsyncTriggerHandler<T> waitHandler;
+        MinimumQueue<AsyncTriggerHandler<T>> waitQueue;
 
         public bool TrySetResult(T value)
         {
-            List<Exception> exceptions = null;
+            isRunning = true;
 
             if (singleHandler != null)
             {
@@ -226,56 +231,44 @@ namespace Cysharp.Threading.Tasks.Triggers
                 }
                 catch (Exception ex)
                 {
-                    if (handlers == null)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        exceptions = new List<Exception>();
-                        exceptions.Add(ex);
-                    }
+                    Debug.LogException(ex);
                 }
             }
 
             if (handlers != null)
             {
-                // make snapshot
-                var rentArray = ArrayPoolUtil.CopyToRentArray(handlers);
-                var clearArray = true;
-                try
+                for (int i = 0; i < handlers.Length; i++)
                 {
-                    var array = rentArray.Array;
-                    var len = rentArray.Length;
-                    for (int i = 0; i < len; i++)
+                    if (handlers[i] != null)
                     {
                         try
                         {
-                            ((IResolvePromise<T>)array[i]).TrySetResult(value);
+                            ((IResolvePromise<T>)handlers[i]).TrySetResult(value);
                         }
                         catch (Exception ex)
                         {
-                            if (exceptions == null)
-                            {
-                                exceptions = new List<Exception>();
-                            }
-                            exceptions.Add(ex);
-                        }
-                        finally
-                        {
-                            array[i] = null;
+                            handlers[i] = null;
+                            Debug.LogException(ex);
                         }
                     }
                 }
-                finally
-                {
-                    rentArray.DisposeManually(clearArray);
-                }
             }
 
-            if (exceptions != null)
+            isRunning = false;
+
+            if (waitHandler != null)
             {
-                throw new AggregateException(exceptions);
+                var h = waitHandler;
+                waitHandler = null;
+                Add(h);
+            }
+
+            if (waitQueue != null)
+            {
+                while (waitQueue.Count != 0)
+                {
+                    Add(waitQueue.Dequeue());
+                }
             }
 
             return true;
@@ -283,7 +276,7 @@ namespace Cysharp.Threading.Tasks.Triggers
 
         public bool TrySetCanceled(CancellationToken cancellationToken)
         {
-            List<Exception> exceptions = null;
+            isRunning = true;
 
             if (singleHandler != null)
             {
@@ -293,56 +286,44 @@ namespace Cysharp.Threading.Tasks.Triggers
                 }
                 catch (Exception ex)
                 {
-                    if (handlers == null)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        exceptions = new List<Exception>();
-                        exceptions.Add(ex);
-                    }
+                    Debug.LogException(ex);
                 }
             }
 
             if (handlers != null)
             {
-                // make snapshot
-                var rentArray = ArrayPoolUtil.CopyToRentArray(handlers);
-                var clearArray = true;
-                try
+                for (int i = 0; i < handlers.Length; i++)
                 {
-                    var array = rentArray.Array;
-                    var len = rentArray.Length;
-                    for (int i = 0; i < len; i++)
+                    if (handlers[i] != null)
                     {
                         try
                         {
-                            ((ICancelPromise)array[i]).TrySetCanceled(cancellationToken);
+                            ((ICancelPromise)handlers[i]).TrySetCanceled(cancellationToken);
                         }
                         catch (Exception ex)
                         {
-                            if (exceptions == null)
-                            {
-                                exceptions = new List<Exception>();
-                            }
-                            exceptions.Add(ex);
-                        }
-                        finally
-                        {
-                            array[i] = null;
+                            Debug.LogException(ex);
+                            handlers[i] = null;
                         }
                     }
                 }
-                finally
-                {
-                    rentArray.DisposeManually(clearArray);
-                }
             }
 
-            if (exceptions != null)
+            isRunning = false;
+
+            if (waitHandler != null)
             {
-                throw new AggregateException(exceptions);
+                var h = waitHandler;
+                waitHandler = null;
+                Add(h);
+            }
+
+            if (waitQueue != null)
+            {
+                while (waitQueue.Count != 0)
+                {
+                    Add(waitQueue.Dequeue());
+                }
             }
 
             return true;
@@ -350,6 +331,22 @@ namespace Cysharp.Threading.Tasks.Triggers
 
         public void Add(AsyncTriggerHandler<T> handler)
         {
+            if (isRunning)
+            {
+                if (waitHandler == null)
+                {
+                    waitHandler = handler;
+                    return;
+                }
+
+                if (waitQueue == null)
+                {
+                    waitQueue = new MinimumQueue<AsyncTriggerHandler<T>>(4);
+                }
+                waitQueue.Enqueue(handler);
+                return;
+            }
+
             if (singleHandler == null)
             {
                 singleHandler = handler;
@@ -358,10 +355,34 @@ namespace Cysharp.Threading.Tasks.Triggers
             {
                 if (handlers == null)
                 {
-                    handlers = new List<AsyncTriggerHandler<T>>();
+                    handlers = new AsyncTriggerHandler<T>[4];
                 }
-                handlers.Add(handler);
+
+                // check empty
+                for (int i = 0; i < handlers.Length; i++)
+                {
+                    if (handlers[i] == null)
+                    {
+                        handlers[i] = handler;
+                        return;
+                    }
+                }
+
+                // full, ensure capacity
+                var last = handlers.Length;
+                {
+                    EnsureCapacity(ref handlers);
+                    handlers[last] = handler;
+                }
             }
+        }
+
+        static void EnsureCapacity(ref AsyncTriggerHandler<T>[] array)
+        {
+            var newSize = array.Length * 2;
+            var newArray = new AsyncTriggerHandler<T>[newSize];
+            Array.Copy(array, 0, newArray, 0, array.Length);
+            array = newArray;
         }
 
         public void Remove(AsyncTriggerHandler<T> handler)
@@ -374,7 +395,15 @@ namespace Cysharp.Threading.Tasks.Triggers
             {
                 if (handlers != null)
                 {
-                    handlers.Remove(handler);
+                    for (int i = 0; i < handlers.Length; i++)
+                    {
+                        if (handlers[i] == handler)
+                        {
+                            // fill null.
+                            handlers[i] = null;
+                            return;
+                        }
+                    }
                 }
             }
         }

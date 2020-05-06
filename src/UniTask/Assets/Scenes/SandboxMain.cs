@@ -124,9 +124,11 @@ public class SandboxMain : MonoBehaviour
         CancellationTokenSource cts = new CancellationTokenSource();
 
         var trigger = this.GetAsyncUpdateTrigger();
-        Go(trigger, cts.Token).Forget();
-        //Go(trigger).Forget();
-        //Go(trigger).Forget();
+        Go(trigger, 1, cts.Token).Forget();
+        Go(trigger, 2, cts.Token).Forget();
+        Go(trigger, 3, cts.Token).Forget();
+        Go(trigger, 4, cts.Token).Forget();
+        Go(trigger, 5, cts.Token).Forget();
 
 
         Application.logMessageReceived += Application_logMessageReceived;
@@ -141,7 +143,7 @@ public class SandboxMain : MonoBehaviour
 
         okButton.onClick.AddListener(() =>
         {
-            FooAsync().Forget();
+            // FooAsync().Forget();
         });
 
         cancelButton.onClick.AddListener(() =>
@@ -154,7 +156,7 @@ public class SandboxMain : MonoBehaviour
         });
     }
 
-    async UniTaskVoid Go(AsyncUpdateTrigger trigger, CancellationToken ct)
+    async UniTaskVoid Go(AsyncUpdateTrigger trigger, int i, CancellationToken ct)
     {
         await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         UnityEngine.Debug.Log("AWAIT BEFO:" + Time.frameCount);
@@ -162,14 +164,16 @@ public class SandboxMain : MonoBehaviour
 
         try
         {
-            while (true)
+            while (!ct.IsCancellationRequested)
             {
                 await handler.UpdateAsync();
+                //await handler.UpdateAsync();
+                Debug.Log("OK:" + i);
             }
         }
         finally
         {
-            UnityEngine.Debug.Log("AWAIT END:" + Time.frameCount);
+            UnityEngine.Debug.Log("AWAIT END:" + Time.frameCount + ": No," + i);
         }
     }
 
