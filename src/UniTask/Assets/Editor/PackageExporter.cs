@@ -11,9 +11,18 @@ public static class PackageExporter
     [MenuItem("Tools/Export Unitypackage")]
     public static void Export()
     {
-        // configure
         var root = "Plugins/UniTask";
-        var exportPath = "./UniTask.unitypackage";
+        var version = Environment.GetEnvironmentVariable("UNITY_PACKAGE_VERSION");
+
+        var versionJson = Path.Combine(Application.dataPath, root, "package.json");
+        if (File.Exists(versionJson))
+        {
+            var v = JsonUtility.FromJson<Version>(File.ReadAllText(versionJson));
+            version = v.version;
+        }
+
+        var fileName = string.IsNullOrEmpty(version) ? "UniTask.unitypackage" : $"UniTask.{version}.unitypackage";
+        var exportPath = "./" + fileName;
 
         var path = Path.Combine(Application.dataPath, root);
         var assets = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories)
@@ -29,6 +38,11 @@ public static class PackageExporter
             ExportPackageOptions.Default);
 
         UnityEngine.Debug.Log("Export complete: " + Path.GetFullPath(exportPath));
+    }
+
+    public class Version
+    {
+        public string version;
     }
 }
 
