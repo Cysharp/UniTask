@@ -406,6 +406,11 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(this.source, this.token);
         }
 
+        public static implicit operator UniTask(UniTask<T> self)
+        {
+            return self.AsUniTask();
+        }
+
         /// <summary>
         /// returns (bool IsCanceled, T Result) instead of throws OperationCanceledException.
         /// </summary>

@@ -134,6 +134,9 @@ public class SandboxMain : MonoBehaviour
         Application.logMessageReceived += Application_logMessageReceived;
 
 
+        UniTask<int> foo = UniTask.FromResult(10);
+        Foo(foo);
+
         //ucs = new UniTaskCompletionSource();
 
         //okButton.onClick.AddListener(async () =>
@@ -154,6 +157,10 @@ public class SandboxMain : MonoBehaviour
 
             cts.Cancel();
         });
+    }
+
+    static void Foo(UniTask t)
+    {
     }
 
     async UniTaskVoid Go(AsyncUpdateTrigger trigger, int i, CancellationToken ct)
