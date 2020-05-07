@@ -16,8 +16,16 @@ namespace NetCoreSandbox
 
         static async UniTask<int> outer()
         {
-            var v = await DoAsync();
-            return v;
+            //await Task.WhenAll();
+
+            //var foo = await Task.WhenAny(Array.Empty<Task<int>>());
+
+
+            await UniTask.WhenAny(new UniTask[0]);
+
+            return 10;
+            //var v = await DoAsync();
+            //return v;
         }
 
 

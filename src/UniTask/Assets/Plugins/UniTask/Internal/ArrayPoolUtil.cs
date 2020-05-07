@@ -32,11 +32,21 @@ namespace Cysharp.Threading.Tasks.Internal
             }
         }
 
-        public static RentArray<T> CopyToRentArray<T>(IEnumerable<T> source)
+        public static RentArray<T> Materialize<T>(IEnumerable<T> source)
         {
+            if (source is T[] array)
+            {
+                return new RentArray<T>(array, array.Length, null);
+            }
+
             var defaultCount = 32;
             if (source is ICollection<T> coll)
             {
+                if (coll.Count == 0)
+                {
+                    return new RentArray<T>(Array.Empty<T>(), 0, null);
+                }
+
                 defaultCount = coll.Count;
                 var pool = ArrayPool<T>.Shared;
                 var buffer = pool.Rent(defaultCount);

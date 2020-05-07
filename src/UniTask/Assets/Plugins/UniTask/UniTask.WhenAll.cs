@@ -11,12 +11,17 @@ namespace Cysharp.Threading.Tasks
     {
         public static UniTask<T[]> WhenAll<T>(params UniTask<T>[] tasks)
         {
+            if (tasks.Length == 0)
+            {
+                return UniTask.FromResult(Array.Empty<T>());
+            }
+
             return new UniTask<T[]>(new WhenAllPromise<T>(tasks, tasks.Length), 0);
         }
 
         public static UniTask<T[]> WhenAll<T>(IEnumerable<UniTask<T>> tasks)
         {
-            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
+            using (var span = ArrayPoolUtil.Materialize(tasks))
             {
                 var promise = new WhenAllPromise<T>(span.Array, span.Length); // consumed array in constructor.
                 return new UniTask<T[]>(promise, 0);
@@ -25,12 +30,17 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask WhenAll(params UniTask[] tasks)
         {
+            if (tasks.Length == 0)
+            {
+                return UniTask.CompletedTask;
+            }
+
             return new UniTask(new WhenAllPromise(tasks, tasks.Length), 0);
         }
 
         public static UniTask WhenAll(IEnumerable<UniTask> tasks)
         {
-            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
+            using (var span = ArrayPoolUtil.Materialize(tasks))
             {
                 var promise = new WhenAllPromise(span.Array, span.Length); // consumed array in constructor.
                 return new UniTask(promise, 0);
@@ -48,6 +58,14 @@ namespace Cysharp.Threading.Tasks
                 TaskTracker.TrackActiveTask(this, 3);
 
                 this.completeCount = 0;
+
+                if (tasksLength == 0)
+                {
+                    this.result = Array.Empty<T>();
+                    core.TrySetResult(result);
+                    return;
+                }
+
                 this.result = new T[tasksLength];
 
                 for (int i = 0; i < tasksLength; i++)
@@ -143,6 +161,12 @@ namespace Cysharp.Threading.Tasks
 
                 this.tasksLength = tasksLength;
                 this.completeCount = 0;
+
+                if (tasksLength == 0)
+                {
+                    core.TrySetResult(AsyncUnit.Default);
+                    return;
+                }
 
                 for (int i = 0; i < tasksLength; i++)
                 {

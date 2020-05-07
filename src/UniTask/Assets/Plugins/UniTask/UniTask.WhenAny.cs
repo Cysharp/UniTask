@@ -21,7 +21,7 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask<(int winArgumentIndex, T result)> WhenAny<T>(IEnumerable<UniTask<T>> tasks)
         {
-            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
+            using (var span = ArrayPoolUtil.Materialize(tasks))
             {
                 return new UniTask<(int, T)>(new WhenAnyPromise<T>(span.Array, span.Length), 0);
             }
@@ -36,7 +36,7 @@ namespace Cysharp.Threading.Tasks
         /// <summary>Return value is winArgumentIndex</summary>
         public static UniTask<int> WhenAny(IEnumerable<UniTask> tasks)
         {
-            using (var span = ArrayPoolUtil.CopyToRentArray(tasks))
+            using (var span = ArrayPoolUtil.Materialize(tasks))
             {
                 return new UniTask<int>(new WhenAnyPromise(span.Array, span.Length), 0);
             }
@@ -186,6 +186,11 @@ namespace Cysharp.Threading.Tasks
 
             public WhenAnyPromise(UniTask<T>[] tasks, int tasksLength)
             {
+                if (tasksLength == 0)
+                {
+                    throw new ArgumentException("The tasks argument contains no tasks.");
+                }
+
                 TaskTracker.TrackActiveTask(this, 3);
 
                 for (int i = 0; i < tasksLength; i++)
@@ -277,6 +282,11 @@ namespace Cysharp.Threading.Tasks
 
             public WhenAnyPromise(UniTask[] tasks, int tasksLength)
             {
+                if (tasksLength == 0)
+                {
+                    throw new ArgumentException("The tasks argument contains no tasks.");
+                }
+
                 TaskTracker.TrackActiveTask(this, 3);
 
                 for (int i = 0; i < tasksLength; i++)
