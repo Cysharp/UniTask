@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Cysharp.Threading.Tasks
 {
@@ -16,5 +17,56 @@ namespace Cysharp.Threading.Tasks
     public interface IUniTaskAsyncDisposable
     {
         UniTask DisposeAsync();
+    }
+
+    public static class UniTaskAsyncEnumerableExtensions
+    {
+        public static UniTaskCancelableAsyncEnumerable<T> WithCancellation<T>(this IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
+        {
+            return new UniTaskCancelableAsyncEnumerable<T>(source, cancellationToken);
+        }
+    }
+
+    [StructLayout(LayoutKind.Auto)]
+    public readonly struct UniTaskCancelableAsyncEnumerable<T>
+    {
+        private readonly IUniTaskAsyncEnumerable<T> enumerable;
+        private readonly CancellationToken cancellationToken;
+
+        internal UniTaskCancelableAsyncEnumerable(IUniTaskAsyncEnumerable<T> enumerable, CancellationToken cancellationToken)
+        {
+            this.enumerable = enumerable;
+            this.cancellationToken = cancellationToken;
+        }
+
+        public Enumerator GetAsyncEnumerator()
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return new Enumerator(enumerable.GetAsyncEnumerator(cancellationToken));
+        }
+
+        [StructLayout(LayoutKind.Auto)]
+        public readonly struct Enumerator
+        {
+            private readonly IUniTaskAsyncEnumerator<T> enumerator;
+
+            internal Enumerator(IUniTaskAsyncEnumerator<T> enumerator)
+            {
+                this.enumerator = enumerator;
+            }
+
+            public T Current => enumerator.Current;
+
+            public UniTask<bool> MoveNextAsync()
+            {
+                return enumerator.MoveNextAsync();
+            }
+
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
+            }
+        }
     }
 }

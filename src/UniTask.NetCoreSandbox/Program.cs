@@ -32,17 +32,24 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
+            var cts = new CancellationTokenSource();
 
 
+            await foreach (var item in UniTaskAsyncEnumerable.Range(1, 3).WithCancellation(cts.Token))
+            {
+                Console.WriteLine(item);
+                cts.Cancel();
+            }
 
 
-            await UniTaskAsyncEnumerable.Range(1, 3).ForEachAsync(x =>
+            /*
+            .ForEachAsync(x =>
            {
                if (x == 2) throw new Exception();
 
                Console.WriteLine(x);
            });
-
+           */
 
 
 
