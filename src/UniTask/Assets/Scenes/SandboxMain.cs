@@ -32,7 +32,7 @@ public struct MyJob : IJob
 
 public enum MyEnum
 {
-    A,B,C
+    A, B, C
 }
 
 public class SandboxMain : MonoBehaviour
@@ -83,6 +83,18 @@ public class SandboxMain : MonoBehaviour
         UnityEngine.Debug.Log("OK2");
 
         job.inOut.Dispose();
+    }
+
+
+    async UniTaskVoid Update2()
+    {
+
+
+        async foreach (var _ in this.GetAsyncUpdateTrigger())
+        {
+            // do anything
+        }
+
     }
 
     void Start()
@@ -144,7 +156,7 @@ public class SandboxMain : MonoBehaviour
         UniTask<int> foo = UniTask.FromResult(10);
         // foo.Status.IsCanceled
 
-        
+
 
         Foo(foo);
 

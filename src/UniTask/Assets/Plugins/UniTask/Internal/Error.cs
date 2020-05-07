@@ -21,6 +21,12 @@ namespace Cysharp.Threading.Tasks.Internal
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static Exception ArgumentOutOfRange(string paramName)
+        {
+            throw new ArgumentOutOfRangeException(paramName);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowArgumentException<T>(string message)
         {
             throw new ArgumentException(message);
