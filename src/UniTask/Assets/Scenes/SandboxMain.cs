@@ -30,6 +30,11 @@ public struct MyJob : IJob
     }
 }
 
+public enum MyEnum
+{
+    A,B,C
+}
+
 public class SandboxMain : MonoBehaviour
 {
     public Button okButton;
@@ -117,24 +122,30 @@ public class SandboxMain : MonoBehaviour
 
         //StartCoroutine(cor);
 
+        Debug.Log(EqualityComparer<MyEnum>.Default.GetType().FullName);
+
 
         //this.TryGetComponent(
 
 
         CancellationTokenSource cts = new CancellationTokenSource();
 
-        var trigger = this.GetAsyncUpdateTrigger();
-        Go(trigger, 1, cts.Token).Forget();
-        Go(trigger, 2, cts.Token).Forget();
-        Go(trigger, 3, cts.Token).Forget();
-        Go(trigger, 4, cts.Token).Forget();
-        Go(trigger, 5, cts.Token).Forget();
+        //var trigger = this.GetAsyncUpdateTrigger();
+        //Go(trigger, 1, cts.Token).Forget();
+        //Go(trigger, 2, cts.Token).Forget();
+        //Go(trigger, 3, cts.Token).Forget();
+        //Go(trigger, 4, cts.Token).Forget();
+        //Go(trigger, 5, cts.Token).Forget();
 
 
         Application.logMessageReceived += Application_logMessageReceived;
 
 
         UniTask<int> foo = UniTask.FromResult(10);
+        // foo.Status.IsCanceled
+
+        
+
         Foo(foo);
 
         //ucs = new UniTaskCompletionSource();

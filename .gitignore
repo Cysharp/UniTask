@@ -156,4 +156,4 @@ src/UniTask/UniTask.Tests.csproj
 
 src/UniTask/UniTask.Tests.Editor.csproj
 
-src/UniTask/UniTask.unitypackage
+src/UniTask/UniTask.*.unitypackage
