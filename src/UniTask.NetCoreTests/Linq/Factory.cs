@@ -59,6 +59,7 @@ namespace UniTask.NetCoreTests.Linq
             xs.Length.Should().Be(1);
             xs[0].Should().Be(value);
         }
+
     }
 
 
