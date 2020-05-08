@@ -1,6 +1,7 @@
 ﻿namespace Cysharp.Threading.Tasks.Linq
 {
-    internal sealed class Single
+    // avoid conflicts with System.Single
+    internal sealed class SingleOperator
     {
     }
 

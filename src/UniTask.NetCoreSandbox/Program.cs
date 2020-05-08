@@ -32,14 +32,27 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
+            var xs = await UniTaskAsyncEnumerable.Range(0, 0).ToArrayAsync();
+
+            Console.WriteLine(xs);
+
             var cts = new CancellationTokenSource();
 
+            // Enumerable.Sum(
 
-            await foreach (var item in UniTaskAsyncEnumerable.Range(1, 3).WithCancellation(cts.Token))
-            {
-                Console.WriteLine(item);
-                cts.Cancel();
-            }
+
+            //await foreach (var item in UniTaskAsyncEnumerable.Range(1, 3).WithCancellation(cts.Token))
+            //{
+            //    Console.WriteLine(item);
+            //    cts.Cancel();
+            //}
+
+
+            //AsyncEnumerable.SumAsync(
+
+
+            var a = await UniTaskAsyncEnumerable.Range(1, 100).SumAsync();
+            Console.WriteLine(a);
 
 
             /*

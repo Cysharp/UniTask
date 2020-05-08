@@ -48,7 +48,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.end = end;
                 this.cancellationToken = cancellationToken;
 
-                this.current = 0;
+                this.current = start - 1;
             }
 
             public int Current => current;

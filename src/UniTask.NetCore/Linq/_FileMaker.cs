@@ -161,22 +161,22 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAsync(this IUniTaskAsyncEnumerable<Nullable<Int32>> source, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAsync(this IUniTaskAsyncEnumerable<Nullable<Int32>> source, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Int32>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Int32>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAsync(this IUniTaskAsyncEnumerable<Nullable<Int64>> source, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAsync(this IUniTaskAsyncEnumerable<Nullable<Int64>> source, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Int64>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Int64>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -191,12 +191,12 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAsync(this IUniTaskAsyncEnumerable<Nullable<Double>> source, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAsync(this IUniTaskAsyncEnumerable<double?> source, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Double>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, double?> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -236,12 +236,12 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Int32>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Int32>>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Int64>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Int64>>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -251,7 +251,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<double?>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -286,12 +286,12 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Int32>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Int32>>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Int64>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Int64>>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -301,7 +301,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<double?>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -327,26 +327,6 @@ namespace ___Dummy
         }
 
         public static UniTask<Boolean> ContainsAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, TSource value, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> CountAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> CountAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Boolean> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> CountAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> CountAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -727,12 +707,12 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MaxAsync(this IUniTaskAsyncEnumerable<Nullable<Double>> source, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MaxAsync(this IUniTaskAsyncEnumerable<double?> source, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Double>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, double?> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -817,7 +797,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<double?>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -872,7 +852,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<double?>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -907,12 +887,12 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MinAsync(this IUniTaskAsyncEnumerable<Nullable<Double>> source, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MinAsync(this IUniTaskAsyncEnumerable<double?> source, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Double>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, double?> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -1047,7 +1027,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<double?>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -1082,7 +1062,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Nullable<Double>> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<double?> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<double?>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -1345,206 +1325,6 @@ namespace ___Dummy
         }
 
         public static IUniTaskAsyncEnumerable<TSource> SkipWhileAwaitWithCancellation<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, CancellationToken, UniTask<Boolean>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int64>> SumAsync(this IUniTaskAsyncEnumerable<Nullable<Int64>> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int64>> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Int64>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Single>> SumAsync(this IUniTaskAsyncEnumerable<Nullable<Single>> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Single>> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Single>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Double>> SumAsync(this IUniTaskAsyncEnumerable<Nullable<Double>> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Double>> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Double>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Decimal>> SumAsync(this IUniTaskAsyncEnumerable<Nullable<Decimal>> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Decimal>> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Decimal>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> SumAsync(this IUniTaskAsyncEnumerable<Int32> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int64> SumAsync(this IUniTaskAsyncEnumerable<Int64> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int64> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Single> SumAsync(this IUniTaskAsyncEnumerable<Single> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Single> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Double> SumAsync(this IUniTaskAsyncEnumerable<Double> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Double> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Decimal> SumAsync(this IUniTaskAsyncEnumerable<Decimal> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Decimal> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int32>> SumAsync(this IUniTaskAsyncEnumerable<Nullable<Int32>> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int32>> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Nullable<Int32>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int64>> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Int64>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Single>> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Single>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Double>> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Decimal>> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Decimal>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int64> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Single> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Double> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Decimal> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int32>> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Nullable<Int32>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int32>> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Int32>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Int64>> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Int64>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Single>> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Single>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Double>> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Double>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Nullable<Decimal>> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Nullable<Decimal>>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int32> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int64> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Single> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Double> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Decimal> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -1874,770 +1654,4 @@ namespace ___Dummy
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
