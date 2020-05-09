@@ -18,7 +18,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(predicate, nameof(predicate));
 
-            return Count<TSource>.InvokeAsync(source, cancellationToken);
+            return Count<TSource>.InvokeAsync(source, predicate, cancellationToken);
         }
 
         public static UniTask<Int32> CountAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
@@ -26,7 +26,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(predicate, nameof(predicate));
 
-            return Count<TSource>.InvokeAsync(source, cancellationToken);
+            return Count<TSource>.InvokeAsync(source, predicate, cancellationToken);
         }
 
         public static UniTask<Int32> CountAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
@@ -34,7 +34,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(predicate, nameof(predicate));
 
-            return Count<TSource>.InvokeAsync(source, cancellationToken);
+            return Count<TSource>.InvokeAsync(source, predicate, cancellationToken);
         }
     }
 

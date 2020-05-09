@@ -1,775 +1,144 @@
-﻿namespace Cysharp.Threading.Tasks.Linq
+﻿using Cysharp.Threading.Tasks.Internal;
+using System;
+using System.Threading;
+
+namespace Cysharp.Threading.Tasks.Linq
 {
-    internal sealed class LongCount
+    public static partial class UniTaskAsyncEnumerable
     {
+        public static UniTask<long> LongCountAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+
+            return LongCount<TSource>.InvokeAsync(source, cancellationToken);
+        }
+
+        public static UniTask<long> LongCountAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Boolean> predicate, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(predicate, nameof(predicate));
+
+            return LongCount<TSource>.InvokeAsync(source, predicate, cancellationToken);
+        }
+
+        public static UniTask<long> LongCountAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(predicate, nameof(predicate));
+
+            return LongCount<TSource>.InvokeAsync(source, predicate, cancellationToken);
+        }
+
+        public static UniTask<long> LongCountAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(predicate, nameof(predicate));
+
+            return LongCount<TSource>.InvokeAsync(source, predicate, cancellationToken);
+        }
     }
 
+    internal static class LongCount<TSource>
+    {
+        internal static async UniTask<long> InvokeAsync(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
+        {
+            long count = 0;
 
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    checked { count++; }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return count;
+        }
+
+        internal static async UniTask<long> InvokeAsync(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Boolean> predicate, CancellationToken cancellationToken)
+        {
+            long count = 0;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    if (predicate(e.Current))
+                    {
+                        checked { count++; }
+                    }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return count;
+        }
+
+        internal static async UniTask<long> InvokeAsync(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Boolean>> predicate, CancellationToken cancellationToken)
+        {
+            long count = 0;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    if (await predicate(e.Current))
+                    {
+                        checked { count++; }
+                    }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return count;
+        }
+
+        internal static async UniTask<long> InvokeAsync(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Boolean>> predicate, CancellationToken cancellationToken)
+        {
+            long count = 0;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    if (await predicate(e.Current, cancellationToken))
+                    {
+                        checked { count++; }
+                    }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return count;
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -152,15 +152,6 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<TSource> ElementAtAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Int32 index, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<TSource> ElementAtOrDefaultAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Int32 index, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
         public static IUniTaskAsyncEnumerable<TSource> Except<TSource>(this IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second)
         {
@@ -366,25 +357,6 @@ namespace ___Dummy
         }
 
         
-        public static UniTask<Int64> LongCountAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int64> LongCountAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Boolean> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int64> LongCountAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Int64> LongCountAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
 
         public static IUniTaskAsyncEnumerable<TResult> OfType<TResult>(this IUniTaskAsyncEnumerable<Object> source)

@@ -345,5 +345,37 @@ namespace NetCoreTests.Linq
                 return Comparer<int>.Default.Compare(Value, other.Value);
             }
         }
+
+
+        [Theory]
+        [InlineData(0, 10)]
+        [InlineData(0, 1)]
+        [InlineData(10, 0)]
+        [InlineData(1, 11)]
+        public async Task Count(int start, int count)
+        {
+            {
+                var xs = await UniTaskAsyncEnumerable.Range(start, count).CountAsync();
+                var ys = Enumerable.Range(start, count).Count();
+                xs.Should().Be(ys);
+            }
+
+            {
+                var xs = await UniTaskAsyncEnumerable.Range(start, count).CountAsync(x => x % 2 == 0);
+                var ys = Enumerable.Range(start, count).Count(x => x % 2 == 0);
+                xs.Should().Be(ys);
+            }
+            {
+                var xs = await UniTaskAsyncEnumerable.Range(start, count).LongCountAsync();
+                var ys = Enumerable.Range(start, count).LongCount();
+                xs.Should().Be(ys);
+            }
+
+            {
+                var xs = await UniTaskAsyncEnumerable.Range(start, count).LongCountAsync(x => x % 2 == 0);
+                var ys = Enumerable.Range(start, count).LongCount(x => x % 2 == 0);
+                xs.Should().Be(ys);
+            }
+        }
     }
 }
