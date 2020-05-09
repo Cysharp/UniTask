@@ -66,41 +66,6 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Boolean> AllAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Boolean> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Boolean> AllAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Boolean> AllAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Boolean> AnyAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Boolean> AnyAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Boolean> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Boolean> AnyAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Boolean> AnyAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Boolean>> predicate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
         public static IUniTaskAsyncEnumerable<TSource> Append<TSource>(this IUniTaskAsyncEnumerable<TSource> source, TSource element)
         {
             throw new NotImplementedException();
@@ -122,15 +87,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Boolean> ContainsAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, TSource value, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
-        public static UniTask<Boolean> ContainsAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, TSource value, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
         public static IUniTaskAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IUniTaskAsyncEnumerable<TSource> source)
         {
@@ -496,15 +453,6 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static UniTask<Boolean> SequenceEqualAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static UniTask<Boolean> SequenceEqualAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
         public static IUniTaskAsyncEnumerable<TSource> Skip<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Int32 count)
         {
