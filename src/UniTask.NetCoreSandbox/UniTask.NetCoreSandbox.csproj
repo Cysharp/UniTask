@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Interactive.Async" Version="4.1.1" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>

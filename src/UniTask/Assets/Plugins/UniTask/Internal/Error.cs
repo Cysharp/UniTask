@@ -23,7 +23,13 @@ namespace Cysharp.Threading.Tasks.Internal
         [MethodImpl(MethodImplOptions.NoInlining)]
         internal static Exception ArgumentOutOfRange(string paramName)
         {
-            throw new ArgumentOutOfRangeException(paramName);
+            return new ArgumentOutOfRangeException(paramName);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static Exception NoElements()
+        {
+            throw new InvalidOperationException("Source sequence doesn't contain any elements.");
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

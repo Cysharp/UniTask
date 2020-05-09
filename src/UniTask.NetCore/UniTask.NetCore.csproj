@@ -7,34 +7,61 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="..\UniTask\Assets\Plugins\UniTask\**\*.cs" Exclude="..\UniTask\Assets\Plugins\UniTask\Triggers\*.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Editor\*.cs;&#xD;&#xA;                          &#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\UnityEqualityComparer.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\DiagnosticsExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\PlayerLoopRunner.cs;&#xD;&#xA;                          &#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\CancellationTokenSourceExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\EnumeratorAsyncExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\PlayerLoopHelper.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Delay.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Run.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Bridge.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.WaitUntil.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.uGUI.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.MonoBehaviour.cs;&#xD;&#xA;                 " />
+        <Compile Include="..\UniTask\Assets\Plugins\UniTask\**\*.cs" Exclude="..\UniTask\Assets\Plugins\UniTask\Triggers\*.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Editor\*.cs;&#xD;&#xA;                            &#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\UnityEqualityComparer.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\DiagnosticsExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\PlayerLoopRunner.cs;&#xD;&#xA;                            &#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\CancellationTokenSourceExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\EnumeratorAsyncExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\PlayerLoopHelper.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Delay.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Run.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Bridge.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.WaitUntil.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.uGUI.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.MonoBehaviour.cs;&#xD;&#xA;                         " />
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="Linq\Sum.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Sum.tt</DependentUpon>
-      </None>
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Linq\Sum.tt">
-        <Generator>TextTemplatingFileGenerator</Generator>
-        <LastGenOutput>Sum.cs</LastGenOutput>
-      </None>
+        <None Include="Linq\MinMax.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>MinMax.tt</DependentUpon>
+        </None>
+        <None Include="Linq\Sum.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Sum.tt</DependentUpon>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+        <None Update="Linq\Average.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>Average.cs</LastGenOutput>
+        </None>
+        <None Update="Linq\MinMax.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>MinMax.cs</LastGenOutput>
+        </None>
+        <None Update="Linq\Sum.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>Sum.cs</LastGenOutput>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Linq\Sum.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Sum.tt</DependentUpon>
-      </Compile>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Linq\Average.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Average.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Linq\MinMax.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>MinMax.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Linq\Sum.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Sum.tt</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

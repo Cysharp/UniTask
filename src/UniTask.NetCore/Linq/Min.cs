@@ -1,6 +1,6 @@
 ﻿namespace Cysharp.Threading.Tasks.Linq
 {
-    internal sealed class Min
+    internal static partial class Min
     {
     }
 

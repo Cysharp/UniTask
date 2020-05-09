@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 
 namespace NetCoreSandbox
 {
@@ -32,41 +34,18 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
-            var xs = await UniTaskAsyncEnumerable.Range(0, 0).ToArrayAsync();
 
-            Console.WriteLine(xs);
-
-            var cts = new CancellationTokenSource();
-
-            // Enumerable.Sum(
+            int? foo = null;
 
 
-            //await foreach (var item in UniTaskAsyncEnumerable.Range(1, 3).WithCancellation(cts.Token))
-            //{
-            //    Console.WriteLine(item);
-            //    cts.Cancel();
-            //}
-
-
-            //AsyncEnumerable.SumAsync(
-
-
-            var a = await UniTaskAsyncEnumerable.Range(1, 100).SumAsync();
-            Console.WriteLine(a);
-
-
-            /*
-            .ForEachAsync(x =>
-           {
-               if (x == 2) throw new Exception();
-
-               Console.WriteLine(x);
-           });
-           */
-
-
-
-
+            if (foo > 100)
+            {
+                Console.WriteLine("Under Foo");
+            }
+            else
+            {
+                Console.WriteLine("??");
+            }
 
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Cysharp.Threading.Tasks.Linq
 {
-    internal static partial class Max
+    internal sealed class _Aggregate
     {
     }
 
