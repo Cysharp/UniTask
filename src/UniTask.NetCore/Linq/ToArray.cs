@@ -9,21 +9,24 @@ namespace Cysharp.Threading.Tasks.Linq
     {
         public static UniTask<TSource[]> ToArrayAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken = default)
         {
-            return Cysharp.Threading.Tasks.Linq.ToArray<TSource>.InvokeAsync(source, cancellationToken);
+            Error.ThrowArgumentNullException(source, nameof(source));
+
+            return Cysharp.Threading.Tasks.Linq.ToArray.InvokeAsync(source, cancellationToken);
         }
     }
 
-    internal static class ToArray<TSource>
+    internal static class ToArray
     {
-        internal static async UniTask<TSource[]> InvokeAsync(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
+        internal static async UniTask<TSource[]> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
             var pool = ArrayPool<TSource>.Shared;
             var array = pool.Rent(16);
 
             TSource[] result = default;
-            var e = source.GetAsyncEnumerator(cancellationToken);
+            IUniTaskAsyncEnumerator<TSource> e = default;
             try
             {
+                e = source.GetAsyncEnumerator(cancellationToken);
                 var i = 0;
                 while (await e.MoveNextAsync())
                 {

@@ -68,7 +68,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             return new Enumerator(source, selector, cancellationToken);
         }
 
@@ -112,7 +111,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             return new Enumerator(source, selector, cancellationToken);
         }
 
@@ -157,7 +155,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             return new Enumerator(source, selector, cancellationToken);
         }
 
@@ -197,7 +194,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             return new Enumerator(source, selector, cancellationToken);
         }
 
@@ -238,7 +234,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             return new Enumerator(source, selector, cancellationToken);
         }
 
@@ -278,7 +273,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             return new Enumerator(source, selector, cancellationToken);
         }
 

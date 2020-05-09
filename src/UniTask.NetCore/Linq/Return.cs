@@ -22,7 +22,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TValue> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             return new Enumerator(value, cancellationToken);
         }
 

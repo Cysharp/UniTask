@@ -28,6 +28,21 @@ namespace NetCoreTests.Linq
             }
         }
 
+
+        [Fact]
+        public async Task ToObservable()
+        {
+            {
+                var xs = await UniTaskAsyncEnumerable.Range(1, 10).ToObservable().ToArray();
+                xs.Should().BeEquivalentTo(Enumerable.Range(1, 10));
+            }
+            {
+                var xs = await UniTaskAsyncEnumerable.Range(1, 0).ToObservable().ToArray();
+                xs.Should().BeEquivalentTo(Enumerable.Range(1, 0));
+            }
+        }
+
+
         [Fact]
         public async Task ToAsyncEnumerableTask()
         {
@@ -73,6 +88,108 @@ namespace NetCoreTests.Linq
             }
         }
 
+        [Fact]
+        public async Task ToDictionary()
+        {
+            {
+                var xs = await Enumerable.Range(1, 100).ToUniTaskAsyncEnumerable().ToDictionaryAsync(x => x);
+                var ys = Enumerable.Range(1, 100).ToDictionary(x => x);
+
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+            {
+                var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().ToDictionaryAsync(x => x);
+                var ys = Enumerable.Range(1, 0).ToDictionary(x => x);
+
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+            {
+                var xs = await Enumerable.Range(1, 100).ToUniTaskAsyncEnumerable().ToDictionaryAsync(x => x, x => x * 2);
+                var ys = Enumerable.Range(1, 100).ToDictionary(x => x, x => x * 2);
+
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+            {
+                var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().ToDictionaryAsync(x => x, x => x * 2);
+                var ys = Enumerable.Range(1, 0).ToDictionary(x => x, x => x * 2);
+
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+        }
+
+        [Fact]
+        public async Task ToLookup()
+        {
+            var arr = new[] { 1, 4, 10, 10, 4, 5, 10, 9 };
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().ToLookupAsync(x => x);
+                var ys = arr.ToLookup(x => x);
+
+                xs.Count.Should().Be(ys.Count);
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+                foreach (var key in xs.Select(x => x.Key))
+                {
+                    xs[key].Should().BeEquivalentTo(ys[key]);
+                }
+            }
+            {
+                var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().ToLookupAsync(x => x);
+                var ys = Enumerable.Range(1, 0).ToLookup(x => x);
+
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().ToLookupAsync(x => x, x => x * 2);
+                var ys = arr.ToLookup(x => x, x => x * 2);
+
+                xs.Count.Should().Be(ys.Count);
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+                foreach (var key in xs.Select(x => x.Key))
+                {
+                    xs[key].Should().BeEquivalentTo(ys[key]);
+                }
+            }
+            {
+                var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().ToLookupAsync(x => x, x => x * 2);
+                var ys = Enumerable.Range(1, 0).ToLookup(x => x, x => x * 2);
+
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+        }
+
+        [Fact]
+        public async Task ToList()
+        {
+            {
+                var xs = await Enumerable.Range(1, 100).ToUniTaskAsyncEnumerable().ToListAsync();
+                var ys = Enumerable.Range(1, 100).ToList();
+
+                xs.Should().BeEquivalentTo(ys);
+            }
+            {
+                var xs = await Enumerable.Empty<int>().ToUniTaskAsyncEnumerable().ToListAsync();
+                var ys = Enumerable.Empty<int>().ToList();
+
+                xs.Should().BeEquivalentTo(ys);
+            }
+        }
+
+        [Fact]
+        public async Task ToHashSet()
+        {
+            {
+                var xs = await new[] { 1, 20, 4, 5, 20, 4, 6 }.ToUniTaskAsyncEnumerable().ToHashSetAsync();
+                var ys = new[] { 1, 20, 4, 5, 20, 4, 6 }.ToHashSet();
+
+                xs.OrderBy(x => x).Should().BeEquivalentTo(ys.OrderBy(x => x));
+            }
+            {
+                var xs = await Enumerable.Empty<int>().ToUniTaskAsyncEnumerable().ToHashSetAsync();
+                var ys = Enumerable.Empty<int>().ToHashSet();
+
+                xs.Should().BeEquivalentTo(ys);
+            }
+        }
     }
 
 

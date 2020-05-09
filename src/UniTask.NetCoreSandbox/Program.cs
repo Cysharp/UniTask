@@ -31,15 +31,24 @@ namespace NetCoreSandbox
             }
         }
 
-
-        static async Task Main(string[] args)
+        static async IAsyncEnumerable<int> FooAsync([EnumeratorCancellation]CancellationToken cancellationToken = default)
         {
-            new int[] { }.Aggregate((x, y) => x + y);
+            yield return 1;
+            await Task.Delay(10, cancellationToken);
+        }
 
+        static void Main(string[] args)
+        {
+            // Create Canceled token.
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
 
+            // OK, don't throw.
+            var e1 = FooAsync(cts.Token).GetAsyncEnumerator(cts.Token);
+            Console.WriteLine("OK:FooAsyunc().GetAsyncEnumerator()");
 
-
-            await Task.Yield();
+            // Ix.Async LINQ Operator throws OperationCanceledException
+            var e2 = FooAsync(cts.Token).Select(x => x).GetAsyncEnumerator(cts.Token);
         }
 
 
