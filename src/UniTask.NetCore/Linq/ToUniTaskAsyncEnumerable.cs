@@ -223,6 +223,8 @@ namespace Cysharp.Threading.Tasks.Linq
             CancellationToken cancellationToken;
 
 
+            bool useCachedCurrent;
+            T current;
             bool subscribeCompleted;
             readonly Queue<T> queuedResult;
             Exception error;
@@ -250,7 +252,14 @@ namespace Cysharp.Threading.Tasks.Linq
                         ExceptionDispatchInfo.Capture(error).Throw();
                     }
 
-                    return queuedResult.Dequeue();
+                    if (useCachedCurrent)
+                    {
+                        return current;
+                    }
+
+                    current = queuedResult.Dequeue();
+                    useCachedCurrent = true;
+                    return current;
                 }
             }
 
@@ -258,6 +267,8 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 lock (queuedResult)
                 {
+                    useCachedCurrent = false;
+
                     if (cancellationToken.IsCancellationRequested)
                     {
                         return UniTask.FromCanceled<bool>(cancellationToken);

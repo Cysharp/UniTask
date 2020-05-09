@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 0649
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Sources;
@@ -75,7 +77,6 @@ namespace Cysharp.Threading.Tasks
 
         struct UniTaskToValueTask<T>
         {
-
             public IUniTaskSource<T> source;
             public T result;
             public short token;
