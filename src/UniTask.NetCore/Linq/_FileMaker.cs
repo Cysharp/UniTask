@@ -23,21 +23,12 @@ namespace ___Dummy
 
         
 
-        public static IUniTaskAsyncEnumerable<TSource> Append<TSource>(this IUniTaskAsyncEnumerable<TSource> source, TSource element)
-        {
-            throw new NotImplementedException();
-        }
-
 
         public static IUniTaskAsyncEnumerable<TResult> Cast<TResult>(this IUniTaskAsyncEnumerable<Object> source)
         {
             throw new NotImplementedException();
         }
 
-        public static IUniTaskAsyncEnumerable<TSource> Concat<TSource>(this IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second)
-        {
-            throw new NotImplementedException();
-        }
 
 
 
@@ -333,10 +324,7 @@ namespace ___Dummy
             throw new NotImplementedException();
         }
 
-        public static IUniTaskAsyncEnumerable<TSource> Prepend<TSource>(this IUniTaskAsyncEnumerable<TSource> source, TSource element)
-        {
-            throw new NotImplementedException();
-        }
+  
 
         public static IUniTaskAsyncEnumerable<TSource> Reverse<TSource>(this IUniTaskAsyncEnumerable<TSource> source)
         {

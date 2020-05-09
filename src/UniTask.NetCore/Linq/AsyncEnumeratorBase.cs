@@ -153,6 +153,8 @@ namespace Cysharp.Threading.Tasks.Linq
     public abstract class AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TAwait> : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
     {
         static readonly Action<object> moveNextCallbackDelegate = MoveNextCallBack;
+        static readonly Action<object> setCurrentCallbackDelegate = SetCurrentCallBack;
+
 
         readonly IUniTaskAsyncEnumerable<TSource> source;
         protected CancellationToken cancellationToken;
@@ -274,7 +276,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
             else
             {
-                resultAwaiter.SourceOnCompleted(SetCurrentCallBack, this); // TODO:cache
+                resultAwaiter.SourceOnCompleted(setCurrentCallbackDelegate, this);
                 result = default;
                 return false;
             }
