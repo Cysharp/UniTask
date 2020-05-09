@@ -34,18 +34,11 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
+            var x = await new[] { 110, 50, 200 }.ToUniTaskAsyncEnumerable().MinAsync();
+            Console.WriteLine(x);
+            // new object[] { }.Min(
 
-            int? foo = null;
-
-
-            if (foo > 100)
-            {
-                Console.WriteLine("Under Foo");
-            }
-            else
-            {
-                Console.WriteLine("??");
-            }
+            // AsyncEnumerable.MinAwaitAsync(
 
         }
 

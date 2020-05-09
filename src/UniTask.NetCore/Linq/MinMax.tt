@@ -30,9 +30,9 @@ using Cysharp.Threading.Tasks.Internal;
 
 namespace Cysharp.Threading.Tasks.Linq
 {
+<# foreach(var (minMax, op) in new[]{("Min",">"), ("Max", "<")}) { #>
     public static partial class UniTaskAsyncEnumerable
     {
-<# foreach(var (minMax, op) in new[]{("Min","<"), ("Max", ">")}) { #>
 <# foreach(var t in types) { #>
         public static UniTask<<#= TypeName(t) #>> <#= minMax #>Async(this IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken = default)
         {
@@ -256,6 +256,7 @@ namespace Cysharp.Threading.Tasks.Linq
         }
 
 <# } #>
-<# } #>
     }
+
+<# } #>
 }

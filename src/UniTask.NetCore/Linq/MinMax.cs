@@ -341,7 +341,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -379,7 +379,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -417,7 +417,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -455,7 +455,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -493,7 +493,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -531,7 +531,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -569,7 +569,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -607,7 +607,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -645,7 +645,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -683,7 +683,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -721,7 +721,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -759,7 +759,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -797,7 +797,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -835,7 +835,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -873,7 +873,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -911,7 +911,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -949,7 +949,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -987,7 +987,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1025,7 +1025,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1063,7 +1063,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1103,7 +1103,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1143,7 +1143,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1183,7 +1183,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1223,7 +1223,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1263,7 +1263,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1303,7 +1303,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1343,7 +1343,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1383,7 +1383,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1423,7 +1423,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1463,7 +1463,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1503,7 +1503,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1543,7 +1543,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1583,7 +1583,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1623,7 +1623,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1663,7 +1663,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1703,7 +1703,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1743,7 +1743,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1783,7 +1783,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1823,7 +1823,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1863,7 +1863,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value < x)
+                    if (value > x)
                     {
                         value = x;
                     }
@@ -1880,6 +1880,10 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
+    }
+
+    public static partial class UniTaskAsyncEnumerable
+    {
         public static UniTask<Int32> MaxAsync(this IUniTaskAsyncEnumerable<Int32> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
@@ -2215,7 +2219,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2253,7 +2257,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2291,7 +2295,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2329,7 +2333,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2367,7 +2371,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2405,7 +2409,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2443,7 +2447,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2481,7 +2485,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2519,7 +2523,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2557,7 +2561,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2595,7 +2599,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2633,7 +2637,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2671,7 +2675,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2709,7 +2713,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2747,7 +2751,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2785,7 +2789,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2823,7 +2827,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = e.Current;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2861,7 +2865,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2899,7 +2903,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2937,7 +2941,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 while (await e.MoveNextAsync())
                 {
                     var x = await selector(e.Current, cancellationToken);
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -2977,7 +2981,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3017,7 +3021,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3057,7 +3061,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3097,7 +3101,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3137,7 +3141,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3177,7 +3181,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3217,7 +3221,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3257,7 +3261,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3297,7 +3301,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3337,7 +3341,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3377,7 +3381,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3417,7 +3421,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3457,7 +3461,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3497,7 +3501,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3537,7 +3541,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3577,7 +3581,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3617,7 +3621,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = e.Current;
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3657,7 +3661,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3697,7 +3701,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3737,7 +3741,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     var x = await selector(e.Current, cancellationToken);
                     if( x == null) continue;
-                    if (value > x)
+                    if (value < x)
                     {
                         value = x;
                     }
@@ -3755,4 +3759,5 @@ namespace Cysharp.Threading.Tasks.Linq
         }
 
     }
+
 }
