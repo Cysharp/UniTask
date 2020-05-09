@@ -11,7 +11,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Cysharp.Threading.Tasks.Linq.ForEach<TSource>.InvokeAsync(source, action, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ForEach.InvokeAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Action<TSource, Int32> action, CancellationToken cancellationToken = default)
@@ -19,7 +19,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Cysharp.Threading.Tasks.Linq.ForEach<TSource>.InvokeAsync(source, action, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ForEach.InvokeAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask> action, CancellationToken cancellationToken = default)
@@ -27,7 +27,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Cysharp.Threading.Tasks.Linq.ForEach<TSource>.InvokeAwaitAsync(source, action, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ForEach.InvokeAwaitAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, UniTask> action, CancellationToken cancellationToken = default)
@@ -35,7 +35,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Cysharp.Threading.Tasks.Linq.ForEach<TSource>.InvokeAwaitAsync(source, action, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ForEach.InvokeAwaitAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> action, CancellationToken cancellationToken = default)
@@ -43,7 +43,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Cysharp.Threading.Tasks.Linq.ForEach<TSource>.InvokeAwaitWithCancellationAsync(source, action, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ForEach.InvokeAwaitWithCancellationAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, CancellationToken, UniTask> action, CancellationToken cancellationToken = default)
@@ -51,13 +51,13 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Cysharp.Threading.Tasks.Linq.ForEach<TSource>.InvokeAwaitWithCancellationAsync(source, action, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ForEach.InvokeAwaitWithCancellationAsync(source, action, cancellationToken);
         }
     }
 
-    internal static class ForEach<TSource>
+    internal static class ForEach
     {
-        public static async UniTask InvokeAsync(IUniTaskAsyncEnumerable<TSource> source, Action<TSource> action, CancellationToken cancellationToken)
+        public static async UniTask InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Action<TSource> action, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -76,7 +76,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        public static async UniTask InvokeAsync(IUniTaskAsyncEnumerable<TSource> source, Action<TSource, Int32> action, CancellationToken cancellationToken)
+        public static async UniTask InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Action<TSource, Int32> action, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -96,7 +96,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        public static async UniTask InvokeAwaitAsync(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask> action, CancellationToken cancellationToken)
+        public static async UniTask InvokeAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask> action, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -115,7 +115,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        public static async UniTask InvokeAwaitAsync(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, UniTask> action, CancellationToken cancellationToken)
+        public static async UniTask InvokeAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, UniTask> action, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -135,7 +135,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        public static async UniTask InvokeAwaitWithCancellationAsync(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> action, CancellationToken cancellationToken)
+        public static async UniTask InvokeAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> action, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -154,7 +154,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        public static async UniTask InvokeAwaitWithCancellationAsync(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, CancellationToken, UniTask> action, CancellationToken cancellationToken)
+        public static async UniTask InvokeAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, CancellationToken, UniTask> action, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try

@@ -34,13 +34,12 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
-            var xs = new[] { 1, 10, 100 }.GetEnumerator();
-            while (xs.MoveNext())
-            {
+            new int[] { }.Aggregate((x, y) => x + y);
 
-            }
 
-            Console.WriteLine(xs.MoveNext());
+
+
+            await Task.Yield();
         }
 
 

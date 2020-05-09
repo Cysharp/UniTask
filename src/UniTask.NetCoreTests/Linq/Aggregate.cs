@@ -377,5 +377,120 @@ namespace NetCoreTests.Linq
                 xs.Should().Be(ys);
             }
         }
+
+
+        [Fact]
+        public async Task AggregateTest1()
+        {
+            // 0
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await new int[] { }.ToUniTaskAsyncEnumerable().AggregateAsync((x, y) => x + y));
+            Assert.Throws<InvalidOperationException>(() => new int[] { }.Aggregate((x, y) => x + y));
+
+            // 1
+            {
+                var a = await Enumerable.Range(1, 1).ToUniTaskAsyncEnumerable().AggregateAsync((x, y) => x + y);
+                var b = Enumerable.Range(1, 1).Aggregate((x, y) => x + y);
+                a.Should().Be(b);
+            }
+
+            // 2
+            {
+                var a = await Enumerable.Range(1, 2).ToUniTaskAsyncEnumerable().AggregateAsync((x, y) => x + y);
+                var b = Enumerable.Range(1, 2).Aggregate((x, y) => x + y);
+                a.Should().Be(b);
+            }
+
+            // 10
+            {
+                var a = await Enumerable.Range(1, 10).ToUniTaskAsyncEnumerable().AggregateAsync((x, y) => x + y);
+                var b = Enumerable.Range(1, 10).Aggregate((x, y) => x + y);
+                a.Should().Be(b);
+            }
+        }
+
+        [Fact]
+        public async Task AggregateTest2()
+        {
+            // 0
+            {
+                var a = await Enumerable.Range(1, 1).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y);
+                var b = Enumerable.Range(1, 1).Aggregate(1000, (x, y) => x + y);
+                a.Should().Be(b);
+            }
+
+            // 1
+            {
+                var a = await Enumerable.Range(1, 1).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y);
+                var b = Enumerable.Range(1, 1).Aggregate(1000, (x, y) => x + y);
+                a.Should().Be(b);
+            }
+
+            // 2
+            {
+                var a = await Enumerable.Range(1, 2).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y);
+                var b = Enumerable.Range(1, 2).Aggregate(1000, (x, y) => x + y);
+                a.Should().Be(b);
+            }
+
+            // 10
+            {
+                var a = await Enumerable.Range(1, 10).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y);
+                var b = Enumerable.Range(1, 10).Aggregate(1000, (x, y) => x + y);
+                a.Should().Be(b);
+            }
+        }
+
+        [Fact]
+        public async Task AggregateTest3()
+        {
+            // 0
+            {
+                var a = await Enumerable.Range(1, 1).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y, x => (x * 99).ToString());
+                var b = Enumerable.Range(1, 1).Aggregate(1000, (x, y) => x + y, x => (x * 99).ToString());
+                a.Should().Be(b);
+            }
+
+            // 1
+            {
+                var a = await Enumerable.Range(1, 1).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y, x => (x * 99).ToString());
+                var b = Enumerable.Range(1, 1).Aggregate(1000, (x, y) => x + y, x => (x * 99).ToString());
+                a.Should().Be(b);
+            }
+
+            // 2
+            {
+                var a = await Enumerable.Range(1, 2).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y, x => (x * 99).ToString());
+                var b = Enumerable.Range(1, 2).Aggregate(1000, (x, y) => x + y, x => (x * 99).ToString());
+                a.Should().Be(b);
+            }
+
+            // 10
+            {
+                var a = await Enumerable.Range(1, 10).ToUniTaskAsyncEnumerable().AggregateAsync(1000, (x, y) => x + y, x => (x * 99).ToString());
+                var b = Enumerable.Range(1, 10).Aggregate(1000, (x, y) => x + y, x => (x * 99).ToString());
+                a.Should().Be(b);
+            }
+        }
+
+        [Fact]
+        public async Task ForEach()
+        {
+            var list = new List<int>();
+            await Enumerable.Range(1, 10).ToUniTaskAsyncEnumerable().ForEachAsync(x =>
+            {
+                list.Add(x);
+            });
+
+            list.Should().BeEquivalentTo(Enumerable.Range(1, 10));
+
+            var list2 = new List<(int, int)>();
+            await Enumerable.Range(5, 10).ToUniTaskAsyncEnumerable().ForEachAsync((index, x) =>
+            {
+                list2.Add((index, x));
+            });
+
+            var list3 = Enumerable.Range(5, 10).Select((index, x) => (index, x)).ToArray();
+            list2.Should().BeEquivalentTo(list3);
+        }
     }
 }
