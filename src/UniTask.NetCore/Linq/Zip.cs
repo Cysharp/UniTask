@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks.Internal;
+using System;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks.Linq
@@ -8,12 +9,37 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public static IUniTaskAsyncEnumerable<(TFirst First, TSecond Second)> Zip<TFirst, TSecond>(this IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second)
         {
+            Error.ThrowArgumentNullException(first, nameof(first));
+            Error.ThrowArgumentNullException(second, nameof(second));
+
             return Zip(first, second, (x, y) => (x, y));
         }
 
         public static IUniTaskAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
         {
-            return new Cysharp.Threading.Tasks.Linq.Zip<TFirst, TSecond, TResult>(first, second, resultSelector);
+            Error.ThrowArgumentNullException(first, nameof(first));
+            Error.ThrowArgumentNullException(second, nameof(second));
+            Error.ThrowArgumentNullException(resultSelector, nameof(resultSelector));
+
+            return new Zip<TFirst, TSecond, TResult>(first, second, resultSelector);
+        }
+
+        public static IUniTaskAsyncEnumerable<TResult> ZipAwait<TFirst, TSecond, TResult>(this IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, UniTask<TResult>> selector)
+        {
+            Error.ThrowArgumentNullException(first, nameof(first));
+            Error.ThrowArgumentNullException(second, nameof(second));
+            Error.ThrowArgumentNullException(selector, nameof(selector));
+
+            return new ZipAwait<TFirst, TSecond, TResult>(first, second, selector);
+        }
+
+        public static IUniTaskAsyncEnumerable<TResult> ZipAwaitWithCancellation<TFirst, TSecond, TResult>(this IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, CancellationToken, UniTask<TResult>> selector)
+        {
+            Error.ThrowArgumentNullException(first, nameof(first));
+            Error.ThrowArgumentNullException(second, nameof(second));
+            Error.ThrowArgumentNullException(selector, nameof(selector));
+
+            return new ZipAwaitWithCancellation<TFirst, TSecond, TResult>(first, second, selector);
         }
     }
 
@@ -124,29 +150,32 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 var self = (Enumerator)state;
 
-                if (self.secondAwaiter.GetResult())
+                if (self.TryGetResult(self.secondAwaiter, out var result))
                 {
-                    try
+                    if (result)
                     {
-                        self.Current = self.resultSelector(self.firstEnumerator.Current, self.secondEnumerator.Current);
-                    }
-                    catch (Exception ex)
-                    {
-                        self.completionSource.TrySetException(ex);
-                    }
+                        try
+                        {
+                            self.Current = self.resultSelector(self.firstEnumerator.Current, self.secondEnumerator.Current);
+                        }
+                        catch (Exception ex)
+                        {
+                            self.completionSource.TrySetException(ex);
+                        }
 
-                    if (self.cancellationToken.IsCancellationRequested)
-                    {
-                        self.completionSource.TrySetCanceled(self.cancellationToken);
+                        if (self.cancellationToken.IsCancellationRequested)
+                        {
+                            self.completionSource.TrySetCanceled(self.cancellationToken);
+                        }
+                        else
+                        {
+                            self.completionSource.TrySetResult(true);
+                        }
                     }
                     else
                     {
-                        self.completionSource.TrySetResult(true);
+                        self.completionSource.TrySetResult(false);
                     }
-                }
-                else
-                {
-                    self.completionSource.TrySetResult(false);
                 }
             }
 
@@ -186,7 +215,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             static readonly Action<object> firstMoveNextCoreDelegate = FirstMoveNextCore;
             static readonly Action<object> secondMoveNextCoreDelegate = SecondMoveNextCore;
-            static readonly Action<object> unwrapResultTaskDelegate = UnwrapResultTask;
+            static readonly Action<object> resultAwaitCoreDelegate = ResultAwaitCore;
 
             readonly IUniTaskAsyncEnumerable<TFirst> first;
             readonly IUniTaskAsyncEnumerable<TSecond> second;
@@ -239,21 +268,33 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 var self = (Enumerator)state;
 
-                if (self.firstAwaiter.GetResult())
+                if (self.TryGetResult(self.firstAwaiter, out var result))
                 {
-                    self.secondAwaiter = self.secondEnumerator.MoveNextAsync().GetAwaiter();
-                    if (self.secondAwaiter.IsCompleted)
+                    if (result)
                     {
-                        SecondMoveNextCore(self);
+                        try
+                        {
+                            self.secondAwaiter = self.secondEnumerator.MoveNextAsync().GetAwaiter();
+                        }
+                        catch (Exception ex)
+                        {
+                            self.completionSource.TrySetException(ex);
+                            return;
+                        }
+
+                        if (self.secondAwaiter.IsCompleted)
+                        {
+                            SecondMoveNextCore(self);
+                        }
+                        else
+                        {
+                            self.secondAwaiter.SourceOnCompleted(secondMoveNextCoreDelegate, self);
+                        }
                     }
                     else
                     {
-                        self.secondAwaiter.SourceOnCompleted(secondMoveNextCoreDelegate, self);
+                        self.completionSource.TrySetResult(false);
                     }
-                }
-                else
-                {
-                    self.completionSource.TrySetResult(false);
                 }
             }
 
@@ -261,45 +302,50 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 var self = (Enumerator)state;
 
-                if (self.secondAwaiter.GetResult())
+                if (self.TryGetResult(self.secondAwaiter, out var result))
                 {
-                    var task = self.resultSelector(self.firstEnumerator.Current, self.secondEnumerator.Current);
-                    self.resultAwaiter = task.GetAwaiter();
-                    if (self.resultAwaiter.IsCompleted)
+                    if (result)
                     {
-                        UnwrapResultTask(self);
+                        try
+                        {
+                            self.resultAwaiter = self.resultSelector(self.firstEnumerator.Current, self.secondEnumerator.Current).GetAwaiter();
+                            if (self.resultAwaiter.IsCompleted)
+                            {
+                                ResultAwaitCore(self);
+                            }
+                            else
+                            {
+                                self.resultAwaiter.SourceOnCompleted(resultAwaitCoreDelegate, self);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            self.completionSource.TrySetException(ex);
+                        }
                     }
                     else
                     {
-                        self.resultAwaiter.SourceOnCompleted(unwrapResultTaskDelegate, self);
+                        self.completionSource.TrySetResult(false);
                     }
-                }
-                else
-                {
-                    self.completionSource.TrySetResult(false);
                 }
             }
 
-            static void UnwrapResultTask(object state)
+            static void ResultAwaitCore(object state)
             {
                 var self = (Enumerator)state;
 
-                try
+                if (self.TryGetResult(self.resultAwaiter, out var result))
                 {
-                    self.Current = self.resultAwaiter.GetResult();
-                }
-                catch (Exception ex)
-                {
-                    self.completionSource.TrySetException(ex);
-                }
+                    self.Current = result;
 
-                if (self.cancellationToken.IsCancellationRequested)
-                {
-                    self.completionSource.TrySetCanceled(self.cancellationToken);
-                }
-                else
-                {
-                    self.completionSource.TrySetResult(true);
+                    if (self.cancellationToken.IsCancellationRequested)
+                    {
+                        self.completionSource.TrySetCanceled(self.cancellationToken);
+                    }
+                    else
+                    {
+                        self.completionSource.TrySetResult(true);
+                    }
                 }
             }
 
@@ -317,4 +363,173 @@ namespace Cysharp.Threading.Tasks.Linq
         }
     }
 
+    internal sealed class ZipAwaitWithCancellation<TFirst, TSecond, TResult> : IUniTaskAsyncEnumerable<TResult>
+    {
+        readonly IUniTaskAsyncEnumerable<TFirst> first;
+        readonly IUniTaskAsyncEnumerable<TSecond> second;
+        readonly Func<TFirst, TSecond, CancellationToken, UniTask<TResult>> resultSelector;
+
+        public ZipAwaitWithCancellation(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, CancellationToken, UniTask<TResult>> resultSelector)
+        {
+            this.first = first;
+            this.second = second;
+            this.resultSelector = resultSelector;
+        }
+
+        public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            return new Enumerator(first, second, resultSelector, cancellationToken);
+        }
+
+        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        {
+            static readonly Action<object> firstMoveNextCoreDelegate = FirstMoveNextCore;
+            static readonly Action<object> secondMoveNextCoreDelegate = SecondMoveNextCore;
+            static readonly Action<object> resultAwaitCoreDelegate = ResultAwaitCore;
+
+            readonly IUniTaskAsyncEnumerable<TFirst> first;
+            readonly IUniTaskAsyncEnumerable<TSecond> second;
+            readonly Func<TFirst, TSecond, CancellationToken, UniTask<TResult>> resultSelector;
+
+            CancellationToken cancellationToken;
+
+            IUniTaskAsyncEnumerator<TFirst> firstEnumerator;
+            IUniTaskAsyncEnumerator<TSecond> secondEnumerator;
+
+            UniTask<bool>.Awaiter firstAwaiter;
+            UniTask<bool>.Awaiter secondAwaiter;
+            UniTask<TResult>.Awaiter resultAwaiter;
+
+            public Enumerator(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, CancellationToken, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
+            {
+                this.first = first;
+                this.second = second;
+                this.resultSelector = resultSelector;
+                this.cancellationToken = cancellationToken;
+            }
+
+            public TResult Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
+            {
+                completionSource.Reset();
+
+                if (firstEnumerator == null)
+                {
+                    firstEnumerator = first.GetAsyncEnumerator(cancellationToken);
+                    secondEnumerator = second.GetAsyncEnumerator(cancellationToken);
+                }
+
+                firstAwaiter = firstEnumerator.MoveNextAsync().GetAwaiter();
+
+                if (firstAwaiter.IsCompleted)
+                {
+                    FirstMoveNextCore(this);
+                }
+                else
+                {
+                    firstAwaiter.SourceOnCompleted(firstMoveNextCoreDelegate, this);
+                }
+
+                return new UniTask<bool>(this, completionSource.Version);
+            }
+
+            static void FirstMoveNextCore(object state)
+            {
+                var self = (Enumerator)state;
+
+                if (self.TryGetResult(self.firstAwaiter, out var result))
+                {
+                    if (result)
+                    {
+                        try
+                        {
+                            self.secondAwaiter = self.secondEnumerator.MoveNextAsync().GetAwaiter();
+                        }
+                        catch (Exception ex)
+                        {
+                            self.completionSource.TrySetException(ex);
+                            return;
+                        }
+
+                        if (self.secondAwaiter.IsCompleted)
+                        {
+                            SecondMoveNextCore(self);
+                        }
+                        else
+                        {
+                            self.secondAwaiter.SourceOnCompleted(secondMoveNextCoreDelegate, self);
+                        }
+                    }
+                    else
+                    {
+                        self.completionSource.TrySetResult(false);
+                    }
+                }
+            }
+
+            static void SecondMoveNextCore(object state)
+            {
+                var self = (Enumerator)state;
+
+                if (self.TryGetResult(self.secondAwaiter, out var result))
+                {
+                    if (result)
+                    {
+                        try
+                        {
+                            self.resultAwaiter = self.resultSelector(self.firstEnumerator.Current, self.secondEnumerator.Current, self.cancellationToken).GetAwaiter();
+                            if (self.resultAwaiter.IsCompleted)
+                            {
+                                ResultAwaitCore(self);
+                            }
+                            else
+                            {
+                                self.resultAwaiter.SourceOnCompleted(resultAwaitCoreDelegate, self);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            self.completionSource.TrySetException(ex);
+                        }
+                    }
+                    else
+                    {
+                        self.completionSource.TrySetResult(false);
+                    }
+                }
+            }
+
+            static void ResultAwaitCore(object state)
+            {
+                var self = (Enumerator)state;
+
+                if (self.TryGetResult(self.resultAwaiter, out var result))
+                {
+                    self.Current = result;
+
+                    if (self.cancellationToken.IsCancellationRequested)
+                    {
+                        self.completionSource.TrySetCanceled(self.cancellationToken);
+                    }
+                    else
+                    {
+                        self.completionSource.TrySetResult(true);
+                    }
+                }
+            }
+
+            public async UniTask DisposeAsync()
+            {
+                if (firstEnumerator != null)
+                {
+                    await firstEnumerator.DisposeAsync();
+                }
+                if (secondEnumerator != null)
+                {
+                    await secondEnumerator.DisposeAsync();
+                }
+            }
+        }
+    }
 }
