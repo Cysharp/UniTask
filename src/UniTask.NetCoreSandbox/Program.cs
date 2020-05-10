@@ -39,17 +39,8 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
-            Console.WriteLine("YEAH");
-            try
-            {
-                var xs = await UniTaskAsyncEnumerable.Range(1, 10).Concat(UniTaskAsyncEnumerable.Throw<int>(new InvalidOperationException("something")))
-                    .SumAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("EX");
-                Console.WriteLine(ex);
-            }
+            var foo = Enumerable.Range(1, 10).ToArray().AsEnumerable().GetEnumerator() as IEnumerator<int>;
+            Console.WriteLine(foo.GetType().FullName);
         }
 
 
