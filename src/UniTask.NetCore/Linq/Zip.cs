@@ -90,21 +90,33 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 var self = (Enumerator)state;
 
-                if (self.firstAwaiter.GetResult())
+                if (self.TryGetResult(self.firstAwaiter, out var result))
                 {
-                    self.secondAwaiter = self.secondEnumerator.MoveNextAsync().GetAwaiter();
-                    if (self.secondAwaiter.IsCompleted)
+                    if (result)
                     {
-                        SecondMoveNextCore(self);
+                        try
+                        {
+                            self.secondAwaiter = self.secondEnumerator.MoveNextAsync().GetAwaiter();
+                        }
+                        catch (Exception ex)
+                        {
+                            self.completionSource.TrySetException(ex);
+                            return;
+                        }
+
+                        if (self.secondAwaiter.IsCompleted)
+                        {
+                            SecondMoveNextCore(self);
+                        }
+                        else
+                        {
+                            self.secondAwaiter.SourceOnCompleted(secondMoveNextCoreDelegate, self);
+                        }
                     }
                     else
                     {
-                        self.secondAwaiter.SourceOnCompleted(secondMoveNextCoreDelegate, self);
+                        self.completionSource.TrySetResult(false);
                     }
-                }
-                else
-                {
-                    self.completionSource.TrySetResult(false);
                 }
             }
 

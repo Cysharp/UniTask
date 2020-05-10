@@ -70,7 +70,7 @@ namespace Cysharp.Threading.Tasks
                     string msg = null;
                     if (UnobservedExceptionWriteLogType != UnityEngine.LogType.Exception)
                     {
-                        msg = "UnobservedTaskException:" + ex.ToString();
+                        msg = "UnobservedTaskException: " + ex.ToString();
                     }
                     switch (UnobservedExceptionWriteLogType)
                     {
@@ -93,7 +93,7 @@ namespace Cysharp.Threading.Tasks
                             break;
                     }
 #else
-                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine("UnobservedTaskException: " + ex.ToString());
 #endif
                 }
             }

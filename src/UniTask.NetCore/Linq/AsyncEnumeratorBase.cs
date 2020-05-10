@@ -31,6 +31,21 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             completionSource.GetResult(token);
         }
+
+        protected bool TryGetResult<T>(UniTask<T>.Awaiter awaiter, out T result)
+        {
+            try
+            {
+                result = awaiter.GetResult();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                completionSource.TrySetException(ex);
+                result = default;
+                return false;
+            }
+        }
     }
 
 

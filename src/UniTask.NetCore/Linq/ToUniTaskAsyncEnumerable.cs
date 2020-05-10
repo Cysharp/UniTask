@@ -243,19 +243,21 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 get
                 {
-                    if (error != null)
-                    {
-                        ExceptionDispatchInfo.Capture(error).Throw();
-                    }
-
                     if (useCachedCurrent)
                     {
                         return current;
                     }
 
-                    current = queuedResult.Dequeue();
-                    useCachedCurrent = true;
-                    return current;
+                    if (queuedResult.Count != 0)
+                    {
+                        current = queuedResult.Dequeue();
+                        useCachedCurrent = true;
+                        return current;
+                    }
+                    else
+                    {
+                        return default; // undefined.
+                    }
                 }
             }
 

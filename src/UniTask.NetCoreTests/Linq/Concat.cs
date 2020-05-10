@@ -27,6 +27,19 @@ namespace NetCoreTests.Linq
             xs.Should().BeEquivalentTo(ys);
         }
 
+        [Fact]
+        public async Task AppendThrow()
+        {
+            var xs = UniTaskTestException.ThrowImmediate().Append(99).ToArrayAsync();
+            await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+
+            var ys = UniTaskTestException.ThrowAfter().Append(99).ToArrayAsync();
+            await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+
+            var zs = UniTaskTestException.ThrowInMoveNext().Append(99).ToArrayAsync();
+            await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
+        }
+
         [Theory]
         [InlineData(0, 0)]
         [InlineData(0, 1)]
@@ -38,6 +51,19 @@ namespace NetCoreTests.Linq
             var ys = Enumerable.Range(start, count).Prepend(99).ToArray();
 
             xs.Should().BeEquivalentTo(ys);
+        }
+
+        [Fact]
+        public async Task PrependThrow()
+        {
+            var xs = UniTaskTestException.ThrowImmediate().Prepend(99).ToArrayAsync();
+            await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+
+            var ys = UniTaskTestException.ThrowAfter().Prepend(99).ToArrayAsync();
+            await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+
+            var zs = UniTaskTestException.ThrowInMoveNext().Prepend(99).ToArrayAsync();
+            await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
         }
 
         public static IEnumerable<object[]> array1 = new object[][]
@@ -60,6 +86,31 @@ namespace NetCoreTests.Linq
             var xs = await l.ToUniTaskAsyncEnumerable().Concat(r.ToUniTaskAsyncEnumerable()).ToArrayAsync();
             var ys = l.Concat(r).ToArray();
             xs.Should().BeEquivalentTo(ys);
+        }
+
+        [Fact]
+        public async Task ConcatThrow()
+        {
+            {
+                var xs = UniTaskTestException.ThrowImmediate().Concat(UniTaskAsyncEnumerable.Range(1, 10)).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+
+                var ys = UniTaskTestException.ThrowAfter().Concat(UniTaskAsyncEnumerable.Range(1, 10)).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+
+                var zs = UniTaskTestException.ThrowInMoveNext().Concat(UniTaskAsyncEnumerable.Range(1, 10)).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
+            }
+            {
+                var xs = UniTaskAsyncEnumerable.Range(1, 10).Concat(UniTaskTestException.ThrowImmediate()).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+
+                var ys = UniTaskAsyncEnumerable.Range(1, 10).Concat(UniTaskTestException.ThrowAfter()).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+
+                var zs = UniTaskAsyncEnumerable.Range(1, 10).Concat(UniTaskTestException.ThrowInMoveNext()).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
+            }
         }
     }
 }

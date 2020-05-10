@@ -37,24 +37,28 @@ namespace NetCoreSandbox
             await Task.Delay(10, cancellationToken);
         }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            // Create Canceled token.
-            var cts = new CancellationTokenSource();
-            cts.Cancel();
-
-            // OK, don't throw.
-            var e1 = FooAsync(cts.Token).GetAsyncEnumerator(cts.Token);
-            Console.WriteLine("OK:FooAsyunc().GetAsyncEnumerator()");
-
-            // Ix.Async LINQ Operator throws OperationCanceledException
-            var e2 = FooAsync(cts.Token).Select(x => x).GetAsyncEnumerator(cts.Token);
+            Console.WriteLine("YEAH");
+            try
+            {
+                var xs = await UniTaskAsyncEnumerable.Range(1, 10).Concat(UniTaskAsyncEnumerable.Throw<int>(new InvalidOperationException("something")))
+                    .SumAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("EX");
+                Console.WriteLine(ex);
+            }
         }
 
 
 
         void Foo()
         {
+
+
+
             // AsyncEnumerable.t
 
             var sb = new StringBuilder();

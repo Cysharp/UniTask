@@ -86,7 +86,15 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                try
+                {
+                    awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                }
+                catch (Exception ex)
+                {
+                    completionSource.TrySetException(ex);
+                    return;
+                }
 
                 if (awaiter.IsCompleted)
                 {
@@ -102,21 +110,24 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 var self = (Enumerator)state;
 
-                if (self.awaiter.GetResult())
+                if (self.TryGetResult(self.awaiter, out var result))
                 {
-                    self.Current = self.enumerator.Current;
-                    self.completionSource.TrySetResult(true);
-                }
-                else
-                {
-                    if (self.iteratingState == IteratingState.IteratingFirst)
+                    if (result)
                     {
-                        self.RunSecondAfterDisposeAsync().Forget();
-                        return;
+                        self.Current = self.enumerator.Current;
+                        self.completionSource.TrySetResult(true);
                     }
+                    else
+                    {
+                        if (self.iteratingState == IteratingState.IteratingFirst)
+                        {
+                            self.RunSecondAfterDisposeAsync().Forget();
+                            return;
+                        }
 
-                    self.iteratingState = IteratingState.Complete;
-                    self.completionSource.TrySetResult(false);
+                        self.iteratingState = IteratingState.Complete;
+                        self.completionSource.TrySetResult(false);
+                    }
                 }
             }
 
