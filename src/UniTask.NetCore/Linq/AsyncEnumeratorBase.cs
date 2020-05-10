@@ -46,8 +46,21 @@ namespace Cysharp.Threading.Tasks.Linq
                 return false;
             }
         }
-    }
 
+        protected bool TryGetResult(UniTask.Awaiter awaiter)
+        {
+            try
+            {
+                awaiter.GetResult();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                completionSource.TrySetException(ex);
+                return false;
+            }
+        }
+    }
 
     public abstract class AsyncEnumeratorBase<TSource, TResult> : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
     {
