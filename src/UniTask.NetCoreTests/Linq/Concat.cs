@@ -112,5 +112,33 @@ namespace NetCoreTests.Linq
                 await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
             }
         }
+
+        [Fact]
+        public async Task DefaultIfEmpty()
+        {
+            {
+                var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().DefaultIfEmpty(99).ToArrayAsync();
+                var ys = Enumerable.Range(1, 0).DefaultIfEmpty(99).ToArray();
+                xs.Should().BeEquivalentTo(ys);
+            }
+            {
+                var xs = await Enumerable.Range(1, 1).ToUniTaskAsyncEnumerable().DefaultIfEmpty(99).ToArrayAsync();
+                var ys = Enumerable.Range(1, 1).DefaultIfEmpty(99).ToArray();
+                xs.Should().BeEquivalentTo(ys);
+            }
+            {
+                var xs = await Enumerable.Range(1, 10).ToUniTaskAsyncEnumerable().DefaultIfEmpty(99).ToArrayAsync();
+                var ys = Enumerable.Range(1, 10).DefaultIfEmpty(99).ToArray();
+                xs.Should().BeEquivalentTo(ys);
+            }
+            // Throw
+            {
+                foreach (var item in UniTaskTestException.Throws())
+                {
+                    var xs = item.DefaultIfEmpty().ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+            }
+        }
     }
 }

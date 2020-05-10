@@ -73,9 +73,14 @@ namespace Cysharp.Threading.Tasks.Linq
                 cancellationToken.ThrowIfCancellationRequested();
                 completionSource.Reset();
 
-                if (iteratingState == IteratingState.Empty)
+                if (iteratingState == IteratingState.Completed)
                 {
                     return CompletedTasks.False;
+                }
+
+                if (enumerator == null)
+                {
+                    enumerator = source.GetAsyncEnumerator(cancellationToken);
                 }
 
                 awaiter = enumerator.MoveNextAsync().GetAwaiter();

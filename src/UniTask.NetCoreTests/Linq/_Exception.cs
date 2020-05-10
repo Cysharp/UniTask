@@ -23,14 +23,14 @@ namespace NetCoreTests.Linq
         }
 
 
-        public static IEnumerable<IUniTaskAsyncEnumerable<int>> Throws()
+        public static IEnumerable<IUniTaskAsyncEnumerable<int>> Throws(int count = 3)
         {
             yield return ThrowImmediate();
             yield return ThrowAfter();
             yield return ThrowInMoveNext();
-            yield return UniTaskAsyncEnumerable.Range(1, 3).Concat(ThrowImmediate());
-            yield return UniTaskAsyncEnumerable.Range(1, 3).Concat(ThrowAfter());
-            yield return UniTaskAsyncEnumerable.Range(1, 3).Concat(ThrowInMoveNext());
+            yield return UniTaskAsyncEnumerable.Range(1, count).Concat(ThrowImmediate());
+            yield return UniTaskAsyncEnumerable.Range(1, count).Concat(ThrowAfter());
+            yield return UniTaskAsyncEnumerable.Range(1, count).Concat(ThrowInMoveNext());
         }
     }
 
