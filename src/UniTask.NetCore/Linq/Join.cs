@@ -154,7 +154,7 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 try
                 {
-                    lookup = await inner.ToLookupAsync(innerKeySelector, cancellationToken);
+                    lookup = await inner.ToLookupAsync(innerKeySelector, comparer, cancellationToken);
                     enumerator = outer.GetAsyncEnumerator(cancellationToken);
                 }
                 catch (Exception ex)
@@ -179,6 +179,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         }
                         else
                         {
+                            valueEnumerator.Dispose();
                             valueEnumerator = null;
                         }
                     }
@@ -342,7 +343,7 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 try
                 {
-                    lookup = await inner.ToLookupAwaitAsync(innerKeySelector, cancellationToken);
+                    lookup = await inner.ToLookupAwaitAsync(innerKeySelector, comparer, cancellationToken);
                     enumerator = outer.GetAsyncEnumerator(cancellationToken);
                 }
                 catch (Exception ex)
@@ -375,6 +376,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         }
                         else
                         {
+                            valueEnumerator.Dispose();
                             valueEnumerator = null;
                         }
                     }
@@ -568,7 +570,7 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 try
                 {
-                    lookup = await inner.ToLookupAwaitWithCancellationAsync(innerKeySelector, cancellationToken: cancellationToken);
+                    lookup = await inner.ToLookupAwaitWithCancellationAsync(innerKeySelector, comparer, cancellationToken: cancellationToken);
                     enumerator = outer.GetAsyncEnumerator(cancellationToken);
                 }
                 catch (Exception ex)
@@ -601,6 +603,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         }
                         else
                         {
+                            valueEnumerator.Dispose();
                             valueEnumerator = null;
                         }
                     }

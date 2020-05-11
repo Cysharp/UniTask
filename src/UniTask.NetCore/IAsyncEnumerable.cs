@@ -19,6 +19,11 @@ namespace Cysharp.Threading.Tasks
         UniTask DisposeAsync();
     }
 
+    //public interface IUniTaskAsyncGrouping<out TKey, out TElement> : IUniTaskAsyncEnumerable<TElement>
+    //{
+    //    TKey Key { get; }
+    //}
+
     public static class UniTaskAsyncEnumerableExtensions
     {
         public static UniTaskCancelableAsyncEnumerable<T> WithCancellation<T>(this IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)

@@ -112,5 +112,78 @@ namespace NetCoreTests.Linq
                 await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
             }
         }
+
+
+        [Fact]
+        public async Task GroupBy()
+        {
+            var arr = new[] { 1, 4, 10, 10, 4, 5, 10, 9 };
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().GroupBy(x => x).ToArrayAsync();
+                var ys = arr.GroupBy(x => x).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().GroupBy(x => x, (key, xs) => (key, xs.ToArray())).ToArrayAsync();
+                var ys = arr.GroupBy(x => x, (key, xs) => (key, xs.ToArray())).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().BeEquivalentTo(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
+            }
+
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().GroupByAwait(x => RandomRun(x)).ToArrayAsync();
+                var ys = arr.GroupBy(x => x).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().GroupByAwait(x => RandomRun(x), (key, xs) => RandomRun((key, xs.ToArray()))).ToArrayAsync();
+                var ys = arr.GroupBy(x => x, (key, xs) => (key, xs.ToArray())).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().BeEquivalentTo(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
+            }
+
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().GroupByAwaitWithCancellation((x, _) => RandomRun(x)).ToArrayAsync();
+                var ys = arr.GroupBy(x => x).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+            }
+
+            {
+                var xs = await arr.ToUniTaskAsyncEnumerable().GroupByAwaitWithCancellation((x, _) => RandomRun(x), (key, xs, _) => RandomRun((key, xs.ToArray()))).ToArrayAsync();
+                var ys = arr.GroupBy(x => x, (key, xs) => (key, xs.ToArray())).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().BeEquivalentTo(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
+            }
+        }
+
+
+
+
+        [Fact]
+        public async Task GroupByThrow()
+        {
+            var arr = new[] { 1, 4, 10, 10, 4, 5, 10, 9 };
+            foreach (var item in UniTaskTestException.Throws())
+            {
+                var xs = item.GroupBy(x => x).ToArrayAsync();
+                var ys = item.GroupByAwait(x => RandomRun(x)).ToArrayAsync();
+                var zs = item.GroupByAwaitWithCancellation((x, _) => RandomRun(x)).ToArrayAsync();
+
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
+            }
+        }
     }
 }

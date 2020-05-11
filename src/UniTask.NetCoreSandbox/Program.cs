@@ -52,6 +52,8 @@ namespace NetCoreSandbox
             }
 
 
+            // AsyncEnumerable.Range(1, 10).GroupBy(x=>x).Select(x=>x.first
+
 
 
             //Enumerable.Range(1,10).ToHashSet(

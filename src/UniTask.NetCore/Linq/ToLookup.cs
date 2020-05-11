@@ -514,7 +514,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+        class Grouping<TKey, TElement> : IGrouping<TKey, TElement> // , IUniTaskAsyncGrouping<TKey, TElement>
         {
             readonly List<TElement> elements;
 
@@ -538,6 +538,11 @@ namespace Cysharp.Threading.Tasks.Linq
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return elements.GetEnumerator();
+            }
+
+            public IUniTaskAsyncEnumerator<TElement> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            {
+                return this.ToUniTaskAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
             }
         }
     }
