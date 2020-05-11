@@ -65,6 +65,44 @@ namespace NetCoreTests.Linq
             }
         }
 
+        [Theory]
+        [MemberData(nameof(array1))]
+        public async Task DistinctUntilChanged(int[] array)
+        {
+            var ys = await array.ToAsyncEnumerable().DistinctUntilChanged().ToArrayAsync();
+            {
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChanged().ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChanged(x => x).ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChangedAwait(x => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChangedAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
+            }
+        }
+
+        [Fact]
+        public async Task DistinctUntilChangedThrow()
+        {
+            foreach (var item in UniTaskTestException.Throws())
+            {
+                {
+                    var xs = item.DistinctUntilChanged().ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+                {
+                    var xs = item.DistinctUntilChanged(x => x).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+                {
+                    var xs = item.DistinctUntilChangedAwait(x => UniTask.Run(() => x)).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+                {
+                    var xs = item.DistinctUntilChangedAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+            }
+        }
+
+
         [Fact]
         public async Task Except()
         {
