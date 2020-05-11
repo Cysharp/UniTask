@@ -12,6 +12,7 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks.Linq;
 
 public struct MyJob : IJob
 {
@@ -32,7 +33,7 @@ public struct MyJob : IJob
 
 public enum MyEnum
 {
-    A,B,C
+    A, B, C
 }
 
 public class SandboxMain : MonoBehaviour
@@ -85,6 +86,25 @@ public class SandboxMain : MonoBehaviour
         job.inOut.Dispose();
     }
 
+
+    async UniTaskVoid Update2()
+    {
+
+        UnityEngine.Debug.Log("async linq!");
+
+        await UniTaskAsyncEnumerable.Range(1, 10)
+            .Where(x => x % 2 == 0)
+            .Select(x => x * x)
+            .ForEachAsync(x =>
+            {
+                UnityEngine.Debug.Log(x);
+            });
+
+        UnityEngine.Debug.Log("done");
+
+
+    }
+
     void Start()
     {
         Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
@@ -93,6 +113,8 @@ public class SandboxMain : MonoBehaviour
         var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
         ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
 
+
+        Update2().Forget();
 
         //RunStandardDelayAsync().Forget();
 
@@ -144,7 +166,7 @@ public class SandboxMain : MonoBehaviour
         UniTask<int> foo = UniTask.FromResult(10);
         // foo.Status.IsCanceled
 
-        
+
 
         Foo(foo);
 

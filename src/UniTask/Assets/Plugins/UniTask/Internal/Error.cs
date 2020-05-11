@@ -20,6 +20,24 @@ namespace Cysharp.Threading.Tasks.Internal
             throw new ArgumentNullException(paramName);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Exception ArgumentOutOfRange(string paramName)
+        {
+            return new ArgumentOutOfRangeException(paramName);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Exception NoElements()
+        {
+            return new InvalidOperationException("Source sequence doesn't contain any elements.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Exception MoreThanOneElement()
+        {
+            return new InvalidOperationException("Source sequence contains more than one element.");
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowArgumentException<T>(string message)
         {
