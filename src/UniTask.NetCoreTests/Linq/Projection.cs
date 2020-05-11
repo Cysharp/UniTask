@@ -272,5 +272,52 @@ namespace NetCoreTests.Linq
                 await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
             }
         }
+
+        [Theory]
+        // [InlineData(0, 0)]
+        [InlineData(0, 3)]
+        [InlineData(9, 1)]
+        [InlineData(9, 2)]
+        [InlineData(9, 3)]
+        [InlineData(17, 3)]
+        [InlineData(17, 16)]
+        [InlineData(17, 17)]
+        [InlineData(17, 27)]
+        public async Task Buffer(int rangeCount, int bufferCount)
+        {
+            var xs = await UniTaskAsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount).Select(x => string.Join(",", x)).ToArrayAsync();
+            var ys = await AsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount).Select(x => string.Join(",", x)).ToArrayAsync();
+
+            xs.Should().BeEquivalentTo(ys);
+        }
+
+        [Theory]
+        // [InlineData(0, 0)]
+        [InlineData(0, 3, 2)]
+        [InlineData(9, 1, 1)]
+        [InlineData(9, 2, 3)]
+        [InlineData(9, 3, 4)]
+        [InlineData(17, 3, 3)]
+        [InlineData(17, 16, 5)]
+        [InlineData(17, 17, 19)]
+        public async Task BufferSkip(int rangeCount, int bufferCount, int skipCount)
+        {
+            var xs = await UniTaskAsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount, skipCount).Select(x => string.Join(",", x)).ToArrayAsync();
+            var ys = await AsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount, skipCount).Select(x => string.Join(",", x)).ToArrayAsync();
+
+            xs.Should().BeEquivalentTo(ys);
+        }
+
+        [Fact]
+        public async Task BufferError()
+        {
+            foreach (var item in UniTaskTestException.Throws())
+            {
+                var xs = item.Buffer(3).ToArrayAsync();
+                var ys = item.Buffer(3, 2).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+            }
+        }
     }
 }
