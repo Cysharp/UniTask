@@ -41,47 +41,47 @@ namespace Cysharp.Threading.Tasks.Linq
             return source.Do(observer.OnNext, observer.OnError, observer.OnCompleted); // alloc delegate.
         }
 
-        // TODO:Rename -> DoAwait
+        // not yet impl.
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Task> onNext)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwait<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask> onNext)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Task> onNext, Func<Exception, Task> onError)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwait<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask> onNext, Func<Exception, UniTask> onError)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Task> onNext, Func<Task> onCompleted)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwait<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask> onNext, Func<UniTask> onCompleted)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Task> onNext, Func<Exception, Task> onError, Func<Task> onCompleted)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwait<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask> onNext, Func<Exception, UniTask> onError, Func<UniTask> onCompleted)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, Task> onNext)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwaitWithCancellation<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> onNext)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, Task> onNext, Func<Exception, CancellationToken, Task> onError)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwaitWithCancellation<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> onNext, Func<Exception, CancellationToken, UniTask> onError)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, Task> onNext, Func<CancellationToken, Task> onCompleted)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwaitWithCancellation<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> onNext, Func<CancellationToken, UniTask> onCompleted)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static IUniTaskAsyncEnumerable<TSource> Do<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, Task> onNext, Func<Exception, CancellationToken, Task> onError, Func<CancellationToken, Task> onCompleted)
-        {
-            throw new NotImplementedException();
-        }
+        //public static IUniTaskAsyncEnumerable<TSource> DoAwaitWithCancellation<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> onNext, Func<Exception, CancellationToken, UniTask> onError, Func<CancellationToken, UniTask> onCompleted)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 
     internal sealed class Do<TSource> : IUniTaskAsyncEnumerable<TSource>
@@ -252,4 +252,5 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
     }
+
 }
