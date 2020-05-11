@@ -64,6 +64,31 @@ namespace NetCoreTests.Linq
                 await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
             }
         }
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(0, 1)]
+        [InlineData(9, 0)]
+        [InlineData(9, 1)]
+        [InlineData(9, 5)]
+        [InlineData(9, 9)]
+        [InlineData(9, 15)]
+        public async Task TakeLast(int collection, int takeCount)
+        {
+            var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeLast(takeCount).ToArrayAsync();
+            var ys = Enumerable.Range(1, collection).TakeLast(takeCount).ToArray();
+
+            xs.Should().BeEquivalentTo(ys);
+        }
+
+        [Fact]
+        public async Task TakeLastException()
+        {
+            foreach (var item in UniTaskTestException.Throws())
+            {
+                var xs = item.TakeLast(5).ToArrayAsync();
+                await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+            }
+        }
 
         [Theory]
         [InlineData(0, 0)]

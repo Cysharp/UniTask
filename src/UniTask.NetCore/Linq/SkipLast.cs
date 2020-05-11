@@ -138,6 +138,10 @@ namespace Cysharp.Threading.Tasks.Linq
                         self.completionSource.TrySetResult(false);
                     }
                 }
+                else
+                {
+                    self.continueNext = false;
+                }
             }
 
             public UniTask DisposeAsync()

@@ -41,7 +41,7 @@ namespace NetCoreSandbox
         {
             await foreach (var item in UniTaskAsyncEnumerable.Range(1, 10)
                 .SelectAwait(x => UniTask.Run(() => x))
-                .SkipLast(6)
+                .TakeLast(6)
 
 
 
