@@ -212,7 +212,7 @@ namespace Cysharp.Threading.Tasks.Linq
         protected abstract bool TrySetCurrentCore(TAwait awaitResult, out bool terminateIteration);
 
         // Util
-        protected TSource SourceCurrent => enumerator.Current;
+        protected TSource SourceCurrent { get; private set; }
 
         protected (bool waitCallback, bool requireNextIteration) ActionCompleted(bool trySetCurrentResult, out bool moveNextResult)
         {
@@ -287,7 +287,8 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             if (sourceHasCurrent)
             {
-                var task = TransformAsync(enumerator.Current);
+                SourceCurrent = enumerator.Current;
+                var task = TransformAsync(SourceCurrent);
                 if (UnwarapTask(task, out var taskResult))
                 {
                     var currentResult = TrySetCurrentCore(taskResult, out var terminateIteration);

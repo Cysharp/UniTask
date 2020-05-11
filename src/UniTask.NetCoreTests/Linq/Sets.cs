@@ -32,10 +32,13 @@ namespace NetCoreTests.Linq
         [MemberData(nameof(array1))]
         public async Task Distinct(int[] array)
         {
-            var xs = await array.ToUniTaskAsyncEnumerable().Distinct().ToArrayAsync();
             var ys = array.Distinct().ToArray();
-
-            xs.Should().BeEquivalentTo(ys);
+            {
+                (await array.ToUniTaskAsyncEnumerable().Distinct().ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().Distinct(x => x).ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctAwait(x => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
+            }
         }
 
         [Fact]
@@ -43,8 +46,22 @@ namespace NetCoreTests.Linq
         {
             foreach (var item in UniTaskTestException.Throws())
             {
-                var xs = item.Distinct().ToArrayAsync();
-                await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                {
+                    var xs = item.Distinct().ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+                {
+                    var xs = item.Distinct(x => x).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+                {
+                    var xs = item.DistinctAwait(x => UniTask.Run(() => x)).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
+                {
+                    var xs = item.DistinctAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                }
             }
         }
 
