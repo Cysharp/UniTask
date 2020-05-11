@@ -12,6 +12,7 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks.Linq;
 
 public struct MyJob : IJob
 {
@@ -89,11 +90,18 @@ public class SandboxMain : MonoBehaviour
     async UniTaskVoid Update2()
     {
 
+        UnityEngine.Debug.Log("async linq!");
 
-        async foreach (var _ in this.GetAsyncUpdateTrigger())
-        {
-            // do anything
-        }
+        await UniTaskAsyncEnumerable.Range(1, 10)
+            .Where(x => x % 2 == 0)
+            .Select(x => x * x)
+            .ForEachAsync(x =>
+            {
+                UnityEngine.Debug.Log(x);
+            });
+
+        UnityEngine.Debug.Log("done");
+
 
     }
 
@@ -105,6 +113,8 @@ public class SandboxMain : MonoBehaviour
         var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
         ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
 
+
+        Update2().Forget();
 
         //RunStandardDelayAsync().Forget();
 
