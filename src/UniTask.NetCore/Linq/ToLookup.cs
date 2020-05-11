@@ -494,7 +494,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 return new Lookup<TKey, TElement>(dict);
             }
 
-            public IEnumerable<TElement> this[TKey key] => dict[key];
+            public IEnumerable<TElement> this[TKey key] => dict.TryGetValue(key, out var g) ? g : Enumerable.Empty<TElement>();
 
             public int Count => dict.Count;
 
