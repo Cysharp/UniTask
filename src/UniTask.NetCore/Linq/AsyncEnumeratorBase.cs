@@ -100,8 +100,16 @@ namespace Cysharp.Threading.Tasks.Linq
             }
 
             completionSource.Reset();
-            SourceMoveNext();
+            if (!OnFirstIteration())
+            {
+                SourceMoveNext();
+            }
             return new UniTask<bool>(this, completionSource.Version);
+        }
+
+        protected virtual bool OnFirstIteration()
+        {
+            return false;
         }
 
         protected void SourceMoveNext()

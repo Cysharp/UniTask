@@ -54,7 +54,7 @@ namespace NetCoreSandbox
 
 
 
-
+            //Enumerable.Range(1,10).ToHashSet(
 
 
         }

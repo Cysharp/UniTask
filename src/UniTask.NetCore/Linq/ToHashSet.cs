@@ -10,15 +10,23 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Cysharp.Threading.Tasks.Linq.ToHashSet.InvokeAsync(source, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ToHashSet.InvokeAsync(source, EqualityComparer<TSource>.Default, cancellationToken);
+        }
+
+        public static UniTask<HashSet<TSource>> ToHashSetAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(comparer, nameof(comparer));
+
+            return Cysharp.Threading.Tasks.Linq.ToHashSet.InvokeAsync(source, comparer, cancellationToken);
         }
     }
 
     internal static class ToHashSet
     {
-        internal static async UniTask<HashSet<TSource>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
+        internal static async UniTask<HashSet<TSource>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
         {
-            var set = new HashSet<TSource>();
+            var set = new HashSet<TSource>(comparer);
 
             var e = source.GetAsyncEnumerator(cancellationToken);
             try

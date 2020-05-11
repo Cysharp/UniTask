@@ -15,6 +15,7 @@ namespace Cysharp.Threading.Tasks
     {
         internal static readonly Action<object> InvokeActionDelegate = InvokeAction;
 
+        [DebuggerHidden]
         static void InvokeAction(object state)
         {
             ((Action)state).Invoke();
@@ -318,6 +319,8 @@ namespace Cysharp.Threading.Tasks
             /// <summary>
             /// If register manually continuation, you can use it instead of for compiler OnCompleted methods.
             /// </summary>
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SourceOnCompleted(Action<object> continuation, object state)
             {
                 if (task.source == null)
@@ -640,6 +643,8 @@ namespace Cysharp.Threading.Tasks
             /// <summary>
             /// If register manually continuation, you can use it instead of for compiler OnCompleted methods.
             /// </summary>
+            [DebuggerHidden]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void SourceOnCompleted(Action<object> continuation, object state)
             {
                 var s = task.source;
