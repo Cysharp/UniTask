@@ -201,7 +201,7 @@ namespace Cysharp.Threading.Tasks.Linq
         // abstract
 
         protected abstract UniTask<TAwait> TransformAsync(TSource sourceCurrent);
-        protected abstract bool TrySetCurrentCore(TAwait awaitResult);
+        protected abstract bool TrySetCurrentCore(TAwait awaitResult, out bool terminateIteration);
 
         // Util
         protected TSource SourceCurrent => enumerator.Current;
@@ -282,7 +282,13 @@ namespace Cysharp.Threading.Tasks.Linq
                 var task = TransformAsync(enumerator.Current);
                 if (UnwarapTask(task, out var taskResult))
                 {
-                    return ActionCompleted(TrySetCurrentCore(taskResult), out result);
+                    var currentResult = TrySetCurrentCore(taskResult, out var terminateIteration);
+                    if (terminateIteration)
+                    {
+                        return IterateFinished(out result);
+                    }
+
+                    return ActionCompleted(currentResult, out result);
                 }
                 else
                 {
@@ -345,10 +351,11 @@ namespace Cysharp.Threading.Tasks.Linq
             var self = (AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TAwait>)state;
 
             bool doneSetCurrent;
+            bool terminateIteration;
             try
             {
                 var result = self.resultAwaiter.GetResult();
-                doneSetCurrent = self.TrySetCurrentCore(result);
+                doneSetCurrent = self.TrySetCurrentCore(result, out terminateIteration);
             }
             catch (Exception ex)
             {
@@ -368,7 +375,14 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
                 else
                 {
-                    self.SourceMoveNext();
+                    if (terminateIteration)
+                    {
+                        self.completionSource.TrySetResult(false);
+                    }
+                    else
+                    {
+                        self.SourceMoveNext();
+                    }
                 }
             }
         }

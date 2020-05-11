@@ -39,8 +39,20 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
-            var foo = Enumerable.Range(1, 10).ToArray().AsEnumerable().GetEnumerator() as IEnumerator<int>;
-            Console.WriteLine(foo.GetType().FullName);
+            await foreach (var item in UniTaskAsyncEnumerable.Range(1, 10).Do(x => Console.WriteLine("DO:" + x))
+                //.TakeWhileAwait(x => UniTask.FromResult(x < 5))
+                .Take(5)
+
+                )
+            {
+
+                Console.WriteLine(item);
+            }
+
+
+
+
+
         }
 
 
@@ -48,7 +60,7 @@ namespace NetCoreSandbox
         void Foo()
         {
 
-
+            // AsyncEnumerable.Range(1,10).Do(
 
             // AsyncEnumerable.t
 

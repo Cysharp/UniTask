@@ -188,8 +188,9 @@ namespace Cysharp.Threading.Tasks.Linq
                 return predicate(sourceCurrent);
             }
 
-            protected override bool TrySetCurrentCore(bool awaitResult)
+            protected override bool TrySetCurrentCore(bool awaitResult, out bool terminateIteration)
             {
+                terminateIteration = false;
                 if (awaitResult)
                 {
                     Current = SourceCurrent;
@@ -236,8 +237,9 @@ namespace Cysharp.Threading.Tasks.Linq
                 return predicate(sourceCurrent, checked(index++));
             }
 
-            protected override bool TrySetCurrentCore(bool awaitResult)
+            protected override bool TrySetCurrentCore(bool awaitResult, out bool terminateIteration)
             {
+                terminateIteration = false;
                 if (awaitResult)
                 {
                     Current = SourceCurrent;
@@ -285,8 +287,9 @@ namespace Cysharp.Threading.Tasks.Linq
                 return predicate(sourceCurrent, cancellationToken);
             }
 
-            protected override bool TrySetCurrentCore(bool awaitResult)
+            protected override bool TrySetCurrentCore(bool awaitResult, out bool terminateIteration)
             {
+                terminateIteration = false;
                 if (awaitResult)
                 {
                     Current = SourceCurrent;
@@ -333,8 +336,9 @@ namespace Cysharp.Threading.Tasks.Linq
                 return predicate(sourceCurrent, checked(index++), cancellationToken);
             }
 
-            protected override bool TrySetCurrentCore(bool awaitResult)
+            protected override bool TrySetCurrentCore(bool awaitResult, out bool terminateIteration)
             {
+                terminateIteration = false;
                 if (awaitResult)
                 {
                     Current = SourceCurrent;

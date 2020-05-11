@@ -173,9 +173,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 return selector(sourceCurrent);
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult)
+            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
             {
                 Current = awaitResult;
+                terminateIteration= false;
                 return true;
             }
         }
@@ -213,9 +214,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 return selector(sourceCurrent, checked(index++));
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult)
+            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
             {
                 Current = awaitResult;
+                terminateIteration= false;
                 return true;
             }
         }
@@ -252,9 +254,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 return selector(sourceCurrent, cancellationToken);
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult)
+            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
             {
                 Current = awaitResult;
+                terminateIteration= false;
                 return true;
             }
         }
@@ -292,9 +295,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 return selector(sourceCurrent, checked(index++), cancellationToken);
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult)
+            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
             {
                 Current = awaitResult;
+                terminateIteration= false;
                 return true;
             }
         }
