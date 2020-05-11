@@ -185,5 +185,69 @@ namespace NetCoreTests.Linq
                 await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
             }
         }
+
+
+
+        [Fact]
+        public async Task GroupJoin()
+        {
+            var outer = new[] { 1, 2, 4, 5, 8, 10, 14, 4, 8, 1, 2, 10 };
+            var inner = new[] { 1, 2, 1, 2, 1, 14, 2 };
+            
+            {
+                var xs = await outer.ToUniTaskAsyncEnumerable().GroupJoin(inner.ToUniTaskAsyncEnumerable(), x => x, x => x, (x, y) => (x, string.Join(", ", y))).ToArrayAsync();
+                var ys = outer.GroupJoin(inner, x => x, x => x, (x, y) => (x, string.Join(", ", y))).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.Should().BeEquivalentTo(ys);
+            }
+            {
+                var xs = await outer.ToUniTaskAsyncEnumerable().GroupJoinAwait(inner.ToUniTaskAsyncEnumerable(), x => RandomRun(x), x => RandomRun(x), (x, y) => RandomRun((x, string.Join(", ", y)))).ToArrayAsync();
+                var ys = outer.GroupJoin(inner, x => x, x => x, (x, y) => (x, string.Join(", ", y))).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.Should().BeEquivalentTo(ys);
+            }
+            {
+                var xs = await outer.ToUniTaskAsyncEnumerable().GroupJoinAwaitWithCancellation(inner.ToUniTaskAsyncEnumerable(), (x, _) => RandomRun(x), (x, _) => RandomRun(x), (x, y, _) => RandomRun((x, string.Join(", ", y)))).ToArrayAsync();
+                var ys = outer.GroupJoin(inner, x => x, x => x, (x, y) => (x, string.Join(", ", y))).ToArray();
+
+                xs.Length.Should().Be(ys.Length);
+                xs.Should().BeEquivalentTo(ys);
+            }
+        }
+
+
+        [Fact]
+        public async Task GroupJoinThrow()
+        {
+
+            var outer = new[] { 1, 2, 4, 5, 8, 10, 14, 4, 8, 1, 2, 10 }.ToUniTaskAsyncEnumerable();
+            var inner = new[] { 1, 2, 1, 2, 1, 14, 2 }.ToUniTaskAsyncEnumerable();
+
+            foreach (var item in UniTaskTestException.Throws())
+            {
+                {
+                    var xs = item.GroupJoin(outer, x => x, x => x, (x, y) => x).ToArrayAsync();
+                    var ys = inner.GroupJoin(item, x => x, x => x, (x, y) => x).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+                }
+                {
+                    var xs = item.GroupJoinAwait(outer, x => RandomRun(x), x => RandomRun(x), (x, y) => RandomRun(x)).ToArrayAsync();
+                    var ys = inner.GroupJoinAwait(item, x => RandomRun(x), x => RandomRun(x), (x, y) => RandomRun(x)).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+                }
+                {
+                    var xs = item.GroupJoinAwaitWithCancellation(outer, (x, _) => RandomRun(x), (x, _) => RandomRun(x), (x, y, _) => RandomRun(x)).ToArrayAsync();
+                    var ys = inner.GroupJoinAwaitWithCancellation(item, (x, _) => RandomRun(x), (x, _) => RandomRun(x), (x, y, _) => RandomRun(x)).ToArrayAsync();
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await xs);
+                    await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
+                }
+            }
+        }
+
+
     }
 }

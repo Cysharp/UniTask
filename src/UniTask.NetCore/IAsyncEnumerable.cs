@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks
@@ -17,6 +19,11 @@ namespace Cysharp.Threading.Tasks
     public interface IUniTaskAsyncDisposable
     {
         UniTask DisposeAsync();
+    }
+
+    public interface IUniTaskOrderedAsyncEnumerable<TElement> : IUniTaskAsyncEnumerable<TElement>
+    {
+        IUniTaskOrderedAsyncEnumerable<TElement> CreateOrderedEnumerable<TKey>(Func<TElement, TKey> keySelector, IComparer<TKey> comparer, bool descending);
     }
 
     //public interface IUniTaskAsyncGrouping<out TKey, out TElement> : IUniTaskAsyncEnumerable<TElement>

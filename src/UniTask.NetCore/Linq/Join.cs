@@ -129,6 +129,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.outerKeySelector = outerKeySelector;
                 this.innerKeySelector = innerKeySelector;
                 this.resultSelector = resultSelector;
+                this.comparer = comparer;
                 this.cancellationToken = cancellationToken;
             }
 
@@ -318,6 +319,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.outerKeySelector = outerKeySelector;
                 this.innerKeySelector = innerKeySelector;
                 this.resultSelector = resultSelector;
+                this.comparer = comparer;
                 this.cancellationToken = cancellationToken;
             }
 
@@ -545,6 +547,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.outerKeySelector = outerKeySelector;
                 this.innerKeySelector = innerKeySelector;
                 this.resultSelector = resultSelector;
+                this.comparer = comparer;
                 this.cancellationToken = cancellationToken;
             }
 

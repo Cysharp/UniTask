@@ -544,6 +544,11 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 return this.ToUniTaskAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
             }
+
+            public override string ToString()
+            {
+                return "Key: " + Key + ", Count: " + elements.Count;
+            }
         }
     }
 }
