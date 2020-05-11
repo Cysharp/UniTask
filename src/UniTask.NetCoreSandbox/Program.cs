@@ -39,15 +39,19 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
-            await foreach (var item in UniTaskAsyncEnumerable.Range(1, 10).Do(x => Console.WriteLine("DO:" + x))
-                //.TakeWhileAwait(x => UniTask.FromResult(x < 5))
-                .Take(5)
+            await foreach (var item in UniTaskAsyncEnumerable.Range(1, 10)
+                .SelectAwait(x => UniTask.Run(() => x))
+                .SkipLast(6)
+
+
 
                 )
             {
 
                 Console.WriteLine(item);
             }
+
+
 
 
 

@@ -307,12 +307,6 @@ namespace ___Dummy
 
 
 
-
-        public static IUniTaskAsyncEnumerable<TSource> SkipLast<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Int32 count)
-        {
-            throw new NotImplementedException();
-        }
-
         
 
         public static IUniTaskAsyncEnumerable<TSource> TakeLast<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Int32 count)
