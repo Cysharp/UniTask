@@ -93,6 +93,9 @@ namespace Cysharp.Threading.Tasks.Linq
                 // return false instead of throw
                 if (disposed || cancellationToken.IsCancellationRequested) return CompletedTasks.False;
 
+                // reset value here.
+                this.elapsed = 0;
+
                 completionSource.Reset();
                 return new UniTask<bool>(this, completionSource.Version);
             }
@@ -121,7 +124,6 @@ namespace Cysharp.Threading.Tasks.Linq
                     if (elapsed >= dueTime)
                     {
                         dueTimePhase = false;
-                        elapsed = 0;
                         completionSource.TrySetResult(true);
                     }
                 }
@@ -135,7 +137,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
                     if (elapsed >= period)
                     {
-                        elapsed = 0;
                         completionSource.TrySetResult(true);
                     }
                 }
@@ -196,6 +197,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 // return false instead of throw
                 if (disposed || cancellationToken.IsCancellationRequested) return CompletedTasks.False;
 
+
+                // reset value here.
+                this.currentFrame = 0;
+
                 completionSource.Reset();
                 return new UniTask<bool>(this, completionSource.Version);
             }
@@ -220,11 +225,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 if (dueTimePhase)
                 {
-                    if (currentFrame++ == dueTimeFrameCount)
+                    if (currentFrame++ >= dueTimeFrameCount)
                     {
                         dueTimePhase = false;
                         completionSource.TrySetResult(true);
-                        currentFrame = 0;
                     }
                 }
                 else
@@ -235,10 +239,9 @@ namespace Cysharp.Threading.Tasks.Linq
                         return false;
                     }
 
-                    if (++currentFrame == periodFrameCount)
+                    if (++currentFrame >= periodFrameCount)
                     {
                         completionSource.TrySetResult(true);
-                        currentFrame = 0;
                     }
                 }
 

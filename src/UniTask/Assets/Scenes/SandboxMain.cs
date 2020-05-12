@@ -145,11 +145,13 @@ public class SandboxMain : MonoBehaviour
 
         //StartCoroutine(cor);
 
+        // UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.FixedUpdate)
 
-        // await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+
+        await UniTask.Yield(PlayerLoopTiming.Update);
         Debug.Log("Start:" + Time.frameCount);
 
-        await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.LastPostLateUpdate).ForEachAsync(_ =>
+        await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.Update).ForEachAsync(_ =>
         {
             Debug.Log("Call:" + Time.frameCount);
         }, cancellationToken: this.GetCancellationTokenOnDestroy());
