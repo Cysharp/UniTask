@@ -146,10 +146,12 @@ public class SandboxMain : MonoBehaviour
         //StartCoroutine(cor);
 
 
-        await okButton.OnClickAsAsyncEnumerable().Where((x, i) => i % 2 == 0).ForEachAsync(_ =>
+        Debug.Log("E:" + DateTime.Now.ToString());
+
+        await UniTaskAsyncEnumerable.Timer(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), PlayerLoopTiming.Update).ForEachAsync(_ =>
         {
-            Debug.Log("Call");
-        });
+            Debug.Log("Call:" + DateTime.Now.ToString());
+        }, cancellationToken: this.GetCancellationTokenOnDestroy());
 
         //try
         //{
