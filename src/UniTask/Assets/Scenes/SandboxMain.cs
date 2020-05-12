@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks.Linq;
 using Cysharp.Threading.Tasks.Triggers;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using Cysharp.Threading.Tasks.Linq;
 
 public struct MyJob : IJob
 {
@@ -105,16 +105,16 @@ public class SandboxMain : MonoBehaviour
 
     }
 
-    void Start()
+    async void Start()
     {
         Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
         Application.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
 
         var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-        ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
+        //ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
 
 
-        Update2().Forget();
+        //Update2().Forget();
 
         //RunStandardDelayAsync().Forget();
 
@@ -144,7 +144,6 @@ public class SandboxMain : MonoBehaviour
 
         //StartCoroutine(cor);
 
-        Debug.Log(EqualityComparer<MyEnum>.Default.GetType().FullName);
 
 
         //this.TryGetComponent(
@@ -163,12 +162,36 @@ public class SandboxMain : MonoBehaviour
         Application.logMessageReceived += Application_logMessageReceived;
 
 
-        UniTask<int> foo = UniTask.FromResult(10);
+
         // foo.Status.IsCanceled
 
 
+        // 5回クリックされるまで待つ、とか。
+        Debug.Log("Await start.");
 
-        Foo(foo);
+
+
+        await okButton.GetAsyncClickEventHandler().DisableAutoClose()
+            .Select((_, clickCount) => clickCount + 1)
+            .FirstAsync(x => x == 5);
+
+        Debug.Log("Click 5 times.");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //ucs = new UniTaskCompletionSource();
 

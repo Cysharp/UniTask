@@ -4,12 +4,14 @@ using System.Threading;
 
 namespace Cysharp.Threading.Tasks.Internal
 {
-    internal interface IPromisePoolItem
+    // public, allow to user create custom operator with pool.
+
+    public interface IPromisePoolItem
     {
         void Reset();
     }
 
-    internal class PromisePool<T>
+    public class PromisePool<T>
         where T : class, IPromisePoolItem
     {
         int count = 0;

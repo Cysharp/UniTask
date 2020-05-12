@@ -43,7 +43,7 @@ namespace NetCoreSandbox
                 .SelectAwait(x => UniTask.Run(() => x))
                 .TakeLast(6)
 
-
+                
 
                 )
             {
@@ -51,7 +51,7 @@ namespace NetCoreSandbox
                 Console.WriteLine(item);
             }
 
-
+// AsyncEnumerable.Range(1,10).FirstAsync(
             // AsyncEnumerable.Range(1, 10).GroupBy(x=>x).Select(x=>x.first
 
 
