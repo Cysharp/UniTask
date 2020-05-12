@@ -7,7 +7,27 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="..\UniTask\Assets\Plugins\UniTask\**\*.cs" Exclude="..\UniTask\Assets\Plugins\UniTask\Triggers\*.cs;..\UniTask\Assets\Plugins\UniTask\Linq\UnityExtensions\*.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Editor\*.cs;&#xD;&#xA;                            &#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\UnityEqualityComparer.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\DiagnosticsExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\Internal\PlayerLoopRunner.cs;&#xD;&#xA;                            &#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\CancellationTokenSourceExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\EnumeratorAsyncExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\PlayerLoopHelper.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Delay.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Run.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.Bridge.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UniTask.WaitUntil.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.uGUI.cs;&#xD;&#xA;                          ..\UniTask\Assets\Plugins\UniTask\UnityAsyncExtensions.MonoBehaviour.cs;&#xD;&#xA;                         " />
+        <Compile Include="..\UniTask\Assets\Plugins\UniTask\Runtime\**\*.cs"
+                 Exclude="
+..\UniTask\Assets\Plugins\UniTask\Editor\*.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Triggers\*.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Linq\UnityExtensions\*.cs;
+  
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\UnityEqualityComparer.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\DiagnosticsExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\PlayerLoopRunner.cs;
+  
+..\UniTask\Assets\Plugins\UniTask\Runtime\CancellationTokenSourceExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\EnumeratorAsyncExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\PlayerLoopHelper.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Delay.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Run.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Bridge.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.WaitUntil.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.uGUI.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.MonoBehaviour.cs;
+" />
     </ItemGroup>
 
     <ItemGroup>
