@@ -146,11 +146,12 @@ public class SandboxMain : MonoBehaviour
         //StartCoroutine(cor);
 
 
-        Debug.Log("E:" + DateTime.Now.ToString());
+        // await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+        Debug.Log("Start:" + Time.frameCount);
 
-        await UniTaskAsyncEnumerable.Timer(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), PlayerLoopTiming.Update).ForEachAsync(_ =>
+        await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.LastPostLateUpdate).ForEachAsync(_ =>
         {
-            Debug.Log("Call:" + DateTime.Now.ToString());
+            Debug.Log("Call:" + Time.frameCount);
         }, cancellationToken: this.GetCancellationTokenOnDestroy());
 
         //try
