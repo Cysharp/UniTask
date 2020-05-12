@@ -99,7 +99,6 @@
     Func<string, string> ToInterfaceName = x => $"IAsync{x}Handler";
     Func<string, string> ToUniTaskName = x => x == "AsyncUnit" ? "UniTask" : $"UniTask<{x}>";
     Func<string, string> ToCastUniTasSourceType = x => x == "AsyncUnit" ? "IUniTaskSource" : $"IUniTaskSource<{x}>";
-    Func<string, string> TriggerFieldName = x => char.ToLowerInvariant(x[0]) + x.Substring(1, x.Length - 1) + "TriggerEvent";
     Func<string, string> OnInvokeSuffix = x => x == "AsyncUnit" ? ".AsUniTask()" : $"";
     Func<(string argType, string argName)[], string> BuildMethodArgument = x => string.Join(", ", x.Select(y => y.argType + " " + y.argName));
     Func<(string argType, string argName)[], string> BuildResultParameter = x => x.Length == 0 ? "AsyncUnit.Default" : "(" + string.Join(", ", x.Select(y => y.argName)) + ")";
@@ -148,33 +147,31 @@ namespace Cysharp.Threading.Tasks.Triggers
     }
 
     [DisallowMultipleComponent]
-    public sealed class Async<#= t.triggerName #>Trigger : AsyncTriggerBase<#= (t.handlerInterface == null) ? "" : $", {t.handlerInterface}" #>
+    public sealed class Async<#= t.triggerName #>Trigger : AsyncTriggerBase<<#= t.returnType #>><#= (t.handlerInterface == null) ? "" : $", {t.handlerInterface}" #>
     {
-        TriggerEvent<<#= t.returnType #>> <#= TriggerFieldName(t.methodName) #>;
-
         void <#= (t.handlerInterface == null) ? "" : $"{t.handlerInterface}." #><#= t.methodName #>(<#= BuildMethodArgument(t.arguments) #>)
         {
-            <#= TriggerFieldName(t.methodName) #>?.TrySetResult(<#= BuildResultParameter(t.arguments) #>);
+            triggerEvent?.TrySetResult(<#= BuildResultParameter(t.arguments) #>);
         }
 
         public <#= ToInterfaceName(t.methodName) #> Get<#= t.methodName #>AsyncHandler()
         {
-            return new AsyncTriggerHandler<<#= t.returnType #>>(SetTriggerEvent(ref <#= TriggerFieldName(t.methodName) #>), false);
+            return new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), false);
         }
 
         public <#= ToInterfaceName(t.methodName) #> Get<#= t.methodName #>AsyncHandler(CancellationToken cancellationToken)
         {
-            return new AsyncTriggerHandler<<#= t.returnType #>>(SetTriggerEvent(ref <#= TriggerFieldName(t.methodName) #>), cancellationToken, false);
+            return new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), cancellationToken, false);
         }
 
         public <#= ToUniTaskName(t.returnType) #> <#= t.methodName #>Async()
         {
-            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(SetTriggerEvent(ref <#= TriggerFieldName(t.methodName) #>), true)).<#= t.methodName #>Async();
+            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), true)).<#= t.methodName #>Async();
         }
 
         public <#= ToUniTaskName(t.returnType) #> <#= t.methodName #>Async(CancellationToken cancellationToken)
         {
-            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(SetTriggerEvent(ref <#= TriggerFieldName(t.methodName) #>), cancellationToken, true)).<#= t.methodName #>Async();
+            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), cancellationToken, true)).<#= t.methodName #>Async();
         }
     }
 <# if(Is2019_3(t.triggerName)) { #>

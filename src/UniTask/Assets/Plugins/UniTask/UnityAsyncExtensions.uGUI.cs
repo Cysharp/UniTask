@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks.Internal;
+using Cysharp.Threading.Tasks.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -19,6 +20,11 @@ namespace Cysharp.Threading.Tasks
         public static UniTask OnInvokeAsync(this UnityEvent unityEvent, CancellationToken cancellationToken)
         {
             return new AsyncUnityEventHandler(unityEvent, cancellationToken, true).OnInvokeAsync();
+        }
+
+        public static IUniTaskAsyncEnumerable<AsyncUnit> OnInvokeAsAsyncEnumerable(this UnityEvent unityEvent, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable(unityEvent, cancellationToken);
         }
 
         public static IAsyncClickEventHandler GetAsyncClickEventHandler(this Button button)
@@ -41,6 +47,16 @@ namespace Cysharp.Threading.Tasks
             return new AsyncUnityEventHandler(button.onClick, cancellationToken, true).OnInvokeAsync();
         }
 
+        public static IUniTaskAsyncEnumerable<AsyncUnit> OnClickAsAsyncEnumerable(this Button button)
+        {
+            return new UnityEventHandlerAsyncEnumerable(button.onClick, button.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<AsyncUnit> OnClickAsAsyncEnumerable(this Button button, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable(button.onClick, cancellationToken);
+        }
+
         public static IAsyncValueChangedEventHandler<bool> GetAsyncValueChangedEventHandler(this Toggle toggle)
         {
             return new AsyncUnityEventHandler<bool>(toggle.onValueChanged, toggle.GetCancellationTokenOnDestroy(), false);
@@ -59,6 +75,16 @@ namespace Cysharp.Threading.Tasks
         public static UniTask<bool> OnValueChangedAsync(this Toggle toggle, CancellationToken cancellationToken)
         {
             return new AsyncUnityEventHandler<bool>(toggle.onValueChanged, cancellationToken, true).OnInvokeAsync();
+        }
+
+        public static IUniTaskAsyncEnumerable<bool> OnValueChangedAsAsyncEnumerable(this Toggle toggle)
+        {
+            return new UnityEventHandlerAsyncEnumerable<bool>(toggle.onValueChanged, toggle.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<bool> OnValueChangedAsAsyncEnumerable(this Toggle toggle, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<bool>(toggle.onValueChanged, cancellationToken);
         }
 
         public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Scrollbar scrollbar)
@@ -81,6 +107,16 @@ namespace Cysharp.Threading.Tasks
             return new AsyncUnityEventHandler<float>(scrollbar.onValueChanged, cancellationToken, true).OnInvokeAsync();
         }
 
+        public static IUniTaskAsyncEnumerable<float> OnValueChangedAsAsyncEnumerable(this Scrollbar scrollbar)
+        {
+            return new UnityEventHandlerAsyncEnumerable<float>(scrollbar.onValueChanged, scrollbar.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<float> OnValueChangedAsAsyncEnumerable(this Scrollbar scrollbar, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<float>(scrollbar.onValueChanged, cancellationToken);
+        }
+
         public static IAsyncValueChangedEventHandler<Vector2> GetAsyncValueChangedEventHandler(this ScrollRect scrollRect)
         {
             return new AsyncUnityEventHandler<Vector2>(scrollRect.onValueChanged, scrollRect.GetCancellationTokenOnDestroy(), false);
@@ -99,6 +135,16 @@ namespace Cysharp.Threading.Tasks
         public static UniTask<Vector2> OnValueChangedAsync(this ScrollRect scrollRect, CancellationToken cancellationToken)
         {
             return new AsyncUnityEventHandler<Vector2>(scrollRect.onValueChanged, cancellationToken, true).OnInvokeAsync();
+        }
+
+        public static IUniTaskAsyncEnumerable<Vector2> OnValueChangedAsAsyncEnumerable(this ScrollRect scrollRect)
+        {
+            return new UnityEventHandlerAsyncEnumerable<Vector2>(scrollRect.onValueChanged, scrollRect.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<Vector2> OnValueChangedAsAsyncEnumerable(this ScrollRect scrollRect, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<Vector2>(scrollRect.onValueChanged, cancellationToken);
         }
 
         public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Slider slider)
@@ -121,6 +167,16 @@ namespace Cysharp.Threading.Tasks
             return new AsyncUnityEventHandler<float>(slider.onValueChanged, cancellationToken, true).OnInvokeAsync();
         }
 
+        public static IUniTaskAsyncEnumerable<float> OnValueChangedAsAsyncEnumerable(this Slider slider)
+        {
+            return new UnityEventHandlerAsyncEnumerable<float>(slider.onValueChanged, slider.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<float> OnValueChangedAsAsyncEnumerable(this Slider slider, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<float>(slider.onValueChanged, cancellationToken);
+        }
+
         public static IAsyncEndEditEventHandler<string> GetAsyncEndEditEventHandler(this InputField inputField)
         {
             return new AsyncUnityEventHandler<string>(inputField.onEndEdit, inputField.GetCancellationTokenOnDestroy(), false);
@@ -141,6 +197,16 @@ namespace Cysharp.Threading.Tasks
             return new AsyncUnityEventHandler<string>(inputField.onEndEdit, cancellationToken, true).OnInvokeAsync();
         }
 
+        public static IUniTaskAsyncEnumerable<string> OnEndEditAsAsyncEnumerable(this InputField inputField)
+        {
+            return new UnityEventHandlerAsyncEnumerable<string>(inputField.onEndEdit, inputField.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<string> OnEndEditAsAsyncEnumerable(this InputField inputField, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<string>(inputField.onEndEdit, cancellationToken);
+        }
+
         public static IAsyncValueChangedEventHandler<int> GetAsyncValueChangedEventHandler(this Dropdown dropdown)
         {
             return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, dropdown.GetCancellationTokenOnDestroy(), false);
@@ -151,36 +217,43 @@ namespace Cysharp.Threading.Tasks
             return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, cancellationToken, false);
         }
 
-        public static UniTask<int> OnValueChanged(this Dropdown dropdown)
+        public static UniTask<int> OnValueChangedAsync(this Dropdown dropdown)
         {
             return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, dropdown.GetCancellationTokenOnDestroy(), true).OnInvokeAsync();
         }
 
-        public static UniTask<int> OnValueChanged(this Dropdown dropdown, CancellationToken cancellationToken)
+        public static UniTask<int> OnValueChangedAsync(this Dropdown dropdown, CancellationToken cancellationToken)
         {
             return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, cancellationToken, true).OnInvokeAsync();
         }
+
+        public static IUniTaskAsyncEnumerable<int> OnValueChangedAsAsyncEnumerable(this Dropdown dropdown)
+        {
+            return new UnityEventHandlerAsyncEnumerable<int>(dropdown.onValueChanged, dropdown.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<int> OnValueChangedAsAsyncEnumerable(this Dropdown dropdown, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<int>(dropdown.onValueChanged, cancellationToken);
+        }
     }
 
-    public interface IAsyncClickEventHandler : IDisposable, IUniTaskAsyncEnumerable<AsyncUnit>
+    public interface IAsyncClickEventHandler : IDisposable
     {
         UniTask OnClickAsync();
-        IAsyncClickEventHandler DisableAutoClose();
     }
 
-    public interface IAsyncValueChangedEventHandler<T> : IDisposable, IUniTaskAsyncEnumerable<T>
+    public interface IAsyncValueChangedEventHandler<T> : IDisposable
     {
         UniTask<T> OnValueChangedAsync();
-        IAsyncValueChangedEventHandler<T> DisableAutoClose();
     }
 
-    public interface IAsyncEndEditEventHandler<T> : IDisposable, IUniTaskAsyncEnumerable<T>
+    public interface IAsyncEndEditEventHandler<T> : IDisposable
     {
         UniTask<T> OnEndEditAsync();
-        IAsyncEndEditEventHandler<T> DisableAutoClose();
     }
 
-    public class AsyncUnityEventHandler : IUniTaskSource, IDisposable, IAsyncClickEventHandler, IUniTaskAsyncEnumerable<AsyncUnit>
+    public class AsyncUnityEventHandler : IUniTaskSource, IDisposable, IAsyncClickEventHandler
     {
         static Action<object> cancellationCallback = CancellationCallback;
 
@@ -225,7 +298,6 @@ namespace Cysharp.Threading.Tasks
 
         void Invoke()
         {
-            asyncEnumerator?.SetResult();
             core.TrySetResult(AsyncUnit.Default);
         }
 
@@ -233,15 +305,6 @@ namespace Cysharp.Threading.Tasks
         {
             var self = (AsyncUnityEventHandler)state;
             self.Dispose();
-
-            // call child cancel
-            if (self.asyncEnumerator != null)
-            {
-                self.asyncEnumerator.CancelFromParent(self.cancellationToken);
-                self.asyncEnumerator = null;
-            }
-
-            self.core.TrySetCanceled(self.cancellationToken);
         }
 
         public void Dispose()
@@ -255,6 +318,7 @@ namespace Cysharp.Threading.Tasks
                 {
                     unityEvent.RemoveListener(action);
                 }
+                core.TrySetCanceled(cancellationToken);
             }
         }
 
@@ -292,118 +356,9 @@ namespace Cysharp.Threading.Tasks
         {
             core.OnCompleted(continuation, state, token);
         }
-
-        // AsyncEnumerator
-
-        bool disableAutoClose;
-        Enumerator asyncEnumerator;
-
-        public AsyncUnityEventHandler DisableAutoClose()
-        {
-            disableAutoClose = true;
-            return this;
-        }
-
-        IAsyncClickEventHandler IAsyncClickEventHandler.DisableAutoClose()
-        {
-            disableAutoClose = true;
-            return this;
-        }
-
-        IUniTaskAsyncEnumerator<AsyncUnit> IUniTaskAsyncEnumerable<AsyncUnit>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            if (this.asyncEnumerator != null)
-            {
-                throw new InvalidOperationException("Already acquired GetAsyncEnumerator, does not allow get twice before previous enumerator completed.");
-            }
-
-            this.asyncEnumerator = new Enumerator(this, cancellationToken);
-            return asyncEnumerator;
-        }
-
-        class Enumerator : Cysharp.Threading.Tasks.Linq.MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>
-        {
-            static Action<object> cancellationCallback = CancellationCallback;
-
-            AsyncUnityEventHandler parent;
-            CancellationToken cancellationToken;
-            CancellationTokenRegistration registration;
-            bool isDisposed;
-
-            public Enumerator(AsyncUnityEventHandler parent, CancellationToken cancellationToken)
-            {
-                this.parent = parent;
-                this.cancellationToken = cancellationToken;
-
-                if (cancellationToken.CanBeCanceled && parent.cancellationToken != cancellationToken)
-                {
-                    registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
-                }
-
-                TaskTracker.TrackActiveTask(this, 3);
-            }
-
-            static void CancellationCallback(object state)
-            {
-                var self = (Enumerator)state;
-                self.DisposeCore(self.cancellationToken);
-            }
-
-            public void CancelFromParent(CancellationToken cancellationToken)
-            {
-                // call from parent, avoid parent close.
-                parent.disableAutoClose = true;
-                DisposeCore(cancellationToken);
-            }
-
-            public void SetResult()
-            {
-                completionSource.TrySetResult(true);
-            }
-
-            public AsyncUnit Current { get; private set; }
-
-            public UniTask<bool> MoveNextAsync()
-            {
-                completionSource.Reset();
-                return new UniTask<bool>(this, completionSource.Version);
-            }
-
-            public UniTask DisposeAsync()
-            {
-                DisposeCore(CancellationToken.None);
-                return default;
-            }
-
-            void DisposeCore(CancellationToken cancellationToken)
-            {
-                if (!isDisposed)
-                {
-                    isDisposed = true;
-                    registration.Dispose();
-                    TaskTracker.RemoveTracking(this);
-
-                    if (!parent.disableAutoClose)
-                    {
-                        parent.Dispose(); // dispose parent.
-                    }
-
-                    if (parent.asyncEnumerator == this)
-                    {
-                        parent.asyncEnumerator = null;
-                    }
-
-                    try
-                    {
-                        completionSource.TrySetCanceled(cancellationToken);
-                    }
-                    catch (OperationCanceledException) { }
-                }
-            }
-        }
     }
 
-    public class AsyncUnityEventHandler<T> : IUniTaskSource<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>, IUniTaskAsyncEnumerable<T>
+    public class AsyncUnityEventHandler<T> : IUniTaskSource<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
     {
         static Action<object> cancellationCallback = CancellationCallback;
 
@@ -448,7 +403,6 @@ namespace Cysharp.Threading.Tasks
 
         void Invoke(T result)
         {
-            asyncEnumerator?.SetResult(result);
             core.TrySetResult(result);
         }
 
@@ -456,15 +410,6 @@ namespace Cysharp.Threading.Tasks
         {
             var self = (AsyncUnityEventHandler<T>)state;
             self.Dispose();
-
-            // call child cancel
-            if (self.asyncEnumerator != null)
-            {
-                self.asyncEnumerator.CancelFromParent(self.cancellationToken);
-                self.asyncEnumerator = null;
-            }
-
-            self.core.TrySetCanceled(self.cancellationToken);
         }
 
         public void Dispose()
@@ -479,12 +424,7 @@ namespace Cysharp.Threading.Tasks
                     unityEvent.RemoveListener(action);
                 }
 
-                asyncEnumerator?.DisposeAsync().Forget();
-                try
-                {
-                    core.TrySetCanceled();
-                }
-                catch (OperationCanceledException) { }
+                core.TrySetCanceled();
             }
         }
 
@@ -532,120 +472,213 @@ namespace Cysharp.Threading.Tasks
         {
             core.OnCompleted(continuation, state, token);
         }
+    }
 
-        // AsyncEnumerator
+    public class UnityEventHandlerAsyncEnumerable : IUniTaskAsyncEnumerable<AsyncUnit>
+    {
+        readonly UnityEvent unityEvent;
+        readonly CancellationToken cancellationToken1;
 
-        bool disableAutoClose;
-        Enumerator asyncEnumerator;
-
-        public AsyncUnityEventHandler<T> DisableAutoClose()
+        public UnityEventHandlerAsyncEnumerable(UnityEvent unityEvent, CancellationToken cancellationToken)
         {
-            disableAutoClose = true;
-            return this;
+            this.unityEvent = unityEvent;
+            this.cancellationToken1 = cancellationToken;
         }
 
-        IAsyncValueChangedEventHandler<T> IAsyncValueChangedEventHandler<T>.DisableAutoClose()
+        public IUniTaskAsyncEnumerator<AsyncUnit> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            disableAutoClose = true;
-            return this;
-        }
-
-        IAsyncEndEditEventHandler<T> IAsyncEndEditEventHandler<T>.DisableAutoClose()
-        {
-            disableAutoClose = true;
-            return this;
-        }
-
-        IUniTaskAsyncEnumerator<T> IUniTaskAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            if (this.asyncEnumerator != null)
+            if (this.cancellationToken1 == cancellationToken)
             {
-                throw new InvalidOperationException("Already acquired GetAsyncEnumerator, does not allow get twice before previous enumerator completed.");
+                return new Enumerator(unityEvent, this.cancellationToken1, CancellationToken.None);
             }
-
-            this.asyncEnumerator = new Enumerator(this, cancellationToken);
-            return asyncEnumerator;
+            else
+            {
+                return new Enumerator(unityEvent, this.cancellationToken1, cancellationToken);
+            }
         }
 
-        class Enumerator : Cysharp.Threading.Tasks.Linq.MoveNextSource, IUniTaskAsyncEnumerator<T>
+        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>
         {
-            static Action<object> cancellationCallback = CancellationCallback;
+            static readonly Action<object> cancel1 = OnCanceled1;
+            static readonly Action<object> cancel2 = OnCanceled2;
 
-            AsyncUnityEventHandler<T> parent;
-            CancellationToken cancellationToken;
-            CancellationTokenRegistration registration;
+            readonly UnityEvent unityEvent;
+            CancellationToken cancellationToken1;
+            CancellationToken cancellationToken2;
+
+            UnityAction unityAction;
+            CancellationTokenRegistration registration1;
+            CancellationTokenRegistration registration2;
             bool isDisposed;
 
-            public Enumerator(AsyncUnityEventHandler<T> parent, CancellationToken cancellationToken)
+            public Enumerator(UnityEvent unityEvent, CancellationToken cancellationToken1, CancellationToken cancellationToken2)
             {
-                this.parent = parent;
-                this.cancellationToken = cancellationToken;
+                this.unityEvent = unityEvent;
+                this.cancellationToken1 = cancellationToken1;
+                this.cancellationToken2 = cancellationToken2;
+            }
 
-                if (cancellationToken.CanBeCanceled && parent.cancellationToken != cancellationToken)
+            public AsyncUnit Current => default;
+
+            public UniTask<bool> MoveNextAsync()
+            {
+                cancellationToken1.ThrowIfCancellationRequested();
+                cancellationToken2.ThrowIfCancellationRequested();
+                completionSource.Reset();
+
+                if (unityAction == null)
                 {
-                    registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
+                    unityAction = Invoke;
+
+                    TaskTracker.TrackActiveTask(this, 3);
+                    unityEvent.AddListener(unityAction);
+                    if (cancellationToken1.CanBeCanceled)
+                    {
+                        registration1 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel1, this);
+                    }
+                    if (cancellationToken2.CanBeCanceled)
+                    {
+                        registration2 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel2, this);
+                    }
                 }
 
-                TaskTracker.TrackActiveTask(this, 3);
+                return new UniTask<bool>(this, completionSource.Version);
             }
 
-            static void CancellationCallback(object state)
+            void Invoke()
+            {
+                completionSource.TrySetResult(true);
+            }
+
+            static void OnCanceled1(object state)
             {
                 var self = (Enumerator)state;
-                self.DisposeCore(self.cancellationToken);
+                self.DisposeAsync().Forget();
             }
 
-            public void CancelFromParent(CancellationToken cancellationToken)
+            static void OnCanceled2(object state)
             {
-                // call from parent, avoid parent close.
-                parent.disableAutoClose = true;
-                DisposeCore(cancellationToken);
+                var self = (Enumerator)state;
+                self.DisposeAsync().Forget();
             }
 
-            public void SetResult(T result)
+            public UniTask DisposeAsync()
             {
-                Current = result;
-                completionSource.TrySetResult(true);
+                if (!isDisposed)
+                {
+                    isDisposed = true;
+                    TaskTracker.RemoveTracking(this);
+                    registration1.Dispose();
+                    registration2.Dispose();
+                    unityEvent.RemoveListener(unityAction);
+                }
+
+                return default;
+            }
+        }
+    }
+
+    public class UnityEventHandlerAsyncEnumerable<T> : IUniTaskAsyncEnumerable<T>
+    {
+        readonly UnityEvent<T> unityEvent;
+        readonly CancellationToken cancellationToken1;
+
+        public UnityEventHandlerAsyncEnumerable(UnityEvent<T> unityEvent, CancellationToken cancellationToken)
+        {
+            this.unityEvent = unityEvent;
+            this.cancellationToken1 = cancellationToken;
+        }
+
+        public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            if (this.cancellationToken1 == cancellationToken)
+            {
+                return new Enumerator(unityEvent, this.cancellationToken1, CancellationToken.None);
+            }
+            else
+            {
+                return new Enumerator(unityEvent, this.cancellationToken1, cancellationToken);
+            }
+        }
+
+        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>
+        {
+            static readonly Action<object> cancel1 = OnCanceled1;
+            static readonly Action<object> cancel2 = OnCanceled2;
+
+            readonly UnityEvent<T> unityEvent;
+            CancellationToken cancellationToken1;
+            CancellationToken cancellationToken2;
+
+            UnityAction<T> unityAction;
+            CancellationTokenRegistration registration1;
+            CancellationTokenRegistration registration2;
+            bool isDisposed;
+
+            public Enumerator(UnityEvent<T> unityEvent, CancellationToken cancellationToken1, CancellationToken cancellationToken2)
+            {
+                this.unityEvent = unityEvent;
+                this.cancellationToken1 = cancellationToken1;
+                this.cancellationToken2 = cancellationToken2;
             }
 
             public T Current { get; private set; }
 
             public UniTask<bool> MoveNextAsync()
             {
+                cancellationToken1.ThrowIfCancellationRequested();
+                cancellationToken2.ThrowIfCancellationRequested();
                 completionSource.Reset();
+
+                if (unityAction == null)
+                {
+                    unityAction = Invoke;
+
+                    TaskTracker.TrackActiveTask(this, 3);
+                    unityEvent.AddListener(unityAction);
+                    if (cancellationToken1.CanBeCanceled)
+                    {
+                        registration1 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel1, this);
+                    }
+                    if (cancellationToken2.CanBeCanceled)
+                    {
+                        registration2 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel2, this);
+                    }
+                }
+
                 return new UniTask<bool>(this, completionSource.Version);
+            }
+
+            void Invoke(T value)
+            {
+                Current = value;
+                completionSource.TrySetResult(true);
+            }
+
+            static void OnCanceled1(object state)
+            {
+                var self = (Enumerator)state;
+                self.DisposeAsync().Forget();
+            }
+
+            static void OnCanceled2(object state)
+            {
+                var self = (Enumerator)state;
+                self.DisposeAsync().Forget();
             }
 
             public UniTask DisposeAsync()
             {
-                DisposeCore(CancellationToken.None);
-                return default;
-            }
-
-            void DisposeCore(CancellationToken cancellationToken)
-            {
                 if (!isDisposed)
                 {
                     isDisposed = true;
-                    registration.Dispose();
                     TaskTracker.RemoveTracking(this);
-
-                    if (!parent.disableAutoClose)
-                    {
-                        parent.Dispose(); // dispose parent.
-                    }
-
-                    if (parent.asyncEnumerator == this)
-                    {
-                        parent.asyncEnumerator = null;
-                    }
-
-                    try
-                    {
-                        completionSource.TrySetCanceled(cancellationToken);
-                    }
-                    catch (OperationCanceledException) { }
+                    registration1.Dispose();
+                    registration2.Dispose();
+                    unityEvent.RemoveListener(unityAction);
                 }
+
+                return default;
             }
         }
     }

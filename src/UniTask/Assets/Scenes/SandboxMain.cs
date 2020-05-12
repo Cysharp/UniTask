@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Cysharp.Threading.Tasks.Linq;
 using Cysharp.Threading.Tasks.Triggers;
 using System.Collections;
@@ -145,8 +146,23 @@ public class SandboxMain : MonoBehaviour
         //StartCoroutine(cor);
 
 
+        await okButton.OnClickAsAsyncEnumerable().Where((x, i) => i % 2 == 0).ForEachAsync(_ =>
+        {
+            Debug.Log("Call");
+        });
 
-        //this.TryGetComponent(
+        //try
+        //{
+        //    await this.GetAsyncUpdateTrigger().ForEachAsync(_ =>
+        //    {
+        //        UnityEngine.Debug.Log("EveryUpdate:" + Time.frameCount);
+        //    });
+        //}
+        //catch (OperationCanceledException ex)
+        //{
+        //    UnityEngine.Debug.Log("END");
+        //}
+
 
 
         CancellationTokenSource cts = new CancellationTokenSource();
@@ -167,18 +183,19 @@ public class SandboxMain : MonoBehaviour
 
 
         // 5回クリックされるまで待つ、とか。
-        Debug.Log("Await start.");
+        //Debug.Log("Await start.");
 
 
 
-        await okButton.GetAsyncClickEventHandler().DisableAutoClose()
-            .Select((_, clickCount) => clickCount + 1)
-            .FirstAsync(x => x == 5);
+        //await okButton.GetAsyncClickEventHandler().DisableAutoClose()
+        //    .Select((_, clickCount) => clickCount + 1)
+        //    .FirstAsync(x => x == 5);
 
-        Debug.Log("Click 5 times.");
+        //Debug.Log("Click 5 times.");
 
 
 
+        // await this.GetAsyncUpdateTrigger().UpdateAsAsyncEnumerable()
 
 
 
