@@ -38,6 +38,14 @@ namespace Cysharp.Threading.Tasks
     {
     }
 
+    public interface IResolveCancelPromise : IResolvePromise, ICancelPromise
+    {
+    }
+
+    public interface IResolveCancelPromise<T> : IResolvePromise<T>, ICancelPromise
+    {
+    }
+
     [StructLayout(LayoutKind.Auto)]
     public struct UniTaskCompletionSourceCore<TResult>
     {
