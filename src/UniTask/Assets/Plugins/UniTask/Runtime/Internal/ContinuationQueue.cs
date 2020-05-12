@@ -9,6 +9,8 @@ namespace Cysharp.Threading.Tasks.Internal
     {
         const int MaxArrayLength = 0X7FEFFFFF;
         const int InitialSize = 16;
+        
+        readonly PlayerLoopTiming timing;
 
         SpinLock gate = new SpinLock();
         bool dequing = false;
@@ -18,6 +20,11 @@ namespace Cysharp.Threading.Tasks.Internal
 
         int waitingListCount = 0;
         Action[] waitingList = new Action[InitialSize];
+
+        public ContinuationQueue(PlayerLoopTiming timing)
+        {
+            this.timing = timing;
+        }
 
         public void Enqueue(Action continuation)
         {
@@ -72,7 +79,80 @@ namespace Cysharp.Threading.Tasks.Internal
             waitingList = new Action[InitialSize];
         }
 
+        // delegate entrypoint.
         public void Run()
+        {
+            // for debugging, create named stacktrace.
+#if DEBUG
+            switch (timing)
+            {
+                case PlayerLoopTiming.Initialization:
+                    Initialization();
+                    break;
+                case PlayerLoopTiming.LastInitialization:
+                    LastInitialization();
+                    break;
+                case PlayerLoopTiming.EarlyUpdate:
+                    EarlyUpdate();
+                    break;
+                case PlayerLoopTiming.LastEarlyUpdate:
+                    LastEarlyUpdate();
+                    break;
+                case PlayerLoopTiming.FixedUpdate:
+                    FixedUpdate();
+                    break;
+                case PlayerLoopTiming.LastFixedUpdate:
+                    LastFixedUpdate();
+                    break;
+                case PlayerLoopTiming.PreUpdate:
+                    PreUpdate();
+                    break;
+                case PlayerLoopTiming.LastPreUpdate:
+                    LastPreUpdate();
+                    break;
+                case PlayerLoopTiming.Update:
+                    Update();
+                    break;
+                case PlayerLoopTiming.LastUpdate:
+                    LastUpdate();
+                    break;
+                case PlayerLoopTiming.PreLateUpdate:
+                    PreLateUpdate();
+                    break;
+                case PlayerLoopTiming.LastPreLateUpdate:
+                    LastPreLateUpdate();
+                    break;
+                case PlayerLoopTiming.PostLateUpdate:
+                    PostLateUpdate();
+                    break;
+                case PlayerLoopTiming.LastPostLateUpdate:
+                    LastPostLateUpdate();
+                    break;
+                default:
+                    break;
+            }
+#else
+            RunCore();
+#endif
+        }
+
+        void Initialization() => RunCore();
+        void LastInitialization() => RunCore();
+        void EarlyUpdate() => RunCore();
+        void LastEarlyUpdate() => RunCore();
+        void FixedUpdate() => RunCore();
+        void LastFixedUpdate() => RunCore();
+        void PreUpdate() => RunCore();
+        void LastPreUpdate() => RunCore();
+        void Update() => RunCore();
+        void LastUpdate() => RunCore();
+        void PreLateUpdate() => RunCore();
+        void LastPreLateUpdate() => RunCore();
+        void PostLateUpdate() => RunCore();
+        void LastPostLateUpdate() => RunCore();
+
+        [System.Diagnostics.DebuggerHidden]
+        void RunCore()
         {
             {
                 bool lockTaken = false;
