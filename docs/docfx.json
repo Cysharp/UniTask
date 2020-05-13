@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [
-            "UniTask/Assets/Plugins/UniTask/Runtime/*.cs"
+            "UniTask/Assets/Plugins/UniTask/Runtime/**/*.cs"
           ],
           "src": "../src"
         }
