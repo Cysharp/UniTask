@@ -1,0 +1,1235 @@
+{
+  "homepages": [],
+  "source_base_path": "/github/workspace/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.AsyncLazy-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.AsyncLazy-1.html",
+          "hash": "eaWnfHxLEFaQME/S+SRpbg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.AsyncLazy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.AsyncLazy.html",
+          "hash": "WS42rzckL3Gf1JfKAOU63Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.AsyncUnit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.AsyncUnit.html",
+          "hash": "5yJ/uhUMfj+bIbKTAUbQpw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html",
+          "hash": "vykPNaf28TB78XYdE759XQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.AsyncUnityEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.AsyncUnityEventHandler.html",
+          "hash": "fEmZj7lbhPC/u2gn3h9WOw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html",
+          "hash": "KLFKF2Mzl3uss4rK8ZXUsQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource.html",
+          "hash": "OOA8cCvhFQZP0sCvqX683g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenEqualityComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenEqualityComparer.html",
+          "hash": "HxyU4x1nyaoMYIN7Nhnwkw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html",
+          "hash": "4l5THOIke3k6axo4Dz8+7w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.html",
+          "hash": "TT6z17orcWbr21tFhgWs5g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.EnumerableAsyncExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.EnumerableAsyncExtensions.html",
+          "hash": "1DDXLg5UtwiJEFi5fJyb7w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html",
+          "hash": "y+gWHSxdiccrqV1H6oNRgw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.ExceptionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.ExceptionExtensions.html",
+          "hash": "wrSukxn44wvTkEi9hvALsA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncClickEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncClickEventHandler.html",
+          "hash": "WYOsGWJl1NsAc+eOu/Fi2Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncEndEditEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncEndEditEventHandler-1.html",
+          "hash": "uREUetdWIOuI9vQYjlIBiA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncValueChangedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncValueChangedEventHandler-1.html",
+          "hash": "hpRBndyGFlbJL3riL86vtQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.ICancelPromise.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.ICancelPromise.html",
+          "hash": "QuCAskYOgZ3szxGWX9y1cw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IPlayerLoopItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IPlayerLoopItem.html",
+          "hash": "Yv1vAR8mErO5xQF9FEyNbQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IPromise-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IPromise-1.html",
+          "hash": "qhgYOPvuN6NnHDs/jzXqKQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IPromise.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IPromise.html",
+          "hash": "n7mo8Dgqkr8KMJILQqbOig=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IRejectPromise.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IRejectPromise.html",
+          "hash": "6QZgOg2Zreuj0LOOC/lTAg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IResolveCancelPromise-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IResolveCancelPromise-1.html",
+          "hash": "FCA24CFiKKBoKLfxlQTQug=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IResolveCancelPromise.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IResolveCancelPromise.html",
+          "hash": "hvcEDG4wcDgzGI9A2IIAag=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IResolvePromise-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IResolvePromise-1.html",
+          "hash": "3Sg0N4NDhovZNzTv4p3g+A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IResolvePromise.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IResolvePromise.html",
+          "hash": "9kBywUc68HIlR6jvUFW+bw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IUniTaskAsyncDisposable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IUniTaskAsyncDisposable.html",
+          "hash": "PuqknZLg3w5MJa3lovpR0w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html",
+          "hash": "dd1lIye92eE8YygBm38+5Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IUniTaskAsyncEnumerator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IUniTaskAsyncEnumerator-1.html",
+          "hash": "1FHxJGj0cwCQ9ACdjiTlyA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IUniTaskOrderedAsyncEnumerable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IUniTaskOrderedAsyncEnumerable-1.html",
+          "hash": "TfPtijHVvTTyGl5cg8IdFw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IUniTaskSource-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IUniTaskSource-1.html",
+          "hash": "6FZKNjdKYv5ypIxbXE0RUg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IUniTaskSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IUniTaskSource.html",
+          "hash": "CfhIAIoq3Dy72ure+BpKGg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.PlayerLoopHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.PlayerLoopHelper.html",
+          "hash": "qRQHVcukXKWi02saShyb0g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.PlayerLoopTiming.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.PlayerLoopTiming.html",
+          "hash": "SqWgIysZYqcwNDJkqkk5QA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html",
+          "hash": "r7YjrKieAwwq5DgrRl1B2g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.html",
+          "hash": "AjLrCGUTNenCC5lxV8ARfg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.SwitchToTaskPoolAwaitable.Awaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.SwitchToTaskPoolAwaitable.Awaiter.html",
+          "hash": "VAHU2dQu4TAODL4z4PEpqQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.SwitchToTaskPoolAwaitable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.SwitchToTaskPoolAwaitable.html",
+          "hash": "tpppzVKHGmyFmBjBYKaUhQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.SwitchToThreadPoolAwaitable.Awaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.SwitchToThreadPoolAwaitable.Awaiter.html",
+          "hash": "0CNr9OIdx3+pXDmuFbyNxA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.SwitchToThreadPoolAwaitable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.SwitchToThreadPoolAwaitable.html",
+          "hash": "geYnm1jXqLYjcNlhhUVmvw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTask-1.Awaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTask-1.Awaiter.html",
+          "hash": "/wJDDabuNi1koT1jWndTyg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTask-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTask-1.html",
+          "hash": "8oRpXYfXmkDveM6DyjO0IQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTask.Awaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTask.Awaiter.html",
+          "hash": "G3zipPGPdnK+vOJmxu9RBQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTask.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTask.html",
+          "hash": "SQ/S5MiV9tc6599Gblm7fA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskAsyncEnumerableExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskAsyncEnumerableExtensions.html",
+          "hash": "PPcbFNVxruOudI9WvdQ4ig=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskCancelableAsyncEnumerable-1.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskCancelableAsyncEnumerable-1.Enumerator.html",
+          "hash": "KFzq3D/gyBoyrHJx30VZrQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskCancelableAsyncEnumerable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskCancelableAsyncEnumerable-1.html",
+          "hash": "OYqQ30cP47A5lh7+/RhhRw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskCompletionSource-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html",
+          "hash": "n6weyvjcEfj7UlxpL1LUtQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskCompletionSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskCompletionSource.html",
+          "hash": "8nXGTOwrh5hkMcLqLLzDvg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskCompletionSourceCore-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskCompletionSourceCore-1.html",
+          "hash": "y5G5fPXOp3E+/yAD08H97g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskExtensions.html",
+          "hash": "xwOf8PpqNMmxqiKkqIa2VQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerEarlyUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerEarlyUpdate.html",
+          "hash": "M0Tmpfi0e8vU7SKQ0bavsg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerFixedUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerFixedUpdate.html",
+          "hash": "m9W8HMXAiBSLDvtKacbwmw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerInitialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerInitialization.html",
+          "hash": "cAm8Mj7pZsp+qruwNZ5jsg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastEarlyUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastEarlyUpdate.html",
+          "hash": "rCBK1aFuz9gssz7aS2YYUA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastFixedUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastFixedUpdate.html",
+          "hash": "+qeBHsr95lTNfOxuPkHZAw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastInitialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastInitialization.html",
+          "hash": "7c+X7uvcXRk9XeqsbsR2sw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastPostLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastPostLateUpdate.html",
+          "hash": "pb6G8Y4ucuzgoCjSouXnAg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastPreLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastPreLateUpdate.html",
+          "hash": "vrSSfb844i46lQf1Xoar4w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastPreUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastPreUpdate.html",
+          "hash": "dhpzkxLvu/UMXJOwqpqiVQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastUpdate.html",
+          "hash": "VfPXbD3vXTVv7z21U2qt4A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldEarlyUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldEarlyUpdate.html",
+          "hash": "mzOpyAdnxrxRC6p0S5bA0w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldFixedUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldFixedUpdate.html",
+          "hash": "QL1Aevz5Kkx/cD31DC3RDw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldInitialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldInitialization.html",
+          "hash": "bHVioSlRRNLbxfe27wKSqQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPostLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPostLateUpdate.html",
+          "hash": "4mpC5M6hIGTipbN2jK6q1g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreLateUpdate.html",
+          "hash": "qd9l3b5fiA5ZnhfK9BcGLQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreUpdate.html",
+          "hash": "+dJuValvOW5D071slGoXkA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerLastYieldUpdate.html",
+          "hash": "9UmX0BA7vvOVsVD/ksMpVw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerPostLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerPostLateUpdate.html",
+          "hash": "m/Og7kZNYkMeMHZ9duIbVA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerPreLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerPreLateUpdate.html",
+          "hash": "1hyuU65qth3cdqranAqmsg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerPreUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerPreUpdate.html",
+          "hash": "rf3y6QxMqVKemHnczXxC8A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerUpdate.html",
+          "hash": "0MuYCdULXavkI1aFReeK7w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldEarlyUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldEarlyUpdate.html",
+          "hash": "7EEvJRhVXrr5u87Xvhu3CQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldFixedUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldFixedUpdate.html",
+          "hash": "fg5wmcwx54odJK0unYguWQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldInitialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldInitialization.html",
+          "hash": "5UdMyIv3mF2DLVoVeNj1Gw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldPostLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldPostLateUpdate.html",
+          "hash": "wIDIsmkj1ZvL8mSUzmltGQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldPreLateUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldPreLateUpdate.html",
+          "hash": "Lk1e/R/A9U7Ky4hrJB13eQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldPreUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldPreUpdate.html",
+          "hash": "QinG7Ah8XCYJuUvo2yipOQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldUpdate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.UniTaskLoopRunnerYieldUpdate.html",
+          "hash": "/0mRSVx4ntbflYCV+jbDag=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskLoopRunners.html",
+          "hash": "1PcaGgy4AB2IB4NRsbh1fw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskObservableExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskObservableExtensions.html",
+          "hash": "Yfq9K+uhhq4ki96qxwPqIg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskScheduler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskScheduler.html",
+          "hash": "6vpIVeLRdDbVkS5Ow6gbzw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskStatus.html",
+          "hash": "Oe2gGETgjrVTjY+stZM5IQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskStatusExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskStatusExtensions.html",
+          "hash": "3q9LDmDJA9xJbSGGyTpXag=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.html",
+          "hash": "RgySpYXcLgGJQnkHGzfylQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskVoid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskVoid.html",
+          "hash": "3ttOfHtLfTIVY1Wyh5WNuQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html",
+          "hash": "63oIbWyBL29FxxxJXDl/nQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html",
+          "hash": "mO+M/RIidPoZddtu9PjoNw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AsyncOperationAwaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AsyncOperationAwaiter.html",
+          "hash": "KiOzsayp8LaSe0YFbIikVQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.ResourceRequestAwaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.ResourceRequestAwaiter.html",
+          "hash": "0Lpwg1D+HiPC4nKxDQII3g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html",
+          "hash": "7QA+KmL7CdPJVSivv11P4w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UnityEventHandlerAsyncEnumerable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UnityEventHandlerAsyncEnumerable-1.html",
+          "hash": "68yaF2tEEbrVeDaWx0hSqQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UnityEventHandlerAsyncEnumerable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UnityEventHandlerAsyncEnumerable.html",
+          "hash": "Uei288POSwCL0QMgT2gJYw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.YieldAwaitable.Awaiter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.YieldAwaitable.Awaiter.html",
+          "hash": "wssu9MVB8Y6AoRb2cicBkg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.YieldAwaitable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.YieldAwaitable.html",
+          "hash": "ZdwQG6PYBdjgzHaC81p3BA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.html",
+          "hash": "xSohmxw1N1JvPLLfOZAnNA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "DlTAcpbR2CVR/RwWdzK+ng=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "+Ralb6VYGuDxw60VheHYNw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "sjRZqi2ICzR+E9yg0XbEcQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 1,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 95,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

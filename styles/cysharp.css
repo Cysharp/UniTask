@@ -1,0 +1,280 @@
+:root {
+    --color-text-base: #151515;
+    --color-link-base: #0065b3;
+    --color-background-base: #fff;
+    --font-size-base: 10px;
+    --font-size-body: 1.6rem;
+    --font-family-base: 'Segoe UI', 'Helvetica Neue', 'Helvetica', 'Tahoma', 'Arial', sans-serif;
+    --icon-github-icon: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDBDMy41OCAwIDAgMy41OCAwIDhjMCAzLjU0IDIuMjkgNi41MyA1LjQ3IDcuNTkuNC4wNy41NS0uMTcuNTUtLjM4IDAtLjE5LS4wMS0uODItLjAxLTEuNDktMi4wMS4zNy0yLjUzLS40OS0yLjY5LS45NC0uMDktLjIzLS40OC0uOTQtLjgyLTEuMTMtLjI4LS4xNS0uNjgtLjUyLS4wMS0uNTMuNjMtLjAxIDEuMDguNTggMS4yMy44Mi43MiAxLjIxIDEuODcuODcgMi4zMy42Ni4wNy0uNTIuMjgtLjg3LjUxLTEuMDctMS43OC0uMi0zLjY0LS44OS0zLjY0LTMuOTUgMC0uODcuMzEtMS41OS44Mi0yLjE1LS4wOC0uMi0uMzYtMS4wMi4wOC0yLjEyIDAgMCAuNjctLjIxIDIuMi44Mi42NC0uMTggMS4zMi0uMjcgMi0uMjcuNjggMCAxLjM2LjA5IDIgLjI3IDEuNTMtMS4wNCAyLjItLjgyIDIuMi0uODIuNDQgMS4xLjE2IDEuOTIuMDggMi4xMi41MS41Ni44MiAxLjI3LjgyIDIuMTUgMCAzLjA3LTEuODcgMy43NS0zLjY1IDMuOTUuMjkuMjUuNTQuNzMuNTQgMS40OCAwIDEuMDctLjAxIDEuOTMtLjAxIDIuMiAwIC4yMS4xNS40Ni41NS4zOEE4LjAxMyA4LjAxMyAwIDAwMTYgOGMwLTQuNDItMy41OC04LTgtOHoiPjwvcGF0aD48L3N2Zz4=);
+}
+
+/* General */
+html {
+    font-size: var(--font-size-base);
+}
+body {
+    color: var(--color-text-base);
+    font-size: var(--font-size-body);
+    font-family: var(--font-family-base);
+}
+a {
+    color: var(--color-link-base);
+}
+h1, h2, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+table {
+    font-size: 1.4rem;
+}
+
+/* nabvar */
+header .navbar {
+    background: #fff;
+}
+
+/* navbar (Logo + AppName) */
+#logo {
+    height: 32px;
+}
+.navbar-brand {
+    font-weight: bold;
+}
+.navbar-brand > a {
+    display: inline-block;
+    padding-top: 8px;
+    color: var(--color-text-base);
+}
+.navbar-brand > a > span {
+    vertical-align: middle;
+}
+@media (min-width:768px){
+    .navbar-brand::after {
+        content: '';
+        display: inline-block;
+        width: 1px;
+        height: 32px;
+        background: #ccc;
+        vertical-align: middle;
+        margin-left: 16px;
+    }
+}
+
+/* Navbar (Pages) */
+.navbar-default .navbar-nav > .active > a {
+    color: var(--color-text-base);
+    background: transparent;
+}
+.navbar-nav a.active::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--color-text-base);
+    position: relative;
+    top: 1px;
+}
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    background-color: transparent;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    font-size: 1.4rem;
+}
+
+/* Table of contents (side) */
+.sidefilter {
+    background: var(--color-background-base);
+    border-bottom: 1px solid #c7c7c7;
+    border: none;
+}
+.sidefilter .toc-filter {
+    border-bottom: 1px solid #c7c7c7;
+    border-radius: 0;
+}
+.sidetoc {
+    background: var(--color-background-base);
+    border: none;
+}
+.sidetoc .toc {
+    background: var(--color-background-base);
+}
+
+.toc .nav > li {
+    padding: 0.5rem;
+}
+.toc .nav > li.active > a {
+    color: var(--color-link-base);
+}
+
+/* Content */
+.article {
+    margin-top: 96px;
+}
+article section {
+    margin: 0;
+}
+article :not(div) + h3 {
+    margin-top: 50px;
+}
+article section h4 {
+    margin-top: 3.5em;
+}
+article h3 + section h4 {
+    margin-top: 2em;
+}
+article section h4.typeParameters,
+article section h4.parameters,
+article section h4.events,
+article section h4.fieldValue,
+article section h4.propertyValue,
+article section h4.returns {
+    margin-top: 2em;
+}
+
+pre {
+    padding: 4px;
+    border-radius: 0;
+}
+.inheritance h5, .inheritedMembers h5 {
+    border: none;
+}
+.article a[href^='https://github.com/']::before {
+    content: '';
+    background: var(--icon-github-icon);
+    width: 18px;
+    height: 18px;
+    background-size: cover;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+#constructors, #members {
+    font-weight: bold;
+    margin-top: 2em;
+}
+
+.propertyValue, .decalaration, .fieldValue, .parameters, .returns {
+    color: var(--color-text-base);
+}
+
+.cysharpdocfx-category {
+    color: #ccc;
+    font-weight: normal;
+}
+.cysharpdocfx-valuedefinition dt {
+    font-weight: normal;
+}
+.cysharpdocfx-valuedefinition dt:not(:first-child) {
+    margin-top: 1rem;
+}
+.cysharpdocfx-valuedefinition .parametername {
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* Right side */
+.sideaffix {
+    margin-top: 18px;
+}
+.affix h5 {
+    text-transform: none;
+}
+
+/* Extended screen width */
+@media (min-width: 1600px) {
+    .container {
+        width: 1570px;
+    }
+    .sidefilter {
+        width: 360px;
+    }
+    .sidetoc {
+        width: 360px;
+    }
+    .article.grid-right {
+        margin-left: 380px;
+    }
+}
+
+/* Highlight.js Theme - vs.css */
+/* https://github.com/highlightjs/highlight.js/blob/master/src/styles/vs.css */
+/*
+
+Visual Studio-like style based on original C# coloring by Jason Diamond <jason@diamond.name>
+
+*/
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: white;
+  color: black;
+}
+
+.hljs-comment,
+.hljs-quote,
+.hljs-variable {
+  color: #008000;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name,
+.hljs-tag {
+  color: #00f;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-section,
+.hljs-attribute,
+.hljs-literal,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-addition {
+  color: #a31515;
+}
+
+.hljs-deletion,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-meta {
+  color: #2b91af;
+}
+
+.hljs-doctag {
+  color: #808080;
+}
+
+.hljs-attr {
+  color: #f00;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #00b0e8;
+}
+
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+/* Highlight.js override */
+.hljs {
+    background: #f5f5f5;
+}
+.hljs-attribute,
+.hljs-parameter,
+.hljs-title,
+.hljs-type {
+    color: #007d9a;
+}

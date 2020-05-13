@@ -1,0 +1,780 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AutoResetUniTaskCompletionSource&lt;T&gt; Class
+   | UniTask </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="AutoResetUniTaskCompletionSource&lt;T&gt; Class
+   | UniTask ">
+    <meta name="generator" content="docfx 2.51.0.0">
+    
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/cysharp.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-default ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <div class="navbar-brand">
+                <a href="../">
+                  <img id="logo" src="../img/Icon.png" alt="">
+                  <span>UniTask</span>
+                </a>
+              </div>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1">
+  
+  <h1 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1" class="text-break">AutoResetUniTaskCompletionSource&lt;T&gt; Class
+  </h1>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class AutoResetUniTaskCompletionSource&lt;T&gt; : IUniTaskSource&lt;T&gt;, IUniTaskSource, IPromisePoolItem, IPromise&lt;T&gt;, IResolvePromise&lt;T&gt;, IRejectPromise, ICancelPromise</code></pre>
+  </div>
+
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <span><span class="xref">System.Object</span></span> → 
+    <span class="xref">AutoResetUniTaskCompletionSource&lt;T&gt;</span>
+  </div>
+  
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a></div>
+    <div><span class="xref">IPromisePoolItem</span></div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IPromise-1.html">IPromise</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IResolvePromise-1.html">IResolvePromise</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IRejectPromise.html">IRejectPromise</a></div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.ICancelPromise.html">ICancelPromise</a></div>
+  </div>
+  
+  
+  
+  
+  <section>
+  <h4 class="typeParameters">Type Parameters</h4>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  <h3 id="members">Members</h3>
+  <h4>Properties
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Task">Task</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4>Methods
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Create">Create()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromCanceled_System_Threading_CancellationToken_System_Int16__">CreateFromCanceled(CancellationToken, out Int16)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromException_System_Exception_System_Int16__">CreateFromException(Exception, out Int16)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromResult__0_System_Int16__">CreateFromResult(T, out Int16)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Finalize">Finalize()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_GetResult_System_Int16_">GetResult(Int16)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_GetStatus_System_Int16_">GetStatus(Int16)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_OnCompleted_System_Action_System_Object__System_Object_System_Int16_">OnCompleted(Action&lt;Object&gt;, Object, Int16)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetCanceled_System_Threading_CancellationToken_">TrySetCanceled(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetException_System_Exception_">TrySetException(Exception)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetResult__0_">TrySetResult(T)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_UnsafeGetStatus">UnsafeGetStatus()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4>Explicit Interface Implementations
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_">IUniTaskSource.GetResult(Int16)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h3 id="properties">Properties
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Task_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Task*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Task" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Task">Task</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UniTask&lt;T&gt; Task { get; }</code></pre>
+  </div>
+
+  
+  
+  
+  
+  <section>
+  <h5 class="propertyValue">Property Value</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <h3 id="methods">Methods
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Create_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Create*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Create" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Create">Create()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AutoResetUniTaskCompletionSource&lt;T&gt; Create()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html">AutoResetUniTaskCompletionSource</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromCanceled_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.CreateFromCanceled*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromCanceled_System_Threading_CancellationToken_System_Int16__" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.CreateFromCanceled(System.Threading.CancellationToken,System.Int16@)">CreateFromCanceled(CancellationToken, out Int16)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AutoResetUniTaskCompletionSource&lt;T&gt; CreateFromCanceled(CancellationToken cancellationToken, out short token)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html">AutoResetUniTaskCompletionSource</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromException_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.CreateFromException*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromException_System_Exception_System_Int16__" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.CreateFromException(System.Exception,System.Int16@)">CreateFromException(Exception, out Int16)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AutoResetUniTaskCompletionSource&lt;T&gt; CreateFromException(Exception exception, out short token)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>exception</code></span> <span class="xref">System.Exception</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html">AutoResetUniTaskCompletionSource</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromResult_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.CreateFromResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_CreateFromResult__0_System_Int16__" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.CreateFromResult(`0,System.Int16@)">CreateFromResult(T, out Int16)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AutoResetUniTaskCompletionSource&lt;T&gt; CreateFromResult(T result, out short token)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>result</code></span> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html">AutoResetUniTaskCompletionSource</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Finalize_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Finalize*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Finalize" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Finalize">Finalize()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void Finalize()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_GetResult_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.GetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.GetResult(System.Int16)">GetResult(Int16)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T GetResult(short token)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_GetStatus_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.GetStatus*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_GetStatus_System_Int16_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.GetStatus(System.Int16)">GetStatus(Int16)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UniTaskStatus GetStatus(short token)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTaskStatus.html">UniTaskStatus</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_OnCompleted_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.OnCompleted*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_OnCompleted_System_Action_System_Object__System_Object_System_Int16_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.OnCompleted(System.Action{System.Object},System.Object,System.Int16)">OnCompleted(Action&lt;Object&gt;, Object, Int16)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnCompleted(Action&lt;object&gt; continuation, object state, short token)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetCanceled_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.TrySetCanceled*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetCanceled_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.TrySetCanceled(System.Threading.CancellationToken)">TrySetCanceled(CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TrySetCanceled(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetException_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.TrySetException*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetException_System_Exception_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.TrySetException(System.Exception)">TrySetException(Exception)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TrySetException(Exception exception)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>exception</code></span> <span class="xref">System.Exception</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetResult_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.TrySetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_TrySetResult__0_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.TrySetResult(`0)">TrySetResult(T)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TrySetResult(T result)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>result</code></span> <span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_UnsafeGetStatus_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.UnsafeGetStatus*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_UnsafeGetStatus" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.UnsafeGetStatus">UnsafeGetStatus()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UniTaskStatus UnsafeGetStatus()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTaskStatus.html">UniTaskStatus</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <h3 id="eii">Explicit Interface Implementations
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Cysharp#Threading#Tasks#IUniTaskSource#GetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AutoResetUniTaskCompletionSource_1_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource`1.Cysharp#Threading#Tasks#IUniTaskSource#GetResult(System.Int16)">IUniTaskSource.GetResult(Int16)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void IUniTaskSource.GetResult(short token)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a>
+  </div>
+  <div>
+      <span class="xref">IPromisePoolItem</span>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IPromise-1.html">IPromise&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IResolvePromise-1.html">IResolvePromise&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IRejectPromise.html">IRejectPromise</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.ICancelPromise.html">ICancelPromise</a>
+  </div>
+  
+  
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/docfx.override.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
