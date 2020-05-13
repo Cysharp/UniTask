@@ -1,0 +1,31 @@
+name: build-docs
+
+on:
+  push:
+    branches:
+      - master
+      - feature/docs
+
+jobs:
+  run-docfx:
+    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]'))"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: Cysharp/DocfxTemplate
+          path: docs/_DocfxTemplate
+      - uses: Kirbyrawr/docfx-action@master
+        name: Docfx metadata
+        with:
+          args: metadata docs/docfx.json
+      - uses: Kirbyrawr/docfx-action@master
+        name: Docfx build
+        with:
+          args: build docs/docfx.json
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_site

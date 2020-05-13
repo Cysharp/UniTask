@@ -1,0 +1,7 @@
+- name: API Documentation
+  href: api/
+  homepage: api/Cysharp.Threading.Tasks.html
+
+- name: Repository
+  href: https://github.com/Cysharp/UniTask
+  homepage: https://github.com/Cysharp/UniTask
