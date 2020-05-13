@@ -23,15 +23,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TValue> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(exception, cancellationToken);
+            return new _Throw(exception, cancellationToken);
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<TValue>
+        class _Throw : IUniTaskAsyncEnumerator<TValue>
         {
             readonly Exception exception;
             CancellationToken cancellationToken;
 
-            public Enumerator(Exception exception, CancellationToken cancellationToken)
+            public _Throw(Exception exception, CancellationToken cancellationToken)
             {
                 this.exception = exception;
                 this.cancellationToken = cancellationToken;

@@ -101,10 +101,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, onNext, onError, onCompleted, cancellationToken);
+            return new _Do(source, onNext, onError, onCompleted, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
+        sealed class _Do : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
             static readonly Action<object> MoveNextCoreDelegate = MoveNextCore;
 
@@ -117,7 +117,7 @@ namespace Cysharp.Threading.Tasks.Linq
             IUniTaskAsyncEnumerator<TSource> enumerator;
             UniTask<bool>.Awaiter awaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Action<TSource> onNext, Action<Exception> onError, Action onCompleted, CancellationToken cancellationToken)
+            public _Do(IUniTaskAsyncEnumerable<TSource> source, Action<TSource> onNext, Action<Exception> onError, Action onCompleted, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.onNext = onNext;
@@ -199,7 +199,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_Do)state;
 
                 if (self.TryGetResultWithNotification(self.awaiter, out var result))
                 {

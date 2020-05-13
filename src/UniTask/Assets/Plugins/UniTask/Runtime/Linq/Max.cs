@@ -11,7 +11,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<TResult> MaxAsync<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TResult> selector, CancellationToken cancellationToken = default)
@@ -19,7 +19,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<TResult> MaxAwaitAsync<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TResult>> selector, CancellationToken cancellationToken = default)
@@ -27,21 +27,21 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<TResult> MaxAwaitCancellationAsync<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TResult>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<TResult> MaxAwaitWithCancellationAsync<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TResult>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
     }
 
     internal static partial class Max
     {
-        public static async UniTask<TSource> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
+        public static async UniTask<TSource> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
             TSource value = default;
             var comparer = Comparer<TSource>.Default;
@@ -80,7 +80,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<TResult> InvokeAsync<TSource, TResult>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TResult> selector, CancellationToken cancellationToken)
+        public static async UniTask<TResult> MaxAsync<TSource, TResult>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TResult> selector, CancellationToken cancellationToken)
         {
             TResult value = default;
             var comparer = Comparer<TResult>.Default;
@@ -119,7 +119,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<TResult> InvokeAsync<TSource, TResult>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TResult>> selector, CancellationToken cancellationToken)
+        public static async UniTask<TResult> MaxAwaitAsync<TSource, TResult>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TResult>> selector, CancellationToken cancellationToken)
         {
             TResult value = default;
             var comparer = Comparer<TResult>.Default;
@@ -158,7 +158,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<TResult> InvokeAsync<TSource, TResult>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TResult>> selector, CancellationToken cancellationToken)
+        public static async UniTask<TResult> MaxAwaitWithCancellationAsync<TSource, TResult>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TResult>> selector, CancellationToken cancellationToken)
         {
             TResult value = default;
             var comparer = Comparer<TResult>.Default;

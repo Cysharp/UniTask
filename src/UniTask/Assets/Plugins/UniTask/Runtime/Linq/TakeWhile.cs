@@ -68,14 +68,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _TakeWhile(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        class _TakeWhile : AsyncEnumeratorBase<TSource, TSource>
         {
             Func<TSource, bool> predicate;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
+            public _TakeWhile(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -113,15 +113,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _TakeWhileInt(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        class _TakeWhileInt : AsyncEnumeratorBase<TSource, TSource>
         {
             readonly Func<TSource, int, bool> predicate;
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate, CancellationToken cancellationToken)
+            public _TakeWhileInt(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -159,14 +159,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _TakeWhileAwait(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _TakeWhileAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             Func<TSource, UniTask<bool>> predicate;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _TakeWhileAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<bool>> predicate, CancellationToken cancellationToken)
                 : base(source, cancellationToken)
             {
                 this.predicate = predicate;
@@ -207,15 +207,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _TakeWhileIntAwait(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _TakeWhileIntAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             readonly Func<TSource, int, UniTask<bool>> predicate;
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _TakeWhileIntAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, UniTask<bool>> predicate, CancellationToken cancellationToken)
                 : base(source, cancellationToken)
             {
                 this.predicate = predicate;
@@ -256,14 +256,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _TakeWhileAwaitWithCancellation(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _TakeWhileAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             Func<TSource, CancellationToken, UniTask<bool>> predicate;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _TakeWhileAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
                 : base(source, cancellationToken)
             {
                 this.predicate = predicate;
@@ -304,15 +304,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _TakeWhileIntAwaitWithCancellation(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _TakeWhileIntAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             readonly Func<TSource, int, CancellationToken, UniTask<bool>> predicate;
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _TakeWhileIntAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
                 : base(source, cancellationToken)
             {
                 this.predicate = predicate;

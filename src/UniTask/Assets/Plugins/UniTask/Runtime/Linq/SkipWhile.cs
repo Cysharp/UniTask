@@ -68,14 +68,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _SkipWhile(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        class _SkipWhile : AsyncEnumeratorBase<TSource, TSource>
         {
             Func<TSource, bool> predicate;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
+            public _SkipWhile(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, bool> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -119,15 +119,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _SkipWhileInt(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        class _SkipWhileInt : AsyncEnumeratorBase<TSource, TSource>
         {
             Func<TSource, int, bool> predicate;
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate, CancellationToken cancellationToken)
+            public _SkipWhileInt(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -171,14 +171,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _SkipWhileAwait(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _SkipWhileAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             Func<TSource, UniTask<bool>> predicate;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _SkipWhileAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<bool>> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -226,15 +226,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _SkipWhileIntAwait(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _SkipWhileIntAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             Func<TSource, int, UniTask<bool>> predicate;
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _SkipWhileIntAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, UniTask<bool>> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -281,14 +281,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _SkipWhileAwaitWithCancellation(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _SkipWhileAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             Func<TSource, CancellationToken, UniTask<bool>> predicate;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _SkipWhileAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -335,15 +335,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, predicate, cancellationToken);
+            return new _SkipWhileIntAwaitWithCancellation(source, predicate, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
+        class _SkipWhileIntAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, bool>
         {
             Func<TSource, int, CancellationToken, UniTask<bool>> predicate;
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
+            public _SkipWhileIntAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, CancellationToken, UniTask<bool>> predicate, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {

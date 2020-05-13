@@ -12,7 +12,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
 
-            return ToDictionary.InvokeAsync(source, keySelector, EqualityComparer<TKey>.Default, cancellationToken);
+            return ToDictionary.ToDictionaryAsync(source, keySelector, EqualityComparer<TKey>.Default, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TSource>> ToDictionaryAsync<TSource, TKey>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default)
@@ -21,7 +21,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return ToDictionary.InvokeAsync(source, keySelector, comparer, cancellationToken);
+            return ToDictionary.ToDictionaryAsync(source, keySelector, comparer, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TElement>> ToDictionaryAsync<TSource, TKey, TElement>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, CancellationToken cancellationToken = default)
@@ -30,7 +30,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
             Error.ThrowArgumentNullException(elementSelector, nameof(elementSelector));
 
-            return ToDictionary.InvokeAsync(source, keySelector, elementSelector, EqualityComparer<TKey>.Default, cancellationToken);
+            return ToDictionary.ToDictionaryAsync(source, keySelector, elementSelector, EqualityComparer<TKey>.Default, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TElement>> ToDictionaryAsync<TSource, TKey, TElement>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default)
@@ -40,7 +40,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(elementSelector, nameof(elementSelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return ToDictionary.InvokeAsync(source, keySelector, elementSelector, comparer, cancellationToken);
+            return ToDictionary.ToDictionaryAsync(source, keySelector, elementSelector, comparer, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TSource>> ToDictionaryAwaitAsync<TSource, TKey>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, CancellationToken cancellationToken = default)
@@ -48,7 +48,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
 
-            return ToDictionary.InvokeAsync(source, keySelector, EqualityComparer<TKey>.Default, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitAsync(source, keySelector, EqualityComparer<TKey>.Default, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TSource>> ToDictionaryAwaitAsync<TSource, TKey>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default)
@@ -57,7 +57,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return ToDictionary.InvokeAsync(source, keySelector, comparer, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitAsync(source, keySelector, comparer, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TElement>> ToDictionaryAwaitAsync<TSource, TKey, TElement>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, CancellationToken cancellationToken = default)
@@ -66,7 +66,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
             Error.ThrowArgumentNullException(elementSelector, nameof(elementSelector));
 
-            return ToDictionary.InvokeAsync(source, keySelector, elementSelector, EqualityComparer<TKey>.Default, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitAsync(source, keySelector, elementSelector, EqualityComparer<TKey>.Default, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TElement>> ToDictionaryAwaitAsync<TSource, TKey, TElement>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default)
@@ -76,7 +76,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(elementSelector, nameof(elementSelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return ToDictionary.InvokeAsync(source, keySelector, elementSelector, comparer, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitAsync(source, keySelector, elementSelector, comparer, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TSource>> ToDictionaryAwaitWithCancellationAsync<TSource, TKey>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, CancellationToken cancellationToken = default)
@@ -84,7 +84,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
 
-            return ToDictionary.InvokeAsync(source, keySelector, EqualityComparer<TKey>.Default, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitWithCancellationAsync(source, keySelector, EqualityComparer<TKey>.Default, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TSource>> ToDictionaryAwaitWithCancellationAsync<TSource, TKey>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default)
@@ -93,7 +93,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return ToDictionary.InvokeAsync(source, keySelector, comparer, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitWithCancellationAsync(source, keySelector, comparer, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TElement>> ToDictionaryAwaitWithCancellationAsync<TSource, TKey, TElement>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, CancellationToken cancellationToken = default)
@@ -102,7 +102,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
             Error.ThrowArgumentNullException(elementSelector, nameof(elementSelector));
 
-            return ToDictionary.InvokeAsync(source, keySelector, elementSelector, EqualityComparer<TKey>.Default, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitWithCancellationAsync(source, keySelector, elementSelector, EqualityComparer<TKey>.Default, cancellationToken);
         }
 
         public static UniTask<Dictionary<TKey, TElement>> ToDictionaryAwaitWithCancellationAsync<TSource, TKey, TElement>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken = default)
@@ -112,13 +112,13 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(elementSelector, nameof(elementSelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return ToDictionary.InvokeAsync(source, keySelector, elementSelector, comparer, cancellationToken);
+            return ToDictionary.ToDictionaryAwaitWithCancellationAsync(source, keySelector, elementSelector, comparer, cancellationToken);
         }
     }
 
     internal static class ToDictionary
     {
-        internal static async UniTask<Dictionary<TKey, TSource>> InvokeAsync<TSource, TKey>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<Dictionary<TKey, TSource>> ToDictionaryAsync<TSource, TKey>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<TKey, TSource>(comparer);
 
@@ -143,7 +143,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return dict;
         }
 
-        internal static async UniTask<Dictionary<TKey, TElement>> InvokeAsync<TSource, TKey, TElement>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<Dictionary<TKey, TElement>> ToDictionaryAsync<TSource, TKey, TElement>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<TKey, TElement>(comparer);
 
@@ -171,7 +171,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
         // with await
 
-        internal static async UniTask<Dictionary<TKey, TSource>> InvokeAsync<TSource, TKey>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<Dictionary<TKey, TSource>> ToDictionaryAwaitAsync<TSource, TKey>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<TKey, TSource>(comparer);
 
@@ -196,7 +196,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return dict;
         }
 
-        internal static async UniTask<Dictionary<TKey, TElement>> InvokeAsync<TSource, TKey, TElement>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<Dictionary<TKey, TElement>> ToDictionaryAwaitAsync<TSource, TKey, TElement>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<TKey, TElement>(comparer);
 
@@ -224,7 +224,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
         // with cancellation
 
-        internal static async UniTask<Dictionary<TKey, TSource>> InvokeAsync<TSource, TKey>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<Dictionary<TKey, TSource>> ToDictionaryAwaitWithCancellationAsync<TSource, TKey>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<TKey, TSource>(comparer);
 
@@ -249,7 +249,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return dict;
         }
 
-        internal static async UniTask<Dictionary<TKey, TElement>> InvokeAsync<TSource, TKey, TElement>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<Dictionary<TKey, TElement>> ToDictionaryAwaitWithCancellationAsync<TSource, TKey, TElement>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<TKey, TElement>(comparer);
 

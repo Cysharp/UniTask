@@ -26,17 +26,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TElement> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(element, count, cancellationToken);
+            return new _Repeat(element, count, cancellationToken);
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<TElement>
+        class _Repeat : IUniTaskAsyncEnumerator<TElement>
         {
             readonly TElement element;
             readonly int count;
             int remaining;
             CancellationToken cancellationToken;
 
-            public Enumerator(TElement element, int count, CancellationToken cancellationToken)
+            public _Repeat(TElement element, int count, CancellationToken cancellationToken)
             {
                 this.element = element;
                 this.count = count;

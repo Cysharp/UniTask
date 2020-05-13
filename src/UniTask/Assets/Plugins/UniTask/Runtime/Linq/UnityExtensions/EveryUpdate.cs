@@ -24,17 +24,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<AsyncUnit> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(updateTiming, cancellationToken);
+            return new _EveryUpdate(updateTiming, cancellationToken);
         }
 
-        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>, IPlayerLoopItem
+        class _EveryUpdate : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>, IPlayerLoopItem
         {
             readonly PlayerLoopTiming updateTiming;
             CancellationToken cancellationToken;
 
             bool disposed;
 
-            public Enumerator(PlayerLoopTiming updateTiming, CancellationToken cancellationToken)
+            public _EveryUpdate(PlayerLoopTiming updateTiming, CancellationToken cancellationToken)
             {
                 this.updateTiming = updateTiming;
 

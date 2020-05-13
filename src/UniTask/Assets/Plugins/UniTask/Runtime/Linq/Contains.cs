@@ -17,13 +17,13 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return Contains.InvokeAsync(source, value, comparer, cancellationToken);
+            return Contains.ContainsAsync(source, value, comparer, cancellationToken);
         }
     }
 
     internal static class Contains
     {
-        internal static async UniTask<bool> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, TSource value, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<bool> ContainsAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, TSource value, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try

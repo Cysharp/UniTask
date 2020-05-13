@@ -25,10 +25,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, cancellationToken);
+            return new _Reverse(source, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
+        sealed class _Reverse : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
             readonly IUniTaskAsyncEnumerable<TSource> source;
             CancellationToken cancellationToken;
@@ -36,7 +36,7 @@ namespace Cysharp.Threading.Tasks.Linq
             TSource[] array;
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
+            public _Reverse(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.cancellationToken = cancellationToken;

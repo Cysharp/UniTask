@@ -489,15 +489,15 @@ namespace Cysharp.Threading.Tasks
         {
             if (this.cancellationToken1 == cancellationToken)
             {
-                return new Enumerator(unityEvent, this.cancellationToken1, CancellationToken.None);
+                return new UnityEventHandlerAsyncEnumerator(unityEvent, this.cancellationToken1, CancellationToken.None);
             }
             else
             {
-                return new Enumerator(unityEvent, this.cancellationToken1, cancellationToken);
+                return new UnityEventHandlerAsyncEnumerator(unityEvent, this.cancellationToken1, cancellationToken);
             }
         }
 
-        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>
+        class UnityEventHandlerAsyncEnumerator : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>
         {
             static readonly Action<object> cancel1 = OnCanceled1;
             static readonly Action<object> cancel2 = OnCanceled2;
@@ -511,7 +511,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration registration2;
             bool isDisposed;
 
-            public Enumerator(UnityEvent unityEvent, CancellationToken cancellationToken1, CancellationToken cancellationToken2)
+            public UnityEventHandlerAsyncEnumerator(UnityEvent unityEvent, CancellationToken cancellationToken1, CancellationToken cancellationToken2)
             {
                 this.unityEvent = unityEvent;
                 this.cancellationToken1 = cancellationToken1;
@@ -552,13 +552,13 @@ namespace Cysharp.Threading.Tasks
 
             static void OnCanceled1(object state)
             {
-                var self = (Enumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator)state;
                 self.DisposeAsync().Forget();
             }
 
             static void OnCanceled2(object state)
             {
-                var self = (Enumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator)state;
                 self.DisposeAsync().Forget();
             }
 
@@ -593,15 +593,15 @@ namespace Cysharp.Threading.Tasks
         {
             if (this.cancellationToken1 == cancellationToken)
             {
-                return new Enumerator(unityEvent, this.cancellationToken1, CancellationToken.None);
+                return new UnityEventHandlerAsyncEnumerator(unityEvent, this.cancellationToken1, CancellationToken.None);
             }
             else
             {
-                return new Enumerator(unityEvent, this.cancellationToken1, cancellationToken);
+                return new UnityEventHandlerAsyncEnumerator(unityEvent, this.cancellationToken1, cancellationToken);
             }
         }
 
-        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>
+        class UnityEventHandlerAsyncEnumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>
         {
             static readonly Action<object> cancel1 = OnCanceled1;
             static readonly Action<object> cancel2 = OnCanceled2;
@@ -615,7 +615,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration registration2;
             bool isDisposed;
 
-            public Enumerator(UnityEvent<T> unityEvent, CancellationToken cancellationToken1, CancellationToken cancellationToken2)
+            public UnityEventHandlerAsyncEnumerator(UnityEvent<T> unityEvent, CancellationToken cancellationToken1, CancellationToken cancellationToken2)
             {
                 this.unityEvent = unityEvent;
                 this.cancellationToken1 = cancellationToken1;
@@ -657,13 +657,13 @@ namespace Cysharp.Threading.Tasks
 
             static void OnCanceled1(object state)
             {
-                var self = (Enumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator)state;
                 self.DisposeAsync().Forget();
             }
 
             static void OnCanceled2(object state)
             {
-                var self = (Enumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator)state;
                 self.DisposeAsync().Forget();
             }
 

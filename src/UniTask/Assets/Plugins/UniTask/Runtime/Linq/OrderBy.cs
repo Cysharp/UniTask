@@ -407,10 +407,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TElement> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(this, cancellationToken);
+            return new _OrderedAsyncEnumerator(this, cancellationToken);
         }
 
-        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TElement>
+        class _OrderedAsyncEnumerator : MoveNextSource, IUniTaskAsyncEnumerator<TElement>
         {
             protected readonly OrderedAsyncEnumerable<TElement> parent;
             CancellationToken cancellationToken;
@@ -418,7 +418,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int[] map;
             int index;
 
-            public Enumerator(OrderedAsyncEnumerable<TElement> parent, CancellationToken cancellationToken)
+            public _OrderedAsyncEnumerator(OrderedAsyncEnumerable<TElement> parent, CancellationToken cancellationToken)
             {
                 this.parent = parent;
                 this.cancellationToken = cancellationToken;

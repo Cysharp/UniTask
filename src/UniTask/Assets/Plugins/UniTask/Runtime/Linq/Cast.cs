@@ -25,12 +25,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, cancellationToken);
+            return new _Cast(source, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<object, TResult>
+        class _Cast : AsyncEnumeratorBase<object, TResult>
         {
-            public Enumerator(IUniTaskAsyncEnumerable<object> source, CancellationToken cancellationToken)
+            public _Cast(IUniTaskAsyncEnumerable<object> source, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {

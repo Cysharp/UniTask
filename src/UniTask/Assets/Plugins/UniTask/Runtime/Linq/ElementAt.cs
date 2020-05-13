@@ -10,20 +10,20 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return ElementAt.InvokeAsync(source, index, cancellationToken, false);
+            return ElementAt.ElementAtAsync(source, index, cancellationToken, false);
         }
 
         public static UniTask<TSource> ElementAtOrDefaultAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, int index, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return ElementAt.InvokeAsync(source, index, cancellationToken, true);
+            return ElementAt.ElementAtAsync(source, index, cancellationToken, true);
         }
     }
 
     internal static class ElementAt
     {
-        public static async UniTask<TSource> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, int index, CancellationToken cancellationToken, bool defaultIfEmpty)
+        public static async UniTask<TSource> ElementAtAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, int index, CancellationToken cancellationToken, bool defaultIfEmpty)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try

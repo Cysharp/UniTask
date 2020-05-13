@@ -59,7 +59,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(keySelector, nameof(keySelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return new DistinctUntilChangedAwaitCancellation<TSource, TKey>(source, keySelector, comparer);
+            return new DistinctUntilChangedAwaitWithCancellation<TSource, TKey>(source, keySelector, comparer);
         }
     }
 
@@ -76,16 +76,16 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, comparer, cancellationToken);
+            return new _DistinctUntilChanged(source, comparer, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        class _DistinctUntilChanged : AsyncEnumeratorBase<TSource, TSource>
         {
             readonly IEqualityComparer<TSource> comparer;
             TSource prev;
             bool first;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
+            public _DistinctUntilChanged(IUniTaskAsyncEnumerable<TSource> source, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -133,17 +133,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, comparer, cancellationToken);
+            return new _DistinctUntilChanged(source, keySelector, comparer, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        class _DistinctUntilChanged : AsyncEnumeratorBase<TSource, TSource>
         {
             readonly IEqualityComparer<TKey> comparer;
             readonly Func<TSource, TKey> keySelector;
             TKey prev;
             bool first;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _DistinctUntilChanged(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -194,17 +194,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, comparer, cancellationToken);
+            return new _DistinctUntilChangedAwait(source, keySelector, comparer, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, TKey>
+        class _DistinctUntilChangedAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, TKey>
         {
             readonly IEqualityComparer<TKey> comparer;
             readonly Func<TSource, UniTask<TKey>> keySelector;
             TKey prev;
             bool first;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _DistinctUntilChangedAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {
@@ -237,13 +237,13 @@ namespace Cysharp.Threading.Tasks.Linq
         }
     }
 
-    internal sealed class DistinctUntilChangedAwaitCancellation<TSource, TKey> : IUniTaskAsyncEnumerable<TSource>
+    internal sealed class DistinctUntilChangedAwaitWithCancellation<TSource, TKey> : IUniTaskAsyncEnumerable<TSource>
     {
         readonly IUniTaskAsyncEnumerable<TSource> source;
         readonly Func<TSource, CancellationToken, UniTask<TKey>> keySelector;
         readonly IEqualityComparer<TKey> comparer;
 
-        public DistinctUntilChangedAwaitCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer)
+        public DistinctUntilChangedAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer)
         {
             this.source = source;
             this.keySelector = keySelector;
@@ -252,17 +252,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, comparer, cancellationToken);
+            return new _DistinctUntilChangedAwaitWithCancellation(source, keySelector, comparer, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, TKey>
+        class _DistinctUntilChangedAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, TKey>
         {
             readonly IEqualityComparer<TKey> comparer;
             readonly Func<TSource, CancellationToken, UniTask<TKey>> keySelector;
             TKey prev;
             bool first;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _DistinctUntilChangedAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
 
                 : base(source, cancellationToken)
             {

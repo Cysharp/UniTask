@@ -27,16 +27,16 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, count, cancellationToken);
+            return new _Skip(source, count, cancellationToken);
         }
 
-        sealed class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        sealed class _Skip : AsyncEnumeratorBase<TSource, TSource>
         {
             readonly int count;
 
             int index;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, int count, CancellationToken cancellationToken)
+            public _Skip(IUniTaskAsyncEnumerable<TSource> source, int count, CancellationToken cancellationToken)
                 : base(source, cancellationToken)
             {
                 this.count = count;

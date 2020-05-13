@@ -53,10 +53,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<AsyncUnit> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(dueTime, period, updateTiming, ignoreTimeScale, cancellationToken);
+            return new _Timer(dueTime, period, updateTiming, ignoreTimeScale, cancellationToken);
         }
 
-        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>, IPlayerLoopItem
+        class _Timer : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>, IPlayerLoopItem
         {
             readonly float dueTime;
             readonly float? period;
@@ -68,7 +68,7 @@ namespace Cysharp.Threading.Tasks.Linq
             bool dueTimePhase;
             bool disposed;
 
-            public Enumerator(TimeSpan dueTime, TimeSpan? period, PlayerLoopTiming updateTiming, bool ignoreTimeScale, CancellationToken cancellationToken)
+            public _Timer(TimeSpan dueTime, TimeSpan? period, PlayerLoopTiming updateTiming, bool ignoreTimeScale, CancellationToken cancellationToken)
             {
                 this.dueTime = (float)dueTime.TotalSeconds;
                 this.period = (period == null) ? null : (float?)period.Value.TotalSeconds;
@@ -161,10 +161,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<AsyncUnit> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(dueTimeFrameCount, periodFrameCount, updateTiming, cancellationToken);
+            return new _TimerFrame(dueTimeFrameCount, periodFrameCount, updateTiming, cancellationToken);
         }
 
-        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>, IPlayerLoopItem
+        class _TimerFrame : MoveNextSource, IUniTaskAsyncEnumerator<AsyncUnit>, IPlayerLoopItem
         {
             readonly int dueTimeFrameCount;
             readonly int? periodFrameCount;
@@ -174,7 +174,7 @@ namespace Cysharp.Threading.Tasks.Linq
             bool dueTimePhase;
             bool disposed;
 
-            public Enumerator(int dueTimeFrameCount, int? periodFrameCount, PlayerLoopTiming updateTiming, CancellationToken cancellationToken)
+            public _TimerFrame(int dueTimeFrameCount, int? periodFrameCount, PlayerLoopTiming updateTiming, CancellationToken cancellationToken)
             {
                 if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
                 if (periodFrameCount != null)

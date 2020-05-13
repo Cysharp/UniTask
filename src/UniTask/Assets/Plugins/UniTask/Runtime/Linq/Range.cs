@@ -31,17 +31,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<int> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(start, end, cancellationToken);
+            return new _Range(start, end, cancellationToken);
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<int>
+        class _Range : IUniTaskAsyncEnumerator<int>
         {
             readonly int start;
             readonly int end;
             int current;
             CancellationToken cancellationToken;
 
-            public Enumerator(int start, int end, CancellationToken cancellationToken)
+            public _Range(int start, int end, CancellationToken cancellationToken)
             {
                 this.start = start;
                 this.end = end;

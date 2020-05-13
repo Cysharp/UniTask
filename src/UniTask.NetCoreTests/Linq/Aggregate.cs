@@ -35,7 +35,7 @@ namespace NetCoreTests.Linq
                 xs.Should().Be(ys);
             }
             {
-                var xs = await UniTaskAsyncEnumerable.Range(start, count).SumAwaitCancellationAsync((x, _) => UniTask.Run(() => x));
+                var xs = await UniTaskAsyncEnumerable.Range(start, count).SumAwaitWithCancellationAsync((x, _) => UniTask.Run(() => x));
                 var ys = Enumerable.Range(start, count).Sum(x => x);
                 xs.Should().Be(ys);
             }

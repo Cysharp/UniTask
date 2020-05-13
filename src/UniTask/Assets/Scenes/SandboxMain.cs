@@ -151,10 +151,13 @@ public class SandboxMain : MonoBehaviour
         await UniTask.Yield(PlayerLoopTiming.Update);
         Debug.Log("Start:" + Time.frameCount);
 
-        await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.Update).ForEachAsync(_ =>
-        {
-            Debug.Log("Call:" + Time.frameCount);
-        }, cancellationToken: this.GetCancellationTokenOnDestroy());
+        await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.PostLateUpdate)
+            .Select(x => x)
+            .Do(x => Debug.Log("DODODO"))
+            .ForEachAsync(_ =>
+            {
+                Debug.Log("Call:" + Time.frameCount);
+            }, cancellationToken: this.GetCancellationTokenOnDestroy());
 
         //try
         //{

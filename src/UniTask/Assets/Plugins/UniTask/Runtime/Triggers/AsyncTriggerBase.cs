@@ -55,10 +55,10 @@ namespace Cysharp.Threading.Tasks.Triggers
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(GetTriggerEvent(), cancellationToken);
+            return new AsyncTriggerEnumerator(GetTriggerEvent(), cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
+        sealed class AsyncTriggerEnumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
         {
             static Action<object> cancellationCallback = CancellationCallback;
 
@@ -68,7 +68,7 @@ namespace Cysharp.Threading.Tasks.Triggers
             bool called;
             bool isDisposed;
 
-            public Enumerator(TriggerEvent<T> triggerEvent, CancellationToken cancellationToken)
+            public AsyncTriggerEnumerator(TriggerEvent<T> triggerEvent, CancellationToken cancellationToken)
             {
                 this.triggerEvent = triggerEvent;
                 this.cancellationToken = cancellationToken;
@@ -87,7 +87,7 @@ namespace Cysharp.Threading.Tasks.Triggers
 
             static void CancellationCallback(object state)
             {
-                var self = (Enumerator)state;
+                var self = (AsyncTriggerEnumerator)state;
                 self.DisposeAsync().Forget(); // sync
 
                 self.completionSource.TrySetCanceled(self.cancellationToken);

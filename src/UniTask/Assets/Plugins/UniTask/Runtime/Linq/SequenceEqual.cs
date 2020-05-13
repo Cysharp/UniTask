@@ -18,13 +18,13 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(second, nameof(second));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return SequenceEqual.InvokeAsync(first, second, comparer, cancellationToken);
+            return SequenceEqual.SequenceEqualAsync(first, second, comparer, cancellationToken);
         }
     }
 
     internal static class SequenceEqual
     {
-        internal static async UniTask<bool> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
+        internal static async UniTask<bool> SequenceEqualAsync<TSource>(IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
         {
             var e1 = first.GetAsyncEnumerator(cancellationToken);
             try

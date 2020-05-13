@@ -38,10 +38,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<IList<TSource>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, count, cancellationToken);
+            return new _Buffer(source, count, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<IList<TSource>>
+        sealed class _Buffer : MoveNextSource, IUniTaskAsyncEnumerator<IList<TSource>>
         {
             static readonly Action<object> MoveNextCoreDelegate = MoveNextCore;
 
@@ -56,7 +56,7 @@ namespace Cysharp.Threading.Tasks.Linq
             bool completed;
             List<TSource> buffer;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, int count, CancellationToken cancellationToken)
+            public _Buffer(IUniTaskAsyncEnumerable<TSource> source, int count, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.count = count;
@@ -128,7 +128,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_Buffer)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {
@@ -191,10 +191,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<IList<TSource>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, count, skip, cancellationToken);
+            return new _BufferSkip(source, count, skip, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<IList<TSource>>
+        sealed class _BufferSkip : MoveNextSource, IUniTaskAsyncEnumerator<IList<TSource>>
         {
             static readonly Action<object> MoveNextCoreDelegate = MoveNextCore;
 
@@ -211,7 +211,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Queue<List<TSource>> buffers;
             int index = 0;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, int count, int skip, CancellationToken cancellationToken)
+            public _BufferSkip(IUniTaskAsyncEnumerable<TSource> source, int count, int skip, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.count = count;
@@ -282,7 +282,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_BufferSkip)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {

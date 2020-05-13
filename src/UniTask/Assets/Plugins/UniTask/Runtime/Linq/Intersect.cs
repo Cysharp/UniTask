@@ -40,10 +40,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(first, second, comparer, cancellationToken);
+            return new _Intersect(first, second, comparer, cancellationToken);
         }
 
-        class Enumerator : AsyncEnumeratorBase<TSource, TSource>
+        class _Intersect : AsyncEnumeratorBase<TSource, TSource>
         {
             static Action<object> HashSetAsyncCoreDelegate = HashSetAsyncCore;
 
@@ -53,7 +53,7 @@ namespace Cysharp.Threading.Tasks.Linq
             HashSet<TSource> set;
             UniTask<HashSet<TSource>>.Awaiter awaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
+            public _Intersect(IUniTaskAsyncEnumerable<TSource> first, IUniTaskAsyncEnumerable<TSource> second, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
 
                 : base(first, cancellationToken)
             {
@@ -81,7 +81,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void HashSetAsyncCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_Intersect)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {

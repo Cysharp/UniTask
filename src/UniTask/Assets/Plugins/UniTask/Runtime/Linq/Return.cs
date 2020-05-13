@@ -22,17 +22,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TValue> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(value, cancellationToken);
+            return new _Return(value, cancellationToken);
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<TValue>
+        class _Return : IUniTaskAsyncEnumerator<TValue>
         {
             readonly TValue value;
             CancellationToken cancellationToken;
 
             bool called;
 
-            public Enumerator(TValue value, CancellationToken cancellationToken)
+            public _Return(TValue value, CancellationToken cancellationToken)
             {
                 this.value = value;
                 this.cancellationToken = cancellationToken;

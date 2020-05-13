@@ -10,13 +10,13 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Cysharp.Threading.Tasks.Linq.ToList.InvokeAsync(source, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ToList.ToListAsync(source, cancellationToken);
         }
     }
 
     internal static class ToList
     {
-        internal static async UniTask<List<TSource>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
+        internal static async UniTask<List<TSource>> ToListAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
             var list = new List<TSource>();
 

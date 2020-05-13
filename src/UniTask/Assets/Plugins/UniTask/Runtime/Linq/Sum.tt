@@ -37,7 +37,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Sum.InvokeAsync(source, cancellationToken);
+            return Sum.SumAsync(source, cancellationToken);
         }
 
         public static UniTask<<#= TypeName(t) #>> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken = default)
@@ -45,7 +45,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Sum.InvokeAsync(source, selector, cancellationToken);
+            return Sum.SumAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<<#= TypeName(t) #>> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
@@ -53,15 +53,15 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Sum.InvokeAsync(source, selector, cancellationToken);
+            return Sum.SumAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<<#= TypeName(t) #>> SumAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<<#= TypeName(t) #>> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Sum.InvokeAsync(source, selector, cancellationToken);
+            return Sum.SumAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
 <# } #>
@@ -70,7 +70,7 @@ namespace Cysharp.Threading.Tasks.Linq
     internal static class Sum
     {
 <# foreach(var t in types) { #>
-        public static async UniTask<<#= TypeName(t) #>> InvokeAsync(IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken)
+        public static async UniTask<<#= TypeName(t) #>> SumAsync(IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken)
         {
             <#= TypeName(t) #> sum = default;
 
@@ -93,7 +93,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return sum;
         }
 
-        public static async UniTask<<#= TypeName(t) #>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken)
+        public static async UniTask<<#= TypeName(t) #>> SumAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken)
         {
             <#= TypeName(t) #> sum = default;
 
@@ -116,7 +116,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return sum;
         }
 
-        public static async UniTask<<#= TypeName(t) #>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        public static async UniTask<<#= TypeName(t) #>> SumAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
         {
             <#= TypeName(t) #> sum = default;
 
@@ -139,7 +139,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return sum;
         }
 
-        public static async UniTask<<#= TypeName(t) #>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        public static async UniTask<<#= TypeName(t) #>> SumAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
         {
             <#= TypeName(t) #> sum = default;
 

@@ -235,10 +235,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, elementSelector, comparer, cancellationToken);
+            return new _GroupBy(source, keySelector, elementSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>>
+        sealed class _GroupBy : MoveNextSource, IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>>
         {
             readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, TKey> keySelector;
@@ -248,7 +248,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             IEnumerator<IGrouping<TKey, TElement>> groupEnumerator;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupBy(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.keySelector = keySelector;
@@ -342,10 +342,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, elementSelector, resultSelector, comparer, cancellationToken);
+            return new _GroupBy(source, keySelector, elementSelector, resultSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _GroupBy : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, TKey> keySelector;
@@ -356,7 +356,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             IEnumerator<IGrouping<TKey, TElement>> groupEnumerator;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupBy(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.keySelector = keySelector;
@@ -450,10 +450,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, elementSelector, comparer, cancellationToken);
+            return new _GroupByAwait(source, keySelector, elementSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>>
+        sealed class _GroupByAwait : MoveNextSource, IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>>
         {
             readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, UniTask<TKey>> keySelector;
@@ -463,7 +463,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             IEnumerator<IGrouping<TKey, TElement>> groupEnumerator;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupByAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.keySelector = keySelector;
@@ -557,10 +557,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, elementSelector, resultSelector, comparer, cancellationToken);
+            return new _GroupByAwait(source, keySelector, elementSelector, resultSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _GroupByAwait : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             readonly static Action<object> ResultSelectCoreDelegate = ResultSelectCore;
 
@@ -574,7 +574,7 @@ namespace Cysharp.Threading.Tasks.Linq
             IEnumerator<IGrouping<TKey, TElement>> groupEnumerator;
             UniTask<TResult>.Awaiter awaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, Func<TKey, IEnumerable<TElement>, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupByAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, Func<TSource, UniTask<TElement>> elementSelector, Func<TKey, IEnumerable<TElement>, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.keySelector = keySelector;
@@ -650,7 +650,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void ResultSelectCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupByAwait)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {
@@ -688,10 +688,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, elementSelector, comparer, cancellationToken);
+            return new _GroupByAwaitWithCancellation(source, keySelector, elementSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>>
+        sealed class _GroupByAwaitWithCancellation : MoveNextSource, IUniTaskAsyncEnumerator<IGrouping<TKey, TElement>>
         {
             readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, CancellationToken, UniTask<TKey>> keySelector;
@@ -701,7 +701,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             IEnumerator<IGrouping<TKey, TElement>> groupEnumerator;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupByAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.keySelector = keySelector;
@@ -795,10 +795,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, keySelector, elementSelector, resultSelector, comparer, cancellationToken);
+            return new _GroupByAwaitWithCancellation(source, keySelector, elementSelector, resultSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _GroupByAwaitWithCancellation : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             readonly static Action<object> ResultSelectCoreDelegate = ResultSelectCore;
 
@@ -812,7 +812,7 @@ namespace Cysharp.Threading.Tasks.Linq
             IEnumerator<IGrouping<TKey, TElement>> groupEnumerator;
             UniTask<TResult>.Awaiter awaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, Func<TKey, IEnumerable<TElement>, CancellationToken, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupByAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, Func<TSource, CancellationToken, UniTask<TElement>> elementSelector, Func<TKey, IEnumerable<TElement>, CancellationToken, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.keySelector = keySelector;
@@ -888,7 +888,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void ResultSelectCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupByAwaitWithCancellation)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {

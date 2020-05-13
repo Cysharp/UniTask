@@ -48,17 +48,17 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, cancellationToken);
+            return new _ToUniTaskAsyncEnumerable(source, cancellationToken);
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<T>
+        class _ToUniTaskAsyncEnumerable : IUniTaskAsyncEnumerator<T>
         {
             readonly IEnumerable<T> source;
             CancellationToken cancellationToken;
 
             IEnumerator<T> enumerator;
 
-            public Enumerator(IEnumerable<T> source, CancellationToken cancellationToken)
+            public _ToUniTaskAsyncEnumerable(IEnumerable<T> source, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.cancellationToken = cancellationToken;
@@ -102,10 +102,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, cancellationToken);
+            return new _ToUniTaskAsyncEnumerableTask(source, cancellationToken);
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<T>
+        class _ToUniTaskAsyncEnumerableTask : IUniTaskAsyncEnumerator<T>
         {
             readonly Task<T> source;
             CancellationToken cancellationToken;
@@ -113,7 +113,7 @@ namespace Cysharp.Threading.Tasks.Linq
             T current;
             bool called;
 
-            public Enumerator(Task<T> source, CancellationToken cancellationToken)
+            public _ToUniTaskAsyncEnumerableTask(Task<T> source, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.cancellationToken = cancellationToken;
@@ -155,10 +155,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, cancellationToken);
+            return new _ToUniTaskAsyncEnumerableUniTask(source, cancellationToken);
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<T>
+        class _ToUniTaskAsyncEnumerableUniTask : IUniTaskAsyncEnumerator<T>
         {
             readonly UniTask<T> source;
             CancellationToken cancellationToken;
@@ -166,7 +166,7 @@ namespace Cysharp.Threading.Tasks.Linq
             T current;
             bool called;
 
-            public Enumerator(UniTask<T> source, CancellationToken cancellationToken)
+            public _ToUniTaskAsyncEnumerableUniTask(UniTask<T> source, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.cancellationToken = cancellationToken;
@@ -208,10 +208,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, cancellationToken);
+            return new _ToUniTaskAsyncEnumerableObservable(source, cancellationToken);
         }
 
-        class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IObserver<T>
+        class _ToUniTaskAsyncEnumerableObservable : MoveNextSource, IUniTaskAsyncEnumerator<T>, IObserver<T>
         {
             static readonly Action<object> OnCanceledDelegate = OnCanceled;
 
@@ -227,7 +227,7 @@ namespace Cysharp.Threading.Tasks.Linq
             IDisposable subscription;
             CancellationTokenRegistration cancellationTokenRegistration;
 
-            public Enumerator(IObservable<T> source, CancellationToken cancellationToken)
+            public _ToUniTaskAsyncEnumerableObservable(IObservable<T> source, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.cancellationToken = cancellationToken;
@@ -334,7 +334,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void OnCanceled(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_ToUniTaskAsyncEnumerableObservable)state;
                 lock (self.queuedResult)
                 {
                     self.completionSource.TrySetCanceled(self.cancellationToken);

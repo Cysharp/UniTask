@@ -36,10 +36,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, element, append, cancellationToken);
+            return new _AppendPrepend(source, element, append, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
+        sealed class _AppendPrepend : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
             enum State : byte
             {
@@ -59,7 +59,7 @@ namespace Cysharp.Threading.Tasks.Linq
             IUniTaskAsyncEnumerator<TSource> enumerator;
             UniTask<bool>.Awaiter awaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, TSource element, bool append, CancellationToken cancellationToken)
+            public _AppendPrepend(IUniTaskAsyncEnumerable<TSource> source, TSource element, bool append, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.element = element;
@@ -108,7 +108,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_AppendPrepend)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {

@@ -10,7 +10,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Int32> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32> selector, CancellationToken cancellationToken = default)
@@ -18,7 +18,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int32> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
@@ -26,22 +26,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int32> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int32> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64> MinAsync(this IUniTaskAsyncEnumerable<Int64> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Int64> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64> selector, CancellationToken cancellationToken = default)
@@ -49,7 +49,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
@@ -57,22 +57,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int64> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int64> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single> MinAsync(this IUniTaskAsyncEnumerable<Single> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Single> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single> selector, CancellationToken cancellationToken = default)
@@ -80,7 +80,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single>> selector, CancellationToken cancellationToken = default)
@@ -88,22 +88,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Single> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Single> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double> MinAsync(this IUniTaskAsyncEnumerable<Double> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Double> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double> selector, CancellationToken cancellationToken = default)
@@ -111,7 +111,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double>> selector, CancellationToken cancellationToken = default)
@@ -119,22 +119,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Double> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Double> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal> MinAsync(this IUniTaskAsyncEnumerable<Decimal> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Decimal> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal> selector, CancellationToken cancellationToken = default)
@@ -142,7 +142,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
@@ -150,22 +150,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Decimal> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Decimal> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int32?> MinAsync(this IUniTaskAsyncEnumerable<Int32?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Int32?> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32?> selector, CancellationToken cancellationToken = default)
@@ -173,7 +173,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int32?> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32?>> selector, CancellationToken cancellationToken = default)
@@ -181,22 +181,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int32?> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int32?> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64?> MinAsync(this IUniTaskAsyncEnumerable<Int64?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Int64?> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64?> selector, CancellationToken cancellationToken = default)
@@ -204,7 +204,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64?> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64?>> selector, CancellationToken cancellationToken = default)
@@ -212,22 +212,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int64?> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int64?> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single?> MinAsync(this IUniTaskAsyncEnumerable<Single?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Single?> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single?> selector, CancellationToken cancellationToken = default)
@@ -235,7 +235,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single?> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single?>> selector, CancellationToken cancellationToken = default)
@@ -243,22 +243,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Single?> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Single?> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double?> MinAsync(this IUniTaskAsyncEnumerable<Double?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Double?> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double?> selector, CancellationToken cancellationToken = default)
@@ -266,7 +266,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double?> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double?>> selector, CancellationToken cancellationToken = default)
@@ -274,22 +274,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Double?> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Double?> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal?> MinAsync(this IUniTaskAsyncEnumerable<Decimal?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Min.InvokeAsync(source, cancellationToken);
+            return Min.MinAsync(source, cancellationToken);
         }
 
         public static UniTask<Decimal?> MinAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal?> selector, CancellationToken cancellationToken = default)
@@ -297,7 +297,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal?> MinAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal?>> selector, CancellationToken cancellationToken = default)
@@ -305,22 +305,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Decimal?> MinAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Decimal?> MinAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Min.InvokeAsync(source, selector, cancellationToken);
+            return Min.MinAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
     }
 
     internal static partial class Min
     {
-        public static async UniTask<Int32> InvokeAsync(IUniTaskAsyncEnumerable<Int32> source, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MinAsync(IUniTaskAsyncEnumerable<Int32> source, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -358,7 +358,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32> selector, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -396,7 +396,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32>> selector, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -434,7 +434,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -472,7 +472,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync(IUniTaskAsyncEnumerable<Int64> source, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MinAsync(IUniTaskAsyncEnumerable<Int64> source, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -510,7 +510,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64> selector, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -548,7 +548,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64>> selector, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -586,7 +586,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -624,7 +624,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync(IUniTaskAsyncEnumerable<Single> source, CancellationToken cancellationToken)
+        public static async UniTask<Single> MinAsync(IUniTaskAsyncEnumerable<Single> source, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -662,7 +662,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single> selector, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -700,7 +700,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single>> selector, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -738,7 +738,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -776,7 +776,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync(IUniTaskAsyncEnumerable<Double> source, CancellationToken cancellationToken)
+        public static async UniTask<Double> MinAsync(IUniTaskAsyncEnumerable<Double> source, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -814,7 +814,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double> selector, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -852,7 +852,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double>> selector, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -890,7 +890,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -928,7 +928,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync(IUniTaskAsyncEnumerable<Decimal> source, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MinAsync(IUniTaskAsyncEnumerable<Decimal> source, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -966,7 +966,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal> selector, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -1004,7 +1004,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal>> selector, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -1042,7 +1042,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -1080,7 +1080,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync(IUniTaskAsyncEnumerable<Int32?> source, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MinAsync(IUniTaskAsyncEnumerable<Int32?> source, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -1120,7 +1120,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32?> selector, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -1160,7 +1160,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32?>> selector, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -1200,7 +1200,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -1240,7 +1240,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync(IUniTaskAsyncEnumerable<Int64?> source, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MinAsync(IUniTaskAsyncEnumerable<Int64?> source, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -1280,7 +1280,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64?> selector, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -1320,7 +1320,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64?>> selector, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -1360,7 +1360,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -1400,7 +1400,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync(IUniTaskAsyncEnumerable<Single?> source, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MinAsync(IUniTaskAsyncEnumerable<Single?> source, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -1440,7 +1440,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single?> selector, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -1480,7 +1480,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single?>> selector, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -1520,7 +1520,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -1560,7 +1560,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync(IUniTaskAsyncEnumerable<Double?> source, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MinAsync(IUniTaskAsyncEnumerable<Double?> source, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -1600,7 +1600,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double?> selector, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -1640,7 +1640,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double?>> selector, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -1680,7 +1680,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -1720,7 +1720,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync(IUniTaskAsyncEnumerable<Decimal?> source, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MinAsync(IUniTaskAsyncEnumerable<Decimal?> source, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 
@@ -1760,7 +1760,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MinAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal?> selector, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 
@@ -1800,7 +1800,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MinAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 
@@ -1840,7 +1840,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MinAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 
@@ -1888,7 +1888,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Int32> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32> selector, CancellationToken cancellationToken = default)
@@ -1896,7 +1896,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int32> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
@@ -1904,22 +1904,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int32> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int32> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64> MaxAsync(this IUniTaskAsyncEnumerable<Int64> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Int64> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64> selector, CancellationToken cancellationToken = default)
@@ -1927,7 +1927,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
@@ -1935,22 +1935,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int64> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int64> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single> MaxAsync(this IUniTaskAsyncEnumerable<Single> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Single> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single> selector, CancellationToken cancellationToken = default)
@@ -1958,7 +1958,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single>> selector, CancellationToken cancellationToken = default)
@@ -1966,22 +1966,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Single> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Single> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double> MaxAsync(this IUniTaskAsyncEnumerable<Double> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Double> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double> selector, CancellationToken cancellationToken = default)
@@ -1989,7 +1989,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double>> selector, CancellationToken cancellationToken = default)
@@ -1997,22 +1997,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Double> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Double> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal> MaxAsync(this IUniTaskAsyncEnumerable<Decimal> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Decimal> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal> selector, CancellationToken cancellationToken = default)
@@ -2020,7 +2020,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
@@ -2028,22 +2028,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Decimal> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Decimal> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int32?> MaxAsync(this IUniTaskAsyncEnumerable<Int32?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Int32?> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32?> selector, CancellationToken cancellationToken = default)
@@ -2051,7 +2051,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int32?> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32?>> selector, CancellationToken cancellationToken = default)
@@ -2059,22 +2059,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int32?> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int32?> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64?> MaxAsync(this IUniTaskAsyncEnumerable<Int64?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Int64?> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64?> selector, CancellationToken cancellationToken = default)
@@ -2082,7 +2082,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Int64?> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64?>> selector, CancellationToken cancellationToken = default)
@@ -2090,22 +2090,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Int64?> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Int64?> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single?> MaxAsync(this IUniTaskAsyncEnumerable<Single?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Single?> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single?> selector, CancellationToken cancellationToken = default)
@@ -2113,7 +2113,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Single?> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single?>> selector, CancellationToken cancellationToken = default)
@@ -2121,22 +2121,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Single?> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Single?> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double?> MaxAsync(this IUniTaskAsyncEnumerable<Double?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Double?> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double?> selector, CancellationToken cancellationToken = default)
@@ -2144,7 +2144,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Double?> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double?>> selector, CancellationToken cancellationToken = default)
@@ -2152,22 +2152,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Double?> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Double?> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal?> MaxAsync(this IUniTaskAsyncEnumerable<Decimal?> source, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Max.InvokeAsync(source, cancellationToken);
+            return Max.MaxAsync(source, cancellationToken);
         }
 
         public static UniTask<Decimal?> MaxAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal?> selector, CancellationToken cancellationToken = default)
@@ -2175,7 +2175,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<Decimal?> MaxAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal?>> selector, CancellationToken cancellationToken = default)
@@ -2183,22 +2183,22 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<Decimal?> MaxAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<Decimal?> MaxAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Max.InvokeAsync(source, selector, cancellationToken);
+            return Max.MaxAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
     }
 
     internal static partial class Max
     {
-        public static async UniTask<Int32> InvokeAsync(IUniTaskAsyncEnumerable<Int32> source, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MaxAsync(IUniTaskAsyncEnumerable<Int32> source, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -2236,7 +2236,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32> selector, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -2274,7 +2274,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32>> selector, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -2312,7 +2312,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32>> selector, CancellationToken cancellationToken)
         {
             Int32 value = default;
 
@@ -2350,7 +2350,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync(IUniTaskAsyncEnumerable<Int64> source, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MaxAsync(IUniTaskAsyncEnumerable<Int64> source, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -2388,7 +2388,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64> selector, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -2426,7 +2426,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64>> selector, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -2464,7 +2464,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64>> selector, CancellationToken cancellationToken)
         {
             Int64 value = default;
 
@@ -2502,7 +2502,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync(IUniTaskAsyncEnumerable<Single> source, CancellationToken cancellationToken)
+        public static async UniTask<Single> MaxAsync(IUniTaskAsyncEnumerable<Single> source, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -2540,7 +2540,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single> selector, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -2578,7 +2578,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single>> selector, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -2616,7 +2616,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single>> selector, CancellationToken cancellationToken)
         {
             Single value = default;
 
@@ -2654,7 +2654,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync(IUniTaskAsyncEnumerable<Double> source, CancellationToken cancellationToken)
+        public static async UniTask<Double> MaxAsync(IUniTaskAsyncEnumerable<Double> source, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -2692,7 +2692,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double> selector, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -2730,7 +2730,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double>> selector, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -2768,7 +2768,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double>> selector, CancellationToken cancellationToken)
         {
             Double value = default;
 
@@ -2806,7 +2806,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync(IUniTaskAsyncEnumerable<Decimal> source, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MaxAsync(IUniTaskAsyncEnumerable<Decimal> source, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -2844,7 +2844,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal> selector, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -2882,7 +2882,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal>> selector, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -2920,7 +2920,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal>> selector, CancellationToken cancellationToken)
         {
             Decimal value = default;
 
@@ -2958,7 +2958,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync(IUniTaskAsyncEnumerable<Int32?> source, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MaxAsync(IUniTaskAsyncEnumerable<Int32?> source, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -2998,7 +2998,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32?> selector, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -3038,7 +3038,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int32?>> selector, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -3078,7 +3078,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int32?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int32?> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int32?>> selector, CancellationToken cancellationToken)
         {
             Int32? value = default;
 
@@ -3118,7 +3118,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync(IUniTaskAsyncEnumerable<Int64?> source, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MaxAsync(IUniTaskAsyncEnumerable<Int64?> source, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -3158,7 +3158,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int64?> selector, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -3198,7 +3198,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Int64?>> selector, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -3238,7 +3238,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Int64?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Int64?> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Int64?>> selector, CancellationToken cancellationToken)
         {
             Int64? value = default;
 
@@ -3278,7 +3278,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync(IUniTaskAsyncEnumerable<Single?> source, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MaxAsync(IUniTaskAsyncEnumerable<Single?> source, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -3318,7 +3318,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Single?> selector, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -3358,7 +3358,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Single?>> selector, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -3398,7 +3398,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Single?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Single?> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Single?>> selector, CancellationToken cancellationToken)
         {
             Single? value = default;
 
@@ -3438,7 +3438,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync(IUniTaskAsyncEnumerable<Double?> source, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MaxAsync(IUniTaskAsyncEnumerable<Double?> source, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -3478,7 +3478,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Double?> selector, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -3518,7 +3518,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Double?>> selector, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -3558,7 +3558,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Double?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Double?> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Double?>> selector, CancellationToken cancellationToken)
         {
             Double? value = default;
 
@@ -3598,7 +3598,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync(IUniTaskAsyncEnumerable<Decimal?> source, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MaxAsync(IUniTaskAsyncEnumerable<Decimal?> source, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 
@@ -3638,7 +3638,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal?> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MaxAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Decimal?> selector, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 
@@ -3678,7 +3678,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MaxAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 
@@ -3718,7 +3718,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return value;
         }
 
-        public static async UniTask<Decimal?> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
+        public static async UniTask<Decimal?> MaxAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<Decimal?>> selector, CancellationToken cancellationToken)
         {
             Decimal? value = default;
 

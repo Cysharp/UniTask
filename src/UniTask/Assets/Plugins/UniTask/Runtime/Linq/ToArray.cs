@@ -11,13 +11,13 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Cysharp.Threading.Tasks.Linq.ToArray.InvokeAsync(source, cancellationToken);
+            return Cysharp.Threading.Tasks.Linq.ToArray.ToArrayAsync(source, cancellationToken);
         }
     }
 
     internal static class ToArray
     {
-        internal static async UniTask<TSource[]> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
+        internal static async UniTask<TSource[]> ToArrayAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
             var pool = ArrayPool<TSource>.Shared;
             var array = pool.Rent(16);

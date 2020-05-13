@@ -34,10 +34,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, defaultValue, cancellationToken);
+            return new _DefaultIfEmpty(source, defaultValue, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
+        sealed class _DefaultIfEmpty : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
             enum IteratingState : byte
             {
@@ -56,7 +56,7 @@ namespace Cysharp.Threading.Tasks.Linq
             IUniTaskAsyncEnumerator<TSource> enumerator;
             UniTask<bool>.Awaiter awaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, TSource defaultValue, CancellationToken cancellationToken)
+            public _DefaultIfEmpty(IUniTaskAsyncEnumerable<TSource> source, TSource defaultValue, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.defaultValue = defaultValue;
@@ -99,7 +99,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_DefaultIfEmpty)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {

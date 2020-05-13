@@ -58,10 +58,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(first, second, resultSelector, cancellationToken);
+            return new _Zip(first, second, resultSelector, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _Zip : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             static readonly Action<object> firstMoveNextCoreDelegate = FirstMoveNextCore;
             static readonly Action<object> secondMoveNextCoreDelegate = SecondMoveNextCore;
@@ -78,7 +78,7 @@ namespace Cysharp.Threading.Tasks.Linq
             UniTask<bool>.Awaiter firstAwaiter;
             UniTask<bool>.Awaiter secondAwaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector, CancellationToken cancellationToken)
+            public _Zip(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector, CancellationToken cancellationToken)
             {
                 this.first = first;
                 this.second = second;
@@ -114,7 +114,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void FirstMoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_Zip)state;
 
                 if (self.TryGetResult(self.firstAwaiter, out var result))
                 {
@@ -148,7 +148,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void SecondMoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_Zip)state;
 
                 if (self.TryGetResult(self.secondAwaiter, out var result))
                 {
@@ -208,10 +208,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(first, second, resultSelector, cancellationToken);
+            return new _ZipAwait(first, second, resultSelector, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _ZipAwait : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             static readonly Action<object> firstMoveNextCoreDelegate = FirstMoveNextCore;
             static readonly Action<object> secondMoveNextCoreDelegate = SecondMoveNextCore;
@@ -230,7 +230,7 @@ namespace Cysharp.Threading.Tasks.Linq
             UniTask<bool>.Awaiter secondAwaiter;
             UniTask<TResult>.Awaiter resultAwaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
+            public _ZipAwait(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
             {
                 this.first = first;
                 this.second = second;
@@ -266,7 +266,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void FirstMoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_ZipAwait)state;
 
                 if (self.TryGetResult(self.firstAwaiter, out var result))
                 {
@@ -300,7 +300,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void SecondMoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_ZipAwait)state;
 
                 if (self.TryGetResult(self.secondAwaiter, out var result))
                 {
@@ -332,7 +332,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void ResultAwaitCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_ZipAwait)state;
 
                 if (self.TryGetResult(self.resultAwaiter, out var result))
                 {
@@ -378,10 +378,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(first, second, resultSelector, cancellationToken);
+            return new _ZipAwaitWithCancellation(first, second, resultSelector, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _ZipAwaitWithCancellation : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             static readonly Action<object> firstMoveNextCoreDelegate = FirstMoveNextCore;
             static readonly Action<object> secondMoveNextCoreDelegate = SecondMoveNextCore;
@@ -400,7 +400,7 @@ namespace Cysharp.Threading.Tasks.Linq
             UniTask<bool>.Awaiter secondAwaiter;
             UniTask<TResult>.Awaiter resultAwaiter;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, CancellationToken, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
+            public _ZipAwaitWithCancellation(IUniTaskAsyncEnumerable<TFirst> first, IUniTaskAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, CancellationToken, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
             {
                 this.first = first;
                 this.second = second;
@@ -436,7 +436,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void FirstMoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_ZipAwaitWithCancellation)state;
 
                 if (self.TryGetResult(self.firstAwaiter, out var result))
                 {
@@ -470,7 +470,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void SecondMoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_ZipAwaitWithCancellation)state;
 
                 if (self.TryGetResult(self.secondAwaiter, out var result))
                 {
@@ -502,7 +502,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void ResultAwaitCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_ZipAwaitWithCancellation)state;
 
                 if (self.TryGetResult(self.resultAwaiter, out var result))
                 {

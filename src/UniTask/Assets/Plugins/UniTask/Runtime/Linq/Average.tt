@@ -39,7 +39,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Average.InvokeAsync(source, cancellationToken);
+            return Average.AverageAsync(source, cancellationToken);
         }
 
         public static UniTask<<#= ret #>> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken = default)
@@ -47,7 +47,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Average.InvokeAsync(source, selector, cancellationToken);
+            return Average.AverageAsync(source, selector, cancellationToken);
         }
 
         public static UniTask<<#= ret #>> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
@@ -55,15 +55,15 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Average.InvokeAsync(source, selector, cancellationToken);
+            return Average.AverageAwaitAsync(source, selector, cancellationToken);
         }
 
-        public static UniTask<<#= ret #>> AverageAwaitCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        public static UniTask<<#= ret #>> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(source, nameof(selector));
 
-            return Average.InvokeAsync(source, selector, cancellationToken);
+            return Average.AverageAwaitWithCancellationAsync(source, selector, cancellationToken);
         }
 
 <# } #>
@@ -72,7 +72,7 @@ namespace Cysharp.Threading.Tasks.Linq
     internal static class Average
     {
 <# foreach(var (t, ret) in types) { #>
-        public static async UniTask<<#= ret #>> InvokeAsync(IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken)
+        public static async UniTask<<#= ret #>> AverageAsync(IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken)
         {
             long count = 0;
             <#= TypeName(t) #> sum = 0;
@@ -112,7 +112,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return <#= CalcResult(t) #>;
         }
 
-        public static async UniTask<<#= ret #>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken)
+        public static async UniTask<<#= ret #>> AverageAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken)
         {
             long count = 0;
             <#= TypeName(t) #> sum = 0;
@@ -152,7 +152,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return <#= CalcResult(t) #>;
         }
 
-        public static async UniTask<<#= ret #>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        public static async UniTask<<#= ret #>> AverageAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
         {
             long count = 0;
             <#= TypeName(t) #> sum = 0;
@@ -192,7 +192,7 @@ namespace Cysharp.Threading.Tasks.Linq
             return <#= CalcResult(t) #>;
         }
 
-        public static async UniTask<<#= ret #>> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        public static async UniTask<<#= ret #>> AverageAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
         {
             long count = 0;
             <#= TypeName(t) #> sum = 0;

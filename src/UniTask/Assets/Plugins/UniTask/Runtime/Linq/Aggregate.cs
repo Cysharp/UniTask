@@ -12,7 +12,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
 
-            return Aggregate.InvokeAsync(source, accumulator, cancellationToken);
+            return Aggregate.AggregateAsync(source, accumulator, cancellationToken);
         }
 
         public static UniTask<TAccumulate> AggregateAsync<TSource, TAccumulate>(this IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, CancellationToken cancellationToken = default)
@@ -20,7 +20,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
 
-            return Aggregate.InvokeAsync(source, seed, accumulator, cancellationToken);
+            return Aggregate.AggregateAsync(source, seed, accumulator, cancellationToken);
         }
 
         public static UniTask<TResult> AggregateAsync<TSource, TAccumulate, TResult>(this IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, Func<TAccumulate, TResult> resultSelector, CancellationToken cancellationToken = default)
@@ -29,7 +29,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
             Error.ThrowArgumentNullException(accumulator, nameof(resultSelector));
 
-            return Aggregate.InvokeAsync(source, seed, accumulator, resultSelector, cancellationToken);
+            return Aggregate.AggregateAsync(source, seed, accumulator, resultSelector, cancellationToken);
         }
 
         public static UniTask<TSource> AggregateAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, UniTask<TSource>> accumulator, CancellationToken cancellationToken = default)
@@ -37,7 +37,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
 
-            return Aggregate.InvokeAsync(source, accumulator, cancellationToken);
+            return Aggregate.AggregateAwaitAsync(source, accumulator, cancellationToken);
         }
 
         public static UniTask<TAccumulate> AggregateAwaitAsync<TSource, TAccumulate>(this IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, UniTask<TAccumulate>> accumulator, CancellationToken cancellationToken = default)
@@ -45,7 +45,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
 
-            return Aggregate.InvokeAsync(source, seed, accumulator, cancellationToken);
+            return Aggregate.AggregateAwaitAsync(source, seed, accumulator, cancellationToken);
         }
 
         public static UniTask<TResult> AggregateAwaitAsync<TSource, TAccumulate, TResult>(this IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, UniTask<TAccumulate>> accumulator, Func<TAccumulate, UniTask<TResult>> resultSelector, CancellationToken cancellationToken = default)
@@ -54,7 +54,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
             Error.ThrowArgumentNullException(accumulator, nameof(resultSelector));
 
-            return Aggregate.InvokeAsync(source, seed, accumulator, resultSelector, cancellationToken);
+            return Aggregate.AggregateAwaitAsync(source, seed, accumulator, resultSelector, cancellationToken);
         }
 
         public static UniTask<TSource> AggregateAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, CancellationToken, UniTask<TSource>> accumulator, CancellationToken cancellationToken = default)
@@ -62,7 +62,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
 
-            return Aggregate.InvokeAsync(source, accumulator, cancellationToken);
+            return Aggregate.AggregateAwaitWithCancellationAsync(source, accumulator, cancellationToken);
         }
 
         public static UniTask<TAccumulate> AggregateAwaitWithCancellationAsync<TSource, TAccumulate>(this IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, CancellationToken, UniTask<TAccumulate>> accumulator, CancellationToken cancellationToken = default)
@@ -70,7 +70,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
 
-            return Aggregate.InvokeAsync(source, seed, accumulator, cancellationToken);
+            return Aggregate.AggregateAwaitWithCancellationAsync(source, seed, accumulator, cancellationToken);
         }
 
         public static UniTask<TResult> AggregateAwaitWithCancellationAsync<TSource, TAccumulate, TResult>(this IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, CancellationToken, UniTask<TAccumulate>> accumulator, Func<TAccumulate, CancellationToken, UniTask<TResult>> resultSelector, CancellationToken cancellationToken = default)
@@ -79,13 +79,13 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(accumulator, nameof(accumulator));
             Error.ThrowArgumentNullException(accumulator, nameof(resultSelector));
 
-            return Aggregate.InvokeAsync(source, seed, accumulator, resultSelector, cancellationToken);
+            return Aggregate.AggregateAwaitWithCancellationAsync(source, seed, accumulator, resultSelector, cancellationToken);
         }
     }
 
     internal static class Aggregate
     {
-        internal static async UniTask<TSource> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, TSource> accumulator, CancellationToken cancellationToken)
+        internal static async UniTask<TSource> AggregateAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, TSource> accumulator, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -116,7 +116,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        internal static async UniTask<TAccumulate> InvokeAsync<TSource, TAccumulate>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, CancellationToken cancellationToken)
+        internal static async UniTask<TAccumulate> AggregateAsync<TSource, TAccumulate>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -138,7 +138,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        internal static async UniTask<TResult> InvokeAsync<TSource, TAccumulate, TResult>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, Func<TAccumulate, TResult> resultSelector, CancellationToken cancellationToken)
+        internal static async UniTask<TResult> AggregateAsync<TSource, TAccumulate, TResult>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, Func<TAccumulate, TResult> resultSelector, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -162,7 +162,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
         // with async
 
-        internal static async UniTask<TSource> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, UniTask<TSource>> accumulator, CancellationToken cancellationToken)
+        internal static async UniTask<TSource> AggregateAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, UniTask<TSource>> accumulator, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -193,7 +193,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        internal static async UniTask<TAccumulate> InvokeAsync<TSource, TAccumulate>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, UniTask<TAccumulate>> accumulator, CancellationToken cancellationToken)
+        internal static async UniTask<TAccumulate> AggregateAwaitAsync<TSource, TAccumulate>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, UniTask<TAccumulate>> accumulator, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -215,7 +215,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        internal static async UniTask<TResult> InvokeAsync<TSource, TAccumulate, TResult>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, UniTask<TAccumulate>> accumulator, Func<TAccumulate, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
+        internal static async UniTask<TResult> AggregateAwaitAsync<TSource, TAccumulate, TResult>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, UniTask<TAccumulate>> accumulator, Func<TAccumulate, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -240,7 +240,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
         // with cancellation
 
-        internal static async UniTask<TSource> InvokeAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, CancellationToken, UniTask<TSource>> accumulator, CancellationToken cancellationToken)
+        internal static async UniTask<TSource> AggregateAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TSource, CancellationToken, UniTask<TSource>> accumulator, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -271,7 +271,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        internal static async UniTask<TAccumulate> InvokeAsync<TSource, TAccumulate>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, CancellationToken, UniTask<TAccumulate>> accumulator, CancellationToken cancellationToken)
+        internal static async UniTask<TAccumulate> AggregateAwaitWithCancellationAsync<TSource, TAccumulate>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, CancellationToken, UniTask<TAccumulate>> accumulator, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
@@ -293,7 +293,7 @@ namespace Cysharp.Threading.Tasks.Linq
             }
         }
 
-        internal static async UniTask<TResult> InvokeAsync<TSource, TAccumulate, TResult>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, CancellationToken, UniTask<TAccumulate>> accumulator, Func<TAccumulate, CancellationToken, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
+        internal static async UniTask<TResult> AggregateAwaitWithCancellationAsync<TSource, TAccumulate, TResult>(IUniTaskAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, CancellationToken, UniTask<TAccumulate>> accumulator, Func<TAccumulate, CancellationToken, UniTask<TResult>> resultSelector, CancellationToken cancellationToken)
         {
             var e = source.GetAsyncEnumerator(cancellationToken);
             try

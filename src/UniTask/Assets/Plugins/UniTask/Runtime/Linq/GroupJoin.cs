@@ -62,7 +62,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(innerKeySelector, nameof(innerKeySelector));
             Error.ThrowArgumentNullException(resultSelector, nameof(resultSelector));
 
-            return new GroupJoinWithCancellationAwait<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default);
+            return new GroupJoinAwaitWithCancellation<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default);
         }
 
         public static IUniTaskAsyncEnumerable<TResult> GroupJoinAwaitWithCancellation<TOuter, TInner, TKey, TResult>(this IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, CancellationToken, UniTask<TKey>> outerKeySelector, Func<TInner, CancellationToken, UniTask<TKey>> innerKeySelector, Func<TOuter, IEnumerable<TInner>, CancellationToken, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer)
@@ -74,7 +74,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(resultSelector, nameof(resultSelector));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return new GroupJoinWithCancellationAwait<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
+            return new GroupJoinAwaitWithCancellation<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
         }
 
     }
@@ -100,10 +100,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, cancellationToken);
+            return new _GroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _GroupJoin : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             static readonly Action<object> MoveNextCoreDelegate = MoveNextCore;
 
@@ -120,7 +120,7 @@ namespace Cysharp.Threading.Tasks.Linq
             UniTask<bool>.Awaiter awaiter;
 
 
-            public Enumerator(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupJoin(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.outer = outer;
                 this.inner = inner;
@@ -186,7 +186,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupJoin)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {
@@ -239,10 +239,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, cancellationToken);
+            return new _GroupJoinAwait(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _GroupJoinAwait : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             static readonly Action<object> MoveNextCoreDelegate = MoveNextCore;
             readonly static Action<object> ResultSelectCoreDelegate = ResultSelectCore;
@@ -264,7 +264,7 @@ namespace Cysharp.Threading.Tasks.Linq
             UniTask<TResult>.Awaiter resultAwaiter;
 
 
-            public Enumerator(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, UniTask<TKey>> outerKeySelector, Func<TInner, UniTask<TKey>> innerKeySelector, Func<TOuter, IEnumerable<TInner>, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupJoinAwait(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, UniTask<TKey>> outerKeySelector, Func<TInner, UniTask<TKey>> innerKeySelector, Func<TOuter, IEnumerable<TInner>, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.outer = outer;
                 this.inner = inner;
@@ -330,7 +330,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupJoinAwait)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {
@@ -364,7 +364,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void OuterKeySelectCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupJoinAwait)state;
 
                 if (self.TryGetResult(self.outerKeyAwaiter, out var result))
                 {
@@ -390,7 +390,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void ResultSelectCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupJoinAwait)state;
 
                 if (self.TryGetResult(self.resultAwaiter, out var result))
                 {
@@ -411,7 +411,7 @@ namespace Cysharp.Threading.Tasks.Linq
         }
     }
 
-    internal sealed class GroupJoinWithCancellationAwait<TOuter, TInner, TKey, TResult> : IUniTaskAsyncEnumerable<TResult>
+    internal sealed class GroupJoinAwaitWithCancellation<TOuter, TInner, TKey, TResult> : IUniTaskAsyncEnumerable<TResult>
     {
         readonly IUniTaskAsyncEnumerable<TOuter> outer;
         readonly IUniTaskAsyncEnumerable<TInner> inner;
@@ -420,7 +420,7 @@ namespace Cysharp.Threading.Tasks.Linq
         readonly Func<TOuter, IEnumerable<TInner>, CancellationToken, UniTask<TResult>> resultSelector;
         readonly IEqualityComparer<TKey> comparer;
 
-        public GroupJoinWithCancellationAwait(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, CancellationToken, UniTask<TKey>> outerKeySelector, Func<TInner, CancellationToken, UniTask<TKey>> innerKeySelector, Func<TOuter, IEnumerable<TInner>, CancellationToken, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer)
+        public GroupJoinAwaitWithCancellation(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, CancellationToken, UniTask<TKey>> outerKeySelector, Func<TInner, CancellationToken, UniTask<TKey>> innerKeySelector, Func<TOuter, IEnumerable<TInner>, CancellationToken, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
             this.outer = outer;
             this.inner = inner;
@@ -432,10 +432,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, cancellationToken);
+            return new _GroupJoinAwaitWithCancellation(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+        sealed class _GroupJoinAwaitWithCancellation : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
             static readonly Action<object> MoveNextCoreDelegate = MoveNextCore;
             readonly static Action<object> ResultSelectCoreDelegate = ResultSelectCore;
@@ -457,7 +457,7 @@ namespace Cysharp.Threading.Tasks.Linq
             UniTask<TResult>.Awaiter resultAwaiter;
 
 
-            public Enumerator(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, CancellationToken, UniTask<TKey>> outerKeySelector, Func<TInner, CancellationToken, UniTask<TKey>> innerKeySelector, Func<TOuter, IEnumerable<TInner>, CancellationToken, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
+            public _GroupJoinAwaitWithCancellation(IUniTaskAsyncEnumerable<TOuter> outer, IUniTaskAsyncEnumerable<TInner> inner, Func<TOuter, CancellationToken, UniTask<TKey>> outerKeySelector, Func<TInner, CancellationToken, UniTask<TKey>> innerKeySelector, Func<TOuter, IEnumerable<TInner>, CancellationToken, UniTask<TResult>> resultSelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
             {
                 this.outer = outer;
                 this.inner = inner;
@@ -523,7 +523,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupJoinAwaitWithCancellation)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {
@@ -557,7 +557,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void OuterKeySelectCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupJoinAwaitWithCancellation)state;
 
                 if (self.TryGetResult(self.outerKeyAwaiter, out var result))
                 {
@@ -583,7 +583,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void ResultSelectCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_GroupJoinAwaitWithCancellation)state;
 
                 if (self.TryGetResult(self.resultAwaiter, out var result))
                 {

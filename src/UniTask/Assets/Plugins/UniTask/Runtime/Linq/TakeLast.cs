@@ -34,10 +34,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new Enumerator(source, count, cancellationToken);
+            return new _TakeLast(source, count, cancellationToken);
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
+        sealed class _TakeLast : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
             static readonly Action<object> MoveNextCoreDelegate = MoveNextCore;
 
@@ -52,7 +52,7 @@ namespace Cysharp.Threading.Tasks.Linq
             bool iterateCompleted;
             bool continueNext;
 
-            public Enumerator(IUniTaskAsyncEnumerable<TSource> source, int count, CancellationToken cancellationToken)
+            public _TakeLast(IUniTaskAsyncEnumerable<TSource> source, int count, CancellationToken cancellationToken)
             {
                 this.source = source;
                 this.count = count;
@@ -121,7 +121,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void MoveNextCore(object state)
             {
-                var self = (Enumerator)state;
+                var self = (_TakeLast)state;
 
                 if (self.TryGetResult(self.awaiter, out var result))
                 {

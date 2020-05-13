@@ -20,14 +20,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return Enumerator.Instance;
+            return _Empty.Instance;
         }
 
-        class Enumerator : IUniTaskAsyncEnumerator<T>
+        class _Empty : IUniTaskAsyncEnumerator<T>
         {
-            public static readonly IUniTaskAsyncEnumerator<T> Instance = new Enumerator();
+            public static readonly IUniTaskAsyncEnumerator<T> Instance = new _Empty();
 
-            Enumerator()
+            _Empty()
             {
             }
 
