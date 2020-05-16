@@ -1,7 +1,8 @@
 {
     "name": "UniTask",
     "references": [
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -15,6 +16,11 @@
             "name": "com.unity.addressables",
             "expression": "",
             "define": "UNITASK_ADDRESSABLE_SUPPORT"
+        },
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "",
+            "define": "UNITASK_TEXTMESHPRO_SUPPORT"
         }
     ],
     "noEngineReferences": false

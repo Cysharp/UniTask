@@ -14,6 +14,7 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
 
 public struct MyJob : IJob
 {
@@ -39,191 +40,12 @@ public enum MyEnum
 
 
 
-public interface IAsyncReadOnlyReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
-{
-    T Value { get; }
-}
-
-
-public interface IAsyncReactiveProperty<T> : IAsyncReadOnlyReactiveProperty<T>
-{
-    new T Value { get; set; }
-}
-
-
-[Serializable]
-public struct AsyncValueReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
-{
-    TriggerEvent<T> triggerEvent;
-
-    [SerializeField]
-    T latestValue;
-
-    public T Value
-    {
-        get
-        {
-            return latestValue;
-        }
-        set
-        {
-            this.latestValue = value;
-            triggerEvent.TrySetResult(value);
-        }
-    }
-
-    public AsyncValueReactiveProperty(T value)
-    {
-        this.latestValue = value;
-        this.triggerEvent = default;
-    }
-
-    public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
-    {
-        return new Enumerator(triggerEvent, cancellationToken);
-    }
-
-    public class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
-    {
-        static Action<object> cancellationCallback = CancellationCallback;
-
-        readonly TriggerEvent<T> triggerEvent;
-        readonly CancellationToken cancellationToken;
-        readonly CancellationTokenRegistration cancellationTokenRegistration;
-        T value;
-
-        public Enumerator(TriggerEvent<T> triggerEvent, CancellationToken cancellationToken)
-        {
-            this.triggerEvent = triggerEvent;
-            this.cancellationToken = cancellationToken;
-
-            triggerEvent.Add(this);
-
-            if (cancellationToken.CanBeCanceled)
-            {
-                cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
-            }
-        }
-
-        public T Current => value;
-
-        public UniTask<bool> MoveNextAsync()
-        {
-            completionSource.Reset();
-            return new UniTask<bool>(this, completionSource.Version);
-        }
-
-        public UniTask DisposeAsync()
-        {
-            triggerEvent.TrySetCanceled(cancellationToken);
-            triggerEvent.Remove(this);
-            return default;
-        }
-
-        public bool TrySetResult(T value)
-        {
-            this.value = value;
-            return triggerEvent.TrySetResult(value);
-        }
-
-        public bool TrySetCanceled(CancellationToken cancellationToken = default)
-        {
-            DisposeAsync().Forget();
-            return true;
-        }
-
-        static void CancellationCallback(object state)
-        {
-            var self = (Enumerator)state;
-            self.DisposeAsync().Forget();
-        }
-    }
-}
 
 
 public static partial class UnityUIComponentExtensions
 {
-    public static void BindTo(this IUniTaskAsyncEnumerable<string> source, Text text, bool rebindOnError = true)
-    {
-        BindToCore(source, text, text.GetCancellationTokenOnDestroy(), rebindOnError).Forget();
-    }
-
-    public static void BindTo(this IUniTaskAsyncEnumerable<string> source, Text text, CancellationToken cancellationToken, bool rebindOnError = true)
-    {
-        BindToCore(source, text, cancellationToken, rebindOnError).Forget();
-    }
-
-    static async UniTaskVoid BindToCore(IUniTaskAsyncEnumerable<string> source, Text text, CancellationToken cancellationToken, bool rebindOnError)
-    {
-        var repeat = false;
-        BIND_AGAIN:
-        var e = source.GetAsyncEnumerator(cancellationToken);
-        try
-        {
-            while (true)
-            {
-                bool moveNext;
-                try
-                {
-                    moveNext = await e.MoveNextAsync();
-                    repeat = false;
-                }
-                catch (Exception ex)
-                {
-                    if (ex is OperationCanceledException) return;
-
-                    if (rebindOnError && !repeat)
-                    {
-                        repeat = true;
-                        if (e != null)
-                        {
-                            await e.DisposeAsync();
-                        }
-
-                        goto BIND_AGAIN;
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                if (!moveNext) return;
-
-                text.text = e.Current;
-            }
-        }
-        finally
-        {
-            if (e != null)
-            {
-                await e.DisposeAsync();
-            }
-        }
-    }
-
-    //public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text)
-    //{
-    //    return source.SubscribeWithState(text, (x, t) => t.text = x.ToString());
-    //}
-
-    //public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text, Func<T, string> selector)
-    //{
-    //    return source.SubscribeWithState2(text, selector, (x, t, s) => t.text = s(x));
-    //}
-
-    //public static IDisposable SubscribeToInteractable(this IObservable<bool> source, Selectable selectable)
-    //{
-    //    return source.SubscribeWithState(selectable, (x, s) => s.interactable = x);
-    //}
-}
-
-
-public static class MyClass
-{
 
 }
-
 
 
 
@@ -238,6 +60,9 @@ public class SandboxMain : MonoBehaviour
     public Text text;
 
     CancellationTokenSource cts;
+
+    public AsyncReactiveProperty<int> RP1;
+
 
     UniTaskCompletionSource ucs;
     async UniTask<int> FooAsync()
@@ -300,13 +125,20 @@ public class SandboxMain : MonoBehaviour
 
     }
 
-    async void Start()
+    void Start()
     {
         Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
         Application.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
 
         var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
         //ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
+
+
+        RP1 = new AsyncReactiveProperty<int>(999);
+
+
+
+        RP1.Select(x => x * x).BindTo(text);
 
 
         //Update2().Forget();
@@ -341,17 +173,6 @@ public class SandboxMain : MonoBehaviour
 
         // UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.FixedUpdate)
 
-
-        this.GetAsyncUpdateTrigger().ForEachAsync(_ =>
-        {
-            UnityEngine.Debug.Log("Update Trigger 1");
-        }).Forget();
-
-
-        this.GetAsyncUpdateTrigger().ForEachAsync(_ =>
-        {
-            UnityEngine.Debug.Log("Update Trigger 2");
-        }).Forget();
 
         //await UniTask.Yield(PlayerLoopTiming.Update);
         //Debug.Log("Start:" + Time.frameCount);
@@ -401,8 +222,8 @@ public class SandboxMain : MonoBehaviour
 
 
         //await okButton.GetAsyncClickEventHandler().DisableAutoClose()
-        //    .Select((_, clickCount) => clickCount + 1)
-        //    .FirstAsync(x => x == 5);
+        //  .Select((_, clickCount) => clickCount + 1)
+        // .FirstAsync(x => x == 5);
 
         //Debug.Log("Click 5 times.");
 
@@ -433,6 +254,9 @@ public class SandboxMain : MonoBehaviour
         okButton.onClick.AddListener(() =>
         {
             // FooAsync().Forget();
+
+            RP1.Value += 3;
+
         });
 
         cancelButton.onClick.AddListener(() =>
