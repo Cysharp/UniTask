@@ -19,56 +19,13 @@ namespace Cysharp.Threading.Tasks.Triggers
     }
 
     [DisallowMultipleComponent]
-    public class AsyncAwakeTrigger : MonoBehaviour
+    public sealed class AsyncAwakeTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        bool called = false;
-        TriggerEvent<AsyncUnit> triggerEvent;
-
-        void Awake()
-        {
-            called = true;
-            triggerEvent?.TrySetResult(AsyncUnit.Default);
-            triggerEvent = null;
-        }
-
         public UniTask AwakeAsync()
         {
-            if (called) return UniTask.CompletedTask;
+            if (calledAwake) return UniTask.CompletedTask;
 
-            PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
-
-            if (triggerEvent == null)
-            {
-                triggerEvent = new TriggerEvent<AsyncUnit>();
-            }
-
-            return ((IAsyncOneShotTrigger)new AsyncTriggerHandler<AsyncUnit>(triggerEvent, true)).OneShotAsync();
-        }
-
-        private void OnDestroy()
-        {
-            triggerEvent?.TrySetCanceled(CancellationToken.None);
-        }
-
-        class AwakeMonitor : IPlayerLoopItem
-        {
-            readonly AsyncAwakeTrigger trigger;
-
-            public AwakeMonitor(AsyncAwakeTrigger trigger)
-            {
-                this.trigger = trigger;
-            }
-
-            public bool MoveNext()
-            {
-                if (trigger.called) return false;
-                if (trigger == null)
-                {
-                    trigger.OnDestroy();
-                    return false;
-                }
-                return true;
-            }
+            return ((IAsyncOneShotTrigger)new AsyncTriggerHandler<AsyncUnit>(this, true)).OneShotAsync();
         }
     }
 }

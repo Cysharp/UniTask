@@ -10,38 +10,14 @@ namespace Cysharp.Threading.Tasks.Triggers
 {
     public abstract class AsyncTriggerBase<T> : MonoBehaviour, IUniTaskAsyncEnumerable<T>
     {
-        protected TriggerEvent<T> triggerEvent;
+        TriggerEvent<T> triggerEvent;
 
-        bool calledAwake;
-        bool calledDestroy;
-        ICancelPromise triggerSlot;
+        internal protected bool calledAwake;
+        internal protected bool calledDestroy;
 
         void Awake()
         {
             calledAwake = true;
-        }
-
-        protected TriggerEvent<T> GetTriggerEvent()
-        {
-            if (triggerEvent == null)
-            {
-                triggerEvent = new TriggerEvent<T>();
-                if (triggerSlot == null)
-                {
-                    triggerSlot = triggerEvent;
-                }
-                else
-                {
-                    throw new InvalidOperationException("triggerSlot is already filled.");
-                }
-            }
-
-            if (!calledAwake)
-            {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
-            }
-
-            return triggerEvent;
         }
 
         void OnDestroy()
@@ -49,28 +25,52 @@ namespace Cysharp.Threading.Tasks.Triggers
             if (calledDestroy) return;
             calledDestroy = true;
 
-            triggerSlot?.TrySetCanceled();
-            triggerSlot = null;
+            triggerEvent.TrySetCanceled(CancellationToken.None);
+        }
+
+        internal void AddHandler(IResolveCancelPromise<T> handler)
+        {
+            if (!calledAwake)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
+            }
+
+            triggerEvent.Add(handler);
+        }
+
+        internal void RemoveHandler(IResolveCancelPromise<T> handler)
+        {
+            if (!calledAwake)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
+            }
+
+            triggerEvent.Remove(handler);
+        }
+
+        protected void RaiseEvent(T value)
+        {
+            triggerEvent.TrySetResult(value);
         }
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new AsyncTriggerEnumerator(GetTriggerEvent(), cancellationToken);
+            return new AsyncTriggerEnumerator(this, cancellationToken);
         }
 
         sealed class AsyncTriggerEnumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
         {
             static Action<object> cancellationCallback = CancellationCallback;
 
-            readonly TriggerEvent<T> triggerEvent;
+            readonly AsyncTriggerBase<T> parent;
             CancellationToken cancellationToken;
             CancellationTokenRegistration registration;
             bool called;
             bool isDisposed;
 
-            public AsyncTriggerEnumerator(TriggerEvent<T> triggerEvent, CancellationToken cancellationToken)
+            public AsyncTriggerEnumerator(AsyncTriggerBase<T> parent, CancellationToken cancellationToken)
             {
-                this.triggerEvent = triggerEvent;
+                this.parent = parent;
                 this.cancellationToken = cancellationToken;
             }
 
@@ -105,13 +105,13 @@ namespace Cysharp.Threading.Tasks.Triggers
                     called = true;
 
                     TaskTracker.TrackActiveTask(this, 3);
-                    triggerEvent.Add(this);
+                    parent.AddHandler(this);
                     if (cancellationToken.CanBeCanceled)
                     {
                         registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
                     }
                 }
-                
+
                 return new UniTask<bool>(this, completionSource.Version);
             }
 
@@ -122,7 +122,7 @@ namespace Cysharp.Threading.Tasks.Triggers
                     isDisposed = true;
                     TaskTracker.RemoveTracking(this);
                     registration.Dispose();
-                    triggerEvent.Remove(this);
+                    parent.RemoveHandler(this);
                 }
 
                 return default;
@@ -169,7 +169,7 @@ namespace Cysharp.Threading.Tasks.Triggers
     {
         static Action<object> cancellationCallback = CancellationCallback;
 
-        readonly TriggerEvent<T> trigger;
+        readonly AsyncTriggerBase<T> trigger;
 
         CancellationToken cancellationToken;
         CancellationTokenRegistration registration;
@@ -180,7 +180,7 @@ namespace Cysharp.Threading.Tasks.Triggers
 
         internal CancellationToken CancellationToken => cancellationToken;
 
-        public AsyncTriggerHandler(TriggerEvent<T> trigger, bool callOnce)
+        internal AsyncTriggerHandler(AsyncTriggerBase<T> trigger, bool callOnce)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -193,12 +193,12 @@ namespace Cysharp.Threading.Tasks.Triggers
             this.registration = default;
             this.callOnce = callOnce;
 
-            trigger.Add(this);
+            trigger.AddHandler(this);
 
             TaskTracker.TrackActiveTask(this, 3);
         }
 
-        public AsyncTriggerHandler(TriggerEvent<T> trigger, CancellationToken cancellationToken, bool callOnce)
+        internal AsyncTriggerHandler(AsyncTriggerBase<T> trigger, CancellationToken cancellationToken, bool callOnce)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -210,7 +210,7 @@ namespace Cysharp.Threading.Tasks.Triggers
             this.cancellationToken = cancellationToken;
             this.callOnce = callOnce;
 
-            trigger.Add(this);
+            trigger.AddHandler(this);
 
             if (cancellationToken.CanBeCanceled)
             {
@@ -235,7 +235,7 @@ namespace Cysharp.Threading.Tasks.Triggers
                 isDisposed = true;
                 TaskTracker.RemoveTracking(this);
                 registration.Dispose();
-                trigger.Remove(this);
+                trigger.RemoveHandler(this);
             }
         }
 
@@ -285,7 +285,8 @@ namespace Cysharp.Threading.Tasks.Triggers
         }
     }
 
-    public sealed class TriggerEvent<T> : IResolveCancelPromise<T>
+    // be careful to use, itself is struct.
+    public struct TriggerEvent<T>
     {
         // optimize: many cases, handler is single.
         IResolveCancelPromise<T> singleHandler;

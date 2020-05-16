@@ -37,6 +37,200 @@ public enum MyEnum
     A, B, C
 }
 
+
+
+public interface IAsyncReadOnlyReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
+{
+    T Value { get; }
+}
+
+
+public interface IAsyncReactiveProperty<T> : IAsyncReadOnlyReactiveProperty<T>
+{
+    new T Value { get; set; }
+}
+
+
+[Serializable]
+public struct AsyncValueReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
+{
+    TriggerEvent<T> triggerEvent;
+
+    [SerializeField]
+    T latestValue;
+
+    public T Value
+    {
+        get
+        {
+            return latestValue;
+        }
+        set
+        {
+            this.latestValue = value;
+            triggerEvent.TrySetResult(value);
+        }
+    }
+
+    public AsyncValueReactiveProperty(T value)
+    {
+        this.latestValue = value;
+        this.triggerEvent = default;
+    }
+
+    public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
+    {
+        return new Enumerator(triggerEvent, cancellationToken);
+    }
+
+    public class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
+    {
+        static Action<object> cancellationCallback = CancellationCallback;
+
+        readonly TriggerEvent<T> triggerEvent;
+        readonly CancellationToken cancellationToken;
+        readonly CancellationTokenRegistration cancellationTokenRegistration;
+        T value;
+
+        public Enumerator(TriggerEvent<T> triggerEvent, CancellationToken cancellationToken)
+        {
+            this.triggerEvent = triggerEvent;
+            this.cancellationToken = cancellationToken;
+
+            triggerEvent.Add(this);
+
+            if (cancellationToken.CanBeCanceled)
+            {
+                cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
+            }
+        }
+
+        public T Current => value;
+
+        public UniTask<bool> MoveNextAsync()
+        {
+            completionSource.Reset();
+            return new UniTask<bool>(this, completionSource.Version);
+        }
+
+        public UniTask DisposeAsync()
+        {
+            triggerEvent.TrySetCanceled(cancellationToken);
+            triggerEvent.Remove(this);
+            return default;
+        }
+
+        public bool TrySetResult(T value)
+        {
+            this.value = value;
+            return triggerEvent.TrySetResult(value);
+        }
+
+        public bool TrySetCanceled(CancellationToken cancellationToken = default)
+        {
+            DisposeAsync().Forget();
+            return true;
+        }
+
+        static void CancellationCallback(object state)
+        {
+            var self = (Enumerator)state;
+            self.DisposeAsync().Forget();
+        }
+    }
+}
+
+
+public static partial class UnityUIComponentExtensions
+{
+    public static void BindTo(this IUniTaskAsyncEnumerable<string> source, Text text, bool rebindOnError = true)
+    {
+        BindToCore(source, text, text.GetCancellationTokenOnDestroy(), rebindOnError).Forget();
+    }
+
+    public static void BindTo(this IUniTaskAsyncEnumerable<string> source, Text text, CancellationToken cancellationToken, bool rebindOnError = true)
+    {
+        BindToCore(source, text, cancellationToken, rebindOnError).Forget();
+    }
+
+    static async UniTaskVoid BindToCore(IUniTaskAsyncEnumerable<string> source, Text text, CancellationToken cancellationToken, bool rebindOnError)
+    {
+        var repeat = false;
+        BIND_AGAIN:
+        var e = source.GetAsyncEnumerator(cancellationToken);
+        try
+        {
+            while (true)
+            {
+                bool moveNext;
+                try
+                {
+                    moveNext = await e.MoveNextAsync();
+                    repeat = false;
+                }
+                catch (Exception ex)
+                {
+                    if (ex is OperationCanceledException) return;
+
+                    if (rebindOnError && !repeat)
+                    {
+                        repeat = true;
+                        if (e != null)
+                        {
+                            await e.DisposeAsync();
+                        }
+
+                        goto BIND_AGAIN;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                if (!moveNext) return;
+
+                text.text = e.Current;
+            }
+        }
+        finally
+        {
+            if (e != null)
+            {
+                await e.DisposeAsync();
+            }
+        }
+    }
+
+    //public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text)
+    //{
+    //    return source.SubscribeWithState(text, (x, t) => t.text = x.ToString());
+    //}
+
+    //public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text, Func<T, string> selector)
+    //{
+    //    return source.SubscribeWithState2(text, selector, (x, t, s) => t.text = s(x));
+    //}
+
+    //public static IDisposable SubscribeToInteractable(this IObservable<bool> source, Selectable selectable)
+    //{
+    //    return source.SubscribeWithState(selectable, (x, s) => s.interactable = x);
+    //}
+}
+
+
+public static class MyClass
+{
+
+}
+
+
+
+
+
+
+
+
 public class SandboxMain : MonoBehaviour
 {
     public Button okButton;
@@ -148,16 +342,27 @@ public class SandboxMain : MonoBehaviour
         // UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.FixedUpdate)
 
 
-        await UniTask.Yield(PlayerLoopTiming.Update);
-        Debug.Log("Start:" + Time.frameCount);
+        this.GetAsyncUpdateTrigger().ForEachAsync(_ =>
+        {
+            UnityEngine.Debug.Log("Update Trigger 1");
+        }).Forget();
 
-        await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.PostLateUpdate)
-            .Select(x => x)
-            .Do(x => Debug.Log("DODODO"))
-            .ForEachAsync(_ =>
-            {
-                Debug.Log("Call:" + Time.frameCount);
-            }, cancellationToken: this.GetCancellationTokenOnDestroy());
+
+        this.GetAsyncUpdateTrigger().ForEachAsync(_ =>
+        {
+            UnityEngine.Debug.Log("Update Trigger 2");
+        }).Forget();
+
+        //await UniTask.Yield(PlayerLoopTiming.Update);
+        //Debug.Log("Start:" + Time.frameCount);
+
+        //await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.PostLateUpdate)
+        //    .Select(x => x)
+        //    .Do(x => Debug.Log("DODODO"))
+        //    .ForEachAsync(_ =>
+        //    {
+        //        Debug.Log("Call:" + Time.frameCount);
+        //    }, cancellationToken: this.GetCancellationTokenOnDestroy());
 
         //try
         //{

@@ -151,27 +151,27 @@ namespace Cysharp.Threading.Tasks.Triggers
     {
         void <#= (t.handlerInterface == null) ? "" : $"{t.handlerInterface}." #><#= t.methodName #>(<#= BuildMethodArgument(t.arguments) #>)
         {
-            triggerEvent?.TrySetResult(<#= BuildResultParameter(t.arguments) #>);
+            RaiseEvent(<#= BuildResultParameter(t.arguments) #>);
         }
 
         public <#= ToInterfaceName(t.methodName) #> Get<#= t.methodName #>AsyncHandler()
         {
-            return new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), false);
+            return new AsyncTriggerHandler<<#= t.returnType #>>(this, false);
         }
 
         public <#= ToInterfaceName(t.methodName) #> Get<#= t.methodName #>AsyncHandler(CancellationToken cancellationToken)
         {
-            return new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), cancellationToken, false);
+            return new AsyncTriggerHandler<<#= t.returnType #>>(this, cancellationToken, false);
         }
 
         public <#= ToUniTaskName(t.returnType) #> <#= t.methodName #>Async()
         {
-            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), true)).<#= t.methodName #>Async();
+            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(this, true)).<#= t.methodName #>Async();
         }
 
         public <#= ToUniTaskName(t.returnType) #> <#= t.methodName #>Async(CancellationToken cancellationToken)
         {
-            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(GetTriggerEvent(), cancellationToken, true)).<#= t.methodName #>Async();
+            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(this, cancellationToken, true)).<#= t.methodName #>Async();
         }
     }
 <# if(Is2019_3(t.triggerName)) { #>

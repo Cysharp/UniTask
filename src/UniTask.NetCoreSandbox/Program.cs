@@ -15,6 +15,55 @@ using System.Reactive.Concurrency;
 
 namespace NetCoreSandbox
 {
+    public class Text
+    {
+
+        public string text { get; set; }
+    }
+
+    public static partial class UnityUIComponentExtensions
+    {
+        public static void BindTo(this IUniTaskAsyncEnumerable<string> source, Text text)
+        {
+            AAAACORECORE(source, text).Forget();
+
+            async UniTaskVoid AAAACORECORE(IUniTaskAsyncEnumerable<string> source2, Text text2)
+            {
+                var e = source2.GetAsyncEnumerator();
+                try
+                {
+                    while (await e.MoveNextAsync())
+                    {
+                        text2.text = e.Current;
+                        // action(e.Current);
+                    }
+                }
+                finally
+                {
+                    if (e != null)
+                    {
+                        await e.DisposeAsync();
+                    }
+                }
+            }
+        }
+
+        //public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text)
+        //{
+        //    return source.SubscribeWithState(text, (x, t) => t.text = x.ToString());
+        //}
+
+        //public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text, Func<T, string> selector)
+        //{
+        //    return source.SubscribeWithState2(text, selector, (x, t, s) => t.text = s(x));
+        //}
+
+        //public static IDisposable SubscribeToInteractable(this IObservable<bool> source, Selectable selectable)
+        //{
+        //    return source.SubscribeWithState(selectable, (x, s) => s.interactable = x);
+        //}
+    }
+
     class Program
     {
         static string FlattenGenArgs(Type type)

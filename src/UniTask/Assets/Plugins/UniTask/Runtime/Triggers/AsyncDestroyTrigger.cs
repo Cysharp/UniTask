@@ -19,11 +19,10 @@ namespace Cysharp.Threading.Tasks.Triggers
     }
 
     [DisallowMultipleComponent]
-    public class AsyncDestroyTrigger : MonoBehaviour
+    public sealed class AsyncDestroyTrigger : MonoBehaviour
     {
         bool awakeCalled = false;
         bool called = false;
-        TriggerEvent<AsyncUnit> triggerEvent;
         CancellationTokenSource cancellationTokenSource;
 
         public CancellationToken CancellationToken
@@ -34,6 +33,12 @@ namespace Cysharp.Threading.Tasks.Triggers
                 {
                     cancellationTokenSource = new CancellationTokenSource();
                 }
+
+                if (!awakeCalled)
+                {
+                    PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
+                }
+
                 return cancellationTokenSource.Token;
             }
         }
@@ -47,28 +52,24 @@ namespace Cysharp.Threading.Tasks.Triggers
         {
             called = true;
 
-            triggerEvent?.TrySetResult(AsyncUnit.Default);
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
-
-            triggerEvent = null;
         }
 
         public UniTask OnDestroyAsync()
         {
             if (called) return UniTask.CompletedTask;
 
-            if (!awakeCalled)
-            {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
-            }
+            var tcs = new UniTaskCompletionSource();
 
-            if (triggerEvent == null)
+            // OnDestroy = Called Cancel.
+            CancellationToken.RegisterWithoutCaptureExecutionContext(state =>
             {
-                triggerEvent = new TriggerEvent<AsyncUnit>();
-            }
+                var tcs2 = (UniTaskCompletionSource)state;
+                tcs2.TrySetResult();
+            }, tcs);
 
-            return ((IAsyncOneShotTrigger)new AsyncTriggerHandler<AsyncUnit>(triggerEvent, true)).OneShotAsync();
+            return tcs.Task;
         }
 
         class AwakeMonitor : IPlayerLoopItem
