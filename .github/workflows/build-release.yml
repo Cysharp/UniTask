@@ -1,0 +1,108 @@
+name: Build-Release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*"
+
+jobs:
+  build-dotnet:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      # set release tag(*.*.*) to env.GIT_TAG
+      - run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
+
+      # build CommandTools first (use dotnet run command in ZLogger.csproj)
+      - run: dotnet build -c Release ./tools/CommandTools/CommandTools.csproj
+      - run: dotnet build -c Release -p:Version=${{ env.GIT_TAG }}
+      - run: dotnet test -c Release --no-build
+      - run: dotnet pack ./src/ZLogger/ZLogger.csproj -c Release --no-build -p:Version=${{ env.GIT_TAG }}
+
+      # Store artifacts.
+      - uses: actions/upload-artifact@v1
+        with:
+          name: nuget
+          path: ./src/ZLogger/bin/Release/ZLogger.${{ env.GIT_TAG }}.nupkg
+      
+  build-unity:
+    strategy:
+      matrix:
+        unity: ['2019.3.9f1']
+        include:
+          - unity: 2019.3.9f1
+            license: UNITY_2019_3
+    runs-on: ubuntu-latest
+    container:
+      # with linux-il2cpp. image from https://hub.docker.com/r/gableroux/unity3d/tags
+      image: gableroux/unity3d:${{ matrix.unity }}-linux-il2cpp
+    steps:
+      - run: apt update && apt install git -y
+      - uses: actions/checkout@v2
+      - run: echo -n "$UNITY_LICENSE" >> .Unity.ulf
+        env:
+          UNITY_LICENSE: ${{ secrets[matrix.license] }}
+      - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile .Unity.ulf || exit 0
+
+      # set release tag(*.*.*) to env.GIT_TAG
+      - run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
+
+      # Execute scripts: Export Package
+      - name: Export unitypackage
+        run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
+        working-directory: src/ZLogger.Unity
+        env:
+          UNITY_PACKAGE_VERSION: ${{ env.GIT_TAG }}
+
+      # Store artifacts.
+      - uses: actions/upload-artifact@v1
+        with:
+          name: ZLogger.Unity.${{ env.GIT_TAG }}.unitypackage
+          path: ./src/ZLogger.Unity/ZLogger.Unity.${{ env.GIT_TAG }}.unitypackage
+
+  create-release:
+    needs: [build-dotnet, build-unity]
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    steps:
+    # setup dotnet for nuget push
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    # set release tag(*.*.*) to env.GIT_TAG
+    - run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
+
+    # Create Releases
+    - uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Ver.${{ github.ref }}
+
+    # Download (All) Artifacts to current directory
+    - uses: actions/download-artifact@v2-preview
+
+    # Upload to NuGet
+    - run: dotnet nuget push "./nuget/*.nupkg" -s https://www.nuget.org/api/v2/package -k ${{ secrets.NUGET_KEY }}
+
+    # Upload to Releases(unitypackage)
+    - uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ZLogger.Unity.${{ env.GIT_TAG }}.unitypackage/ZLogger.Unity.${{ env.GIT_TAG }}.unitypackage
+        asset_name: ZLogger.Unity.${{ env.GIT_TAG }}.unitypackage
+        asset_content_type: application/octet-stream
