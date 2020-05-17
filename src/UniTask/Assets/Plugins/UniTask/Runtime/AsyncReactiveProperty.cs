@@ -15,7 +15,7 @@ namespace Cysharp.Threading.Tasks
     }
 
     [Serializable]
-    public class AsyncReactiveProperty<T> : IUniTaskAsyncEnumerable<T>, IDisposable
+    public class AsyncReactiveProperty<T> : IAsyncReactiveProperty<T>, IDisposable
     {
         TriggerEvent<T> triggerEvent;
 
