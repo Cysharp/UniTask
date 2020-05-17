@@ -66,6 +66,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             float elapsed;
             bool dueTimePhase;
+            bool completed;
             bool disposed;
 
             public _Timer(TimeSpan dueTime, TimeSpan? period, PlayerLoopTiming updateTiming, bool ignoreTimeScale, CancellationToken cancellationToken)
@@ -91,7 +92,7 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 // return false instead of throw
-                if (disposed || cancellationToken.IsCancellationRequested) return CompletedTasks.False;
+                if (disposed || cancellationToken.IsCancellationRequested || completed) return CompletedTasks.False;
 
                 // reset value here.
                 this.elapsed = 0;
@@ -131,6 +132,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     if (period == null)
                     {
+                        completed = true;
                         completionSource.TrySetResult(false);
                         return false;
                     }
@@ -172,6 +174,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             int currentFrame;
             bool dueTimePhase;
+            bool completed;
             bool disposed;
 
             public _TimerFrame(int dueTimeFrameCount, int? periodFrameCount, PlayerLoopTiming updateTiming, CancellationToken cancellationToken)
@@ -195,7 +198,7 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 // return false instead of throw
-                if (disposed || cancellationToken.IsCancellationRequested) return CompletedTasks.False;
+                if (disposed || cancellationToken.IsCancellationRequested || completed) return CompletedTasks.False;
 
 
                 // reset value here.
@@ -235,6 +238,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     if (periodFrameCount == null)
                     {
+                        completed = true;
                         completionSource.TrySetResult(false);
                         return false;
                     }

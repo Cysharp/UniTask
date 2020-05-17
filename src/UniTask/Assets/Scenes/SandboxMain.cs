@@ -124,6 +124,20 @@ public class SandboxMain : MonoBehaviour
 
 
     }
+    private async UniTaskVoid HogeAsync()
+    {
+        // await is not over
+        await UniTaskAsyncEnumerable
+            .TimerFrame(10)
+            .ForEachAwaitAsync(async _ =>
+            // .ForEachAsync(_ =>
+            {
+                await UniTask.Delay(1000);
+                Debug.Log(Time.time);
+            });
+
+        Debug.Log("Done");
+    }
 
     void Start()
     {
@@ -136,7 +150,7 @@ public class SandboxMain : MonoBehaviour
 
         RP1 = new AsyncReactiveProperty<int>(999);
 
-
+        HogeAsync().Forget();
 
         RP1.Select(x => x * x).BindTo(text);
 

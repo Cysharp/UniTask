@@ -1,10 +1,8 @@
-# UniTask
-
-[![CircleCI](https://circleci.com/gh/Cysharp/UniTask.svg?style=svg)](https://circleci.com/gh/Cysharp/UniTask)
+UniTask
+===
+[![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
 
 Provides an efficient async/await integration to Unity.
-
-> UniTask was included in UniRx before v7 but now completely separated, it no dependent each other.
 
 Getting started
 ---

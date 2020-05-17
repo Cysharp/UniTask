@@ -86,6 +86,10 @@ namespace NetCoreSandbox
             await Task.Delay(10, cancellationToken);
         }
 
+        private async UniTaskVoid HogeAsync()
+        {
+        }
+
         static async Task Main(string[] args)
         {
             await foreach (var item in UniTaskAsyncEnumerable.Range(1, 10)
