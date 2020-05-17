@@ -1,3 +1,23 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Table of Contents
+
+- [UniTask](#unitask)
+  - [Getting started](#getting-started)
+  - [`UniTask<T>`](#unitaskt)
+  - [Cancellation and Exception handling](#cancellation-and-exception-handling)
+  - [Progress](#progress)
+  - [UniTaskTracker](#unitasktracker)
+  - [Reusable Promises](#reusable-promises)
+  - [awaitable Events](#awaitable-events)
+  - [async void vs async UniTask/UniTaskVoid](#async-void-vs-async-unitaskunitaskvoid)
+  - [For Unit Testing](#for-unit-testing)
+  - [Method List](#method-list)
+  - [UPM Package](#upm-package)
+  - [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 UniTask
 ===
 [![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
