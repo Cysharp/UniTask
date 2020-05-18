@@ -1,3 +1,9 @@
+UniTask
+===
+[![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
+
+Provides an efficient async/await integration to Unity.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents
@@ -18,11 +24,6 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-UniTask
-===
-[![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
-
-Provides an efficient async/await integration to Unity.
 
 Getting started
 ---
@@ -371,6 +372,23 @@ After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of gi
 or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=Assets/UniRx.Async"` to `Packages/manifest.json`.
 
 If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#1.3.0`. For example `https://github.com/Cysharp/UniTask.git?path=Assets/UniRx.Async#1.3.1`.
+
+ECS, PlayerLoop
+---
+TODO:
+
+```csharp
+// Setup Entities Loop.
+var loop = PlayerLoop.GetDefaultPlayerLoop();
+foreach (var world in Unity.Entities.World.All)
+{
+    ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world, loop);
+    loop = PlayerLoop.GetCurrentPlayerLoop();
+}
+
+// UniTask PlayerLoop Initialize.
+PlayerLoopHelper.Initialize(ref loop);
+```
 
 License
 ---
