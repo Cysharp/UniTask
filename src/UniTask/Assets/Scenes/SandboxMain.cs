@@ -194,21 +194,26 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("Done");
     }
 
-    void Start()
+    async void Start()
     {
-        var channel = Channel.CreateSingleConsumerUnbounded<int>();
+        //var rp = new AsyncReactiveProperty<int>(10);
 
-        var reader = channel.Reader;
+        //Running(rp).Forget();
 
-        WaitForChannelAsync(reader, this.GetCancellationTokenOnDestroy()).Forget();
+        //await UniTaskAsyncEnumerable.EveryUpdate().Take(10).ForEachAsync((x, i) => rp.Value = i);
 
-        var writer = channel.Writer;
+        //rp.Dispose();
 
-        writer.TryWrite(1);
-        writer.TryWrite(2);
-        writer.TryWrite(3);
-        writer.Complete(new Exception());
+        await this.GetAsyncUpdateTrigger().ForEachAsync(x => Debug.Log("yeah"));
+        Debug.Log("DONE");
 
+    }
+
+    async UniTaskVoid Running(IReadOnlyAsyncReactiveProperty<int> rp)
+    {
+        Debug.Log("BEGIN");
+        await rp.ForEachAsync(x => Debug.Log("AR:" + x));
+        Debug.Log("DONE");
     }
 
     async UniTaskVoid WaitForChannelAsync(ChannelReader<int> reader, CancellationToken token)

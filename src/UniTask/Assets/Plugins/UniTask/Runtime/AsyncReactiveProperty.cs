@@ -4,13 +4,13 @@ using System.Threading;
 
 namespace Cysharp.Threading.Tasks
 {
-    public interface IAsyncReadOnlyReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
+    public interface IReadOnlyAsyncReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
     {
         T Value { get; }
         IUniTaskAsyncEnumerable<T> WithoutCurrent();
     }
 
-    public interface IAsyncReactiveProperty<T> : IAsyncReadOnlyReactiveProperty<T>
+    public interface IAsyncReactiveProperty<T> : IReadOnlyAsyncReactiveProperty<T>
     {
         new T Value { get; set; }
     }
@@ -56,7 +56,7 @@ namespace Cysharp.Threading.Tasks
 
         public void Dispose()
         {
-            triggerEvent.SetCanceled(CancellationToken.None);
+            triggerEvent.SetCompleted();
         }
 
         class WithoutCurrentEnumerable : IUniTaskAsyncEnumerable<T>
@@ -74,7 +74,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
+        sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, ITriggerHandler<T>
         {
             static Action<object> cancellationCallback = CancellationCallback;
 
@@ -128,17 +128,20 @@ namespace Cysharp.Threading.Tasks
                 return default;
             }
 
-            public bool TrySetResult(T value)
+            public void OnNext(T value)
             {
                 this.value = value;
                 completionSource.TrySetResult(true);
-                return true;
             }
 
-            public bool TrySetCanceled(CancellationToken cancellationToken = default)
+            public void OnCanceled(CancellationToken cancellationToken)
             {
                 DisposeAsync().Forget();
-                return true;
+            }
+
+            public void OnCompleted()
+            {
+                completionSource.TrySetResult(false);
             }
 
             static void CancellationCallback(object state)
