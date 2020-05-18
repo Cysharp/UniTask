@@ -190,7 +190,7 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("Done");
     }
 
-    async UniTaskVoid Start()
+    void Start()
     {
         //var rp = new AsyncReactiveProperty<int>(10);
 
@@ -200,10 +200,14 @@ public class SandboxMain : MonoBehaviour
 
         //rp.Dispose();
 
-        var channel = Channel.CreateSingleConsumerUnbounded<int>();
-        Debug.Log("wait channel");
-        await channel.Reader.ReadAllAsync(this.GetCancellationTokenOnDestroy()).ForEachAsync(_ => { });
+        //var channel = Channel.CreateSingleConsumerUnbounded<int>();
+        //Debug.Log("wait channel");
+        //await channel.Reader.ReadAllAsync(this.GetCancellationTokenOnDestroy()).ForEachAsync(_ => { });
 
+
+        var rp = new AsyncReactiveProperty<int>(10);
+
+        rp.Append(10).Select(x => x * 100).Take(30).Prepend(99).SkipLast(9).Where(x => x % 2 == 0).ForEachAsync(_ => { }).Forget();
 
     }
 

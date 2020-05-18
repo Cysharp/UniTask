@@ -76,6 +76,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             this.source = source;
             this.cancellationToken = cancellationToken;
+            TaskTracker.TrackActiveTask(this, 4);
         }
 
         // abstract
@@ -178,6 +179,7 @@ namespace Cysharp.Threading.Tasks.Linq
         // if require additional resource to dispose, override and call base.DisposeAsync.
         public virtual UniTask DisposeAsync()
         {
+            TaskTracker.RemoveTracking(this);
             if (enumerator != null)
             {
                 return enumerator.DisposeAsync();
@@ -204,6 +206,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             this.source = source;
             this.cancellationToken = cancellationToken;
+            TaskTracker.TrackActiveTask(this, 4);
         }
 
         // abstract
@@ -399,6 +402,7 @@ namespace Cysharp.Threading.Tasks.Linq
         // if require additional resource to dispose, override and call base.DisposeAsync.
         public virtual UniTask DisposeAsync()
         {
+            TaskTracker.RemoveTracking(this);
             if (enumerator != null)
             {
                 return enumerator.DisposeAsync();

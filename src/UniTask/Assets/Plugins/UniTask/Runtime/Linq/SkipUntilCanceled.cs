@@ -48,6 +48,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.source = source;
                 this.cancellationToken1 = cancellationToken1;
                 this.cancellationToken2 = cancellationToken2;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TSource Current { get; private set; }
@@ -131,6 +132,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 if (enumerator != null)
                 {
                     return enumerator.DisposeAsync();

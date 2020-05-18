@@ -33,6 +33,7 @@ namespace Cysharp.Threading.Tasks.Linq
             Channel<TSource> channel;
             IUniTaskAsyncEnumerator<TSource> channelEnumerator;
             IUniTaskAsyncEnumerator<TSource> sourceEnumerator;
+            bool channelClosed;
 
             public _Queue(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
             {
@@ -53,13 +54,13 @@ namespace Cysharp.Threading.Tasks.Linq
 
                     channelEnumerator = channel.Reader.ReadAllAsync().GetAsyncEnumerator(cancellationToken);
 
-                    ConsumeAll(sourceEnumerator, channel).Forget();
+                    ConsumeAll(this, sourceEnumerator, channel).Forget();
                 }
 
                 return channelEnumerator.MoveNextAsync();
             }
 
-            static async UniTaskVoid ConsumeAll(IUniTaskAsyncEnumerator<TSource> enumerator, ChannelWriter<TSource> writer)
+            static async UniTaskVoid ConsumeAll(_Queue self, IUniTaskAsyncEnumerator<TSource> enumerator, ChannelWriter<TSource> writer)
             {
                 try
                 {
@@ -75,6 +76,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
                 finally
                 {
+                    self.channelClosed = true;
                     await enumerator.DisposeAsync();
                 }
             }
@@ -88,6 +90,12 @@ namespace Cysharp.Threading.Tasks.Linq
                 if (channelEnumerator != null)
                 {
                     await channelEnumerator.DisposeAsync();
+                }
+
+                if (!channelClosed)
+                {
+                    channelClosed = true;
+                    channel.Writer.TryComplete(new OperationCanceledException());
                 }
             }
         }

@@ -160,6 +160,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector2 = selector2;
                 this.resultSelector = resultSelector;
                 this.cancellationToken = cancellationToken;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -324,6 +325,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public async UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 if (selectedEnumerator != null)
                 {
                     await selectedEnumerator.DisposeAsync();
@@ -398,6 +400,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector2 = selector2;
                 this.resultSelector = resultSelector;
                 this.cancellationToken = cancellationToken;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -598,6 +601,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public async UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 if (selectedEnumerator != null)
                 {
                     await selectedEnumerator.DisposeAsync();
@@ -672,6 +676,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector2 = selector2;
                 this.resultSelector = resultSelector;
                 this.cancellationToken = cancellationToken;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -872,6 +877,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public async UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 if (selectedEnumerator != null)
                 {
                     await selectedEnumerator.DisposeAsync();
