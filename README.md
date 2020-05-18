@@ -8,19 +8,19 @@ Provides an efficient async/await integration to Unity.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents
 
-- [UniTask](#unitask)
-  - [Getting started](#getting-started)
-  - [`UniTask<T>`](#unitaskt)
-  - [Cancellation and Exception handling](#cancellation-and-exception-handling)
-  - [Progress](#progress)
-  - [UniTaskTracker](#unitasktracker)
-  - [Reusable Promises](#reusable-promises)
-  - [awaitable Events](#awaitable-events)
-  - [async void vs async UniTask/UniTaskVoid](#async-void-vs-async-unitaskunitaskvoid)
-  - [For Unit Testing](#for-unit-testing)
-  - [Method List](#method-list)
-  - [UPM Package](#upm-package)
-  - [License](#license)
+- [Getting started](#getting-started)
+- [`UniTask<T>`](#unitaskt)
+- [Cancellation and Exception handling](#cancellation-and-exception-handling)
+- [Progress](#progress)
+- [UniTaskTracker](#unitasktracker)
+- [Reusable Promises](#reusable-promises)
+- [awaitable Events](#awaitable-events)
+- [async void vs async UniTask/UniTaskVoid](#async-void-vs-async-unitaskunitaskvoid)
+- [For Unit Testing](#for-unit-testing)
+- [Method List](#method-list)
+- [UPM Package](#upm-package)
+- [ECS, PlayerLoop](#ecs-playerloop)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
