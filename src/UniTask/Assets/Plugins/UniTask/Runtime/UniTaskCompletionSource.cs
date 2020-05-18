@@ -97,6 +97,11 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+        internal void MarkHandled()
+        {
+            hasUnhandledError = false;
+        }
+
         /// <summary>Completes with a successful result.</summary>
         /// <param name="result">The result.</param>
         [DebuggerHidden]
@@ -293,12 +298,12 @@ namespace Cysharp.Threading.Tasks
         }
 
         [DebuggerHidden]
-        [Conditional("UNITY_EDITOR")]
         internal void MarkHandled()
         {
             if (!handled)
             {
                 handled = true;
+                core.MarkHandled();
                 TaskTracker.RemoveTracking(this);
             }
         }
@@ -504,12 +509,12 @@ namespace Cysharp.Threading.Tasks
         }
 
         [DebuggerHidden]
-        [Conditional("UNITY_EDITOR")]
         internal void MarkHandled()
         {
             if (!handled)
             {
                 handled = true;
+                core.MarkHandled();
                 TaskTracker.RemoveTracking(this);
             }
         }

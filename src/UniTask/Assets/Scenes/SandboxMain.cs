@@ -50,7 +50,62 @@ public static partial class UnityUIComponentExtensions
 
 
 
+public class AsyncMessageBroker<T> : IDisposable
+{
+    Channel<T> channel;
+    List<Func<T, UniTask>> asyncEvents;
 
+    public AsyncMessageBroker()
+    {
+        channel = Channel.CreateSingleConsumerUnbounded<T>();
+        asyncEvents = new List<Func<T, UniTask>>();
+    }
+
+    async UniTaskVoid PublishAll()
+    {
+        await channel.Reader.ReadAllAsync().ForEachAwaitAsync(async x =>
+        {
+            foreach (var item in asyncEvents)
+            {
+                await item.Invoke(x);
+            }
+        });
+    }
+
+    public void Publish(T value)
+    {
+        channel.Writer.TryWrite(value);
+    }
+
+    public Subscription Subscribe(Func<T, UniTask> func)
+    {
+        asyncEvents.Add(func);
+        return new Subscription(this, func);
+    }
+
+    public void Dispose()
+    {
+        channel.Writer.TryComplete();
+        asyncEvents.Clear();
+    }
+
+    public readonly struct Subscription : IDisposable
+    {
+        readonly AsyncMessageBroker<T> broker;
+        readonly Func<T, UniTask> func;
+
+        public Subscription(AsyncMessageBroker<T> broker, Func<T, UniTask> func)
+        {
+            this.broker = broker;
+            this.func = func;
+        }
+
+        public void Dispose()
+        {
+            broker.asyncEvents.Remove(func);
+        }
+    }
+}
 
 
 public class SandboxMain : MonoBehaviour
@@ -141,150 +196,37 @@ public class SandboxMain : MonoBehaviour
 
     void Start()
     {
-        Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
-        Application.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
+        var channel = Channel.CreateSingleConsumerUnbounded<int>();
 
-        var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-        //ShowPlayerLoop.DumpPlayerLoop("Current", playerLoop);
+        var reader = channel.Reader;
 
+        WaitForChannelAsync(reader, this.GetCancellationTokenOnDestroy()).Forget();
 
-        RP1 = new AsyncReactiveProperty<int>(999);
+        var writer = channel.Writer;
 
-        HogeAsync().Forget();
+        writer.TryWrite(1);
+        writer.TryWrite(2);
+        writer.TryWrite(3);
+        writer.Complete(new Exception());
 
-        RP1.Select(x => x * x).BindTo(text);
-
-
-        //Update2().Forget();
-
-        //RunStandardDelayAsync().Forget();
-
-        //for (int i = 0; i < 14; i++)
-        //{
-        //    TimingDump((PlayerLoopTiming)i).Forget();
-        //}
-
-        //StartCoroutine(CoroutineDump("yield WaitForEndOfFrame", new WaitForEndOfFrame()));
-        //StartCoroutine(CoroutineDump("yield WaitForFixedUpdate", new WaitForFixedUpdate()));
-        //StartCoroutine(CoroutineDump("yield null", null));
-
-        // -----
-
-        // RunJobAsync().Forget();
-
-        //ClickOnce().Forget();
-        //ClickForever().Forget();
-
-        //var cor = UniTask.ToCoroutine(async () =>
-        // {
-        //     var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
-        //     JobHandle.ScheduleBatchedJobs();
-        //     await job.Schedule().WaitAsync(PlayerLoopTiming.Update);
-        //     job.inOut.Dispose();
-        // });
-
-        //StartCoroutine(cor);
-
-        // UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.FixedUpdate)
-
-
-        //await UniTask.Yield(PlayerLoopTiming.Update);
-        //Debug.Log("Start:" + Time.frameCount);
-
-        //await UniTaskAsyncEnumerable.TimerFrame(3, 5, PlayerLoopTiming.PostLateUpdate)
-        //    .Select(x => x)
-        //    .Do(x => Debug.Log("DODODO"))
-        //    .ForEachAsync(_ =>
-        //    {
-        //        Debug.Log("Call:" + Time.frameCount);
-        //    }, cancellationToken: this.GetCancellationTokenOnDestroy());
-
-        //try
-        //{
-        //    await this.GetAsyncUpdateTrigger().ForEachAsync(_ =>
-        //    {
-        //        UnityEngine.Debug.Log("EveryUpdate:" + Time.frameCount);
-        //    });
-        //}
-        //catch (OperationCanceledException ex)
-        //{
-        //    UnityEngine.Debug.Log("END");
-        //}
-
-
-
-        CancellationTokenSource cts = new CancellationTokenSource();
-
-        //var trigger = this.GetAsyncUpdateTrigger();
-        //Go(trigger, 1, cts.Token).Forget();
-        //Go(trigger, 2, cts.Token).Forget();
-        //Go(trigger, 3, cts.Token).Forget();
-        //Go(trigger, 4, cts.Token).Forget();
-        //Go(trigger, 5, cts.Token).Forget();
-
-
-        Application.logMessageReceived += Application_logMessageReceived;
-
-
-
-        // foo.Status.IsCanceled
-
-
-        // 5回クリックされるまで待つ、とか。
-        //Debug.Log("Await start.");
-
-
-
-        //await okButton.GetAsyncClickEventHandler().DisableAutoClose()
-        //  .Select((_, clickCount) => clickCount + 1)
-        // .FirstAsync(x => x == 5);
-
-        //Debug.Log("Click 5 times.");
-
-
-
-        // await this.GetAsyncUpdateTrigger().UpdateAsAsyncEnumerable()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //ucs = new UniTaskCompletionSource();
-
-        //okButton.onClick.AddListener(async () =>
-        //{
-        //    await InnerAsync(false);
-        //});
-
-        okButton.onClick.AddListener(() =>
-        {
-            // FooAsync().Forget();
-
-            RP1.Value += 3;
-
-        });
-
-        cancelButton.onClick.AddListener(() =>
-        {
-            text.text = "";
-
-            // ucs.TrySetResult();
-
-            cts.Cancel();
-        });
     }
 
-    static void Foo(UniTask t)
+    async UniTaskVoid WaitForChannelAsync(ChannelReader<int> reader, CancellationToken token)
     {
+        try
+        {
+            //var result1 = await reader.ReadAsync(token);
+            //Debug.Log(result1);
+
+            await reader.ReadAllAsync().ForEachAsync(x => Debug.Log(x)/*, token*/);
+
+            Debug.Log("done");
+        }
+        catch (Exception ex)
+        {
+            Debug.Log("here");
+            Debug.LogException(ex);
+        }
     }
 
     async UniTaskVoid Go(AsyncUpdateTrigger trigger, int i, CancellationToken ct)

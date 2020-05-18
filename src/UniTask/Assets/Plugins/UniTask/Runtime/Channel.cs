@@ -91,7 +91,8 @@ namespace Cysharp.Threading.Tasks
     {
         readonly Queue<T> items;
         readonly SingleConsumerUnboundedChannelReader readerSource;
-        readonly UniTaskCompletionSource completedTask;
+        UniTaskCompletionSource completedTaskSource;
+        UniTask completedTask;
 
         Exception completionError;
         bool closed;
@@ -99,7 +100,6 @@ namespace Cysharp.Threading.Tasks
         public SingleConsumerUnboundedChannel()
         {
             items = new Queue<T>();
-            completedTask = new UniTaskCompletionSource();
             Writer = new SingleConsumerUnboundedChannelWriter(this);
             readerSource = new SingleConsumerUnboundedChannelReader(this);
             Reader = readerSource;
@@ -146,11 +146,25 @@ namespace Cysharp.Threading.Tasks
                     {
                         if (error == null)
                         {
-                            parent.completedTask.TrySetResult();
+                            if (parent.completedTaskSource != null)
+                            {
+                                parent.completedTaskSource.TrySetResult();
+                            }
+                            else
+                            {
+                                parent.completedTask = UniTask.CompletedTask;
+                            }
                         }
                         else
                         {
-                            parent.completedTask.TrySetException(error);
+                            if (parent.completedTaskSource != null)
+                            {
+                                parent.completedTaskSource.TrySetException(error);
+                            }
+                            else
+                            {
+                                parent.completedTask = UniTask.FromException(error);
+                            }
                         }
 
                         if (waiting)
@@ -181,7 +195,21 @@ namespace Cysharp.Threading.Tasks
                 this.parent = parent;
             }
 
-            public override UniTask Completion => parent.completedTask.Task;
+            public override UniTask Completion
+            {
+                get
+                {
+                    if (parent.completedTaskSource != null) return parent.completedTaskSource.Task;
+
+                    if (parent.closed)
+                    {
+                        return parent.completedTask;
+                    }
+
+                    parent.completedTaskSource = new UniTaskCompletionSource();
+                    return parent.completedTaskSource.Task;
+                }
+            }
 
             public override bool TryRead(out T item)
             {
@@ -196,11 +224,25 @@ namespace Cysharp.Threading.Tasks
                         {
                             if (parent.completionError != null)
                             {
-                                parent.completedTask.TrySetException(parent.completionError);
+                                if (parent.completedTaskSource != null)
+                                {
+                                    parent.completedTaskSource.TrySetException(parent.completionError);
+                                }
+                                else
+                                {
+                                    parent.completedTask = UniTask.FromException(parent.completionError);
+                                }
                             }
                             else
                             {
-                                parent.completedTask.TrySetResult();
+                                if (parent.completedTaskSource != null)
+                                {
+                                    parent.completedTaskSource.TrySetResult();
+                                }
+                                else
+                                {
+                                    parent.completedTask = UniTask.CompletedTask;
+                                }
                             }
                         }
                     }
