@@ -43,14 +43,34 @@ namespace Cysharp.Threading.Tasks
             this.triggerEvent = default;
         }
 
+        public IUniTaskAsyncEnumerable<T> WithoutCurrent()
+        {
+            return new WithoutCurrentEnumerable(this);
+        }
+
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
         {
-            return new Enumerator(this, cancellationToken);
+            return new Enumerator(this, cancellationToken, true);
         }
 
         public void Dispose()
         {
             triggerEvent.SetCanceled(CancellationToken.None);
+        }
+
+        class WithoutCurrentEnumerable : IUniTaskAsyncEnumerable<T>
+        {
+            readonly AsyncReactiveProperty<T> parent;
+
+            public WithoutCurrentEnumerable(AsyncReactiveProperty<T> parent)
+            {
+                this.parent = parent;
+            }
+
+            public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            {
+                return new Enumerator(parent, cancellationToken, false);
+            }
         }
 
         sealed class Enumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
@@ -62,11 +82,13 @@ namespace Cysharp.Threading.Tasks
             readonly CancellationTokenRegistration cancellationTokenRegistration;
             T value;
             bool isDisposed;
+            bool firstCall;
 
-            public Enumerator(AsyncReactiveProperty<T> parent, CancellationToken cancellationToken)
+            public Enumerator(AsyncReactiveProperty<T> parent, CancellationToken cancellationToken, bool publishCurrentValue)
             {
                 this.parent = parent;
                 this.cancellationToken = cancellationToken;
+                this.firstCall = publishCurrentValue;
 
                 parent.triggerEvent.Add(this);
                 TaskTracker.TrackActiveTask(this, 3);
@@ -81,6 +103,14 @@ namespace Cysharp.Threading.Tasks
 
             public UniTask<bool> MoveNextAsync()
             {
+                // raise latest value on first call.
+                if (firstCall)
+                {
+                    firstCall = false;
+                    value = parent.Value;
+                    return CompletedTasks.True;
+                }
+
                 completionSource.Reset();
                 return new UniTask<bool>(this, completionSource.Version);
             }

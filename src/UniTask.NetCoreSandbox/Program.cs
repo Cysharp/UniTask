@@ -86,34 +86,16 @@ namespace NetCoreSandbox
             await Task.Delay(10, cancellationToken);
         }
 
-        private async UniTaskVoid HogeAsync()
+
+
+        static void Main(string[] args)
         {
-        }
 
-        static async Task Main(string[] args)
-        {
-            await foreach (var item in UniTaskAsyncEnumerable.Range(1, 10)
-                .SelectAwait(x => UniTask.Run(() => x))
-                .TakeLast(6)
-
-                
-
-                )
-            {
-
-                
-
-                Console.WriteLine(item);
-            }
-
-// AsyncEnumerable.Range(1,10).FirstAsync(
-            // AsyncEnumerable.Range(1, 10).GroupBy(x=>x).Select(x=>x.first
+            var channel = Channel.CreateSingleConsumerUnbounded<int>();
 
 
-            // AsyncEnumerable.Range(1,10).WithCancellation(CancellationToken.None).WithCancellation
 
 
-            //Enumerable.Range(1,10).ToHashSet(
 
 
         }
