@@ -132,6 +132,101 @@ namespace Cysharp.Threading.Tasks
         {
             asyncAction(state).Forget();
         }
+
+        /// <summary>
+        /// Defer the task creation just before call await.
+        /// </summary>
+        public static UniTask Defer(Func<UniTask> factory)
+        {
+            return new UniTask(new DeferPromise(factory), 0);
+        }
+
+        /// <summary>
+        /// Defer the task creation just before call await.
+        /// </summary>
+        public static UniTask<T> Defer<T>(Func<UniTask<T>> factory)
+        {
+            return new UniTask<T>(new DeferPromise<T>(factory), 0);
+        }
+
+        sealed class DeferPromise : IUniTaskSource
+        {
+            Func<UniTask> factory;
+            UniTask task;
+            UniTask.Awaiter awaiter;
+
+            public DeferPromise(Func<UniTask> factory)
+            {
+                this.factory = factory;
+            }
+
+            public void GetResult(short token)
+            {
+                awaiter.GetResult();
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                var f = Interlocked.Exchange(ref factory, null);
+                if (f == null) throw new InvalidOperationException("Can't call twice.");
+
+                task = f();
+                awaiter = f().GetAwaiter();
+                return task.Status;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                awaiter.SourceOnCompleted(continuation, state);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return task.Status;
+            }
+        }
+
+        sealed class DeferPromise<T> : IUniTaskSource<T>
+        {
+            Func<UniTask<T>> factory;
+            UniTask<T> task;
+            UniTask<T>.Awaiter awaiter;
+
+            public DeferPromise(Func<UniTask<T>> factory)
+            {
+                this.factory = factory;
+            }
+
+            public T GetResult(short token)
+            {
+                return awaiter.GetResult();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                awaiter.GetResult();
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                var f = Interlocked.Exchange(ref factory, null);
+                if (f == null) throw new InvalidOperationException("Can't call twice.");
+
+                task = f();
+                awaiter = f().GetAwaiter();
+                return task.Status;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                awaiter.SourceOnCompleted(continuation, state);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return task.Status;
+            }
+        }
     }
 
     internal static class CompletedTasks
