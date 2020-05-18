@@ -4,6 +4,7 @@ using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -40,5 +41,66 @@ namespace NetCoreTests.Linq
 
             (await xs).Should().BeEquivalentTo(1, 2, 3, 4);
         }
+
+        [Fact]
+        public async Task TakeUntil()
+        {
+            var cts = new CancellationTokenSource();
+
+            var rp = new AsyncReactiveProperty<int>(1);
+
+            var xs = rp.TakeUntilCanceled(cts.Token).ToArrayAsync();
+
+            var c = CancelAsync();
+
+            await c;
+            var foo = await xs;
+
+            foo.Should().BeEquivalentTo(new[] { 1, 10, 20 });
+
+            async Task CancelAsync()
+            {
+                rp.Value = 10;
+                await Task.Yield();
+                rp.Value = 20;
+                await Task.Yield();
+                cts.Cancel();
+                rp.Value = 30;
+                await Task.Yield();
+                rp.Value = 40;
+            }
+        }
+
+        [Fact]
+        public async Task SkipUntil()
+        {
+            var cts = new CancellationTokenSource();
+
+            var rp = new AsyncReactiveProperty<int>(1);
+
+            var xs = rp.SkipUntilCanceled(cts.Token).ToArrayAsync();
+
+            var c = CancelAsync();
+
+            await c;
+            var foo = await xs;
+
+            foo.Should().BeEquivalentTo(new[] { 30, 40 });
+
+            async Task CancelAsync()
+            {
+                rp.Value = 10;
+                await Task.Yield();
+                rp.Value = 20;
+                await Task.Yield();
+                cts.Cancel();
+                rp.Value = 30;
+                await Task.Yield();
+                rp.Value = 40;
+
+                rp.Dispose(); // complete.
+            }
+        }
+
     }
 }
