@@ -69,4 +69,5 @@ jobs:
       # Store artifacts.      
       - uses: actions/upload-artifact@v2
         with:
+          name: UniTask.unitypackage.zip
           path: ./src/UniTask/*.unitypackage
