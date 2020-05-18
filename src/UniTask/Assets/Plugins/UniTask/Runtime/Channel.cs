@@ -193,6 +193,8 @@ namespace Cysharp.Threading.Tasks
             public SingleConsumerUnboundedChannelReader(SingleConsumerUnboundedChannel<T> parent)
             {
                 this.parent = parent;
+
+                TaskTracker.TrackActiveTask(this, 4);
             }
 
             public override UniTask Completion
@@ -304,6 +306,7 @@ namespace Cysharp.Threading.Tasks
 
             public void SingalCancellation(CancellationToken cancellationToken)
             {
+                TaskTracker.RemoveTracking(this);
                 core.TrySetCanceled(cancellationToken);
             }
 
@@ -311,10 +314,12 @@ namespace Cysharp.Threading.Tasks
             {
                 if (error != null)
                 {
+                    TaskTracker.RemoveTracking(this);
                     core.TrySetException(error);
                 }
                 else
                 {
+                    TaskTracker.RemoveTracking(this);
                     core.TrySetResult(false);
                 }
             }

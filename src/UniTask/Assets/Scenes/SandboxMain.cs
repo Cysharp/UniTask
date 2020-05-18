@@ -1,20 +1,16 @@
-﻿using System;
-
+﻿using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Cysharp.Threading.Tasks.Triggers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using TMPro;
 
 public struct MyJob : IJob
 {
@@ -194,7 +190,7 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("Done");
     }
 
-    async void Start()
+    async UniTaskVoid Start()
     {
         //var rp = new AsyncReactiveProperty<int>(10);
 
@@ -203,12 +199,11 @@ public class SandboxMain : MonoBehaviour
         //await UniTaskAsyncEnumerable.EveryUpdate().Take(10).ForEachAsync((x, i) => rp.Value = i);
 
         //rp.Dispose();
-        var cts = new CancellationTokenSource();
-        Running(cts.Token).Forget();
 
+        var channel = Channel.CreateSingleConsumerUnbounded<int>();
+        Debug.Log("wait channel");
+        await channel.Reader.ReadAllAsync(this.GetCancellationTokenOnDestroy()).ForEachAsync(_ => { });
 
-
-        cts.CancelAfterSlim(TimeSpan.FromSeconds(3));
 
     }
 
