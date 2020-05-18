@@ -7,6 +7,7 @@ namespace Cysharp.Threading.Tasks
     public interface IAsyncReadOnlyReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
     {
         T Value { get; }
+        IUniTaskAsyncEnumerable<T> WithoutCurrent();
     }
 
     public interface IAsyncReactiveProperty<T> : IAsyncReadOnlyReactiveProperty<T>
