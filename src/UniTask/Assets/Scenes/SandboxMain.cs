@@ -203,16 +203,19 @@ public class SandboxMain : MonoBehaviour
         //await UniTaskAsyncEnumerable.EveryUpdate().Take(10).ForEachAsync((x, i) => rp.Value = i);
 
         //rp.Dispose();
+        var cts = new CancellationTokenSource();
+        Running(cts.Token).Forget();
 
-        await this.GetAsyncUpdateTrigger().ForEachAsync(x => Debug.Log("yeah"));
-        Debug.Log("DONE");
+
+
+        cts.CancelAfterSlim(TimeSpan.FromSeconds(3));
 
     }
 
-    async UniTaskVoid Running(IReadOnlyAsyncReactiveProperty<int> rp)
+    async UniTaskVoid Running(CancellationToken ct)
     {
         Debug.Log("BEGIN");
-        await rp.ForEachAsync(x => Debug.Log("AR:" + x));
+        await UniTask.WaitUntilCanceled(ct);
         Debug.Log("DONE");
     }
 
