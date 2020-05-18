@@ -4,26 +4,25 @@ using System.Threading;
 
 namespace Cysharp.Threading.Tasks
 {
-    public interface ITriggerEvent<T>
+    public interface ITriggerHandler<T>
     {
-        void SetResult(T value);
-        void SetCanceled(CancellationToken cancellationToken);
-        void Add(IResolveCancelPromise<T> handler);
-        void Remove(IResolveCancelPromise<T> handler);
+        void OnNext(T value);
+        void OnCanceled(CancellationToken cancellationToken);
+        void OnCompleted();
     }
 
     // be careful to use, itself is struct.
-    public struct TriggerEvent<T> : ITriggerEvent<T>
+    public struct TriggerEvent<T>
     {
         // optimize: many cases, handler is single.
-        IResolveCancelPromise<T> singleHandler;
+        ITriggerHandler<T> singleHandler;
 
-        IResolveCancelPromise<T>[] handlers;
+        ITriggerHandler<T>[] handlers;
 
-        // when running(in TrySetResult), does not add immediately.
+        // when running(in TrySetResult), does not add immediately(trampoline).
         bool isRunning;
-        IResolveCancelPromise<T> waitHandler;
-        MinimumQueue<IResolveCancelPromise<T>> waitQueue;
+        ITriggerHandler<T> waitHandler;
+        MinimumQueue<ITriggerHandler<T>> waitQueue;
 
         public void SetResult(T value)
         {
@@ -33,7 +32,7 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    singleHandler.TrySetResult(value);
+                    singleHandler.OnNext(value);
                 }
                 catch (Exception ex)
                 {
@@ -53,7 +52,7 @@ namespace Cysharp.Threading.Tasks
                     {
                         try
                         {
-                            handlers[i].TrySetResult(value);
+                            handlers[i].OnNext(value);
                         }
                         catch (Exception ex)
                         {
@@ -94,7 +93,7 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    ((ICancelPromise)singleHandler).TrySetCanceled(cancellationToken);
+                    (singleHandler).OnCanceled(cancellationToken);
                 }
                 catch (Exception ex)
                 {
@@ -114,7 +113,7 @@ namespace Cysharp.Threading.Tasks
                     {
                         try
                         {
-                            ((ICancelPromise)handlers[i]).TrySetCanceled(cancellationToken);
+                            (handlers[i]).OnCanceled(cancellationToken);
                         }
                         catch (Exception ex)
                         {
@@ -147,7 +146,68 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        public void Add(IResolveCancelPromise<T> handler)
+        public void SetCompleted()
+        {
+            isRunning = true;
+
+            if (singleHandler != null)
+            {
+                try
+                {
+                    (singleHandler).OnCompleted();
+                }
+                catch (Exception ex)
+                {
+#if UNITY_2018_3_OR_NEWER
+                    UnityEngine.Debug.LogException(ex);
+#else
+                    Console.WriteLine(ex);
+#endif
+                }
+            }
+
+            if (handlers != null)
+            {
+                for (int i = 0; i < handlers.Length; i++)
+                {
+                    if (handlers[i] != null)
+                    {
+                        try
+                        {
+                            (handlers[i]).OnCompleted();
+                        }
+                        catch (Exception ex)
+                        {
+#if UNITY_2018_3_OR_NEWER
+                            UnityEngine.Debug.LogException(ex);
+#else
+                            Console.WriteLine(ex);
+#endif
+                            handlers[i] = null;
+                        }
+                    }
+                }
+            }
+
+            isRunning = false;
+
+            if (waitHandler != null)
+            {
+                var h = waitHandler;
+                waitHandler = null;
+                Add(h);
+            }
+
+            if (waitQueue != null)
+            {
+                while (waitQueue.Count != 0)
+                {
+                    Add(waitQueue.Dequeue());
+                }
+            }
+        }
+
+        public void Add(ITriggerHandler<T> handler)
         {
             if (isRunning)
             {
@@ -159,7 +219,7 @@ namespace Cysharp.Threading.Tasks
 
                 if (waitQueue == null)
                 {
-                    waitQueue = new MinimumQueue<IResolveCancelPromise<T>>(4);
+                    waitQueue = new MinimumQueue<ITriggerHandler<T>>(4);
                 }
                 waitQueue.Enqueue(handler);
                 return;
@@ -173,7 +233,7 @@ namespace Cysharp.Threading.Tasks
             {
                 if (handlers == null)
                 {
-                    handlers = new IResolveCancelPromise<T>[4];
+                    handlers = new ITriggerHandler<T>[4];
                 }
 
                 // check empty
@@ -195,15 +255,15 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        static void EnsureCapacity(ref IResolveCancelPromise<T>[] array)
+        static void EnsureCapacity(ref ITriggerHandler<T>[] array)
         {
             var newSize = array.Length * 2;
-            var newArray = new IResolveCancelPromise<T>[newSize];
+            var newArray = new ITriggerHandler<T>[newSize];
             Array.Copy(array, 0, newArray, 0, array.Length);
             array = newArray;
         }
 
-        public void Remove(IResolveCancelPromise<T> handler)
+        public void Remove(ITriggerHandler<T> handler)
         {
             if (singleHandler == handler)
             {

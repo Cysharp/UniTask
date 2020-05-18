@@ -24,10 +24,10 @@ namespace Cysharp.Threading.Tasks.Triggers
             if (calledDestroy) return;
             calledDestroy = true;
 
-            triggerEvent.SetCanceled(CancellationToken.None);
+            triggerEvent.SetCompleted();
         }
 
-        internal void AddHandler(IResolveCancelPromise<T> handler)
+        internal void AddHandler(ITriggerHandler<T> handler)
         {
             if (!calledAwake)
             {
@@ -37,7 +37,7 @@ namespace Cysharp.Threading.Tasks.Triggers
             triggerEvent.Add(handler);
         }
 
-        internal void RemoveHandler(IResolveCancelPromise<T> handler)
+        internal void RemoveHandler(ITriggerHandler<T> handler)
         {
             if (!calledAwake)
             {
@@ -57,7 +57,7 @@ namespace Cysharp.Threading.Tasks.Triggers
             return new AsyncTriggerEnumerator(this, cancellationToken);
         }
 
-        sealed class AsyncTriggerEnumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, IResolveCancelPromise<T>
+        sealed class AsyncTriggerEnumerator : MoveNextSource, IUniTaskAsyncEnumerator<T>, ITriggerHandler<T>
         {
             static Action<object> cancellationCallback = CancellationCallback;
 
@@ -73,15 +73,20 @@ namespace Cysharp.Threading.Tasks.Triggers
                 this.cancellationToken = cancellationToken;
             }
 
-            public bool TrySetCanceled(CancellationToken cancellationToken = default)
+            public void OnCanceled(CancellationToken cancellationToken = default)
             {
-                return completionSource.TrySetCanceled(cancellationToken);
+                completionSource.TrySetCanceled(cancellationToken);
             }
 
-            public bool TrySetResult(T value)
+            public void OnNext(T value)
             {
                 Current = value;
-                return completionSource.TrySetResult(true);
+                completionSource.TrySetResult(true);
+            }
+
+            public void OnCompleted()
+            {
+                completionSource.TrySetResult(false);
             }
 
             static void CancellationCallback(object state)
@@ -164,7 +169,7 @@ namespace Cysharp.Threading.Tasks.Triggers
         }
     }
 
-    public sealed partial class AsyncTriggerHandler<T> : IUniTaskSource<T>, IResolveCancelPromise<T>, IDisposable
+    public sealed partial class AsyncTriggerHandler<T> : IUniTaskSource<T>, ITriggerHandler<T>, IDisposable
     {
         static Action<object> cancellationCallback = CancellationCallback;
 
@@ -253,14 +258,19 @@ namespace Cysharp.Threading.Tasks.Triggers
             }
         }
 
-        bool IResolvePromise<T>.TrySetResult(T result)
+        void ITriggerHandler<T>.OnNext(T value)
         {
-            return core.TrySetResult(result);
+            core.TrySetResult(value);
         }
 
-        bool ICancelPromise.TrySetCanceled(CancellationToken cancellationToken)
+        void ITriggerHandler<T>.OnCanceled(CancellationToken cancellationToken)
         {
-            return core.TrySetCanceled(cancellationToken);
+            core.TrySetCanceled(cancellationToken);
+        }
+
+        void ITriggerHandler<T>.OnCompleted()
+        {
+            core.TrySetCanceled(CancellationToken.None);
         }
 
         void IUniTaskSource.GetResult(short token)
