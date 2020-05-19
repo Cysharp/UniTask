@@ -144,6 +144,11 @@ namespace Cysharp.Threading.Tasks
                 completionSource.TrySetResult(false);
             }
 
+            public void OnError(Exception ex)
+            {
+                completionSource.TrySetException(ex);
+            }
+
             static void CancellationCallback(object state)
             {
                 var self = (Enumerator)state;

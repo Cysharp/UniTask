@@ -7,8 +7,9 @@ namespace Cysharp.Threading.Tasks
     public interface ITriggerHandler<T>
     {
         void OnNext(T value);
-        void OnCanceled(CancellationToken cancellationToken);
+        void OnError(Exception ex);
         void OnCompleted();
+        void OnCanceled(CancellationToken cancellationToken);
     }
 
     // be careful to use, itself is struct.
@@ -184,6 +185,67 @@ namespace Cysharp.Threading.Tasks
                             Console.WriteLine(ex);
 #endif
                             handlers[i] = null;
+                        }
+                    }
+                }
+            }
+
+            isRunning = false;
+
+            if (waitHandler != null)
+            {
+                var h = waitHandler;
+                waitHandler = null;
+                Add(h);
+            }
+
+            if (waitQueue != null)
+            {
+                while (waitQueue.Count != 0)
+                {
+                    Add(waitQueue.Dequeue());
+                }
+            }
+        }
+
+        public void SetError(Exception exception)
+        {
+            isRunning = true;
+
+            if (singleHandler != null)
+            {
+                try
+                {
+                    singleHandler.OnError(exception);
+                }
+                catch (Exception ex)
+                {
+#if UNITY_2018_3_OR_NEWER
+                    UnityEngine.Debug.LogException(ex);
+#else
+                    Console.WriteLine(ex);
+#endif
+                }
+            }
+
+            if (handlers != null)
+            {
+                for (int i = 0; i < handlers.Length; i++)
+                {
+                    if (handlers[i] != null)
+                    {
+                        try
+                        {
+                            handlers[i].OnError(exception);
+                        }
+                        catch (Exception ex)
+                        {
+                            handlers[i] = null;
+#if UNITY_2018_3_OR_NEWER
+                            UnityEngine.Debug.LogException(ex);
+#else
+                            Console.WriteLine(ex);
+#endif
                         }
                     }
                 }

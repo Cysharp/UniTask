@@ -89,6 +89,11 @@ namespace Cysharp.Threading.Tasks.Triggers
                 completionSource.TrySetResult(false);
             }
 
+            public void OnError(Exception ex)
+            {
+                completionSource.TrySetException(ex);
+            }
+
             static void CancellationCallback(object state)
             {
                 var self = (AsyncTriggerEnumerator)state;
@@ -271,6 +276,11 @@ namespace Cysharp.Threading.Tasks.Triggers
         void ITriggerHandler<T>.OnCompleted()
         {
             core.TrySetCanceled(CancellationToken.None);
+        }
+
+        void ITriggerHandler<T>.OnError(Exception ex)
+        {
+            core.TrySetException(ex);
         }
 
         void IUniTaskSource.GetResult(short token)

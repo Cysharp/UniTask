@@ -28,6 +28,12 @@ namespace Cysharp.Threading.Tasks
         IUniTaskOrderedAsyncEnumerable<TElement> CreateOrderedEnumerable<TKey>(Func<TElement, CancellationToken, UniTask<TKey>> keySelector, IComparer<TKey> comparer, bool descending);
     }
 
+    public interface IConnectableUniTaskAsyncEnumerable<out T> : IUniTaskAsyncEnumerable<T>
+    {
+        IDisposable Connect();
+    }
+
+    // don't use AsyncGrouping.
     //public interface IUniTaskAsyncGrouping<out TKey, out TElement> : IUniTaskAsyncEnumerable<TElement>
     //{
     //    TKey Key { get; }

@@ -49,23 +49,15 @@ public static partial class UnityUIComponentExtensions
 public class AsyncMessageBroker<T> : IDisposable
 {
     Channel<T> channel;
-    List<Func<T, UniTask>> asyncEvents;
+
+    IConnectableUniTaskAsyncEnumerable<T> multicastSource;
+    IDisposable connection;
 
     public AsyncMessageBroker()
     {
         channel = Channel.CreateSingleConsumerUnbounded<T>();
-        asyncEvents = new List<Func<T, UniTask>>();
-    }
-
-    async UniTaskVoid PublishAll()
-    {
-        await channel.Reader.ReadAllAsync().ForEachAwaitAsync(async x =>
-        {
-            foreach (var item in asyncEvents)
-            {
-                await item.Invoke(x);
-            }
-        });
+        multicastSource = channel.Reader.ReadAllAsync().Publish();
+        connection = multicastSource.Connect();
     }
 
     public void Publish(T value)
@@ -73,33 +65,15 @@ public class AsyncMessageBroker<T> : IDisposable
         channel.Writer.TryWrite(value);
     }
 
-    public Subscription Subscribe(Func<T, UniTask> func)
+    public IUniTaskAsyncEnumerable<T> Subscribe()
     {
-        asyncEvents.Add(func);
-        return new Subscription(this, func);
+        return multicastSource;
     }
 
     public void Dispose()
     {
         channel.Writer.TryComplete();
-        asyncEvents.Clear();
-    }
-
-    public readonly struct Subscription : IDisposable
-    {
-        readonly AsyncMessageBroker<T> broker;
-        readonly Func<T, UniTask> func;
-
-        public Subscription(AsyncMessageBroker<T> broker, Func<T, UniTask> func)
-        {
-            this.broker = broker;
-            this.func = func;
-        }
-
-        public void Dispose()
-        {
-            broker.asyncEvents.Remove(func);
-        }
+        connection.Dispose();
     }
 }
 
@@ -205,9 +179,22 @@ public class SandboxMain : MonoBehaviour
         //await channel.Reader.ReadAllAsync(this.GetCancellationTokenOnDestroy()).ForEachAsync(_ => { });
 
 
-        var rp = new AsyncReactiveProperty<int>(10);
+        var pubsub = new AsyncMessageBroker<int>();
 
-        rp.Append(10).Select(x => x * 100).Take(30).Prepend(99).SkipLast(9).Where(x => x % 2 == 0).ForEachAsync(_ => { }).Forget();
+        pubsub.Subscribe().ForEachAsync(x => Debug.Log("A:" + x)).Forget();
+        pubsub.Subscribe().ForEachAsync(x => Debug.Log("B:" + x)).Forget();
+
+
+        int i = 0;
+        okButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+        {
+
+            Debug.Log("foo");
+            pubsub.Publish(i++);
+
+
+        }).Forget();
+
 
     }
 
