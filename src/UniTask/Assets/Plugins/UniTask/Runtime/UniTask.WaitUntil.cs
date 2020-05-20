@@ -28,7 +28,7 @@ namespace Cysharp.Threading.Tasks
           where T : class
         {
             var unityObject = target as UnityEngine.Object;
-            var isUnityObject = !object.ReferenceEquals(target, null); // don't use (unityObject == null)
+            var isUnityObject = target is UnityEngine.Object; // don't use (unityObject == null)
 
             return new UniTask<U>(isUnityObject
                 ? WaitUntilValueChangedUnityObjectPromise<T, U>.Create(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken, out var token)
@@ -330,6 +330,7 @@ namespace Cysharp.Threading.Tasks
             static readonly PromisePool<WaitUntilValueChangedUnityObjectPromise<T, U>> pool = new PromisePool<WaitUntilValueChangedUnityObjectPromise<T, U>>();
 
             T target;
+            UnityEngine.Object targetAsUnityObject;
             U currentValue;
             Func<T, U> monitorFunction;
             IEqualityComparer<U> equalityComparer;
@@ -351,6 +352,7 @@ namespace Cysharp.Threading.Tasks
                 var result = pool.TryRent() ?? new WaitUntilValueChangedUnityObjectPromise<T, U>();
 
                 result.target = target;
+                result.targetAsUnityObject = target as UnityEngine.Object;
                 result.monitorFunction = monitorFunction;
                 result.currentValue = monitorFunction(target);
                 result.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
@@ -399,7 +401,7 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                if (cancellationToken.IsCancellationRequested || target == null) // destroyed = cancel.
+                if (cancellationToken.IsCancellationRequested || targetAsUnityObject == null) // destroyed = cancel.
                 {
                     core.TrySetCanceled(cancellationToken);
                     return false;
