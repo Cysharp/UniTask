@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks
@@ -9,21 +10,26 @@ namespace Cysharp.Threading.Tasks
     {
         static readonly Action<object> cancellationTokenCallback = Callback;
 
-        public static (UniTask, CancellationTokenRegistration) ToUniTask(this CancellationToken cts)
+        public static (UniTask, CancellationTokenRegistration) ToUniTask(this CancellationToken cancellationToken)
         {
-            if (cts.IsCancellationRequested)
+            if (cancellationToken.IsCancellationRequested)
             {
-                return (UniTask.FromCanceled(cts), default(CancellationTokenRegistration));
+                return (UniTask.FromCanceled(cancellationToken), default(CancellationTokenRegistration));
             }
 
             var promise = new UniTaskCompletionSource();
-            return (promise.Task, cts.RegisterWithoutCaptureExecutionContext(cancellationTokenCallback, promise));
+            return (promise.Task, cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationTokenCallback, promise));
         }
 
         static void Callback(object state)
         {
             var promise = (UniTaskCompletionSource)state;
             promise.TrySetResult();
+        }
+
+        public static CancellationTokenAwaitable WaitUntilCanceled(this CancellationToken cancellationToken)
+        {
+            return new CancellationTokenAwaitable(cancellationToken);
         }
 
         public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(this CancellationToken cancellationToken, Action callback)
@@ -67,6 +73,47 @@ namespace Cysharp.Threading.Tasks
                 {
                     ExecutionContext.RestoreFlow();
                 }
+            }
+        }
+    }
+
+    public struct CancellationTokenAwaitable
+    {
+        CancellationToken cancellationToken;
+
+        public CancellationTokenAwaitable(CancellationToken cancellationToken)
+        {
+            this.cancellationToken = cancellationToken;
+        }
+
+        public Awaiter GetAwaiter()
+        {
+            return new Awaiter(cancellationToken);
+        }
+
+        public struct Awaiter : ICriticalNotifyCompletion
+        {
+            CancellationToken cancellationToken;
+
+            public Awaiter(CancellationToken cancellationToken)
+            {
+                this.cancellationToken = cancellationToken;
+            }
+
+            public bool IsCompleted => !cancellationToken.CanBeCanceled || cancellationToken.IsCancellationRequested;
+
+            public void GetResult()
+            {
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                UnsafeOnCompleted(continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                cancellationToken.RegisterWithoutCaptureExecutionContext(continuation);
             }
         }
     }

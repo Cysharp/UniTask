@@ -378,15 +378,7 @@ ECS, PlayerLoop
 TODO:
 
 ```csharp
-// Setup Entities Loop.
-var loop = PlayerLoop.GetDefaultPlayerLoop();
-foreach (var world in Unity.Entities.World.All)
-{
-    ScriptBehaviourUpdateOrder.UpdatePlayerLoop(world, loop);
-    loop = PlayerLoop.GetCurrentPlayerLoop();
-}
-
-// UniTask PlayerLoop Initialize.
+var loop = PlayerLoop.GetCurrentPlayerLoop();
 PlayerLoopHelper.Initialize(ref loop);
 ```
 
