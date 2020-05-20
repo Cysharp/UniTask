@@ -1,9 +1,8 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using Cysharp.Threading.Tasks.Linq;
 using System;
 using System.Threading;
-using Cysharp.Threading.Tasks.Internal;
-using Cysharp.Threading.Tasks.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -25,6 +24,21 @@ namespace Cysharp.Threading.Tasks
         public static IUniTaskAsyncEnumerable<AsyncUnit> OnInvokeAsAsyncEnumerable(this UnityEvent unityEvent, CancellationToken cancellationToken)
         {
             return new UnityEventHandlerAsyncEnumerable(unityEvent, cancellationToken);
+        }
+
+        public static AsyncUnityEventHandler<T> GetAsyncEventHandler<T>(this UnityEvent<T> unityEvent, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<T>(unityEvent, cancellationToken, false);
+        }
+
+        public static UniTask<T> OnInvokeAsync<T>(this UnityEvent<T> unityEvent, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<T>(unityEvent, cancellationToken, true).OnInvokeAsync();
+        }
+
+        public static IUniTaskAsyncEnumerable<T> OnInvokeAsAsyncEnumerable<T>(this UnityEvent<T> unityEvent, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<T>(unityEvent, cancellationToken);
         }
 
         public static IAsyncClickEventHandler GetAsyncClickEventHandler(this Button button)
@@ -205,6 +219,36 @@ namespace Cysharp.Threading.Tasks
         public static IUniTaskAsyncEnumerable<string> OnEndEditAsAsyncEnumerable(this InputField inputField, CancellationToken cancellationToken)
         {
             return new UnityEventHandlerAsyncEnumerable<string>(inputField.onEndEdit, cancellationToken);
+        }
+
+        public static IAsyncValueChangedEventHandler<string> GetAsyncValueChangedEventHandler(this InputField inputField)
+        {
+            return new AsyncUnityEventHandler<string>(inputField.onValueChanged, inputField.GetCancellationTokenOnDestroy(), false);
+        }
+
+        public static IAsyncValueChangedEventHandler<string> GetAsyncValueChangedEventHandler(this InputField inputField, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<string>(inputField.onValueChanged, cancellationToken, false);
+        }
+
+        public static UniTask<string> OnValueChangedAsync(this InputField inputField)
+        {
+            return new AsyncUnityEventHandler<string>(inputField.onValueChanged, inputField.GetCancellationTokenOnDestroy(), true).OnInvokeAsync();
+        }
+
+        public static UniTask<string> OnValueChangedAsync(this InputField inputField, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<string>(inputField.onValueChanged, cancellationToken, true).OnInvokeAsync();
+        }
+
+        public static IUniTaskAsyncEnumerable<string> OnValueChangedAsAsyncEnumerable(this InputField inputField)
+        {
+            return new UnityEventHandlerAsyncEnumerable<string>(inputField.onValueChanged, inputField.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<string> OnValueChangedAsAsyncEnumerable(this InputField inputField, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<string>(inputField.onValueChanged, cancellationToken);
         }
 
         public static IAsyncValueChangedEventHandler<int> GetAsyncValueChangedEventHandler(this Dropdown dropdown)

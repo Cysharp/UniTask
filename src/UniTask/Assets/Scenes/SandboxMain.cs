@@ -35,7 +35,32 @@ public enum MyEnum
 }
 
 
+public class SimplePresenter
+{
+    // View
+    public UnityEngine.UI.InputField Input;
 
+
+    // Presenter
+
+
+    public SimplePresenter()
+    {
+        //Input.OnValueChangedAsAsyncEnumerable()
+        //   .Queue()
+        //   .SelectAwait(async x =>
+        //   {
+        //       await UniTask.Delay(TimeSpan.FromSeconds(1));
+        //       return x;
+        //   })
+        //   .Select(x=> x.ToUpper())
+        //   .BindTo(
+
+
+
+    }
+
+}
 
 
 
@@ -87,7 +112,7 @@ public class SandboxMain : MonoBehaviour
 {
     public Button okButton;
     public Button cancelButton;
-    public Text text;
+
 
     CancellationTokenSource cts;
 
@@ -110,6 +135,63 @@ public class SandboxMain : MonoBehaviour
     }
 
 
+
+
+
+    public class Model
+    {
+        // State<int> Hp { get; }
+
+        AsyncReactiveProperty<int> hp;
+        IReadOnlyAsyncReactiveProperty<int> Hp => hp;
+
+
+
+        public Model()
+        {
+            // hp = new AsyncReactiveProperty<int>();
+
+
+
+
+
+
+            //setHp = Hp.GetSetter();
+        }
+
+        void Increment(int value)
+        {
+
+
+            // setHp(Hp.Value += value);
+        }
+    }
+
+
+
+    public Text text;
+    public Button button;
+
+    [SerializeField]
+    State<int> count;
+
+    void Start2()
+    {
+        count = 10;
+
+        var countS = count.GetSetter();
+
+        count.BindTo(text);
+        button.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+        {
+            // int foo = countS;
+            //countS.Set(countS += 10);
+
+            // setter.SetValue(count.Value + 10);
+        });
+    }
+
+
     async UniTask RunStandardDelayAsync()
     {
         UnityEngine.Debug.Log("DEB");
@@ -125,10 +207,6 @@ public class SandboxMain : MonoBehaviour
         JobHandle.ScheduleBatchedJobs();
 
         var scheduled = job.Schedule();
-
-
-
-         
 
         UnityEngine.Debug.Log("OK");
         await scheduled; // .ConfigureAwait(PlayerLoopTiming.Update); // .WaitAsync(PlayerLoopTiming.Update);
@@ -170,38 +248,62 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("Done");
     }
 
+    public int MyProperty { get; set; }
+
+    public class MyClass
+    {
+        public int MyProperty { get; set; }
+    }
+
+    MyClass mcc;
+
     void Start()
     {
-        //var rp = new AsyncReactiveProperty<int>(10);
+        this.mcc = new MyClass();
+        this.MyProperty = 999;
 
-        //Running(rp).Forget();
-
-        //await UniTaskAsyncEnumerable.EveryUpdate().Take(10).ForEachAsync((x, i) => rp.Value = i);
-
-        //rp.Dispose();
-
-        //var channel = Channel.CreateSingleConsumerUnbounded<int>();
-        //Debug.Log("wait channel");
-        //await channel.Reader.ReadAllAsync(this.GetCancellationTokenOnDestroy()).ForEachAsync(_ => { });
+        CheckDest().Forget();
 
 
-        var pubsub = new AsyncMessageBroker<int>();
+        //UniTaskAsyncEnumerable.EveryValueChanged(mcc, x => x.MyProperty)
+        //    .Do(_ => { }, () => Debug.Log("COMPLETED"))
+        //    .ForEachAsync(x =>
+        //    {
+        //        Debug.Log("VALUE_CHANGED:" + x);
+        //    })
+        //    .Forget();
 
-        pubsub.Subscribe().ForEachAsync(x => Debug.Log("A:" + x)).Forget();
-        pubsub.Subscribe().ForEachAsync(x => Debug.Log("B:" + x)).Forget();
 
 
-        int i = 0;
+
         okButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
         {
 
-            Debug.Log("foo");
-            pubsub.Publish(i++);
+            mcc.MyProperty += 10;
+
 
 
         }).Forget();
 
+        cancelButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+        {
+            this.mcc = null;
+        });
 
+    }
+
+    async UniTaskVoid CheckDest()
+    {
+        try
+        {
+            Debug.Log("WAIT");
+            await UniTask.WaitUntilValueChanged(mcc, x => x.MyProperty);
+            Debug.Log("CHANGED?");
+        }
+        finally
+        {
+            Debug.Log("END");
+        }
     }
 
     async UniTaskVoid Running(CancellationToken ct)
