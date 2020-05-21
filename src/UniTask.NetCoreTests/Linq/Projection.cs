@@ -319,5 +319,86 @@ namespace NetCoreTests.Linq
                 await Assert.ThrowsAsync<UniTaskTestException>(async () => await ys);
             }
         }
+
+        [Fact]
+        public async Task CombineLatestOK()
+        {
+            var a = new AsyncReactiveProperty<int>(0);
+            var b = new AsyncReactiveProperty<int>(0);
+
+            var list = new List<(int, int)>();
+            var complete = a.WithoutCurrent().CombineLatest(b.WithoutCurrent(), (x, y) => (x, y)).ForEachAsync(x => list.Add(x));
+
+            list.Count.Should().Be(0);
+
+            a.Value = 10;
+            list.Count.Should().Be(0);
+
+            a.Value = 20;
+            list.Count.Should().Be(0);
+
+            b.Value = 1;
+            list.Count.Should().Be(1);
+
+            list[0].Should().Be((20, 1));
+
+            a.Value = 30;
+            list.Last().Should().Be((30, 1));
+
+            b.Value = 2;
+            list.Last().Should().Be((30, 2));
+
+            a.Dispose();
+            b.Value = 3;
+            list.Last().Should().Be((30, 3));
+
+            b.Dispose();
+
+            await complete;
+        }
+
+        [Fact]
+        public async Task CombineLatestLong()
+        {
+            var a = UniTaskAsyncEnumerable.Range(1, 100000);
+            var b = new AsyncReactiveProperty<int>(0);
+
+            var list = new List<(int, int)>();
+            var complete = a.CombineLatest(b.WithoutCurrent(), (x, y) => (x, y)).ForEachAsync(x => list.Add(x));
+
+            b.Value = 1;
+
+            list[0].Should().Be((100000, 1));
+
+            b.Dispose();
+
+            await complete;
+        }
+
+        [Fact]
+        public async Task CombineLatestError()
+        {
+            var a = new AsyncReactiveProperty<int>(0);
+            var b = new AsyncReactiveProperty<int>(0);
+
+            var list = new List<(int, int)>();
+            var complete = a.WithoutCurrent()
+                .Select(x => { if (x == 0) { throw new MyException(); } return x; })
+                .CombineLatest(b.WithoutCurrent(), (x, y) => (x, y)).ForEachAsync(x => list.Add(x));
+
+
+            a.Value = 10;
+            b.Value = 1;
+            list.Last().Should().Be((10, 1));
+
+            a.Value = 0;
+
+            await Assert.ThrowsAsync<MyException>(async () => await complete);
+        }
+
+        class MyException : Exception
+        {
+
+        }
     }
 }

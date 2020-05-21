@@ -93,10 +93,16 @@ namespace NetCoreSandbox
 
             var channel = Channel.CreateSingleConsumerUnbounded<int>();
 
+            // Observable.Range(1,10).CombineLatest(
+
+            var cts = new CancellationTokenSource();
+
+            var token = cts.Token;
+
+            FooAsync(token).ForEachAsync(x => { }, token);
 
 
-
-
+            // Observable.Range(1,10).CombineLatest(
 
         }
 
