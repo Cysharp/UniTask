@@ -6,14 +6,6 @@ namespace Cysharp.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
-        public static IUniTaskAsyncEnumerable<TResult> CombineLatest<T1, TResult>(this IUniTaskAsyncEnumerable<T1> source1, Func<T1, TResult> resultSelector)
-        {
-            Error.ThrowArgumentNullException(source1, nameof(source1));
-            Error.ThrowArgumentNullException(resultSelector, nameof(resultSelector));
-
-            return new CombineLatest<T1, TResult>(source1, resultSelector);
-        }
-
         public static IUniTaskAsyncEnumerable<TResult> CombineLatest<T1, T2, TResult>(this IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, Func<T1, T2, TResult> resultSelector)
         {
             Error.ThrowArgumentNullException(source1, nameof(source1));
@@ -233,164 +225,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
     }
 
-    internal class CombineLatest<T1, TResult> : IUniTaskAsyncEnumerable<TResult>
-    {
-        readonly IUniTaskAsyncEnumerable<T1> source1;
-        
-        readonly Func<T1, TResult> resultSelector;
-
-        public CombineLatest(IUniTaskAsyncEnumerable<T1> source1, Func<T1, TResult> resultSelector)
-        {
-            this.source1 = source1;
-        
-            this.resultSelector = resultSelector;
-        }
-
-        public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-        {
-            return new _CombineLatest(source1, resultSelector, cancellationToken);
-        }
-
-        class _CombineLatest : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
-        {
-            static readonly Action<object> Completed1Delegate = Completed1;
-            const int CompleteCount = 1;
-
-            readonly IUniTaskAsyncEnumerable<T1> source1;
-       
-            readonly Func<T1, TResult> resultSelector;
-            CancellationToken cancellationToken;
-
-            IUniTaskAsyncEnumerator<T1> enumerator1;
-            UniTask<bool>.Awaiter awaiter1;
-            bool hasCurrent1;
-            bool running1;
-            T1 current1;
-
-
-            int completedCount;
-            bool syncRunning;
-            TResult result;
-
-            public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, Func<T1, TResult> resultSelector, CancellationToken cancellationToken)
-            {
-                this.source1 = source1;
-                
-                this.resultSelector = resultSelector;
-                this.cancellationToken = cancellationToken;
-            }
-
-            public TResult Current => result;
-
-            public UniTask<bool> MoveNextAsync()
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (completedCount == CompleteCount) return CompletedTasks.False;
-
-                if (enumerator1 == null)
-                {
-                    enumerator1 = source1.GetAsyncEnumerator(cancellationToken);
-                }
-
-                completionSource.Reset();
-
-                AGAIN:
-                syncRunning = true;
-                if (!running1)
-                {
-                    running1 = true;
-                    awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
-                }
-
-                if (!running1)
-                {
-                    goto AGAIN;
-                }
-                syncRunning = false;
-
-                return new UniTask<bool>(this, completionSource.Version);
-            }
-
-            static void Completed1(object state)
-            {
-                var self = (_CombineLatest)state;
-                self.running1 = false;
-
-                try
-                {
-                    if (self.awaiter1.GetResult())
-                    {
-                        self.hasCurrent1 = true;
-                        self.current1 = self.enumerator1.Current;
-                        goto SUCCESS;
-                    }
-                    else
-                    {
-                        if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
-                        {
-                            goto COMPLETE;
-                        }
-                        self.running1 = true; // as complete.
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
-                    return;
-                }
-
-                SUCCESS:
-                if (!self.TrySetResult())
-                {
-                    if (self.syncRunning) return;
-                    try
-                    {
-                        self.awaiter1 = self.enumerator1.MoveNextAsync().GetAwaiter();
-                    }
-                    catch (Exception ex)
-                    {
-                        self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
-                        return;
-                    }
-
-                    self.awaiter1.SourceOnCompleted(Completed1Delegate, self);
-                }
-                return;
-                COMPLETE:
-                self.completionSource.TrySetResult(false);
-                return;
-            }
-
-
-            bool TrySetResult()
-            {
-                if (hasCurrent1)
-                {
-                    result = resultSelector(current1);
-                    completionSource.TrySetResult(true);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            public async UniTask DisposeAsync()
-            {
-                if (enumerator1 != null)
-                {
-                    await enumerator1.DisposeAsync();
-                }
-                
-            }
-        }
-    }
-
     internal class CombineLatest<T1, T2, TResult> : IUniTaskAsyncEnumerable<TResult>
     {
         readonly IUniTaskAsyncEnumerable<T1> source1;
@@ -435,7 +269,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running2;
             T2 current2;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -470,13 +303,27 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2)
@@ -503,11 +350,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -556,11 +403,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -594,7 +441,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 return;
             }
 
-
             bool TrySetResult()
             {
                 if (hasCurrent1 && hasCurrent2)
@@ -619,7 +465,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator2.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -678,7 +523,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running3;
             T3 current3;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -715,19 +559,40 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3)
@@ -754,11 +619,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -807,11 +672,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -860,11 +725,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -898,7 +763,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 return;
             }
 
-
             bool TrySetResult()
             {
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3)
@@ -927,7 +791,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator3.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -996,7 +859,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running4;
             T4 current4;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -1035,25 +897,53 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4)
@@ -1080,11 +970,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -1133,11 +1023,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -1186,11 +1076,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -1239,11 +1129,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -1277,7 +1167,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 return;
             }
 
-
             bool TrySetResult()
             {
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4)
@@ -1310,7 +1199,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator4.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -1389,7 +1277,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running5;
             T5 current5;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -1430,31 +1317,66 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5)
@@ -1481,11 +1403,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -1534,11 +1456,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -1587,11 +1509,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -1640,11 +1562,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -1693,11 +1615,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -1730,7 +1652,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -1768,7 +1689,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator5.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -1857,7 +1777,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running6;
             T6 current6;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -1900,37 +1819,79 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6)
@@ -1957,11 +1918,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -2010,11 +1971,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -2063,11 +2024,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -2116,11 +2077,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -2169,11 +2130,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -2222,11 +2183,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -2259,7 +2220,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -2301,7 +2261,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator6.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -2400,7 +2359,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running7;
             T7 current7;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -2445,43 +2403,92 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7)
@@ -2508,11 +2515,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -2561,11 +2568,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -2614,11 +2621,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -2667,11 +2674,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -2720,11 +2727,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -2773,11 +2780,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -2826,11 +2833,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -2863,7 +2870,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -2909,7 +2915,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator7.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -3018,7 +3023,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running8;
             T8 current8;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -3065,49 +3069,105 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8)
@@ -3134,11 +3194,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -3187,11 +3247,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -3240,11 +3300,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -3293,11 +3353,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -3346,11 +3406,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -3399,11 +3459,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -3452,11 +3512,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -3505,11 +3565,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -3542,7 +3602,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -3592,7 +3651,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator8.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -3711,7 +3769,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running9;
             T9 current9;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -3760,55 +3817,118 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
                 if (!running9)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
-                    awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    if (awaiter9.IsCompleted)
+                    {
+                        Completed9(this);
+                    }
+                    else
+                    {
+                        awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9)
@@ -3835,11 +3955,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -3888,11 +4008,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -3941,11 +4061,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -3994,11 +4114,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -4047,11 +4167,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -4100,11 +4220,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -4153,11 +4273,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -4206,11 +4326,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -4259,11 +4379,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running9 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running9 = true; // as complete.
                         return;
                     }
                 }
@@ -4296,7 +4416,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -4350,7 +4469,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator9.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -4479,7 +4597,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running10;
             T10 current10;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -4530,61 +4647,131 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
                 if (!running9)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
-                    awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    if (awaiter9.IsCompleted)
+                    {
+                        Completed9(this);
+                    }
+                    else
+                    {
+                        awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    }
                 }
                 if (!running10)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
-                    awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    if (awaiter10.IsCompleted)
+                    {
+                        Completed10(this);
+                    }
+                    else
+                    {
+                        awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10)
@@ -4611,11 +4798,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -4664,11 +4851,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -4717,11 +4904,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -4770,11 +4957,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -4823,11 +5010,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -4876,11 +5063,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -4929,11 +5116,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -4982,11 +5169,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -5035,11 +5222,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running9 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running9 = true; // as complete.
                         return;
                     }
                 }
@@ -5088,11 +5275,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running10 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running10 = true; // as complete.
                         return;
                     }
                 }
@@ -5125,7 +5312,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -5183,7 +5369,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator10.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -5322,7 +5507,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running11;
             T11 current11;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -5375,67 +5559,144 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
                 if (!running9)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
-                    awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    if (awaiter9.IsCompleted)
+                    {
+                        Completed9(this);
+                    }
+                    else
+                    {
+                        awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    }
                 }
                 if (!running10)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
-                    awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    if (awaiter10.IsCompleted)
+                    {
+                        Completed10(this);
+                    }
+                    else
+                    {
+                        awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    }
                 }
                 if (!running11)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
-                    awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    if (awaiter11.IsCompleted)
+                    {
+                        Completed11(this);
+                    }
+                    else
+                    {
+                        awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11)
@@ -5462,11 +5723,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -5515,11 +5776,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -5568,11 +5829,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -5621,11 +5882,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -5674,11 +5935,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -5727,11 +5988,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -5780,11 +6041,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -5833,11 +6094,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -5886,11 +6147,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running9 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running9 = true; // as complete.
                         return;
                     }
                 }
@@ -5939,11 +6200,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running10 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running10 = true; // as complete.
                         return;
                     }
                 }
@@ -5992,11 +6253,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running11 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running11 = true; // as complete.
                         return;
                     }
                 }
@@ -6029,7 +6290,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -6091,7 +6351,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator11.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -6240,7 +6499,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running12;
             T12 current12;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -6295,73 +6553,157 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
                 if (!running9)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
-                    awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    if (awaiter9.IsCompleted)
+                    {
+                        Completed9(this);
+                    }
+                    else
+                    {
+                        awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    }
                 }
                 if (!running10)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
-                    awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    if (awaiter10.IsCompleted)
+                    {
+                        Completed10(this);
+                    }
+                    else
+                    {
+                        awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    }
                 }
                 if (!running11)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
-                    awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    if (awaiter11.IsCompleted)
+                    {
+                        Completed11(this);
+                    }
+                    else
+                    {
+                        awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    }
                 }
                 if (!running12)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
-                    awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    if (awaiter12.IsCompleted)
+                    {
+                        Completed12(this);
+                    }
+                    else
+                    {
+                        awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12)
@@ -6388,11 +6730,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -6441,11 +6783,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -6494,11 +6836,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -6547,11 +6889,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -6600,11 +6942,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -6653,11 +6995,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -6706,11 +7048,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -6759,11 +7101,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -6812,11 +7154,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running9 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running9 = true; // as complete.
                         return;
                     }
                 }
@@ -6865,11 +7207,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running10 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running10 = true; // as complete.
                         return;
                     }
                 }
@@ -6918,11 +7260,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running11 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running11 = true; // as complete.
                         return;
                     }
                 }
@@ -6971,11 +7313,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running12 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running12 = true; // as complete.
                         return;
                     }
                 }
@@ -7008,7 +7350,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -7074,7 +7415,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator12.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -7233,7 +7573,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running13;
             T13 current13;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -7290,79 +7629,170 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
                 if (!running9)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
-                    awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    if (awaiter9.IsCompleted)
+                    {
+                        Completed9(this);
+                    }
+                    else
+                    {
+                        awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    }
                 }
                 if (!running10)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
-                    awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    if (awaiter10.IsCompleted)
+                    {
+                        Completed10(this);
+                    }
+                    else
+                    {
+                        awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    }
                 }
                 if (!running11)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
-                    awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    if (awaiter11.IsCompleted)
+                    {
+                        Completed11(this);
+                    }
+                    else
+                    {
+                        awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    }
                 }
                 if (!running12)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
-                    awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    if (awaiter12.IsCompleted)
+                    {
+                        Completed12(this);
+                    }
+                    else
+                    {
+                        awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    }
                 }
                 if (!running13)
                 {
                     running13 = true;
                     awaiter13 = enumerator13.MoveNextAsync().GetAwaiter();
-                    awaiter13.SourceOnCompleted(Completed13Delegate, this);
+                    if (awaiter13.IsCompleted)
+                    {
+                        Completed13(this);
+                    }
+                    else
+                    {
+                        awaiter13.SourceOnCompleted(Completed13Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13)
@@ -7389,11 +7819,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -7442,11 +7872,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -7495,11 +7925,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -7548,11 +7978,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -7601,11 +8031,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -7654,11 +8084,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -7707,11 +8137,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -7760,11 +8190,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -7813,11 +8243,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running9 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running9 = true; // as complete.
                         return;
                     }
                 }
@@ -7866,11 +8296,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running10 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running10 = true; // as complete.
                         return;
                     }
                 }
@@ -7919,11 +8349,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running11 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running11 = true; // as complete.
                         return;
                     }
                 }
@@ -7972,11 +8402,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running12 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running12 = true; // as complete.
                         return;
                     }
                 }
@@ -8025,11 +8455,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running13 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running13 = true; // as complete.
                         return;
                     }
                 }
@@ -8062,7 +8492,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -8132,7 +8561,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator13.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -8301,7 +8729,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running14;
             T14 current14;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -8360,85 +8787,183 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
                 if (!running9)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
-                    awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    if (awaiter9.IsCompleted)
+                    {
+                        Completed9(this);
+                    }
+                    else
+                    {
+                        awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    }
                 }
                 if (!running10)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
-                    awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    if (awaiter10.IsCompleted)
+                    {
+                        Completed10(this);
+                    }
+                    else
+                    {
+                        awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    }
                 }
                 if (!running11)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
-                    awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    if (awaiter11.IsCompleted)
+                    {
+                        Completed11(this);
+                    }
+                    else
+                    {
+                        awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    }
                 }
                 if (!running12)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
-                    awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    if (awaiter12.IsCompleted)
+                    {
+                        Completed12(this);
+                    }
+                    else
+                    {
+                        awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    }
                 }
                 if (!running13)
                 {
                     running13 = true;
                     awaiter13 = enumerator13.MoveNextAsync().GetAwaiter();
-                    awaiter13.SourceOnCompleted(Completed13Delegate, this);
+                    if (awaiter13.IsCompleted)
+                    {
+                        Completed13(this);
+                    }
+                    else
+                    {
+                        awaiter13.SourceOnCompleted(Completed13Delegate, this);
+                    }
                 }
                 if (!running14)
                 {
                     running14 = true;
                     awaiter14 = enumerator14.MoveNextAsync().GetAwaiter();
-                    awaiter14.SourceOnCompleted(Completed14Delegate, this);
+                    if (awaiter14.IsCompleted)
+                    {
+                        Completed14(this);
+                    }
+                    else
+                    {
+                        awaiter14.SourceOnCompleted(Completed14Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13 || !running14)
@@ -8465,11 +8990,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -8518,11 +9043,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -8571,11 +9096,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -8624,11 +9149,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -8677,11 +9202,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -8730,11 +9255,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -8783,11 +9308,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -8836,11 +9361,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -8889,11 +9414,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running9 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running9 = true; // as complete.
                         return;
                     }
                 }
@@ -8942,11 +9467,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running10 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running10 = true; // as complete.
                         return;
                     }
                 }
@@ -8995,11 +9520,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running11 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running11 = true; // as complete.
                         return;
                     }
                 }
@@ -9048,11 +9573,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running12 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running12 = true; // as complete.
                         return;
                     }
                 }
@@ -9101,11 +9626,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running13 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running13 = true; // as complete.
                         return;
                     }
                 }
@@ -9154,11 +9679,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running14 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running14 = true; // as complete.
                         return;
                     }
                 }
@@ -9191,7 +9716,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -9265,7 +9789,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator14.DisposeAsync();
                 }
-                
             }
         }
     }
@@ -9444,7 +9967,6 @@ namespace Cysharp.Threading.Tasks.Linq
             bool running15;
             T15 current15;
 
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -9505,91 +10027,196 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
-                    awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    if (awaiter1.IsCompleted)
+                    {
+                        Completed1(this);
+                    }
+                    else
+                    {
+                        awaiter1.SourceOnCompleted(Completed1Delegate, this);
+                    }
                 }
                 if (!running2)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
-                    awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    if (awaiter2.IsCompleted)
+                    {
+                        Completed2(this);
+                    }
+                    else
+                    {
+                        awaiter2.SourceOnCompleted(Completed2Delegate, this);
+                    }
                 }
                 if (!running3)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
-                    awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    if (awaiter3.IsCompleted)
+                    {
+                        Completed3(this);
+                    }
+                    else
+                    {
+                        awaiter3.SourceOnCompleted(Completed3Delegate, this);
+                    }
                 }
                 if (!running4)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
-                    awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    if (awaiter4.IsCompleted)
+                    {
+                        Completed4(this);
+                    }
+                    else
+                    {
+                        awaiter4.SourceOnCompleted(Completed4Delegate, this);
+                    }
                 }
                 if (!running5)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
-                    awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    if (awaiter5.IsCompleted)
+                    {
+                        Completed5(this);
+                    }
+                    else
+                    {
+                        awaiter5.SourceOnCompleted(Completed5Delegate, this);
+                    }
                 }
                 if (!running6)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
-                    awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    if (awaiter6.IsCompleted)
+                    {
+                        Completed6(this);
+                    }
+                    else
+                    {
+                        awaiter6.SourceOnCompleted(Completed6Delegate, this);
+                    }
                 }
                 if (!running7)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
-                    awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    if (awaiter7.IsCompleted)
+                    {
+                        Completed7(this);
+                    }
+                    else
+                    {
+                        awaiter7.SourceOnCompleted(Completed7Delegate, this);
+                    }
                 }
                 if (!running8)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
-                    awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    if (awaiter8.IsCompleted)
+                    {
+                        Completed8(this);
+                    }
+                    else
+                    {
+                        awaiter8.SourceOnCompleted(Completed8Delegate, this);
+                    }
                 }
                 if (!running9)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
-                    awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    if (awaiter9.IsCompleted)
+                    {
+                        Completed9(this);
+                    }
+                    else
+                    {
+                        awaiter9.SourceOnCompleted(Completed9Delegate, this);
+                    }
                 }
                 if (!running10)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
-                    awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    if (awaiter10.IsCompleted)
+                    {
+                        Completed10(this);
+                    }
+                    else
+                    {
+                        awaiter10.SourceOnCompleted(Completed10Delegate, this);
+                    }
                 }
                 if (!running11)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
-                    awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    if (awaiter11.IsCompleted)
+                    {
+                        Completed11(this);
+                    }
+                    else
+                    {
+                        awaiter11.SourceOnCompleted(Completed11Delegate, this);
+                    }
                 }
                 if (!running12)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
-                    awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    if (awaiter12.IsCompleted)
+                    {
+                        Completed12(this);
+                    }
+                    else
+                    {
+                        awaiter12.SourceOnCompleted(Completed12Delegate, this);
+                    }
                 }
                 if (!running13)
                 {
                     running13 = true;
                     awaiter13 = enumerator13.MoveNextAsync().GetAwaiter();
-                    awaiter13.SourceOnCompleted(Completed13Delegate, this);
+                    if (awaiter13.IsCompleted)
+                    {
+                        Completed13(this);
+                    }
+                    else
+                    {
+                        awaiter13.SourceOnCompleted(Completed13Delegate, this);
+                    }
                 }
                 if (!running14)
                 {
                     running14 = true;
                     awaiter14 = enumerator14.MoveNextAsync().GetAwaiter();
-                    awaiter14.SourceOnCompleted(Completed14Delegate, this);
+                    if (awaiter14.IsCompleted)
+                    {
+                        Completed14(this);
+                    }
+                    else
+                    {
+                        awaiter14.SourceOnCompleted(Completed14Delegate, this);
+                    }
                 }
                 if (!running15)
                 {
                     running15 = true;
                     awaiter15 = enumerator15.MoveNextAsync().GetAwaiter();
-                    awaiter15.SourceOnCompleted(Completed15Delegate, this);
+                    if (awaiter15.IsCompleted)
+                    {
+                        Completed15(this);
+                    }
+                    else
+                    {
+                        awaiter15.SourceOnCompleted(Completed15Delegate, this);
+                    }
                 }
 
                 if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13 || !running14 || !running15)
@@ -9616,11 +10243,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running1 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running1 = true; // as complete.
                         return;
                     }
                 }
@@ -9669,11 +10296,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running2 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running2 = true; // as complete.
                         return;
                     }
                 }
@@ -9722,11 +10349,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running3 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running3 = true; // as complete.
                         return;
                     }
                 }
@@ -9775,11 +10402,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running4 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running4 = true; // as complete.
                         return;
                     }
                 }
@@ -9828,11 +10455,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running5 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running5 = true; // as complete.
                         return;
                     }
                 }
@@ -9881,11 +10508,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running6 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running6 = true; // as complete.
                         return;
                     }
                 }
@@ -9934,11 +10561,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running7 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running7 = true; // as complete.
                         return;
                     }
                 }
@@ -9987,11 +10614,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running8 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running8 = true; // as complete.
                         return;
                     }
                 }
@@ -10040,11 +10667,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running9 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running9 = true; // as complete.
                         return;
                     }
                 }
@@ -10093,11 +10720,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running10 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running10 = true; // as complete.
                         return;
                     }
                 }
@@ -10146,11 +10773,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running11 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running11 = true; // as complete.
                         return;
                     }
                 }
@@ -10199,11 +10826,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running12 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running12 = true; // as complete.
                         return;
                     }
                 }
@@ -10252,11 +10879,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running13 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running13 = true; // as complete.
                         return;
                     }
                 }
@@ -10305,11 +10932,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running14 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running14 = true; // as complete.
                         return;
                     }
                 }
@@ -10358,11 +10985,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running15 = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running15 = true; // as complete.
                         return;
                     }
                 }
@@ -10395,7 +11022,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 self.completionSource.TrySetResult(false);
                 return;
             }
-
 
             bool TrySetResult()
             {
@@ -10473,7 +11099,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator15.DisposeAsync();
                 }
-                
             }
         }
     }

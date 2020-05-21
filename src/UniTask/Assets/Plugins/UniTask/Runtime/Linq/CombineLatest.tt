@@ -20,7 +20,7 @@ namespace Cysharp.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
-<# for(var i = 1; i <= tMax; i++) { #>
+<# for(var i = 2; i <= tMax; i++) { #>
         public static IUniTaskAsyncEnumerable<TResult> CombineLatest<<#= typeArgs(i) #>>(this <#= paramArgs(i) #>, Func<<#= typeArgs(i) #>> resultSelector)
         {
 <# for(var j = 1; j <= i; j++) { #>
@@ -34,7 +34,7 @@ namespace Cysharp.Threading.Tasks.Linq
 <# } #>
     }
 
-<# for(var i = 1; i <= tMax; i++) { #>
+<# for(var i = 2; i <= tMax; i++) { #>
     internal class CombineLatest<<#= typeArgs(i) #>> : IUniTaskAsyncEnumerable<TResult>
     {
 <# for(var j = 1; j <= i; j++) { #>
@@ -76,7 +76,6 @@ namespace Cysharp.Threading.Tasks.Linq
             T<#= j #> current<#= j #>;
 
 <# } #>
-
             int completedCount;
             bool syncRunning;
             TResult result;
@@ -113,7 +112,14 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     running<#= j #> = true;
                     awaiter<#= j #> = enumerator<#= j #>.MoveNextAsync().GetAwaiter();
-                    awaiter<#= j #>.SourceOnCompleted(Completed<#= j #>Delegate, this);
+                    if (awaiter<#= j #>.IsCompleted)
+                    {
+                        Completed<#= j #>(this);
+                    }
+                    else
+                    {
+                        awaiter<#= j #>.SourceOnCompleted(Completed<#= j #>Delegate, this);
+                    }
                 }
 <# } #>
 
@@ -142,11 +148,11 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                     else
                     {
+                        self.running<#= j #> = true; // as complete, no more call MoveNextAsync.
                         if (Interlocked.Increment(ref self.completedCount) == CompleteCount)
                         {
                             goto COMPLETE;
                         }
-                        self.running<#= j #> = true; // as complete.
                         return;
                     }
                 }
@@ -181,7 +187,6 @@ namespace Cysharp.Threading.Tasks.Linq
             }
 
 <# } #>
-
             bool TrySetResult()
             {
                 if (<#= string.Join(" && ", Enumerable.Range(1, i).Select(x => $"hasCurrent{x}")) #>)
@@ -203,7 +208,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     await enumerator<#= j #>.DisposeAsync();
                 }
-<# } #>                
+<# } #>
             }
         }
     }
