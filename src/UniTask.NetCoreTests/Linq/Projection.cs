@@ -396,6 +396,39 @@ namespace NetCoreTests.Linq
             await Assert.ThrowsAsync<MyException>(async () => await complete);
         }
 
+
+
+        [Fact]
+        public async Task PariwiseImmediate()
+        {
+            var xs = await UniTaskAsyncEnumerable.Range(1, 5).Pairwise().ToArrayAsync();
+            xs.Should().BeEquivalentTo((1, 2), (2, 3), (3, 4), (4, 5));
+        }
+
+        [Fact]
+        public async Task Pariwise()
+        {
+            var a = new AsyncReactiveProperty<int>(0);
+
+            var list = new List<(int, int)>();
+            var complete = a.WithoutCurrent().Pairwise().ForEachAsync(x => list.Add(x));
+
+            list.Count.Should().Be(0);
+            a.Value = 10;
+            list.Count.Should().Be(0);
+            a.Value = 20;
+            list.Count.Should().Be(1);
+            a.Value = 30;
+            a.Value = 40;
+            a.Value = 50;
+
+            a.Dispose();
+
+            await complete;
+
+            list.Should().BeEquivalentTo((10, 20), (20, 30), (30, 40), (40, 50));
+        }
+
         class MyException : Exception
         {
 
