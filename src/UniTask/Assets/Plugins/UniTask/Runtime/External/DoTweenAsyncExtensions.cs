@@ -26,7 +26,7 @@ namespace Cysharp.Threading.Tasks
         CompleteWithSeqeunceCallbackAndCancelAwait
     }
 
-    public static class DoTweenAsyncExtensions
+    public static class DOTweenAsyncExtensions
     {
         public static TweenAwaiter GetAwaiter(this Tween tween)
         {
