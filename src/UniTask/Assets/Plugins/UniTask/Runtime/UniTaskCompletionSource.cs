@@ -123,7 +123,14 @@ namespace Cysharp.Threading.Tasks
             {
                 // setup result
                 this.hasUnhandledError = true;
-                this.error = ExceptionDispatchInfo.Capture(error);
+                if (error is OperationCanceledException)
+                {
+                    this.error = error;
+                }
+                else
+                {
+                    this.error = ExceptionDispatchInfo.Capture(error);
+                }
 
                 if (continuation != null || Interlocked.CompareExchange(ref this.continuation, UniTaskCompletionSourceCoreShared.s_sentinel, null) != null)
                 {
