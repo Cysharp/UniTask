@@ -559,36 +559,6 @@ namespace Cysharp.Threading.Tasks
             return await continuationFunction();
         }
 
-#if UNITY_2018_3_OR_NEWER
-
-        public static async UniTask ConfigureAwait(this Task task, PlayerLoopTiming timing)
-        {
-            await task.ConfigureAwait(false);
-            await UniTask.Yield(timing);
-        }
-
-        public static async UniTask<T> ConfigureAwait<T>(this Task<T> task, PlayerLoopTiming timing)
-        {
-            var v = await task.ConfigureAwait(false);
-            await UniTask.Yield(timing);
-            return v;
-        }
-
-        public static async UniTask ConfigureAwait(this UniTask task, PlayerLoopTiming timing)
-        {
-            await task;
-            await UniTask.Yield(timing);
-        }
-
-        public static async UniTask<T> ConfigureAwait<T>(this UniTask<T> task, PlayerLoopTiming timing)
-        {
-            var v = await task;
-            await UniTask.Yield(timing);
-            return v;
-        }
-
-#endif
-
         public static async UniTask<T> Unwrap<T>(this UniTask<UniTask<T>> task)
         {
             return await await task;

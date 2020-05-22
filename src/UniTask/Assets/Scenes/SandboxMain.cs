@@ -244,7 +244,7 @@ public class SandboxMain : MonoBehaviour
     }
 
 
-    async UniTaskVoid Start()
+    void  Start()
     {
         //UniTaskAsyncEnumerable.EveryValueChanged(mcc, x => x.MyProperty)
         //    .Do(_ => { }, () => Debug.Log("COMPLETED"))
@@ -535,7 +535,7 @@ public class SandboxMain : MonoBehaviour
 
 public class ShowPlayerLoop
 {
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void Init()
     {
         var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetDefaultPlayerLoop();

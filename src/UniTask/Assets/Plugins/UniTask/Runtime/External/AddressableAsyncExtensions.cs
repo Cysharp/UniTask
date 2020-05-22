@@ -13,21 +13,23 @@ namespace Cysharp.Threading.Tasks
 {
     public static class AddressableAsyncExtensions
     {
-#region AsyncOperationHandle
+        #region AsyncOperationHandle
 
         public static AsyncOperationHandleAwaiter GetAwaiter(this AsyncOperationHandle handle)
         {
             return new AsyncOperationHandleAwaiter(handle);
         }
 
-        public static UniTask ToUniTask(this AsyncOperationHandle handle)
+        public static UniTask WithCancellation(this AsyncOperationHandle handle, CancellationToken cancellationToken)
         {
-            return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, PlayerLoopTiming.Update, null, CancellationToken.None, out var token), token);
+            if (handle.IsDone) return UniTask.CompletedTask;
+            return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, PlayerLoopTiming.Update, null, cancellationToken, out var token), token);
         }
 
-        public static UniTask ConfigureAwait(this AsyncOperationHandle handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static UniTask ToUniTask(this AsyncOperationHandle handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, timing, progress, cancellation, out var token), token);
+            if (handle.IsDone) return UniTask.CompletedTask;
+            return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, timing, progress, cancellationToken, out var token), token);
         }
 
         public struct AsyncOperationHandleAwaiter : ICriticalNotifyCompletion
@@ -75,7 +77,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class AsyncOperationHandleConfiguredSource : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class AsyncOperationHandleConfiguredSource : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
         {
             static readonly PromisePool<AsyncOperationHandleConfiguredSource> pool = new PromisePool<AsyncOperationHandleConfiguredSource>();
 
@@ -185,22 +187,24 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-#endregion
+        #endregion
 
-#region AsyncOperationHandle_T
+        #region AsyncOperationHandle_T
 
         public static AsyncOperationHandleAwaiter<T> GetAwaiter<T>(this AsyncOperationHandle<T> handle)
         {
             return new AsyncOperationHandleAwaiter<T>(handle);
         }
 
-        public static UniTask<T> ToUniTask<T>(this AsyncOperationHandle<T> handle)
+        public static UniTask<T> WithCancellation<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken)
         {
-            return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, PlayerLoopTiming.Update, null, CancellationToken.None, out var token), token);
+            if (handle.IsDone) return UniTask.FromResult(handle.Result);
+            return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, PlayerLoopTiming.Update, null, cancellationToken, out var token), token);
         }
 
-        public static UniTask<T> ConfigureAwait<T>(this AsyncOperationHandle<T> handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static UniTask<T> ToUniTask<T>(this AsyncOperationHandle<T> handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
+            if (handle.IsDone) return UniTask.FromResult(handle.Result);
             return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, timing, progress, cancellation, out var token), token);
         }
 
@@ -250,7 +254,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class AsyncOperationHandleConfiguredSource<T> : IUniTaskSource<T>, IPlayerLoopItem, IPromisePoolItem
+        sealed class AsyncOperationHandleConfiguredSource<T> : IUniTaskSource<T>, IPlayerLoopItem, IPromisePoolItem
         {
             static readonly PromisePool<AsyncOperationHandleConfiguredSource<T>> pool = new PromisePool<AsyncOperationHandleConfiguredSource<T>>();
 
@@ -366,7 +370,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-#endregion
+        #endregion
     }
 }
 

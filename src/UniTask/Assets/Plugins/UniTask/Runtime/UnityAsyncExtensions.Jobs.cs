@@ -28,22 +28,8 @@ namespace Cysharp.Threading.Tasks
 
             return new UniTask(handler, token).GetAwaiter();
         }
-
-        public static UniTask ToUniTask(this JobHandle jobHandle)
-        {
-            var handler = JobHandlePromise.Create(jobHandle, out var token);
-            {
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, handler);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, handler);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, handler);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, handler);
-                PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, handler);
-            }
-
-            return new UniTask(handler, token);
-        }
-
-        public static UniTask ConfigureAwait(this JobHandle jobHandle, PlayerLoopTiming waitTiming)
+     
+        public static UniTask ToUniTask(this JobHandle jobHandle, PlayerLoopTiming waitTiming)
         {
             var handler = JobHandlePromise.Create(jobHandle, out var token);
             {

@@ -124,7 +124,6 @@ namespace Cysharp.Threading.TasksTests
         public IEnumerator BothEnumeratorCheck() => UniTask.ToCoroutine(async () =>
         {
             await ToaruCoroutineEnumerator(); // wait 5 frame:)
-            await ToaruCoroutineEnumerator().ConfigureAwait(PlayerLoopTiming.PostLateUpdate);
         });
 
         [UnityTest]

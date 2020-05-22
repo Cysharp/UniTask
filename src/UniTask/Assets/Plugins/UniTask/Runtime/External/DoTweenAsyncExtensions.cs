@@ -36,12 +36,16 @@ namespace Cysharp.Threading.Tasks
         public static UniTask WithCancellation(this Tween tween, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(tween, nameof(tween));
+
+            if (!tween.IsActive()) return UniTask.CompletedTask;
             return new UniTask(TweenConfiguredSource.Create(tween, TweenCancelBehaviour.Kill, cancellationToken, out var token), token);
         }
 
         public static UniTask ToUniTask(this Tween tween, TweenCancelBehaviour tweenCancelBehaviour = TweenCancelBehaviour.Kill, CancellationToken cancellationToken = default)
         {
             Error.ThrowArgumentNullException(tween, nameof(tween));
+
+            if (!tween.IsActive()) return UniTask.CompletedTask;
             return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, out var token), token);
         }
 
@@ -79,7 +83,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class TweenConfiguredSource : IUniTaskSource, IPromisePoolItem
+        sealed class TweenConfiguredSource : IUniTaskSource, IPromisePoolItem
         {
             static readonly PromisePool<TweenConfiguredSource> pool = new PromisePool<TweenConfiguredSource>();
             static Action<object> CancellationCallbackDelegate = CancellationCallback;

@@ -14,16 +14,19 @@ namespace Cysharp.Threading.Tasks
     {
         public static UniTask.Awaiter GetAwaiter(this IEnumerator enumerator)
         {
+            Error.ThrowArgumentNullException(enumerator, nameof(enumerator));
             return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, CancellationToken.None, out var token), token).GetAwaiter();
         }
 
-        public static UniTask ToUniTask(this IEnumerator enumerator)
+        public static UniTask WithCancellation(this IEnumerator enumerator, CancellationToken cancellationToken)
         {
-            return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, CancellationToken.None, out var token), token);
+            Error.ThrowArgumentNullException(enumerator, nameof(enumerator));
+            return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, cancellationToken, out var token), token);
         }
 
-        public static UniTask ConfigureAwait(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask ToUniTask(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
+            Error.ThrowArgumentNullException(enumerator, nameof(enumerator));
             return new UniTask(EnumeratorPromise.Create(enumerator, timing, cancellationToken, out var token), token);
         }
 
