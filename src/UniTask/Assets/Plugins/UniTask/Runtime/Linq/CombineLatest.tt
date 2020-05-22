@@ -159,6 +159,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
                 catch (Exception ex)
                 {
+                    self.running<#= j #> = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
                     self.completionSource.TrySetException(ex);
                     return;
@@ -168,6 +169,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 if (!self.TrySetResult())
                 {
                     if (self.syncRunning) return;
+                    self.running<#= j #> = true; // as complete, no more call MoveNextAsync.
                     try
                     {
                         self.awaiter<#= j #> = self.enumerator<#= j #>.MoveNextAsync().GetAwaiter();
