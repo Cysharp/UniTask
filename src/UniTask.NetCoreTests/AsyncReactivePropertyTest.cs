@@ -52,44 +52,44 @@ namespace NetCoreTests
             ar.Should().BeEquivalentTo(new[] { 100, 100, 100, 131, 191 });
         }
 
-        [Fact]
-        public async Task StateIteration()
-        {
-            var rp = new State<int>(99);
-            var setter = rp.GetSetter();
+        //[Fact]
+        //public async Task StateIteration()
+        //{
+        //    var rp = new ReadOnlyAsyncReactiveProperty<int>(99);
+        //    var setter = rp.GetSetter();
 
-            var f = await rp.FirstAsync();
-            f.Should().Be(99);
+        //    var f = await rp.FirstAsync();
+        //    f.Should().Be(99);
 
-            var array = rp.Take(5).ToArrayAsync();
+        //    var array = rp.Take(5).ToArrayAsync();
 
-            setter(100);
-            setter(100);
-            setter(100);
-            setter(131);
+        //    setter(100);
+        //    setter(100);
+        //    setter(100);
+        //    setter(131);
 
-            var ar = await array;
+        //    var ar = await array;
 
-            ar.Should().BeEquivalentTo(new[] { 99, 100, 100, 100, 131 });
-        }
+        //    ar.Should().BeEquivalentTo(new[] { 99, 100, 100, 100, 131 });
+        //}
 
-        [Fact]
-        public async Task StateWithoutCurrent()
-        {
-            var rp = new State<int>(99);
-            var setter = rp.GetSetter();
+        //[Fact]
+        //public async Task StateWithoutCurrent()
+        //{
+        //    var rp = new ReadOnlyAsyncReactiveProperty<int>(99);
+        //    var setter = rp.GetSetter();
 
-            var array = rp.WithoutCurrent().Take(5).ToArrayAsync();
-            setter(100);
-            setter(100);
-            setter(100);
-            setter(131);
-            setter(191);
+        //    var array = rp.WithoutCurrent().Take(5).ToArrayAsync();
+        //    setter(100);
+        //    setter(100);
+        //    setter(100);
+        //    setter(131);
+        //    setter(191);
 
-            var ar = await array;
+        //    var ar = await array;
 
-            ar.Should().BeEquivalentTo(new[] { 100, 100, 100, 131, 191 });
-        }
+        //    ar.Should().BeEquivalentTo(new[] { 100, 100, 100, 131, 191 });
+        //}
 
 
 
@@ -98,7 +98,7 @@ namespace NetCoreTests
         {
             var rp = new AsyncReactiveProperty<int>(10);
 
-            var state = rp.ToState(CancellationToken.None);
+            var state = rp.ToReadOnlyAsyncReactiveProperty(CancellationToken.None);
 
             rp.Value = 10;
             state.Value.Should().Be(10);

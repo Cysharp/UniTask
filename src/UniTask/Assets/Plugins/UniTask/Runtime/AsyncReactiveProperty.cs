@@ -175,13 +175,11 @@ namespace Cysharp.Threading.Tasks
         }
     }
 
-    public class State<T> : IReadOnlyAsyncReactiveProperty<T>, IDisposable
+    public class ReadOnlyAsyncReactiveProperty<T> : IReadOnlyAsyncReactiveProperty<T>, IDisposable
     {
         TriggerEvent<T> triggerEvent;
 
         T latestValue;
-
-        Action<T> setter;
         IUniTaskAsyncEnumerator<T> enumerator;
 
         public T Value
@@ -192,19 +190,13 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        public State(T value)
-        {
-            this.latestValue = value;
-            this.triggerEvent = default;
-        }
-
-        public State(T initialValue, IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
+        public ReadOnlyAsyncReactiveProperty(T initialValue, IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
         {
             latestValue = initialValue;
             ConsumeEnumerator(source, cancellationToken).Forget();
         }
 
-        public State(IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
+        public ReadOnlyAsyncReactiveProperty(IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
         {
             ConsumeEnumerator(source, cancellationToken).Forget();
         }
@@ -216,7 +208,9 @@ namespace Cysharp.Threading.Tasks
             {
                 while (await enumerator.MoveNextAsync())
                 {
-                    SetValue(enumerator.Current);
+                    var value = enumerator.Current;
+                    this.latestValue = value;
+                    triggerEvent.SetResult(value);
                 }
             }
             finally
@@ -224,28 +218,6 @@ namespace Cysharp.Threading.Tasks
                 await enumerator.DisposeAsync();
                 enumerator = null;
             }
-        }
-
-        public Action<T> GetSetter()
-        {
-            if (enumerator != null)
-            {
-                throw new InvalidOperationException("Can not get setter when create from IUniTaskAsyncEnumerable source.");
-            }
-
-            if (setter != null)
-            {
-                throw new InvalidOperationException("GetSetter can only call once.");
-            }
-
-            setter = SetValue;
-            return setter;
-        }
-
-        void SetValue(T value)
-        {
-            this.latestValue = value;
-            triggerEvent.SetResult(value);
         }
 
         public IUniTaskAsyncEnumerable<T> WithoutCurrent()
@@ -268,12 +240,7 @@ namespace Cysharp.Threading.Tasks
             triggerEvent.SetCompleted();
         }
 
-        public static implicit operator State<T>(T value)
-        {
-            return new State<T>(value);
-        }
-
-        public static implicit operator T(State<T> value)
+        public static implicit operator T(ReadOnlyAsyncReactiveProperty<T> value)
         {
             return value.Value;
         }
@@ -286,16 +253,16 @@ namespace Cysharp.Threading.Tasks
 
         static bool isValueType;
 
-        static State()
+        static ReadOnlyAsyncReactiveProperty()
         {
             isValueType = typeof(T).IsValueType;
         }
 
         class WithoutCurrentEnumerable : IUniTaskAsyncEnumerable<T>
         {
-            readonly State<T> parent;
+            readonly ReadOnlyAsyncReactiveProperty<T> parent;
 
-            public WithoutCurrentEnumerable(State<T> parent)
+            public WithoutCurrentEnumerable(ReadOnlyAsyncReactiveProperty<T> parent)
             {
                 this.parent = parent;
             }
@@ -310,14 +277,14 @@ namespace Cysharp.Threading.Tasks
         {
             static Action<object> cancellationCallback = CancellationCallback;
 
-            readonly State<T> parent;
+            readonly ReadOnlyAsyncReactiveProperty<T> parent;
             readonly CancellationToken cancellationToken;
             readonly CancellationTokenRegistration cancellationTokenRegistration;
             T value;
             bool isDisposed;
             bool firstCall;
 
-            public Enumerator(State<T> parent, CancellationToken cancellationToken, bool publishCurrentValue)
+            public Enumerator(ReadOnlyAsyncReactiveProperty<T> parent, CancellationToken cancellationToken, bool publishCurrentValue)
             {
                 this.parent = parent;
                 this.cancellationToken = cancellationToken;
@@ -391,14 +358,14 @@ namespace Cysharp.Threading.Tasks
 
     public static class StateExtensions
     {
-        public static State<T> ToState<T>(this IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
+        public static ReadOnlyAsyncReactiveProperty<T> ToReadOnlyAsyncReactiveProperty<T>(this IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
         {
-            return new State<T>(source, cancellationToken);
+            return new ReadOnlyAsyncReactiveProperty<T>(source, cancellationToken);
         }
 
-        public static State<T> ToState<T>(this IUniTaskAsyncEnumerable<T> source, T initialValue, CancellationToken cancellationToken)
+        public static ReadOnlyAsyncReactiveProperty<T> ToReadOnlyAsyncReactiveProperty<T>(this IUniTaskAsyncEnumerable<T> source, T initialValue, CancellationToken cancellationToken)
         {
-            return new State<T>(initialValue, source, cancellationToken);
+            return new ReadOnlyAsyncReactiveProperty<T>(initialValue, source, cancellationToken);
         }
     }
 }

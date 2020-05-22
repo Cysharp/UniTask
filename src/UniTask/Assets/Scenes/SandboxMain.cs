@@ -142,9 +142,7 @@ public class SandboxMain : MonoBehaviour
     {
         // State<int> Hp { get; }
 
-        AsyncReactiveProperty<int> hp;
-        IReadOnlyAsyncReactiveProperty<int> Hp => hp;
-
+        
 
 
         public Model()
@@ -172,23 +170,10 @@ public class SandboxMain : MonoBehaviour
     public Text text;
     public Button button;
 
-    [SerializeField]
-    State<int> count;
 
     void Start2()
     {
-        count = 10;
-
-        var countS = count.GetSetter();
-
-        count.BindTo(text);
-        button.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
-        {
-            // int foo = countS;
-            //countS.Set(countS += 10);
-
-            // setter.SetValue(count.Value + 10);
-        });
+        
     }
 
 
