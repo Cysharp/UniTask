@@ -12,6 +12,9 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// using DG.Tweening;
+
 public struct MyJob : IJob
 {
     public int loopCount;
@@ -240,16 +243,9 @@ public class SandboxMain : MonoBehaviour
         public int MyProperty { get; set; }
     }
 
-    MyClass mcc;
 
-    void Start()
+    async UniTaskVoid Start()
     {
-        this.mcc = new MyClass();
-        this.MyProperty = 999;
-
-        CheckDest().Forget();
-
-
         //UniTaskAsyncEnumerable.EveryValueChanged(mcc, x => x.MyProperty)
         //    .Do(_ => { }, () => Debug.Log("COMPLETED"))
         //    .ForEachAsync(x =>
@@ -260,22 +256,43 @@ public class SandboxMain : MonoBehaviour
 
 
 
+        // DG.Tweening.Core.TweenerCore<int>
+        //okButton.GetComponent<RectTransform>().DOMoveX(10.2f, 30);
 
 
+        // DOTween.To(
+
+        var cts = new CancellationTokenSource();
+
+        //var tween = okButton.GetComponent<RectTransform>().DOLocalMoveX(100, 5.0f);
+
+        cancelButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+        {
+            cts.Cancel();
+        }).Forget();
+
+
+        // await tween.ToUniTask(TweenCancelBehaviour.KillAndCancelAwait, cts.Token);
+
+        //tween.SetRecyclable(true);
+
+        Debug.Log("END");
+
+        // tween.Play();
+
+        // DOTween.
+
+        // DOVirtual.Float(0, 1, 1, x => { }).ToUniTask();
 
         okButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
         {
 
-            mcc.MyProperty += 10;
+
 
 
 
         }).Forget();
 
-        cancelButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
-        {
-            this.mcc = null;
-        });
 
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () => await UniTask.Yield()));
@@ -284,20 +301,6 @@ public class SandboxMain : MonoBehaviour
     async UniTaskVoid CloseAsync(CancellationToken cancellationToken = default)
     {
         await UniTask.Yield();
-    }
-
-    async UniTaskVoid CheckDest()
-    {
-        try
-        {
-            Debug.Log("WAIT");
-            await UniTask.WaitUntilValueChanged(mcc, x => x.MyProperty);
-            Debug.Log("CHANGED?");
-        }
-        finally
-        {
-            Debug.Log("END");
-        }
     }
 
     async UniTaskVoid Running(CancellationToken ct)

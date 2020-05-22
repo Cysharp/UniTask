@@ -2,7 +2,8 @@
     "name": "UniTask",
     "references": [
         "Unity.ResourceManager",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "DOTween.Modules"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -21,6 +22,11 @@
             "name": "com.unity.textmeshpro",
             "expression": "",
             "define": "UNITASK_TEXTMESHPRO_SUPPORT"
+        },
+        {
+            "name": "com.demigiant.dotween",
+            "expression": "",
+            "define": "UNITASK_DOTWEEN_SUPPORT"
         }
     ],
     "noEngineReferences": false

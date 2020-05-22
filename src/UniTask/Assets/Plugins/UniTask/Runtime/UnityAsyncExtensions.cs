@@ -24,7 +24,6 @@ namespace Cysharp.Threading.Tasks
         public static UniTask ToUniTask(this AsyncOperation asyncOperation)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-
             return new UniTask(AsyncOperationConfiguredSource.Create(asyncOperation, PlayerLoopTiming.Update, null, CancellationToken.None, out var token), token);
         }
 
@@ -124,7 +123,6 @@ namespace Cysharp.Threading.Tasks
                     pool.TryReturn(this);
                 }
             }
-
 
             public UniTaskStatus GetStatus(short token)
             {
