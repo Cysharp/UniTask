@@ -86,7 +86,8 @@ namespace Cysharp.Threading.Tasks
         sealed class TweenConfiguredSource : IUniTaskSource, IPromisePoolItem
         {
             static readonly PromisePool<TweenConfiguredSource> pool = new PromisePool<TweenConfiguredSource>();
-            static Action<object> CancellationCallbackDelegate = CancellationCallback;
+            static readonly Action<object> CancellationCallbackDelegate = CancellationCallback;
+            static readonly TweenCallback EmptyTweenCallback = () => { };
 
             Tween tween;
             TweenCancelBehaviour cancelBehaviour;
@@ -138,14 +139,7 @@ namespace Cysharp.Threading.Tasks
                 cancellationTokenRegistration.Dispose();
                 if (canceled)
                 {
-                    if (cancelBehaviour == TweenCancelBehaviour.CancelAwait)
-                    {
-                        // already called TrySetCanceled, do nothing.
-                    }
-                    else
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
+                    core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
@@ -189,7 +183,7 @@ namespace Cysharp.Threading.Tasks
                         self.tween.Complete(true);
                         break;
                     case TweenCancelBehaviour.CancelAwait:
-                        self.canceled = true;
+                        self.tween.onKill = EmptyTweenCallback; // replace to empty(avoid callback after Caceled(instance is returned to pool.)
                         self.core.TrySetCanceled(self.cancellationToken);
                         break;
                 }
