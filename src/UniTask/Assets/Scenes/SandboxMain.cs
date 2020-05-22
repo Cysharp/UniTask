@@ -142,7 +142,7 @@ public class SandboxMain : MonoBehaviour
     {
         // State<int> Hp { get; }
 
-        
+
 
 
         public Model()
@@ -173,7 +173,7 @@ public class SandboxMain : MonoBehaviour
 
     void Start2()
     {
-        
+
     }
 
 
@@ -260,7 +260,7 @@ public class SandboxMain : MonoBehaviour
 
 
 
-        
+
 
 
         okButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
@@ -277,6 +277,13 @@ public class SandboxMain : MonoBehaviour
             this.mcc = null;
         });
 
+
+        okButton.onClick.AddListener(UniTask.UnityAction(async () => await UniTask.Yield()));
+    }
+
+    async UniTaskVoid CloseAsync(CancellationToken cancellationToken = default)
+    {
+        await UniTask.Yield();
     }
 
     async UniTaskVoid CheckDest()

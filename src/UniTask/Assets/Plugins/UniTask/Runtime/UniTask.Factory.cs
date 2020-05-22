@@ -105,33 +105,66 @@ namespace Cysharp.Threading.Tasks
         /// helper of create add UniTaskVoid to delegate.
         /// For example: FooEvent += () => UniTask.Void(async () => { /* */ })
         /// </summary>
-        public static void Void(Func<UniTask> asyncAction)
+        public static void Void(Func<UniTaskVoid> asyncAction)
         {
             asyncAction().Forget();
         }
 
-        public static Action VoidAction(Func<UniTask> asyncAction)
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// </summary>
+        public static void Void(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
         {
-            return () => Void(asyncAction);
+            asyncAction(cancellationToken).Forget();
         }
-
-#if UNITY_2018_3_OR_NEWER
-
-        public static UnityEngine.Events.UnityAction VoidUnityAction(Func<UniTask> asyncAction)
-        {
-            return () => Void(asyncAction);
-        }
-
-#endif
 
         /// <summary>
         /// helper of create add UniTaskVoid to delegate.
         /// For example: FooEvent += (sender, e) => UniTask.Void(async arg => { /* */ }, (sender, e))
         /// </summary>
-        public static void Void<T>(Func<T, UniTask> asyncAction, T state)
+        public static void Void<T>(Func<T, UniTaskVoid> asyncAction, T state)
         {
             asyncAction(state).Forget();
         }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// For example: FooAction = UniTask.Action(async () => { /* */ })
+        /// </summary>
+        public static Action Action(Func<UniTaskVoid> asyncAction)
+        {
+            return () => asyncAction().Forget();
+        }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// </summary>
+        public static Action Action(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return () => asyncAction(cancellationToken).Forget();
+        }
+
+#if UNITY_2018_3_OR_NEWER
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For exampe: onClick.AddListener(UniTask.UnityAction(async () => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction UnityAction(Func<UniTaskVoid> asyncAction)
+        {
+            return () => asyncAction().Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For exampe: onClick.AddListener(UniTask.UnityAction(FooAsync, this.GetCancellationTokenOnDestroy()))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction UnityAction(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return () => asyncAction(cancellationToken).Forget();
+        }
+
+#endif
 
         /// <summary>
         /// Defer the task creation just before call await.
