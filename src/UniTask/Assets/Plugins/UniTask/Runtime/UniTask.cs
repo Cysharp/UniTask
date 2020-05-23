@@ -1,13 +1,12 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable CS0436
 
+using Cysharp.Threading.Tasks.CompilerServices;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using Cysharp.Threading.Tasks.CompilerServices;
-using Cysharp.Threading.Tasks.Internal;
+using System.Runtime.InteropServices;
 
 namespace Cysharp.Threading.Tasks
 {
@@ -26,6 +25,7 @@ namespace Cysharp.Threading.Tasks
     /// Lightweight unity specified task-like object.
     /// </summary>
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder))]
+    [StructLayout(LayoutKind.Auto)]
     public readonly partial struct UniTask
     {
         readonly IUniTaskSource source;
@@ -353,6 +353,7 @@ namespace Cysharp.Threading.Tasks
     /// Lightweight unity specified task-like object.
     /// </summary>
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder<>))]
+    [StructLayout(LayoutKind.Auto)]
     public readonly struct UniTask<T>
     {
         readonly IUniTaskSource<T> source;
