@@ -211,8 +211,6 @@ namespace Cysharp.Threading.Tasks
             EditorApplication.update += ForceEditorPlayerLoopUpdate;
         }
 
-        static double beforeCalledTime;
-
         private static void ForceEditorPlayerLoopUpdate()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling || EditorApplication.isUpdating)
