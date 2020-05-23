@@ -200,27 +200,45 @@ namespace Cysharp.Threading.Tasks
 
 
 #if UNITY_EDITOR
+
         [InitializeOnLoadMethod]
         static void InitOnEditor()
         {
-            //Execute the play mode init method
+            // Execute the play mode init method
             Init();
 
-            //register an Editor update delegate, used to forcing playerLoop update
+            // register an Editor update delegate, used to forcing playerLoop update
             EditorApplication.update += ForceEditorPlayerLoopUpdate;
         }
 
+        static double beforeCalledTime;
+
         private static void ForceEditorPlayerLoopUpdate()
         {
-            if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling ||
-                EditorApplication.isUpdating)
+            if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling || EditorApplication.isUpdating)
             {
                 // Not in Edit mode, don't interfere
                 return;
             }
 
-            //force unity to update PlayerLoop callbacks
-            EditorApplication.QueuePlayerLoopUpdate();
+            // EditorApplication.QueuePlayerLoopUpdate causes performance issue, don't call directly.
+            // EditorApplication.QueuePlayerLoopUpdate();
+
+            if (yielders != null)
+            {
+                foreach (var item in yielders)
+                {
+                    if (item != null) item.Run();
+                }
+            }
+
+            if (runners != null)
+            {
+                foreach (var item in runners)
+                {
+                    if (item != null) item.Run();
+                }
+            }
         }
 
 #endif
