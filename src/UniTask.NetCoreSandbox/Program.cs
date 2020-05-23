@@ -21,6 +21,25 @@ namespace NetCoreSandbox
         public string text { get; set; }
     }
 
+    public class ZeroAllocAsyncAwaitInDotNetCore
+    {
+        public ValueTask<int> NanikaAsync(int x, int y)
+        {
+            return Core(this, x, y);
+
+            static async UniTask<int> Core(ZeroAllocAsyncAwaitInDotNetCore self, int x, int y)
+            {
+                // nanika suru...
+                await Task.Delay(TimeSpan.FromSeconds(x + y));
+
+                return 10;
+            }
+        }
+    }
+
+
+
+
     public static partial class UnityUIComponentExtensions
     {
         public static void BindTo(this IUniTaskAsyncEnumerable<string> source, Text text)
@@ -88,8 +107,10 @@ namespace NetCoreSandbox
 
 
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            var foo = await new ZeroAllocAsyncAwaitInDotNetCore().NanikaAsync(1, 2);
+            Console.WriteLine(foo);
 
             var channel = Channel.CreateSingleConsumerUnbounded<int>();
 
@@ -99,7 +120,7 @@ namespace NetCoreSandbox
 
             var token = cts.Token;
 
-            FooAsync(token).ForEachAsync(x => { }, token);
+            await FooAsync(token).ForEachAsync(x => { }, token);
 
 
             // Observable.Range(1,10).CombineLatest(
