@@ -368,8 +368,8 @@ namespace Cysharp.Threading.Tasks
                 readonly SingleConsumerUnboundedChannelReader parent;
                 CancellationToken cancellationToken1;
                 CancellationToken cancellationToken2;
-                CancellationTokenRegistration CancellationTokenRegistration1;
-                CancellationTokenRegistration CancellationTokenRegistration2;
+                CancellationTokenRegistration cancellationTokenRegistration1;
+                CancellationTokenRegistration cancellationTokenRegistration2;
 
                 T current;
                 bool cacheValue;
@@ -395,12 +395,12 @@ namespace Cysharp.Threading.Tasks
 
                     if (this.cancellationToken1.CanBeCanceled)
                     {
-                        this.cancellationToken1.RegisterWithoutCaptureExecutionContext(CancellationCallback1Delegate, this);
+                        this.cancellationTokenRegistration1 =  this.cancellationToken1.RegisterWithoutCaptureExecutionContext(CancellationCallback1Delegate, this);
                     }
 
                     if (this.cancellationToken2.CanBeCanceled)
                     {
-                        this.cancellationToken2.RegisterWithoutCaptureExecutionContext(CancellationCallback2Delegate, this);
+                        this.cancellationTokenRegistration2 = this.cancellationToken2.RegisterWithoutCaptureExecutionContext(CancellationCallback2Delegate, this);
                     }
 
                     running = true;
@@ -428,8 +428,8 @@ namespace Cysharp.Threading.Tasks
 
                 public UniTask DisposeAsync()
                 {
-                    CancellationTokenRegistration1.Dispose();
-                    CancellationTokenRegistration2.Dispose();
+                    cancellationTokenRegistration1.Dispose();
+                    cancellationTokenRegistration2.Dispose();
                     return default;
                 }
 
