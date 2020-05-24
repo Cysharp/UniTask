@@ -26,7 +26,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         MoveNextRunner()
         {
-            callMoveNext = MoveNext;
+            callMoveNext = Run;
         }
 
         public static MoveNextRunner<TStateMachine> Create(ref TStateMachine stateMachine)
@@ -38,7 +38,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void MoveNext()
+        void Run()
         {
             stateMachine.MoveNext();
         }

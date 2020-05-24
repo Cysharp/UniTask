@@ -271,7 +271,7 @@ namespace Cysharp.Threading.Tasks
         {
             if (token != version)
             {
-                throw new InvalidOperationException("token version is not matched, can not await twice.");
+                throw new InvalidOperationException("Token version is not matched, can not await twice or get Status after await.");
             }
         }
     }

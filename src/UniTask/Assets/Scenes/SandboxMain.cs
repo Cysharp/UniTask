@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 
@@ -243,8 +244,39 @@ public class SandboxMain : MonoBehaviour
         public int MyProperty { get; set; }
     }
 
+    async Task Test1()
+    {
+        var r = await TcsAsync("https://bing.com/");
+        Debug.Log("TASKASYNC");
+    }
 
-    void  Start()
+    async UniTaskVoid Test2()
+    {
+        var r = await UniAsync("https://bing.com/");
+        Debug.Log("UNIASYNC");
+    }
+
+    IEnumerator Test3(string url)
+    {
+        var req = UnityWebRequest.Get(url).SendWebRequest();
+        yield return req;
+        Debug.Log("COROUTINE");
+    }
+
+    static async Task<UnityWebRequest> TcsAsync(string url)
+    {
+        var req = await UnityWebRequest.Get(url).SendWebRequest();
+        return req;
+    }
+
+    static async UniTask<UnityWebRequest> UniAsync(string url)
+    {
+        var req = await UnityWebRequest.Get(url).SendWebRequest();
+        return req;
+    }
+
+
+    void Start()
     {
         //UniTaskAsyncEnumerable.EveryValueChanged(mcc, x => x.MyProperty)
         //    .Do(_ => { }, () => Debug.Log("COMPLETED"))
@@ -254,6 +286,9 @@ public class SandboxMain : MonoBehaviour
         //    })
         //    .Forget();
 
+        _ = Test1();
+        Test2().Forget();
+        StartCoroutine(Test3("https://bing.com/"));
 
 
         // DG.Tweening.Core.TweenerCore<int>

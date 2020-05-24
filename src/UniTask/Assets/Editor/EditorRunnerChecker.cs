@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public static class EditorRunnerChecker
 {
@@ -17,11 +18,12 @@ public static class EditorRunnerChecker
 
     static async UniTaskVoid RunCore()
     {
-        Debug.Log("Start, Wait 5 seconds. deltaTime?" + Time.deltaTime);
+        Debug.Log("Start");
 
-        await UniTask.Delay(TimeSpan.FromSeconds(5));
+        var r = await UnityWebRequest.Get("https://bing.com/").SendWebRequest().ToUniTask();
+        Debug.Log(r.downloadHandler.text.Substring(0, 100));
 
-        Debug.Log("End, Wait 5 seconds. deltaTime?" + Time.deltaTime);
+        Debug.Log("End");
     }
 }
 
