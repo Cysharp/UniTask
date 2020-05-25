@@ -202,10 +202,10 @@ namespace Cysharp.Threading.Tasks
             return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, PlayerLoopTiming.Update, null, cancellationToken, out var token), token);
         }
 
-        public static UniTask<T> ToUniTask<T>(this AsyncOperationHandle<T> handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static UniTask<T> ToUniTask<T>(this AsyncOperationHandle<T> handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (handle.IsDone) return UniTask.FromResult(handle.Result);
-            return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, timing, progress, cancellation, out var token), token);
+            return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, timing, progress, cancellationToken, out var token), token);
         }
 
         public struct AsyncOperationHandleAwaiter<T> : ICriticalNotifyCompletion

@@ -33,7 +33,7 @@ namespace Cysharp.Threading.Tasks
             return new TweenAwaiter(tween);
         }
 
-        public static UniTask WithCancellation(this Tween tween, CancellationToken cancellationToken = default)
+        public static UniTask WithCancellation(this Tween tween, CancellationToken cancellationToken)
         {
             Error.ThrowArgumentNullException(tween, nameof(tween));
 
