@@ -9,7 +9,7 @@ namespace Cysharp.Threading.Tasks
 {
     public static class UniTaskObservableExtensions
     {
-        public static UniTask<T> ToUniTask<T>(this IObservable<T> source, CancellationToken cancellationToken = default(CancellationToken), bool useFirstValue = false)
+        public static UniTask<T> ToUniTask<T>(this IObservable<T> source, bool useFirstValue = false, CancellationToken cancellationToken = default)
         {
             var promise = new UniTaskCompletionSource<T>();
             var disposable = new SingleAssignmentDisposable();
