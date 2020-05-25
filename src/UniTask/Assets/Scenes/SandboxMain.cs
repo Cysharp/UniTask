@@ -193,15 +193,20 @@ public class SandboxMain : MonoBehaviour
     async UniTask RunJobAsync()
     {
         var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
-        JobHandle.ScheduleBatchedJobs();
+        try
+        {
+            JobHandle.ScheduleBatchedJobs();
 
-        var scheduled = job.Schedule();
+            var scheduled = job.Schedule();
 
-        UnityEngine.Debug.Log("OK");
-        await scheduled; // .ConfigureAwait(PlayerLoopTiming.Update); // .WaitAsync(PlayerLoopTiming.Update);
-        UnityEngine.Debug.Log("OK2");
-
-        job.inOut.Dispose();
+            UnityEngine.Debug.Log("OK");
+            await scheduled; // .ConfigureAwait(PlayerLoopTiming.Update); // .WaitAsync(PlayerLoopTiming.Update);
+            UnityEngine.Debug.Log("OK2");
+        }
+        finally
+        {
+            job.inOut.Dispose();
+        }
     }
 
 

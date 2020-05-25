@@ -9,10 +9,11 @@ namespace Cysharp.Threading.Tasks
 {
     public static partial class UnityAsyncExtensions
     {
-        public static async UniTask WaitAsync(this JobHandle jobHandle, PlayerLoopTiming waitTiming)
+        public static async UniTask WaitAsync(this JobHandle jobHandle, PlayerLoopTiming waitTiming, CancellationToken cancellationToken = default)
         {
             await UniTask.Yield(waitTiming);
             jobHandle.Complete();
+            cancellationToken.ThrowIfCancellationRequested(); // call cancel after Complete.
         }
 
         public static UniTask.Awaiter GetAwaiter(this JobHandle jobHandle)
@@ -28,7 +29,9 @@ namespace Cysharp.Threading.Tasks
 
             return new UniTask(handler, token).GetAwaiter();
         }
-     
+
+        // can not pass CancellationToken because can't handle JobHandle's Complete and NativeArray.Dispose.
+
         public static UniTask ToUniTask(this JobHandle jobHandle, PlayerLoopTiming waitTiming)
         {
             var handler = JobHandlePromise.Create(jobHandle, out var token);
