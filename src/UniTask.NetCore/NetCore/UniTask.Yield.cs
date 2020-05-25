@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks.Internal;
+using System;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -41,7 +43,11 @@ namespace Cysharp.Threading.Tasks
                     }
                     else
                     {
+#if NETCOREAPP3_1
+                        ThreadPool.UnsafeQueueUserWorkItem(ThreadPoolWorkItem.Create(continuation), false);
+#else
                         ThreadPool.UnsafeQueueUserWorkItem(WaitCallbackDelegate, continuation);
+#endif
                     }
                 }
 
@@ -50,6 +56,39 @@ namespace Cysharp.Threading.Tasks
                     ((Action)state).Invoke();
                 }
             }
+
+#if NETCOREAPP3_1
+
+            public sealed class ThreadPoolWorkItem : IThreadPoolWorkItem
+            {
+                static readonly ConcurrentQueue<ThreadPoolWorkItem> pool = new ConcurrentQueue<ThreadPoolWorkItem>();
+
+                Action continuation;
+
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                public static ThreadPoolWorkItem Create(Action continuation)
+                {
+                    if (!pool.TryDequeue(out var item))
+                    {
+                        item = new ThreadPoolWorkItem();
+                    }
+
+                    item.continuation = continuation;
+                    return item;
+                }
+
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                public void Execute()
+                {
+                    var call = continuation;
+                    continuation = null;
+                    pool.Enqueue(this);
+
+                    call.Invoke();
+                }
+            }
+
+#endif
         }
     }
 }
