@@ -38,6 +38,94 @@ namespace NetCoreSandbox
     }
 
 
+    public class TaskTestException : Exception
+    {
+
+    }
+
+
+    public struct TestAwaiter : ICriticalNotifyCompletion
+    {
+        readonly UniTaskStatus status;
+        readonly bool isCompleted;
+
+        public TestAwaiter(bool isCompleted, UniTaskStatus status)
+        {
+            this.isCompleted = isCompleted;
+            this.status = status;
+        }
+
+        public TestAwaiter GetAwaiter() => this;
+
+        public bool IsCompleted => isCompleted;
+
+        public void GetResult()
+        {
+            switch (status)
+            {
+                case UniTaskStatus.Faulted:
+                    throw new TaskTestException();
+                case UniTaskStatus.Canceled:
+                    throw new OperationCanceledException();
+                case UniTaskStatus.Pending:
+                case UniTaskStatus.Succeeded:
+                default:
+                    break;
+            }
+        }
+
+        public void OnCompleted(Action continuation)
+        {
+            ThreadPool.QueueUserWorkItem(_ => continuation(), null);
+        }
+
+        public void UnsafeOnCompleted(Action continuation)
+        {
+            ThreadPool.UnsafeQueueUserWorkItem(_ => continuation(), null);
+        }
+    }
+    public struct TestAwaiter<T> : ICriticalNotifyCompletion
+    {
+        readonly UniTaskStatus status;
+        readonly bool isCompleted;
+        readonly T value;
+
+        public TestAwaiter(bool isCompleted, UniTaskStatus status, T value)
+        {
+            this.isCompleted = isCompleted;
+            this.status = status;
+            this.value = value;
+        }
+
+        public TestAwaiter<T> GetAwaiter() => this;
+
+        public bool IsCompleted => isCompleted;
+
+        public T GetResult()
+        {
+            switch (status)
+            {
+                case UniTaskStatus.Faulted:
+                    throw new TaskTestException();
+                case UniTaskStatus.Canceled:
+                    throw new OperationCanceledException();
+                case UniTaskStatus.Pending:
+                case UniTaskStatus.Succeeded:
+                default:
+                    return value;
+            }
+        }
+
+        public void OnCompleted(Action continuation)
+        {
+            ThreadPool.QueueUserWorkItem(_ => continuation(), null);
+        }
+
+        public void UnsafeOnCompleted(Action continuation)
+        {
+            ThreadPool.UnsafeQueueUserWorkItem(_ => continuation(), null);
+        }
+    }
 
 
     public static partial class UnityUIComponentExtensions
@@ -109,25 +197,44 @@ namespace NetCoreSandbox
 
         static async Task Main(string[] args)
         {
-            var foo = await new ZeroAllocAsyncAwaitInDotNetCore().NanikaAsync(1, 2);
-            Console.WriteLine(foo);
+#if !DEBUG
+            BenchmarkDotNet.Running.BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
 
-            var channel = Channel.CreateSingleConsumerUnbounded<int>();
-
-            // Observable.Range(1,10).CombineLatest(
-
-            var cts = new CancellationTokenSource();
-
-            var token = cts.Token;
-
-            await FooAsync(token).ForEachAsync(x => { }, token);
+            //await new ComparisonBenchmarks().ViaUniTaskT();
+            return;
+#endif
 
 
-            // Observable.Range(1,10).CombineLatest(
+            AsyncTest().Forget();
 
+
+            //AsyncTest().Forget();
+
+            // AsyncTest().Forget();
+
+
+            await UniTask.Yield();
+            Console.ReadLine();
+        }
+
+#pragma warning disable CS1998
+
+
+        static async UniTaskVoid AsyncTest()
+        {
+            // empty
+            await new TestAwaiter(false, UniTaskStatus.Succeeded);
+            await new TestAwaiter(true, UniTaskStatus.Succeeded);
+            await new TestAwaiter(false, UniTaskStatus.Succeeded);
+
+
+            Console.WriteLine("foo");
+            //return 10;
         }
 
 
+
+#pragma warning restore CS1998
 
         void Foo()
         {
