@@ -14,7 +14,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         // cache items.
         AutoResetUniTaskCompletionSource promise;
-        IMoveNextRunner runner;
+        internal IMoveNextRunner runner;
 
         // 1. Static Create method.
         [DebuggerHidden]
@@ -50,6 +50,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetException(Exception exception)
         {
+            var p = promise; // after return, promise will clear so require to store local.
+
             // runner is finished, return first.
             if (runner != null)
             {
@@ -57,9 +59,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 runner = null;
             }
 
-            if (promise != null)
+            if (p != null)
             {
-                promise.TrySetException(exception);
+                p.TrySetException(exception);
             }
             else
             {
@@ -71,6 +73,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetResult()
         {
+            var p = promise; // after return, promise will clear so require to store local.
+
             // runner is finished, return first.
             if (runner != null)
             {
@@ -78,9 +82,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 runner = null;
             }
 
-            if (promise != null)
+            if (p != null)
             {
-                promise.TrySetResult();
+                p.TrySetResult();
             }
         }
 
@@ -96,7 +100,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -115,10 +119,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
             }
 
-            awaiter.OnCompleted(runner.CallMoveNext);
+            awaiter.UnsafeOnCompleted(runner.CallMoveNext);
         }
 
         // 7. Start
@@ -158,7 +162,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         // cache items.
         AutoResetUniTaskCompletionSource<T> promise;
-        IMoveNextRunner runner;
+        internal IMoveNextRunner runner;
         T result;
 
         // 1. Static Create method.
@@ -194,6 +198,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetException(Exception exception)
         {
+            var p = promise; // after return, promise will clear so require to store local.
+
             // runner is finished, return first.
             if (runner != null)
             {
@@ -201,13 +207,13 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 runner = null;
             }
 
-            if (promise == null)
+            if (p == null)
             {
                 promise = AutoResetUniTaskCompletionSource<T>.CreateFromException(exception, out _);
             }
             else
             {
-                promise.TrySetException(exception);
+                p.TrySetException(exception);
             }
         }
 
@@ -215,6 +221,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetResult(T result)
         {
+            var p = promise; // after return, promise will clear so require to store local.
+
             // runner is finished, return first.
             if (runner != null)
             {
@@ -222,13 +230,14 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 runner = null;
             }
 
-            if (promise == null)
+            if (p == null)
             {
                 this.result = result;
-                return;
             }
-
-            promise.TrySetResult(result);
+            else
+            {
+                p.TrySetResult(result);
+            }
         }
 
         // 5. AwaitOnCompleted
@@ -243,7 +252,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -262,10 +271,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             if (runner == null)
             {
-                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
             }
 
-            awaiter.OnCompleted(runner.CallMoveNext);
+            awaiter.UnsafeOnCompleted(runner.CallMoveNext);
         }
 
         // 7. Start

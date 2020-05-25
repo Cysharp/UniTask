@@ -10,7 +10,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 {
     public struct AsyncUniTaskVoidMethodBuilder
     {
-        IMoveNextRunner runner;
+        internal IMoveNextRunner runner;
 
         // 1. Static Create method.
         [DebuggerHidden]
@@ -65,7 +65,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runner == null)
             {
-                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -80,10 +80,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runner == null)
             {
-                runner = MoveNextRunner<TStateMachine>.Create(ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
             }
 
-            awaiter.OnCompleted(runner.CallMoveNext);
+            awaiter.UnsafeOnCompleted(runner.CallMoveNext);
         }
 
         // 7. Start

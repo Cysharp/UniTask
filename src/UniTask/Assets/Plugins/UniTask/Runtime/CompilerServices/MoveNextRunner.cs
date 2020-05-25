@@ -29,11 +29,40 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             callMoveNext = Run;
         }
 
-        public static MoveNextRunner<TStateMachine> Create(ref TStateMachine stateMachine)
+        public static void SetRunner(ref AsyncUniTaskMethodBuilder builder, ref TStateMachine stateMachine)
         {
-            var result = pool.TryRent() ?? new MoveNextRunner<TStateMachine>();
-            result.stateMachine = stateMachine;
-            return result;
+            var result = pool.TryRent();
+            if (result == null)
+            {
+                result = new MoveNextRunner<TStateMachine>();
+            }
+
+            builder.runner = result; // set runner before copied.
+            result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
+        }
+
+        public static void SetRunner<T>(ref AsyncUniTaskMethodBuilder<T> builder, ref TStateMachine stateMachine)
+        {
+            var result = pool.TryRent();
+            if (result == null)
+            {
+                result = new MoveNextRunner<TStateMachine>();
+            }
+
+            builder.runner = result; // set runner before copied.
+            result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
+        }
+
+        public static void SetRunner(ref AsyncUniTaskVoidMethodBuilder builder, ref TStateMachine stateMachine)
+        {
+            var result = pool.TryRent();
+            if (result == null)
+            {
+                result = new MoveNextRunner<TStateMachine>();
+            }
+
+            builder.runner = result; // set runner before copied.
+            result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
         [DebuggerHidden]
