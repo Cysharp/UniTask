@@ -252,8 +252,18 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Test2()
     {
-        var r = await UniAsync("https://bing.com/");
-        Debug.Log("UNIASYNC");
+        try
+        {
+            var cts = new CancellationTokenSource();
+            var r = UniAsync("https://bing.com/", cts.Token);
+            cts.Cancel();
+            await r;
+            Debug.Log("UNIASYNC");
+        }
+        catch
+        {
+            Debug.Log("Canceled");
+        }
     }
 
     IEnumerator Test3(string url)
@@ -269,9 +279,9 @@ public class SandboxMain : MonoBehaviour
         return req;
     }
 
-    static async UniTask<UnityWebRequest> UniAsync(string url)
+    static async UniTask<UnityWebRequest> UniAsync(string url, CancellationToken cancellationToken)
     {
-        var req = await UnityWebRequest.Get(url).SendWebRequest();
+        var req = await UnityWebRequest.Get(url).SendWebRequest().WithCancellation(cancellationToken);
         return req;
     }
 

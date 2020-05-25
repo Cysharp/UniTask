@@ -13,7 +13,7 @@ namespace Cysharp.Threading.Tasks
 {
     public static partial class UnityAsyncExtensions
     {
-#region AsyncOperation
+        #region AsyncOperation
 
         public static AsyncOperationAwaiter GetAwaiter(this AsyncOperation asyncOperation)
         {
@@ -116,7 +116,7 @@ namespace Cysharp.Threading.Tasks
                 try
                 {
                     TaskTracker.RemoveTracking(this);
-                    
+
                     core.GetResult(token);
                 }
                 finally
@@ -179,9 +179,9 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-# endregion
+        #endregion
 
-#region ResourceRequest
+        #region ResourceRequest
 
         public static ResourceRequestAwaiter GetAwaiter(this ResourceRequest asyncOperation)
         {
@@ -288,7 +288,7 @@ namespace Cysharp.Threading.Tasks
                 try
                 {
                     TaskTracker.RemoveTracking(this);
-                    
+
                     return core.GetResult(token);
                 }
                 finally
@@ -356,9 +356,9 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-# endregion
+        #endregion
 
-#region AssetBundleRequest
+        #region AssetBundleRequest
 
         public static AssetBundleRequestAwaiter GetAwaiter(this AssetBundleRequest asyncOperation)
         {
@@ -465,7 +465,7 @@ namespace Cysharp.Threading.Tasks
                 try
                 {
                     TaskTracker.RemoveTracking(this);
-                    
+
                     return core.GetResult(token);
                 }
                 finally
@@ -533,9 +533,9 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-# endregion
+        #endregion
 
-#region AssetBundleCreateRequest
+        #region AssetBundleCreateRequest
 
         public static AssetBundleCreateRequestAwaiter GetAwaiter(this AssetBundleCreateRequest asyncOperation)
         {
@@ -642,7 +642,7 @@ namespace Cysharp.Threading.Tasks
                 try
                 {
                     TaskTracker.RemoveTracking(this);
-                    
+
                     return core.GetResult(token);
                 }
                 finally
@@ -710,10 +710,10 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-# endregion
+        #endregion
 
 #if ENABLE_UNITYWEBREQUEST
-#region UnityWebRequestAsyncOperation
+        #region UnityWebRequestAsyncOperation
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)
         {
@@ -820,7 +820,7 @@ namespace Cysharp.Threading.Tasks
                 try
                 {
                     TaskTracker.RemoveTracking(this);
-                    
+
                     return core.GetResult(token);
                 }
                 finally
@@ -853,6 +853,7 @@ namespace Cysharp.Threading.Tasks
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    asyncOperation.webRequest.Abort();
                     core.TrySetCanceled(cancellationToken);
                     return false;
                 }
@@ -888,7 +889,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-# endregion
+        #endregion
 #endif
 
     }
