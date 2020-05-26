@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Threading.Tasks.Internal
 {
-    internal class PooledDelegate<T>
+    internal sealed class PooledDelegate<T>
     {
         static readonly ConcurrentQueue<PooledDelegate<T>> pool = new ConcurrentQueue<PooledDelegate<T>>();
 
