@@ -59,7 +59,7 @@ namespace Cysharp.Threading.Tasks
 
 #if NETCOREAPP3_1
 
-            public sealed class ThreadPoolWorkItem : IThreadPoolWorkItem
+            sealed class ThreadPoolWorkItem : IThreadPoolWorkItem
             {
                 static readonly ConcurrentQueue<ThreadPoolWorkItem> pool = new ConcurrentQueue<ThreadPoolWorkItem>();
 

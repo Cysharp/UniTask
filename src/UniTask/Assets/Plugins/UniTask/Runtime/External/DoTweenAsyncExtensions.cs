@@ -5,6 +5,7 @@
 using Cysharp.Threading.Tasks.Internal;
 using DG.Tweening;
 using System;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -77,9 +78,8 @@ namespace Cysharp.Threading.Tasks
 
             public void UnsafeOnCompleted(System.Action continuation)
             {
-                // convert Action -> TweenCallback allocation.
                 // onKill is called after OnCompleted, both Complete(false/true) and Kill(false/true).
-                tween.onKill = new TweenCallback(continuation);
+                tween.onKill = PooledTweenCallback.Create(continuation);
             }
         }
 
@@ -88,6 +88,8 @@ namespace Cysharp.Threading.Tasks
             static readonly PromisePool<TweenConfiguredSource> pool = new PromisePool<TweenConfiguredSource>();
             static readonly Action<object> CancellationCallbackDelegate = CancellationCallback;
             static readonly TweenCallback EmptyTweenCallback = () => { };
+
+            readonly TweenCallback onKillDelegate;
 
             Tween tween;
             TweenCancelBehaviour cancelBehaviour;
@@ -99,7 +101,7 @@ namespace Cysharp.Threading.Tasks
 
             TweenConfiguredSource()
             {
-
+                onKillDelegate = OnKill;
             }
 
             public static IUniTaskSource Create(Tween tween, TweenCancelBehaviour cancelBehaviour, CancellationToken cancellationToken, out short token)
@@ -130,8 +132,7 @@ namespace Cysharp.Threading.Tasks
                     cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(CancellationCallbackDelegate, this);
                 }
 
-                // allocate delegate.
-                tween.OnKill(new TweenCallback(OnKill));
+                tween.OnKill(onKillDelegate);
             }
 
             void OnKill()
@@ -231,6 +232,45 @@ namespace Cysharp.Threading.Tasks
                 {
                     GC.ReRegisterForFinalize(this);
                 }
+            }
+        }
+    }
+
+    sealed class PooledTweenCallback
+    {
+        static readonly ConcurrentQueue<PooledTweenCallback> pool = new ConcurrentQueue<PooledTweenCallback>();
+
+        readonly TweenCallback runDelegate;
+
+        Action continuation;
+
+
+        PooledTweenCallback()
+        {
+            runDelegate = Run;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TweenCallback Create(Action continuation)
+        {
+            if (!pool.TryDequeue(out var item))
+            {
+                item = new PooledTweenCallback();
+            }
+
+            item.continuation = continuation;
+            return item.runDelegate;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Run()
+        {
+            var call = continuation;
+            continuation = null;
+            if (call != null)
+            {
+                pool.Enqueue(this);
+                call.Invoke();
             }
         }
     }

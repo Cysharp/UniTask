@@ -72,7 +72,7 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperationHandle>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperationHandle>.Create(continuation);
                 handle.Completed += continuationAction;
             }
         }
@@ -249,7 +249,7 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperationHandle>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperationHandle>.Create(continuation);
                 handle.CompletedTypeless += continuationAction;
             }
         }

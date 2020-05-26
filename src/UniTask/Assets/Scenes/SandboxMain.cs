@@ -13,7 +13,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-
 // using DG.Tweening;
 
 public struct MyJob : IJob
@@ -259,11 +258,15 @@ public class SandboxMain : MonoBehaviour
     {
         try
         {
-            var cts = new CancellationTokenSource();
-            var r = UniAsync("https://bing.com/", cts.Token);
-            cts.Cancel();
-            await r;
-            Debug.Log("UNIASYNC");
+            //var cts = new CancellationTokenSource();
+            //var r = UniAsync("https://bing.com/", cts.Token);
+            //cts.Cancel();
+            //await r;
+            _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
+            Debug.Log("UNIASYNC1 ");
+
+            _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
+            Debug.Log("UNIASYNC2");
         }
         catch
         {
@@ -291,7 +294,7 @@ public class SandboxMain : MonoBehaviour
     }
 
 
-    void Start()
+    async UniTaskVoid Start()
     {
         //UniTaskAsyncEnumerable.EveryValueChanged(mcc, x => x.MyProperty)
         //    .Do(_ => { }, () => Debug.Log("COMPLETED"))
@@ -301,15 +304,23 @@ public class SandboxMain : MonoBehaviour
         //    })
         //    .Forget();
 
-        _ = Test1();
+        //_ = Test1();
         Test2().Forget();
-        StartCoroutine(Test3("https://bing.com/"));
+        //StartCoroutine(Test3("https://bing.com/"));
 
 
         // DG.Tweening.Core.TweenerCore<int>
-        //okButton.GetComponent<RectTransform>().DOMoveX(10.2f, 30);
+        //Debug.Log("GO MOVEX");
+        //await okButton.GetComponent<RectTransform>().DOMoveX(-10.2f, 3).WithCancellation(CancellationToken.None);
+        //Debug.Log("END MOVEX");
 
 
+        //Debug.Log("AGAIN MOVE");
+        //await okButton.GetComponent<RectTransform>().DOMoveY(10.2f, 3).WithCancellation(CancellationToken.None);
+        //Debug.Log("AGAIN END MOVE");
+
+
+        await UniTask.Yield();
         // DOTween.To(
 
         var cts = new CancellationTokenSource();

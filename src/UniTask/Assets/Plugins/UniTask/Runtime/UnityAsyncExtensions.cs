@@ -70,7 +70,7 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
         }
@@ -242,7 +242,7 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
         }
@@ -419,7 +419,7 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
         }
@@ -596,7 +596,7 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
         }
@@ -774,7 +774,7 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
         }
