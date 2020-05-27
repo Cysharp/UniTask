@@ -263,7 +263,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Run()
+        void Run()
         {
             var call = continuation;
             continuation = null;
