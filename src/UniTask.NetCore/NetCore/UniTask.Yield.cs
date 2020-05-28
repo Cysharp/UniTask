@@ -66,7 +66,7 @@ namespace Cysharp.Threading.Tasks
 
                 static ThreadPoolWorkItem()
                 {
-                    TaskPoolMonitor.RegisterSizeGetter(typeof(ThreadPoolWorkItem), () => pool.Size);
+                    TaskPool.RegisterSizeGetter(typeof(ThreadPoolWorkItem), () => pool.Size);
                 }
 
                 Action continuation;

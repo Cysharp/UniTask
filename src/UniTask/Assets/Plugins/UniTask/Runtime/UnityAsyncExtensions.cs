@@ -82,7 +82,7 @@ namespace Cysharp.Threading.Tasks
 
             static AsyncOperationConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(AsyncOperationConfiguredSource), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(AsyncOperationConfiguredSource), () => pool.Size);
             }
 
             AsyncOperation asyncOperation;
@@ -264,7 +264,7 @@ namespace Cysharp.Threading.Tasks
 
             static ResourceRequestConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(ResourceRequestConfiguredSource), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(ResourceRequestConfiguredSource), () => pool.Size);
             }
 
             ResourceRequest asyncOperation;
@@ -451,7 +451,7 @@ namespace Cysharp.Threading.Tasks
 
             static AssetBundleRequestConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(AssetBundleRequestConfiguredSource), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(AssetBundleRequestConfiguredSource), () => pool.Size);
             }
 
             AssetBundleRequest asyncOperation;
@@ -637,7 +637,7 @@ namespace Cysharp.Threading.Tasks
 
             static AssetBundleCreateRequestConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(AssetBundleCreateRequestConfiguredSource), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(AssetBundleCreateRequestConfiguredSource), () => pool.Size);
             }
 
             AssetBundleCreateRequest asyncOperation;
@@ -824,7 +824,7 @@ namespace Cysharp.Threading.Tasks
 
             static UnityWebRequestAsyncOperationConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(UnityWebRequestAsyncOperationConfiguredSource), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(UnityWebRequestAsyncOperationConfiguredSource), () => pool.Size);
             }
 
             UnityWebRequestAsyncOperation asyncOperation;

@@ -382,7 +382,7 @@ namespace Cysharp.Threading.Tasks
 
         static AutoResetUniTaskCompletionSource()
         {
-            TaskPoolMonitor.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource), () => pool.Size);
+            TaskPool.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource), () => pool.Size);
         }
 
         UniTaskCompletionSourceCore<AsyncUnit> core;
@@ -608,7 +608,7 @@ namespace Cysharp.Threading.Tasks
 
         static AutoResetUniTaskCompletionSource()
         {
-            TaskPoolMonitor.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource<T>), () => pool.Size);
+            TaskPool.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource<T>), () => pool.Size);
         }
 
         UniTaskCompletionSourceCore<T> core;

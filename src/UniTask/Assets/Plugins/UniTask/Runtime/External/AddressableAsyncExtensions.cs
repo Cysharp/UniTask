@@ -84,7 +84,7 @@ namespace Cysharp.Threading.Tasks
 
             static AsyncOperationHandleConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource), () => pool.Size);
             }
 
             AsyncOperationHandle handle;
@@ -272,7 +272,7 @@ namespace Cysharp.Threading.Tasks
 
             static AsyncOperationHandleConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource<T>), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource<T>), () => pool.Size);
             }
 
             AsyncOperationHandle<T> handle;

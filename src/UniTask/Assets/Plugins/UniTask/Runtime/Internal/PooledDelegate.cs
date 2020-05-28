@@ -11,7 +11,7 @@ namespace Cysharp.Threading.Tasks.Internal
 
         static PooledDelegate()
         {
-            TaskPoolMonitor.RegisterSizeGetter(typeof(PooledDelegate<T>), () => pool.Size);
+            TaskPool.RegisterSizeGetter(typeof(PooledDelegate<T>), () => pool.Size);
         }
 
         readonly Action<T> runDelegate;

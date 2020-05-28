@@ -90,7 +90,7 @@ namespace Cysharp.Threading.Tasks
 
             static TweenConfiguredSource()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(TweenConfiguredSource), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(TweenConfiguredSource), () => pool.Size);
             }
 
             static readonly Action<object> CancellationCallbackDelegate = CancellationCallback;

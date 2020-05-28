@@ -63,7 +63,7 @@ namespace Cysharp.Threading.Tasks
 
             static YieldPromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(YieldPromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(YieldPromise), () => pool.Size);
             }
 
             CancellationToken cancellationToken;
@@ -159,7 +159,7 @@ namespace Cysharp.Threading.Tasks
 
             static DelayFramePromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(DelayFramePromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(DelayFramePromise), () => pool.Size);
             }
 
             int delayFrameCount;
@@ -266,7 +266,7 @@ namespace Cysharp.Threading.Tasks
 
             static DelayPromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(DelayPromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(DelayPromise), () => pool.Size);
             }
 
             float delayFrameTimeSpan;
@@ -374,7 +374,7 @@ namespace Cysharp.Threading.Tasks
 
             static DelayIgnoreTimeScalePromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(DelayIgnoreTimeScalePromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(DelayIgnoreTimeScalePromise), () => pool.Size);
             }
 
             float delayFrameTimeSpan;

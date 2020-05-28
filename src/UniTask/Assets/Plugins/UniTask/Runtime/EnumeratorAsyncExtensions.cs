@@ -37,7 +37,7 @@ namespace Cysharp.Threading.Tasks
 
             static EnumeratorPromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(EnumeratorPromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(EnumeratorPromise), () => pool.Size);
             }
 
             IEnumerator innerEnumerator;

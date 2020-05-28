@@ -42,7 +42,7 @@ namespace Cysharp.Threading.Tasks
 
             static WaitUntilPromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilPromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(WaitUntilPromise), () => pool.Size);
             }
 
             Func<bool> predicate;
@@ -154,7 +154,7 @@ namespace Cysharp.Threading.Tasks
 
             static WaitWhilePromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitWhilePromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(WaitWhilePromise), () => pool.Size);
             }
 
             Func<bool> predicate;
@@ -266,7 +266,7 @@ namespace Cysharp.Threading.Tasks
 
             static WaitUntilCanceledPromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilCanceledPromise), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(WaitUntilCanceledPromise), () => pool.Size);
             }
 
             CancellationToken cancellationToken;
@@ -362,7 +362,7 @@ namespace Cysharp.Threading.Tasks
 
             static WaitUntilValueChangedUnityObjectPromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilValueChangedUnityObjectPromise<T, U>), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(WaitUntilValueChangedUnityObjectPromise<T, U>), () => pool.Size);
             }
 
             T target;
@@ -493,7 +493,7 @@ namespace Cysharp.Threading.Tasks
 
             static WaitUntilValueChangedStandardObjectPromise()
             {
-                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilValueChangedStandardObjectPromise<T, U>), () => pool.Size);
+                TaskPool.RegisterSizeGetter(typeof(WaitUntilValueChangedStandardObjectPromise<T, U>), () => pool.Size);
             }
 
             WeakReference<T> target;
