@@ -1,17 +1,15 @@
-﻿
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using Cysharp.Threading.Tasks.Internal;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using Cysharp.Threading.Tasks.Internal;
 
 namespace Cysharp.Threading.Tasks.CompilerServices
 {
-    internal interface IMoveNextRunner
+    public interface IMoveNextRunner
     {
-        Action CallMoveNext { get; }
+        Action MoveNext { get; }
         void Return();
     }
 
@@ -31,25 +29,21 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         void SetException(Exception exception);
     }
 
-    internal sealed class MoveNextRunner<TStateMachine> : IMoveNextRunner, IPromisePoolItem
+    internal sealed class MoveNextRunner<TStateMachine> : IMoveNextRunner, IStackNode<MoveNextRunner<TStateMachine>>
         where TStateMachine : IAsyncStateMachine
     {
-        static PromisePool<MoveNextRunner<TStateMachine>> pool = new PromisePool<MoveNextRunner<TStateMachine>>();
-
         TStateMachine stateMachine;
-        readonly Action callMoveNext;
 
-        public Action CallMoveNext => callMoveNext;
+        public Action MoveNext { get; }
 
-        MoveNextRunner()
+        public MoveNextRunner()
         {
-            callMoveNext = Run;
+            MoveNext = Run;
         }
 
         public static void SetStateMachine(ref AsyncUniTaskVoidMethodBuilder builder, ref TStateMachine stateMachine)
         {
-            var result = pool.TryRent();
-            if (result == null)
+            if (!StackNodeHelper.TryPop(ref cacheLock, ref size, ref nodeRoot, out var result))
             {
                 result = new MoveNextRunner<TStateMachine>();
             }
@@ -58,29 +52,34 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
+        static int cacheLock;
+        static int size;
+        static MoveNextRunner<TStateMachine> nodeRoot;
+
+        static MoveNextRunner()
+        {
+            StackNodeMonitor.RegisterSizeGettter(typeof(MoveNextRunner<TStateMachine>), () => size);
+        }
+
+        public MoveNextRunner<TStateMachine> NextNode { get; set; }
+
+        public void Return()
+        {
+            stateMachine = default;
+            StackNodeHelper.TryPush(ref cacheLock, ref size, ref nodeRoot, this);
+        }
+
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
             stateMachine.MoveNext();
         }
-
-        public void Return()
-        {
-            pool.TryReturn(this);
-        }
-
-        void IPromisePoolItem.Reset()
-        {
-            stateMachine = default;
-        }
     }
 
-    internal class MoveNextRunnerPromise<TStateMachine> : IMoveNextRunnerPromise, IUniTaskSource, IPromisePoolItem
+    internal class MoveNextRunnerPromise<TStateMachine> : IMoveNextRunnerPromise, IUniTaskSource, IStackNode<MoveNextRunnerPromise<TStateMachine>>
         where TStateMachine : IAsyncStateMachine
     {
-        static readonly PromisePool<MoveNextRunnerPromise<TStateMachine>> pool = new PromisePool<MoveNextRunnerPromise<TStateMachine>>();
-
         TStateMachine stateMachine;
 
         public Action MoveNext { get; }
@@ -94,16 +93,33 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         public static void SetStateMachine(ref AsyncUniTaskMethodBuilder builder, ref TStateMachine stateMachine)
         {
-            var result = pool.TryRent();
-            if (result == null)
+            if (!StackNodeHelper.TryPop(ref cacheLock, ref size, ref nodeRoot, out var result))
             {
                 result = new MoveNextRunnerPromise<TStateMachine>();
             }
-
-            TaskTracker.TrackActiveTask(result, 2);
+            TaskTracker.TrackActiveTask(result, 3);
 
             builder.runnerPromise = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
+        }
+
+        static int cacheLock;
+        static int size;
+        static MoveNextRunnerPromise<TStateMachine> nodeRoot;
+
+        public MoveNextRunnerPromise<TStateMachine> NextNode { get; set; }
+
+        static MoveNextRunnerPromise()
+        {
+            StackNodeMonitor.RegisterSizeGettter(typeof(MoveNextRunnerPromise<TStateMachine>), () => size);
+        }
+
+        bool TryReturn()
+        {
+            TaskTracker.RemoveTracking(this);
+            core.Reset();
+            stateMachine = default;
+            return StackNodeHelper.TryPush(ref cacheLock, ref size, ref nodeRoot, this);
         }
 
         [DebuggerHidden]
@@ -139,12 +155,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             try
             {
-                TaskTracker.RemoveTracking(this);
                 core.GetResult(token);
             }
             finally
             {
-                pool.TryReturn(this);
+                TryReturn();
             }
         }
 
@@ -166,27 +181,18 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             core.OnCompleted(continuation, state, token);
         }
 
-        [DebuggerHidden]
-        void IPromisePoolItem.Reset()
-        {
-            stateMachine = default;
-            core.Reset();
-        }
-
         ~MoveNextRunnerPromise()
         {
-            if (pool.TryReturn(this))
+            if (TryReturn())
             {
                 GC.ReRegisterForFinalize(this);
             }
         }
     }
 
-    internal class MoveNextRunnerPromise<TStateMachine, T> : IMoveNextRunnerPromise<T>, IUniTaskSource<T>, IPromisePoolItem
+    internal class MoveNextRunnerPromise<TStateMachine, T> : IMoveNextRunnerPromise<T>, IUniTaskSource<T>, IStackNode<MoveNextRunnerPromise<TStateMachine, T>>
         where TStateMachine : IAsyncStateMachine
     {
-        static readonly PromisePool<MoveNextRunnerPromise<TStateMachine, T>> pool = new PromisePool<MoveNextRunnerPromise<TStateMachine, T>>();
-
         TStateMachine stateMachine;
 
         public Action MoveNext { get; }
@@ -200,16 +206,33 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         public static void SetStateMachine(ref AsyncUniTaskMethodBuilder<T> builder, ref TStateMachine stateMachine)
         {
-            var result = pool.TryRent();
-            if (result == null)
+            if (!StackNodeHelper.TryPop(ref cacheLock, ref size, ref nodeRoot, out var result))
             {
                 result = new MoveNextRunnerPromise<TStateMachine, T>();
             }
-
-            TaskTracker.TrackActiveTask(result, 2);
+            TaskTracker.TrackActiveTask(result, 3);
 
             builder.runnerPromise = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
+        }
+
+        static int cacheLock;
+        static int size;
+        static MoveNextRunnerPromise<TStateMachine, T> nodeRoot;
+
+        public MoveNextRunnerPromise<TStateMachine, T> NextNode { get; set; }
+
+        static MoveNextRunnerPromise()
+        {
+            StackNodeMonitor.RegisterSizeGettter(typeof(MoveNextRunnerPromise<TStateMachine, T>), () => size);
+        }
+
+        bool TryReturn()
+        {
+            TaskTracker.RemoveTracking(this);
+            core.Reset();
+            stateMachine = default;
+            return StackNodeHelper.TryPush(ref cacheLock, ref size, ref nodeRoot, this);
         }
 
         [DebuggerHidden]
@@ -245,12 +268,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             try
             {
-                TaskTracker.RemoveTracking(this);
                 return core.GetResult(token);
             }
             finally
             {
-                pool.TryReturn(this);
+                TryReturn();
             }
         }
 
@@ -278,16 +300,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             core.OnCompleted(continuation, state, token);
         }
 
-        [DebuggerHidden]
-        void IPromisePoolItem.Reset()
-        {
-            stateMachine = default;
-            core.Reset();
-        }
-
         ~MoveNextRunnerPromise()
         {
-            if (pool.TryReturn(this))
+            if (TryReturn())
             {
                 GC.ReRegisterForFinalize(this);
             }

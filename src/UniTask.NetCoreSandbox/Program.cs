@@ -198,12 +198,15 @@ namespace NetCoreSandbox
         static async Task Main(string[] args)
         {
 #if !DEBUG
+            
+            //await new AllocationCheck().ViaUniTaskVoid();
+            //Console.ReadLine();
             BenchmarkDotNet.Running.BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
 
             //await new ComparisonBenchmarks().ViaUniTaskT();
             return;
 #endif
-
+            // await new AllocationCheck().ViaUniTaskVoid();
 
             // AsyncTest().Forget();
 
@@ -212,24 +215,43 @@ namespace NetCoreSandbox
 
             // AsyncTest().Forget();
 
+            ThreadPool.SetMinThreads(100, 100);
 
-            await UniTask.Yield();
+            List<UniTask<int>> list = new List<UniTask<int>>();
+            for (int i = 0; i < 321; i++)
+            {
+                list.Add(AsyncTest());
+            }
+            //await UniTask.WhenAll(list);
+
+            Console.WriteLine("TOGO");
+
+            var a = await AsyncTest();
+            var b = AsyncTest();
+            var c = AsyncTest();
+
+            await b;
+            await c;
+
+
+            foreach (var item in Cysharp.Threading.Tasks.Internal.StackNodeMonitor.GetCacheSizeInfo())
+            {
+                Console.WriteLine(item);
+            }
+
             Console.ReadLine();
         }
 
 #pragma warning disable CS1998
 
 
-        static async UniTaskVoid AsyncTest()
+        static async UniTask<int> AsyncTest()
         {
-            // empty
+            // empty 
             await new TestAwaiter(false, UniTaskStatus.Succeeded);
             await new TestAwaiter(true, UniTaskStatus.Succeeded);
             await new TestAwaiter(false, UniTaskStatus.Succeeded);
-
-
-            Console.WriteLine("foo");
-            //return 10;
+            return 10;
         }
 
 

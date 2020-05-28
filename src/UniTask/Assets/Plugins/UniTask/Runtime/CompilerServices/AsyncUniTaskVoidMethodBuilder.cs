@@ -68,7 +68,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 MoveNextRunner<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
-            awaiter.OnCompleted(runner.CallMoveNext);
+            awaiter.OnCompleted(runner.MoveNext);
         }
 
         // 6. AwaitUnsafeOnCompleted
@@ -83,7 +83,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 MoveNextRunner<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
-            awaiter.UnsafeOnCompleted(runner.CallMoveNext);
+            awaiter.UnsafeOnCompleted(runner.MoveNext);
         }
 
         // 7. Start

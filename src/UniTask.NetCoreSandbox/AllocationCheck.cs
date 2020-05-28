@@ -29,7 +29,12 @@ public class AllocationCheck
     {
         for (int i = 0; i < InnerOps; i++)
         {
-            await Core();
+            var a = Core();
+            var b = Core();
+            var c = Core();
+            await a;
+            await b;
+            await c;
         }
 
         static async UniTask Core()
@@ -46,7 +51,12 @@ public class AllocationCheck
         var sum = 0;
         for (int i = 0; i < InnerOps; i++)
         {
-            sum += await Core();
+            var a = Core();
+            var b = Core();
+            var c = Core();
+            sum += await a;
+            sum += await b;
+            sum += await c;
         }
         return sum;
 
@@ -59,20 +69,62 @@ public class AllocationCheck
         }
     }
 
-    [Benchmark(OperationsPerInvoke = InnerOps)]
-    public Task ViaUniTaskVoid()
+    //[Benchmark(OperationsPerInvoke = InnerOps)]
+    //[Benchmark]
+    public void ViaUniTaskVoid()
     {
         for (int i = 0; i < InnerOps; i++)
         {
             Core().Forget();
+            Core().Forget();
+            Core().Forget();
         }
-        return Task.CompletedTask;
 
         static async UniTaskVoid Core()
         {
             await new TestAwaiter(false, UniTaskStatus.Succeeded);
             await new TestAwaiter(false, UniTaskStatus.Succeeded);
             await new TestAwaiter(false, UniTaskStatus.Succeeded);
+        }
+    }
+
+    struct Foo : IAsyncStateMachine
+    {
+        public AsyncUniTaskVoidMethodBuilder builder;
+        public TestAwaiter awaiter;
+        public TestAwaiter awaiterawaiter;
+
+        public int state;
+
+        public void MoveNext()
+        {
+            switch (state)
+            {
+                case -1:
+                    awaiterawaiter = awaiter.GetAwaiter();
+                    if (awaiterawaiter.IsCompleted)
+                    {
+                        goto case 0;
+                    }
+                    else
+                    {
+                        state = 0;
+                        builder.AwaitUnsafeOnCompleted(ref awaiterawaiter, ref this);
+                        return;
+                    }
+
+                case 0:
+                default:
+                    goto END;
+            }
+
+            END:
+            builder.SetResult();
+        }
+
+        public void SetStateMachine(IAsyncStateMachine stateMachine)
+        {
+
         }
     }
 }
@@ -170,7 +222,15 @@ public struct TestAwaiter<T> : ICriticalNotifyCompletion
 
 public sealed class ThreadPoolWorkItem : IThreadPoolWorkItem
 {
-    static readonly ConcurrentQueue<ThreadPoolWorkItem> pool = new ConcurrentQueue<ThreadPoolWorkItem>();
+    public static readonly ConcurrentQueue<ThreadPoolWorkItem> pool = new ConcurrentQueue<ThreadPoolWorkItem>();
+
+    public static void CreatePoolItems(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            pool.Enqueue(new ThreadPoolWorkItem());
+        }
+    }
 
     Action continuation;
 
