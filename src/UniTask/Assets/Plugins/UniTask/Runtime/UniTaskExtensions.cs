@@ -571,7 +571,7 @@ namespace Cysharp.Threading.Tasks
 
 #if UNITY_2018_3_OR_NEWER
 
-        class ToCoroutineEnumerator : IEnumerator
+        sealed class ToCoroutineEnumerator : IEnumerator
         {
             bool completed;
             UniTask task;
@@ -629,12 +629,12 @@ namespace Cysharp.Threading.Tasks
                 return !completed;
             }
 
-            public void Reset()
+            void IEnumerator.Reset()
             {
             }
         }
 
-        class ToCoroutineEnumerator<T> : IEnumerator
+        sealed class ToCoroutineEnumerator<T> : IEnumerator
         {
             bool completed;
             Action<T> resultHandler = null;
@@ -700,11 +700,11 @@ namespace Cysharp.Threading.Tasks
                 return !completed;
             }
 
-            public void Reset()
+            void IEnumerator.Reset()
             {
             }
         }
-    
+
 #endif
     }
 }

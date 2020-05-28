@@ -354,14 +354,17 @@ public class SandboxMain : MonoBehaviour
 
         }).Forget();
 
-
+        CloseAsync(this.GetCancellationTokenOnDestroy()).Forget();
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () => await UniTask.Yield()));
     }
 
     async UniTaskVoid CloseAsync(CancellationToken cancellationToken = default)
     {
-        await UniTask.Yield();
+        while (true)
+        {
+            await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+        }
     }
 
     async UniTaskVoid Running(CancellationToken ct)

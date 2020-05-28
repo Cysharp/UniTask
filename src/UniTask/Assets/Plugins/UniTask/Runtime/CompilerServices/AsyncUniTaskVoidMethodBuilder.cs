@@ -4,10 +4,12 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security;
 
 namespace Cysharp.Threading.Tasks.CompilerServices
 {
+    [StructLayout(LayoutKind.Auto)]
     public struct AsyncUniTaskVoidMethodBuilder
     {
         internal IMoveNextRunner runner;
@@ -65,7 +67,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runner == null)
             {
-                MoveNextRunner<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
+                AsyncUniTaskVoid<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.MoveNext);
@@ -80,7 +82,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runner == null)
             {
-                MoveNextRunner<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
+                AsyncUniTaskVoid<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
             awaiter.UnsafeOnCompleted(runner.MoveNext);

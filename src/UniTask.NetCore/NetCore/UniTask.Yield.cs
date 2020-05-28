@@ -59,16 +59,22 @@ namespace Cysharp.Threading.Tasks
 
 #if NETCOREAPP3_1
 
-            sealed class ThreadPoolWorkItem : IThreadPoolWorkItem
+            sealed class ThreadPoolWorkItem : IThreadPoolWorkItem, ITaskPoolNode<ThreadPoolWorkItem>
             {
-                static readonly ConcurrentQueue<ThreadPoolWorkItem> pool = new ConcurrentQueue<ThreadPoolWorkItem>();
+                static TaskPool<ThreadPoolWorkItem> pool;
+                public ThreadPoolWorkItem NextNode { get; set; }
+
+                static ThreadPoolWorkItem()
+                {
+                    TaskPoolMonitor.RegisterSizeGetter(typeof(ThreadPoolWorkItem), () => pool.Size);
+                }
 
                 Action continuation;
 
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 public static ThreadPoolWorkItem Create(Action continuation)
                 {
-                    if (!pool.TryDequeue(out var item))
+                    if (!pool.TryPop(out var item))
                     {
                         item = new ThreadPoolWorkItem();
                     }
@@ -82,9 +88,11 @@ namespace Cysharp.Threading.Tasks
                 {
                     var call = continuation;
                     continuation = null;
-                    pool.Enqueue(this);
-
-                    call.Invoke();
+                    if (call != null)
+                    {
+                        pool.TryPush(this);
+                        call.Invoke();
+                    }
                 }
             }
 

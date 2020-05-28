@@ -75,9 +75,15 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class AsyncOperationConfiguredSource : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        class AsyncOperationConfiguredSource : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<AsyncOperationConfiguredSource>
         {
-            static readonly PromisePool<AsyncOperationConfiguredSource> pool = new PromisePool<AsyncOperationConfiguredSource>();
+            static TaskPool<AsyncOperationConfiguredSource> pool;
+            public AsyncOperationConfiguredSource NextNode { get; set; }
+
+            static AsyncOperationConfiguredSource()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(AsyncOperationConfiguredSource), () => pool.Size);
+            }
 
             AsyncOperation asyncOperation;
             IProgress<float> progress;
@@ -97,7 +103,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new AsyncOperationConfiguredSource();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new AsyncOperationConfiguredSource();
+                }
 
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
@@ -115,13 +124,12 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
 
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -162,17 +170,19 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~AsyncOperationConfiguredSource()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
@@ -247,9 +257,15 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class ResourceRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, IPromisePoolItem
+        class ResourceRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<ResourceRequestConfiguredSource>
         {
-            static readonly PromisePool<ResourceRequestConfiguredSource> pool = new PromisePool<ResourceRequestConfiguredSource>();
+            static TaskPool<ResourceRequestConfiguredSource> pool;
+            public ResourceRequestConfiguredSource NextNode { get; set; }
+
+            static ResourceRequestConfiguredSource()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(ResourceRequestConfiguredSource), () => pool.Size);
+            }
 
             ResourceRequest asyncOperation;
             IProgress<float> progress;
@@ -269,7 +285,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource<UnityEngine.Object>.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new ResourceRequestConfiguredSource();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new ResourceRequestConfiguredSource();
+                }
 
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
@@ -287,13 +306,12 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
 
                     return core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -339,17 +357,19 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~ResourceRequestConfiguredSource()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
@@ -424,9 +444,15 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class AssetBundleRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, IPromisePoolItem
+        class AssetBundleRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<AssetBundleRequestConfiguredSource>
         {
-            static readonly PromisePool<AssetBundleRequestConfiguredSource> pool = new PromisePool<AssetBundleRequestConfiguredSource>();
+            static TaskPool<AssetBundleRequestConfiguredSource> pool;
+            public AssetBundleRequestConfiguredSource NextNode { get; set; }
+
+            static AssetBundleRequestConfiguredSource()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(AssetBundleRequestConfiguredSource), () => pool.Size);
+            }
 
             AssetBundleRequest asyncOperation;
             IProgress<float> progress;
@@ -446,7 +472,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource<UnityEngine.Object>.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new AssetBundleRequestConfiguredSource();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new AssetBundleRequestConfiguredSource();
+                }
 
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
@@ -464,13 +493,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
-
                     return core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -516,17 +543,19 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                TaskTracker.RemoveTracking(this);
+                return pool.TryPush(this);
             }
 
             ~AssetBundleRequestConfiguredSource()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
@@ -601,9 +630,15 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class AssetBundleCreateRequestConfiguredSource : IUniTaskSource<AssetBundle>, IPlayerLoopItem, IPromisePoolItem
+        class AssetBundleCreateRequestConfiguredSource : IUniTaskSource<AssetBundle>, IPlayerLoopItem, ITaskPoolNode<AssetBundleCreateRequestConfiguredSource>
         {
-            static readonly PromisePool<AssetBundleCreateRequestConfiguredSource> pool = new PromisePool<AssetBundleCreateRequestConfiguredSource>();
+            static TaskPool<AssetBundleCreateRequestConfiguredSource> pool;
+            public AssetBundleCreateRequestConfiguredSource NextNode { get; set; }
+
+            static AssetBundleCreateRequestConfiguredSource()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(AssetBundleCreateRequestConfiguredSource), () => pool.Size);
+            }
 
             AssetBundleCreateRequest asyncOperation;
             IProgress<float> progress;
@@ -623,7 +658,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource<AssetBundle>.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new AssetBundleCreateRequestConfiguredSource();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new AssetBundleCreateRequestConfiguredSource();
+                }
 
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
@@ -641,13 +679,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
-
                     return core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -693,17 +729,19 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                TaskTracker.RemoveTracking(this);
+                return pool.TryPush(this);
             }
 
             ~AssetBundleCreateRequestConfiguredSource()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
@@ -779,9 +817,15 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        class UnityWebRequestAsyncOperationConfiguredSource : IUniTaskSource<UnityWebRequest>, IPlayerLoopItem, IPromisePoolItem
+        class UnityWebRequestAsyncOperationConfiguredSource : IUniTaskSource<UnityWebRequest>, IPlayerLoopItem, ITaskPoolNode<UnityWebRequestAsyncOperationConfiguredSource>
         {
-            static readonly PromisePool<UnityWebRequestAsyncOperationConfiguredSource> pool = new PromisePool<UnityWebRequestAsyncOperationConfiguredSource>();
+            static TaskPool<UnityWebRequestAsyncOperationConfiguredSource> pool;
+            public UnityWebRequestAsyncOperationConfiguredSource NextNode { get; set; }
+
+            static UnityWebRequestAsyncOperationConfiguredSource()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(UnityWebRequestAsyncOperationConfiguredSource), () => pool.Size);
+            }
 
             UnityWebRequestAsyncOperation asyncOperation;
             IProgress<float> progress;
@@ -801,7 +845,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource<UnityWebRequest>.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new UnityWebRequestAsyncOperationConfiguredSource();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new UnityWebRequestAsyncOperationConfiguredSource();
+                }
 
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
@@ -819,13 +866,12 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
 
                     return core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -872,17 +918,19 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                TaskTracker.RemoveTracking(this);
+                return pool.TryPush(this);
             }
 
             ~UnityWebRequestAsyncOperationConfiguredSource()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }

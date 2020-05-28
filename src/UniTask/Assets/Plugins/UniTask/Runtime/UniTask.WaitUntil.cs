@@ -35,9 +35,15 @@ namespace Cysharp.Threading.Tasks
                 : WaitUntilValueChangedStandardObjectPromise<T, U>.Create(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken, out token), token);
         }
 
-        sealed class WaitUntilPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class WaitUntilPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitUntilPromise>
         {
-            static readonly PromisePool<WaitUntilPromise> pool = new PromisePool<WaitUntilPromise>();
+            static TaskPool<WaitUntilPromise> pool;
+            public WaitUntilPromise NextNode { get; set; }
+
+            static WaitUntilPromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilPromise), () => pool.Size);
+            }
 
             Func<bool> predicate;
             CancellationToken cancellationToken;
@@ -55,7 +61,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new WaitUntilPromise();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new WaitUntilPromise();
+                }
 
                 result.predicate = predicate;
                 result.cancellationToken = cancellationToken;
@@ -72,12 +81,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -121,25 +129,33 @@ namespace Cysharp.Threading.Tasks
                 return false;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 predicate = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~WaitUntilPromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
             }
         }
 
-        sealed class WaitWhilePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class WaitWhilePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitWhilePromise>
         {
-            static readonly PromisePool<WaitWhilePromise> pool = new PromisePool<WaitWhilePromise>();
+            static TaskPool<WaitWhilePromise> pool;
+            public WaitWhilePromise NextNode { get; set; }
+
+            static WaitWhilePromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitWhilePromise), () => pool.Size);
+            }
 
             Func<bool> predicate;
             CancellationToken cancellationToken;
@@ -157,7 +173,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new WaitWhilePromise();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new WaitWhilePromise();
+                }
 
                 result.predicate = predicate;
                 result.cancellationToken = cancellationToken;
@@ -174,12 +193,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -223,25 +241,33 @@ namespace Cysharp.Threading.Tasks
                 return false;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 predicate = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~WaitWhilePromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
             }
         }
 
-        sealed class WaitUntilCanceledPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class WaitUntilCanceledPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitUntilCanceledPromise>
         {
-            static readonly PromisePool<WaitUntilCanceledPromise> pool = new PromisePool<WaitUntilCanceledPromise>();
+            static TaskPool<WaitUntilCanceledPromise> pool;
+            public WaitUntilCanceledPromise NextNode { get; set; }
+
+            static WaitUntilCanceledPromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilCanceledPromise), () => pool.Size);
+            }
 
             CancellationToken cancellationToken;
 
@@ -258,7 +284,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new WaitUntilCanceledPromise();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new WaitUntilCanceledPromise();
+                }
 
                 result.cancellationToken = cancellationToken;
 
@@ -274,12 +303,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -309,15 +337,17 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~WaitUntilCanceledPromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
@@ -325,9 +355,15 @@ namespace Cysharp.Threading.Tasks
         }
 
         // where T : UnityEngine.Object, can not add constraint
-        sealed class WaitUntilValueChangedUnityObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, IPromisePoolItem
+        sealed class WaitUntilValueChangedUnityObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, ITaskPoolNode<WaitUntilValueChangedUnityObjectPromise<T, U>>
         {
-            static readonly PromisePool<WaitUntilValueChangedUnityObjectPromise<T, U>> pool = new PromisePool<WaitUntilValueChangedUnityObjectPromise<T, U>>();
+            static TaskPool<WaitUntilValueChangedUnityObjectPromise<T, U>> pool;
+            public WaitUntilValueChangedUnityObjectPromise<T, U> NextNode { get; set; }
+
+            static WaitUntilValueChangedUnityObjectPromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilValueChangedUnityObjectPromise<T, U>), () => pool.Size);
+            }
 
             T target;
             UnityEngine.Object targetAsUnityObject;
@@ -349,7 +385,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource<U>.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new WaitUntilValueChangedUnityObjectPromise<T, U>();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new WaitUntilValueChangedUnityObjectPromise<T, U>();
+                }
 
                 result.target = target;
                 result.targetAsUnityObject = target as UnityEngine.Object;
@@ -370,12 +409,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     return core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -426,29 +464,37 @@ namespace Cysharp.Threading.Tasks
                 return false;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 target = default;
                 currentValue = default;
                 monitorFunction = default;
                 equalityComparer = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~WaitUntilValueChangedUnityObjectPromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
             }
         }
 
-        sealed class WaitUntilValueChangedStandardObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, IPromisePoolItem
+        sealed class WaitUntilValueChangedStandardObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, ITaskPoolNode<WaitUntilValueChangedStandardObjectPromise<T, U>>
             where T : class
         {
-            static readonly PromisePool<WaitUntilValueChangedStandardObjectPromise<T, U>> pool = new PromisePool<WaitUntilValueChangedStandardObjectPromise<T, U>>();
+            static TaskPool<WaitUntilValueChangedStandardObjectPromise<T, U>> pool;
+            public WaitUntilValueChangedStandardObjectPromise<T, U> NextNode { get; set; }
+
+            static WaitUntilValueChangedStandardObjectPromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(WaitUntilValueChangedStandardObjectPromise<T, U>), () => pool.Size);
+            }
 
             WeakReference<T> target;
             U currentValue;
@@ -469,7 +515,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource<U>.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new WaitUntilValueChangedStandardObjectPromise<T, U>();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new WaitUntilValueChangedStandardObjectPromise<T, U>();
+                }
 
                 result.target = new WeakReference<T>(target, false); // wrap in WeakReference.
                 result.monitorFunction = monitorFunction;
@@ -489,12 +538,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     return core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -545,19 +593,21 @@ namespace Cysharp.Threading.Tasks
                 return false;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 target = default;
                 currentValue = default;
                 monitorFunction = default;
                 equalityComparer = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~WaitUntilValueChangedStandardObjectPromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }

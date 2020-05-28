@@ -30,33 +30,14 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(EnumeratorPromise.Create(enumerator, timing, cancellationToken, out var token), token);
         }
 
-        class EnumeratorPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<EnumeratorPromise>
+        sealed class EnumeratorPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<EnumeratorPromise>
         {
             static TaskPool<EnumeratorPromise> pool;
             public EnumeratorPromise NextNode { get; set; }
 
             static EnumeratorPromise()
             {
-                TaskPoolMonitor.RegisterSizeGettter(typeof(EnumeratorPromise), () => pool.Size);
-            }
-
-            static EnumeratorPromise Create()
-            {
-                if (!pool.TryPop(out var result))
-                {
-                    result = new EnumeratorPromise();
-                }
-                TaskTracker.TrackActiveTask(result, 4);
-                return result;
-            }
-
-            bool TryReturn()
-            {
-                TaskTracker.RemoveTracking(this);
-                core.Reset();
-                innerEnumerator = default;
-                cancellationToken = default;
-                return pool.TryPush(this);
+                TaskPoolMonitor.RegisterSizeGetter(typeof(EnumeratorPromise), () => pool.Size);
             }
 
             IEnumerator innerEnumerator;
@@ -75,7 +56,11 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = Create();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new EnumeratorPromise();
+                }
+                TaskTracker.TrackActiveTask(result, 3);
 
                 result.innerEnumerator = ConsumeEnumerator(innerEnumerator);
                 result.cancellationToken = cancellationToken;
@@ -138,11 +123,13 @@ namespace Cysharp.Threading.Tasks
                 return false;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 innerEnumerator = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~EnumeratorPromise()

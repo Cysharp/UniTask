@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks.Internal;
 
@@ -103,16 +104,11 @@ namespace Cysharp.Threading.Tasks
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        string typeName = null;
                         var keyType = listPool[i].Key.GetType();
-                        if (keyType.IsNested)
-                        {
-                            typeName = keyType.DeclaringType.Name + "." + keyType.Name;
-                        }
-                        else
-                        {
-                            typeName = keyType.Name;
-                        }
+
+                        var sb = new StringBuilder();
+                        TypeBeautify(keyType, sb);
+                        var typeName = sb.ToString();
 
                         action(listPool[i].Value.trackingId, typeName, listPool[i].Key.UnsafeGetStatus(), listPool[i].Value.addTime, listPool[i].Value.stackTrace);
                         listPool[i] = new KeyValuePair<IUniTaskSource, (int trackingId, DateTime addTime, string stackTrace)>(null, (0, default(DateTime), null)); // clear
@@ -123,6 +119,31 @@ namespace Cysharp.Threading.Tasks
                     listPool.Clear();
                     throw;
                 }
+            }
+        }
+
+        static void TypeBeautify(Type type, StringBuilder sb)
+        {
+            if (type.IsNested)
+            {
+                TypeBeautify(type.DeclaringType, sb);
+                sb.Append(".");
+            }
+
+            if (type.IsGenericType)
+            {
+                var genericsStart = type.Name.IndexOf("`");
+                sb.Append(type.Name.Substring(0, genericsStart));
+                sb.Append("<");
+                foreach (var item in type.GetGenericArguments())
+                {
+                    TypeBeautify(item, sb);
+                }
+                sb.Append(">");
+            }
+            else
+            {
+                sb.Append(type.Name);
             }
         }
     }

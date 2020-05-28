@@ -83,9 +83,16 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        sealed class TweenConfiguredSource : IUniTaskSource, IPromisePoolItem
+        sealed class TweenConfiguredSource : IUniTaskSource, ITaskPoolNode<TweenConfiguredSource>
         {
-            static readonly PromisePool<TweenConfiguredSource> pool = new PromisePool<TweenConfiguredSource>();
+            static TaskPool<TweenConfiguredSource> pool;
+            public TweenConfiguredSource NextNode { get; set; }
+
+            static TweenConfiguredSource()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(TweenConfiguredSource), () => pool.Size);
+            }
+
             static readonly Action<object> CancellationCallbackDelegate = CancellationCallback;
             static readonly TweenCallback EmptyTweenCallback = () => { };
 
@@ -111,7 +118,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new TweenConfiguredSource();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new TweenConfiguredSource();
+                }
 
                 result.tween = tween;
                 result.cancelBehaviour = cancelBehaviour;
@@ -194,12 +204,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -219,16 +228,18 @@ namespace Cysharp.Threading.Tasks
                 core.OnCompleted(continuation, state, token);
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 tween = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~TweenConfiguredSource()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }

@@ -217,21 +217,23 @@ namespace NetCoreSandbox
 
             ThreadPool.SetMinThreads(100, 100);
 
-            List<UniTask<int>> list = new List<UniTask<int>>();
-            for (int i = 0; i < 321; i++)
+            //List<UniTask<int>> list = new List<UniTask<int>>();
+            for (int i = 0; i < short.MaxValue; i++)
             {
-                list.Add(AsyncTest());
+                ////    list.Add(AsyncTest());
+                await YieldCore();
             }
             //await UniTask.WhenAll(list);
 
-            Console.WriteLine("TOGO");
+            //Console.WriteLine("TOGO");
 
-            var a = await AsyncTest();
-            var b = AsyncTest();
-            var c = AsyncTest();
+            //var a = await AsyncTest();
+            //var b = AsyncTest();
+            //var c = AsyncTest();
+            await YieldCore();
 
-            await b;
-            await c;
+            //await b;
+            //await c;
 
 
             foreach (var item in Cysharp.Threading.Tasks.Internal.TaskPoolMonitor.GetCacheSizeInfo())
@@ -240,6 +242,11 @@ namespace NetCoreSandbox
             }
 
             Console.ReadLine();
+        }
+
+        static async UniTask YieldCore()
+        {
+            await UniTask.Yield();
         }
 
 #pragma warning disable CS1998

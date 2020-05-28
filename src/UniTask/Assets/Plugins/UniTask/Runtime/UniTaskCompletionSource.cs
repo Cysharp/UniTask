@@ -375,9 +375,15 @@ namespace Cysharp.Threading.Tasks
         }
     }
 
-    public class AutoResetUniTaskCompletionSource : IUniTaskSource, IPromisePoolItem, IPromise
+    public class AutoResetUniTaskCompletionSource : IUniTaskSource, ITaskPoolNode<AutoResetUniTaskCompletionSource>, IPromise
     {
-        static readonly PromisePool<AutoResetUniTaskCompletionSource> pool = new PromisePool<AutoResetUniTaskCompletionSource>();
+        static TaskPool<AutoResetUniTaskCompletionSource> pool;
+        public AutoResetUniTaskCompletionSource NextNode { get; set; }
+
+        static AutoResetUniTaskCompletionSource()
+        {
+            TaskPoolMonitor.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource), () => pool.Size);
+        }
 
         UniTaskCompletionSourceCore<AsyncUnit> core;
 
@@ -388,9 +394,12 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public static AutoResetUniTaskCompletionSource Create()
         {
-            var value = pool.TryRent() ?? new AutoResetUniTaskCompletionSource();
-            TaskTracker.TrackActiveTask(value, 2);
-            return value;
+            if (!pool.TryPop(out var result))
+            {
+                result = new AutoResetUniTaskCompletionSource();
+            }
+            TaskTracker.TrackActiveTask(result, 2);
+            return result;
         }
 
         [DebuggerHidden]
@@ -452,12 +461,11 @@ namespace Cysharp.Threading.Tasks
         {
             try
             {
-                TaskTracker.RemoveTracking(this);
                 core.GetResult(token);
             }
             finally
             {
-                pool.TryReturn(this);
+                TryReturn();
             }
 
         }
@@ -481,14 +489,16 @@ namespace Cysharp.Threading.Tasks
         }
 
         [DebuggerHidden]
-        void IPromisePoolItem.Reset()
+        bool TryReturn()
         {
+            TaskTracker.RemoveTracking(this);
             core.Reset();
+            return pool.TryPush(this);
         }
 
         ~AutoResetUniTaskCompletionSource()
         {
-            if (pool.TryReturn(this))
+            if (TryReturn())
             {
                 GC.ReRegisterForFinalize(this);
                 return;
@@ -591,9 +601,15 @@ namespace Cysharp.Threading.Tasks
         }
     }
 
-    public class AutoResetUniTaskCompletionSource<T> : IUniTaskSource<T>, IPromisePoolItem, IPromise<T>
+    public class AutoResetUniTaskCompletionSource<T> : IUniTaskSource<T>, ITaskPoolNode<AutoResetUniTaskCompletionSource<T>>, IPromise<T>
     {
-        static readonly PromisePool<AutoResetUniTaskCompletionSource<T>> pool = new PromisePool<AutoResetUniTaskCompletionSource<T>>();
+        static TaskPool<AutoResetUniTaskCompletionSource<T>> pool;
+        public AutoResetUniTaskCompletionSource<T> NextNode { get; set; }
+
+        static AutoResetUniTaskCompletionSource()
+        {
+            TaskPoolMonitor.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource<T>), () => pool.Size);
+        }
 
         UniTaskCompletionSourceCore<T> core;
 
@@ -604,7 +620,10 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public static AutoResetUniTaskCompletionSource<T> Create()
         {
-            var result = pool.TryRent() ?? new AutoResetUniTaskCompletionSource<T>();
+            if (!pool.TryPop(out var result))
+            {
+                result = new AutoResetUniTaskCompletionSource<T>();
+            }
             TaskTracker.TrackActiveTask(result, 2);
             return result;
         }
@@ -668,12 +687,11 @@ namespace Cysharp.Threading.Tasks
         {
             try
             {
-                TaskTracker.RemoveTracking(this);
                 return core.GetResult(token);
             }
             finally
             {
-                pool.TryReturn(this);
+                TryReturn();
             }
         }
 
@@ -702,14 +720,17 @@ namespace Cysharp.Threading.Tasks
         }
 
         [DebuggerHidden]
-        void IPromisePoolItem.Reset()
+        bool TryReturn()
         {
+            TaskTracker.RemoveTracking(this);
             core.Reset();
+            return pool.TryPush(this);
         }
+
 
         ~AutoResetUniTaskCompletionSource()
         {
-            if (pool.TryReturn(this))
+            if (TryReturn())
             {
                 GC.ReRegisterForFinalize(this);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks.Internal
@@ -44,6 +45,7 @@ namespace Cysharp.Threading.Tasks.Internal
     }
 
     // mutable struct, don't mark readonly.
+    [StructLayout(LayoutKind.Auto)]
     public struct TaskPool<T>
         where T : class, ITaskPoolNode<T>
     {
@@ -109,7 +111,7 @@ namespace Cysharp.Threading.Tasks.Internal
             }
         }
 
-        public static void RegisterSizeGettter(Type type, Func<int> getSize)
+        public static void RegisterSizeGetter(Type type, Func<int> getSize)
         {
             sizes[type] = getSize;
         }

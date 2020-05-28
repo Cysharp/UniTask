@@ -56,9 +56,15 @@ namespace Cysharp.Threading.Tasks
                 : new UniTask(DelayPromise.Create(delayTimeSpan, delayTiming, cancellationToken, out token), token);
         }
 
-        sealed class YieldPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class YieldPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<YieldPromise>
         {
-            static readonly PromisePool<YieldPromise> pool = new PromisePool<YieldPromise>();
+            static TaskPool<YieldPromise> pool;
+            public YieldPromise NextNode { get; set; }
+
+            static YieldPromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(YieldPromise), () => pool.Size);
+            }
 
             CancellationToken cancellationToken;
             UniTaskCompletionSourceCore<object> core;
@@ -74,7 +80,11 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new YieldPromise();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new YieldPromise();
+                }
+
 
                 result.cancellationToken = cancellationToken;
 
@@ -90,12 +100,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -126,24 +135,32 @@ namespace Cysharp.Threading.Tasks
                 return false;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~YieldPromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
             }
         }
 
-        sealed class DelayFramePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class DelayFramePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayFramePromise>
         {
-            static readonly PromisePool<DelayFramePromise> pool = new PromisePool<DelayFramePromise>();
+            static TaskPool<DelayFramePromise> pool;
+            public DelayFramePromise NextNode { get; set; }
+
+            static DelayFramePromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(DelayFramePromise), () => pool.Size);
+            }
 
             int delayFrameCount;
             CancellationToken cancellationToken;
@@ -162,7 +179,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new DelayFramePromise();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new DelayFramePromise();
+                }
 
                 result.delayFrameCount = delayFrameCount;
                 result.cancellationToken = cancellationToken;
@@ -179,12 +199,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -221,26 +240,34 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 currentFrameCount = default;
                 delayFrameCount = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~DelayFramePromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
             }
         }
 
-        sealed class DelayPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class DelayPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayPromise>
         {
-            static readonly PromisePool<DelayPromise> pool = new PromisePool<DelayPromise>();
+            static TaskPool<DelayPromise> pool;
+            public DelayPromise NextNode { get; set; }
+
+            static DelayPromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(DelayPromise), () => pool.Size);
+            }
 
             float delayFrameTimeSpan;
             float elapsed;
@@ -259,7 +286,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new DelayPromise();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new DelayPromise();
+                }
 
                 result.elapsed = 0.0f;
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
@@ -277,12 +307,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -319,26 +348,34 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 delayFrameTimeSpan = default;
                 elapsed = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~DelayPromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
             }
         }
 
-        sealed class DelayIgnoreTimeScalePromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        sealed class DelayIgnoreTimeScalePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayIgnoreTimeScalePromise>
         {
-            static readonly PromisePool<DelayIgnoreTimeScalePromise> pool = new PromisePool<DelayIgnoreTimeScalePromise>();
+            static TaskPool<DelayIgnoreTimeScalePromise> pool;
+            public DelayIgnoreTimeScalePromise NextNode { get; set; }
+
+            static DelayIgnoreTimeScalePromise()
+            {
+                TaskPoolMonitor.RegisterSizeGetter(typeof(DelayIgnoreTimeScalePromise), () => pool.Size);
+            }
 
             float delayFrameTimeSpan;
             float elapsed;
@@ -357,7 +394,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new DelayIgnoreTimeScalePromise();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new DelayIgnoreTimeScalePromise();
+                }
 
                 result.elapsed = 0.0f;
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
@@ -375,12 +415,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -417,17 +456,19 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 delayFrameTimeSpan = default;
                 elapsed = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~DelayIgnoreTimeScalePromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }

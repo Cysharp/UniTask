@@ -29,16 +29,16 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         void SetException(Exception exception);
     }
 
-    internal sealed class MoveNextRunner<TStateMachine> : IMoveNextRunner, ITaskPoolNode<MoveNextRunner<TStateMachine>>
+    internal sealed class AsyncUniTaskVoid<TStateMachine> : IMoveNextRunner, ITaskPoolNode<AsyncUniTaskVoid<TStateMachine>>, IUniTaskSource
         where TStateMachine : IAsyncStateMachine
     {
-        static TaskPool<MoveNextRunner<TStateMachine>> pool;
+        static TaskPool<AsyncUniTaskVoid<TStateMachine>> pool;
 
         TStateMachine stateMachine;
 
         public Action MoveNext { get; }
 
-        public MoveNextRunner()
+        public AsyncUniTaskVoid()
         {
             MoveNext = Run;
         }
@@ -47,22 +47,24 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (!pool.TryPop(out var result))
             {
-                result = new MoveNextRunner<TStateMachine>();
+                result = new AsyncUniTaskVoid<TStateMachine>();
             }
+            TaskTracker.TrackActiveTask(result, 3);
 
             builder.runner = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
-        static MoveNextRunner()
+        static AsyncUniTaskVoid()
         {
-            TaskPoolMonitor.RegisterSizeGettter(typeof(MoveNextRunner<TStateMachine>), () => pool.Size);
+            TaskPoolMonitor.RegisterSizeGetter(typeof(AsyncUniTaskVoid<TStateMachine>), () => pool.Size);
         }
 
-        public MoveNextRunner<TStateMachine> NextNode { get; set; }
+        public AsyncUniTaskVoid<TStateMachine> NextNode { get; set; }
 
         public void Return()
         {
+            TaskTracker.RemoveTracking(this);
             stateMachine = default;
             pool.TryPush(this);
         }
@@ -73,12 +75,32 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             stateMachine.MoveNext();
         }
+
+        // dummy interface implementation for TaskTracker.
+
+        UniTaskStatus IUniTaskSource.GetStatus(short token)
+        {
+            return UniTaskStatus.Pending;
+        }
+
+        UniTaskStatus IUniTaskSource.UnsafeGetStatus()
+        {
+            return UniTaskStatus.Pending;
+        }
+
+        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
+        {
+        }
+
+        void IUniTaskSource.GetResult(short token)
+        {
+        }
     }
 
-    internal class MoveNextRunnerPromise<TStateMachine> : IMoveNextRunnerPromise, IUniTaskSource, ITaskPoolNode<MoveNextRunnerPromise<TStateMachine>>
+    internal sealed class AsyncUniTask<TStateMachine> : IMoveNextRunnerPromise, IUniTaskSource, ITaskPoolNode<AsyncUniTask<TStateMachine>>
         where TStateMachine : IAsyncStateMachine
     {
-        static TaskPool<MoveNextRunnerPromise<TStateMachine>> pool;
+        static TaskPool<AsyncUniTask<TStateMachine>> pool;
 
         TStateMachine stateMachine;
 
@@ -86,7 +108,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         UniTaskCompletionSourceCore<AsyncUnit> core;
 
-        MoveNextRunnerPromise()
+        AsyncUniTask()
         {
             MoveNext = Run;
         }
@@ -95,7 +117,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (!pool.TryPop(out var result))
             {
-                result = new MoveNextRunnerPromise<TStateMachine>();
+                result = new AsyncUniTask<TStateMachine>();
             }
             TaskTracker.TrackActiveTask(result, 3);
 
@@ -103,11 +125,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
-        public MoveNextRunnerPromise<TStateMachine> NextNode { get; set; }
+        public AsyncUniTask<TStateMachine> NextNode { get; set; }
 
-        static MoveNextRunnerPromise()
+        static AsyncUniTask()
         {
-            TaskPoolMonitor.RegisterSizeGettter(typeof(MoveNextRunnerPromise<TStateMachine>), () => pool.Size);
+            TaskPoolMonitor.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine>), () => pool.Size);
         }
 
         bool TryReturn()
@@ -177,7 +199,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             core.OnCompleted(continuation, state, token);
         }
 
-        ~MoveNextRunnerPromise()
+        ~AsyncUniTask()
         {
             if (TryReturn())
             {
@@ -186,10 +208,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         }
     }
 
-    internal class MoveNextRunnerPromise<TStateMachine, T> : IMoveNextRunnerPromise<T>, IUniTaskSource<T>, ITaskPoolNode<MoveNextRunnerPromise<TStateMachine, T>>
+    internal sealed class AsyncUniTask<TStateMachine, T> : IMoveNextRunnerPromise<T>, IUniTaskSource<T>, ITaskPoolNode<AsyncUniTask<TStateMachine, T>>
         where TStateMachine : IAsyncStateMachine
     {
-        static TaskPool<MoveNextRunnerPromise<TStateMachine, T>> pool;
+        static TaskPool<AsyncUniTask<TStateMachine, T>> pool;
 
         TStateMachine stateMachine;
 
@@ -197,7 +219,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         UniTaskCompletionSourceCore<T> core;
 
-        MoveNextRunnerPromise()
+        AsyncUniTask()
         {
             MoveNext = Run;
         }
@@ -206,7 +228,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (!pool.TryPop(out var result))
             {
-                result = new MoveNextRunnerPromise<TStateMachine, T>();
+                result = new AsyncUniTask<TStateMachine, T>();
             }
             TaskTracker.TrackActiveTask(result, 3);
 
@@ -214,11 +236,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
-        public MoveNextRunnerPromise<TStateMachine, T> NextNode { get; set; }
+        public AsyncUniTask<TStateMachine, T> NextNode { get; set; }
 
-        static MoveNextRunnerPromise()
+        static AsyncUniTask()
         {
-            TaskPoolMonitor.RegisterSizeGettter(typeof(MoveNextRunnerPromise<TStateMachine, T>), () => pool.Size);
+            TaskPoolMonitor.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine, T>), () => pool.Size);
         }
 
         bool TryReturn()
@@ -294,7 +316,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             core.OnCompleted(continuation, state, token);
         }
 
-        ~MoveNextRunnerPromise()
+        ~AsyncUniTask()
         {
             if (TryReturn())
             {
