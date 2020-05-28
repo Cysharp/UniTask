@@ -234,7 +234,7 @@ namespace NetCoreSandbox
             await c;
 
 
-            foreach (var item in Cysharp.Threading.Tasks.Internal.StackNodeMonitor.GetCacheSizeInfo())
+            foreach (var item in Cysharp.Threading.Tasks.Internal.TaskPoolMonitor.GetCacheSizeInfo())
             {
                 Console.WriteLine(item);
             }

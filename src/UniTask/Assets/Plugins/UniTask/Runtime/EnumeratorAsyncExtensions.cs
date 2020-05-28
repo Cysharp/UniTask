@@ -30,9 +30,34 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(EnumeratorPromise.Create(enumerator, timing, cancellationToken, out var token), token);
         }
 
-        class EnumeratorPromise : IUniTaskSource, IPlayerLoopItem, IPromisePoolItem
+        class EnumeratorPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<EnumeratorPromise>
         {
-            static readonly PromisePool<EnumeratorPromise> pool = new PromisePool<EnumeratorPromise>();
+            static TaskPool<EnumeratorPromise> pool;
+            public EnumeratorPromise NextNode { get; set; }
+
+            static EnumeratorPromise()
+            {
+                TaskPoolMonitor.RegisterSizeGettter(typeof(EnumeratorPromise), () => pool.Size);
+            }
+
+            static EnumeratorPromise Create()
+            {
+                if (!pool.TryPop(out var result))
+                {
+                    result = new EnumeratorPromise();
+                }
+                TaskTracker.TrackActiveTask(result, 4);
+                return result;
+            }
+
+            bool TryReturn()
+            {
+                TaskTracker.RemoveTracking(this);
+                core.Reset();
+                innerEnumerator = default;
+                cancellationToken = default;
+                return pool.TryPush(this);
+            }
 
             IEnumerator innerEnumerator;
             CancellationToken cancellationToken;
@@ -50,12 +75,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new EnumeratorPromise();
+                var result = Create();
 
                 result.innerEnumerator = ConsumeEnumerator(innerEnumerator);
                 result.cancellationToken = cancellationToken;
-
-                TaskTracker.TrackActiveTask(result, 3);
 
                 PlayerLoopHelper.AddAction(timing, result);
 
@@ -67,12 +90,11 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
                     core.GetResult(token);
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -125,7 +147,7 @@ namespace Cysharp.Threading.Tasks
 
             ~EnumeratorPromise()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }

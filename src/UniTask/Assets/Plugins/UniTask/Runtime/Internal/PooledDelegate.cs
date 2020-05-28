@@ -1,17 +1,21 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
 namespace Cysharp.Threading.Tasks.Internal
 {
-    internal sealed class PooledDelegate<T>
+    internal sealed class PooledDelegate<T> : ITaskPoolNode<PooledDelegate<T>>
     {
-        static readonly ConcurrentQueue<PooledDelegate<T>> pool = new ConcurrentQueue<PooledDelegate<T>>();
+        static TaskPool<PooledDelegate<T>> pool;
+
+        public PooledDelegate<T> NextNode { get; set; }
+
+        static PooledDelegate()
+        {
+            TaskPoolMonitor.RegisterSizeGettter(typeof(PooledDelegate<T>), () => pool.Size);
+        }
 
         readonly Action<T> runDelegate;
-
         Action continuation;
-
 
         PooledDelegate()
         {
@@ -21,7 +25,7 @@ namespace Cysharp.Threading.Tasks.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Action<T> Create(Action continuation)
         {
-            if (!pool.TryDequeue(out var item))
+            if (!pool.TryPop(out var item))
             {
                 item = new PooledDelegate<T>();
             }
@@ -37,7 +41,7 @@ namespace Cysharp.Threading.Tasks.Internal
             continuation = null;
             if (call != null)
             {
-                pool.Enqueue(this);
+                pool.TryPush(this);
                 call.Invoke();
             }
         }
