@@ -205,7 +205,7 @@ namespace NetCoreSandbox
 #endif
 
 
-            AsyncTest().Forget();
+            // AsyncTest().Forget();
 
 
             //AsyncTest().Forget();

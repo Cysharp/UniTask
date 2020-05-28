@@ -13,8 +13,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     public struct AsyncUniTaskMethodBuilder
     {
         // cache items.
-        AutoResetUniTaskCompletionSource promise;
-        internal IMoveNextRunner runner;
+        internal IMoveNextRunnerPromise runnerPromise;
+        Exception ex;
 
         // 1. Static Create method.
         [DebuggerHidden]
@@ -31,18 +31,18 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (promise != null)
+                if (runnerPromise != null)
                 {
-                    return promise.Task;
+                    return runnerPromise.Task;
                 }
-
-                if (runner == null)
+                else if (ex != null)
+                {
+                    return UniTask.FromException(ex);
+                }
+                else
                 {
                     return UniTask.CompletedTask;
                 }
-
-                promise = AutoResetUniTaskCompletionSource.Create();
-                return promise.Task;
             }
         }
 
@@ -50,22 +50,13 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetException(Exception exception)
         {
-            var p = promise; // after return, promise will clear so require to store local.
-
-            // runner is finished, return first.
-            if (runner != null)
+            if (runnerPromise == null)
             {
-                runner.Return();
-                runner = null;
-            }
-
-            if (p != null)
-            {
-                p.TrySetException(exception);
+                ex = exception;
             }
             else
             {
-                promise = AutoResetUniTaskCompletionSource.CreateFromException(exception, out _);
+                runnerPromise.SetException(exception);
             }
         }
 
@@ -73,18 +64,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetResult()
         {
-            var p = promise; // after return, promise will clear so require to store local.
-
-            // runner is finished, return first.
-            if (runner != null)
+            if (runnerPromise != null)
             {
-                runner.Return();
-                runner = null;
-            }
-
-            if (p != null)
-            {
-                p.TrySetResult();
+                runnerPromise.SetResult();
             }
         }
 
@@ -94,16 +76,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            if (promise == null)
+            if (runnerPromise == null)
             {
-                promise = AutoResetUniTaskCompletionSource.Create();
-            }
-            if (runner == null)
-            {
-                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
+                MoveNextRunnerPromise<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
-            awaiter.OnCompleted(runner.CallMoveNext);
+            awaiter.OnCompleted(runnerPromise.MoveNext);
         }
 
         // 6. AwaitUnsafeOnCompleted
@@ -113,16 +91,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             where TAwaiter : ICriticalNotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            if (promise == null)
+            if (runnerPromise == null)
             {
-                promise = AutoResetUniTaskCompletionSource.Create();
-            }
-            if (runner == null)
-            {
-                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
+                MoveNextRunnerPromise<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
-            awaiter.UnsafeOnCompleted(runner.CallMoveNext);
+            awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
         }
 
         // 7. Start
@@ -161,8 +135,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     public struct AsyncUniTaskMethodBuilder<T>
     {
         // cache items.
-        AutoResetUniTaskCompletionSource<T> promise;
-        internal IMoveNextRunner runner;
+        internal IMoveNextRunnerPromise<T> runnerPromise;
+        Exception ex;
         T result;
 
         // 1. Static Create method.
@@ -179,18 +153,18 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             get
             {
-                if (promise != null)
+                if (runnerPromise != null)
                 {
-                    return promise.Task;
+                    return runnerPromise.Task;
                 }
-
-                if (runner == null)
+                else if (ex != null)
+                {
+                    return UniTask.FromException<T>(ex);
+                }
+                else
                 {
                     return UniTask.FromResult(result);
                 }
-
-                promise = AutoResetUniTaskCompletionSource<T>.Create();
-                return promise.Task;
             }
         }
 
@@ -198,22 +172,13 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetException(Exception exception)
         {
-            var p = promise; // after return, promise will clear so require to store local.
-
-            // runner is finished, return first.
-            if (runner != null)
+            if (runnerPromise == null)
             {
-                runner.Return();
-                runner = null;
-            }
-
-            if (p == null)
-            {
-                promise = AutoResetUniTaskCompletionSource<T>.CreateFromException(exception, out _);
+                ex = exception;
             }
             else
             {
-                p.TrySetException(exception);
+                runnerPromise.SetException(exception);
             }
         }
 
@@ -221,22 +186,13 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         public void SetResult(T result)
         {
-            var p = promise; // after return, promise will clear so require to store local.
-
-            // runner is finished, return first.
-            if (runner != null)
-            {
-                runner.Return();
-                runner = null;
-            }
-
-            if (p == null)
+            if (runnerPromise == null)
             {
                 this.result = result;
             }
             else
             {
-                p.TrySetResult(result);
+                runnerPromise.SetResult(result);
             }
         }
 
@@ -246,16 +202,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            if (promise == null)
+            if (runnerPromise == null)
             {
-                promise = AutoResetUniTaskCompletionSource<T>.Create();
-            }
-            if (runner == null)
-            {
-                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
+                MoveNextRunnerPromise<TStateMachine, T>.SetStateMachine(ref this, ref stateMachine);
             }
 
-            awaiter.OnCompleted(runner.CallMoveNext);
+            awaiter.OnCompleted(runnerPromise.MoveNext);
         }
 
         // 6. AwaitUnsafeOnCompleted
@@ -265,16 +217,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             where TAwaiter : ICriticalNotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            if (promise == null)
+            if (runnerPromise == null)
             {
-                promise = AutoResetUniTaskCompletionSource<T>.Create();
-            }
-            if (runner == null)
-            {
-                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
+                MoveNextRunnerPromise<TStateMachine, T>.SetStateMachine(ref this, ref stateMachine);
             }
 
-            awaiter.UnsafeOnCompleted(runner.CallMoveNext);
+            awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
         }
 
         // 7. Start

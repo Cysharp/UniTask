@@ -12,10 +12,11 @@ namespace Cysharp.Threading.Tasks
 {
     internal static class AwaiterActions
     {
-        internal static readonly Action<object> InvokeActionDelegate = InvokeAction;
+        internal static readonly Action<object> InvokeContinuationDelegate = Continuation;
 
         [DebuggerHidden]
-        static void InvokeAction(object state)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static void Continuation(object state)
         {
             ((Action)state).Invoke();
         }
@@ -312,7 +313,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
-                    task.source.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                    task.source.OnCompleted(AwaiterActions.InvokeContinuationDelegate, continuation, task.token);
                 }
             }
 
@@ -326,7 +327,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
-                    task.source.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                    task.source.OnCompleted(AwaiterActions.InvokeContinuationDelegate, continuation, task.token);
                 }
             }
 
@@ -650,7 +651,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
-                    s.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                    s.OnCompleted(AwaiterActions.InvokeContinuationDelegate, continuation, task.token);
                 }
             }
 
@@ -665,7 +666,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
-                    s.OnCompleted(AwaiterActions.InvokeActionDelegate, continuation, task.token);
+                    s.OnCompleted(AwaiterActions.InvokeContinuationDelegate, continuation, task.token);
                 }
             }
 

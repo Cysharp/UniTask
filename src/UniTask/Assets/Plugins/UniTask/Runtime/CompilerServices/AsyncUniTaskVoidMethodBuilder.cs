@@ -65,7 +65,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runner == null)
             {
-                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
             awaiter.OnCompleted(runner.CallMoveNext);
@@ -80,7 +80,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runner == null)
             {
-                MoveNextRunner<TStateMachine>.SetRunner(ref this, ref stateMachine);
+                MoveNextRunner<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
             }
 
             awaiter.UnsafeOnCompleted(runner.CallMoveNext);
