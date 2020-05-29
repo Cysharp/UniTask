@@ -12,7 +12,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     [StructLayout(LayoutKind.Auto)]
     public struct AsyncUniTaskMethodBuilder
     {
-        internal IMoveNextRunnerPromise runnerPromise;
+        internal IStateMachineRunnerPromise runnerPromise;
         Exception ex;
 
         // 1. Static Create method.
@@ -133,7 +133,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     [StructLayout(LayoutKind.Auto)]
     public struct AsyncUniTaskMethodBuilder<T>
     {
-        internal IMoveNextRunnerPromise<T> runnerPromise;
+        internal IStateMachineRunnerPromise<T> runnerPromise;
         Exception ex;
         T result;
 

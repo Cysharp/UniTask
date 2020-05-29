@@ -12,7 +12,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     [StructLayout(LayoutKind.Auto)]
     public struct AsyncUniTaskVoidMethodBuilder
     {
-        internal IMoveNextRunner runner;
+        internal IStateMachineRunner runner;
 
         // 1. Static Create method.
         [DebuggerHidden]

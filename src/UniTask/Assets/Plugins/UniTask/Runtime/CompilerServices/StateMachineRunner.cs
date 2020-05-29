@@ -7,13 +7,13 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Threading.Tasks.CompilerServices
 {
-    public interface IMoveNextRunner
+    internal interface IStateMachineRunner
     {
         Action MoveNext { get; }
         void Return();
     }
 
-    internal interface IMoveNextRunnerPromise : IUniTaskSource
+    internal interface IStateMachineRunnerPromise : IUniTaskSource
     {
         Action MoveNext { get; }
         UniTask Task { get; }
@@ -21,7 +21,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         void SetException(Exception exception);
     }
 
-    internal interface IMoveNextRunnerPromise<T> : IUniTaskSource<T>
+    internal interface IStateMachineRunnerPromise<T> : IUniTaskSource<T>
     {
         Action MoveNext { get; }
         UniTask<T> Task { get; }
@@ -29,7 +29,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         void SetException(Exception exception);
     }
 
-    internal sealed class AsyncUniTaskVoid<TStateMachine> : IMoveNextRunner, ITaskPoolNode<AsyncUniTaskVoid<TStateMachine>>, IUniTaskSource
+    internal sealed class AsyncUniTaskVoid<TStateMachine> : IStateMachineRunner, ITaskPoolNode<AsyncUniTaskVoid<TStateMachine>>, IUniTaskSource
         where TStateMachine : IAsyncStateMachine
     {
         static TaskPool<AsyncUniTaskVoid<TStateMachine>> pool;
@@ -97,7 +97,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         }
     }
 
-    internal sealed class AsyncUniTask<TStateMachine> : IMoveNextRunnerPromise, IUniTaskSource, ITaskPoolNode<AsyncUniTask<TStateMachine>>
+    internal sealed class AsyncUniTask<TStateMachine> : IStateMachineRunnerPromise, IUniTaskSource, ITaskPoolNode<AsyncUniTask<TStateMachine>>
         where TStateMachine : IAsyncStateMachine
     {
         static TaskPool<AsyncUniTask<TStateMachine>> pool;
@@ -208,7 +208,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         }
     }
 
-    internal sealed class AsyncUniTask<TStateMachine, T> : IMoveNextRunnerPromise<T>, IUniTaskSource<T>, ITaskPoolNode<AsyncUniTask<TStateMachine, T>>
+    internal sealed class AsyncUniTask<TStateMachine, T> : IStateMachineRunnerPromise<T>, IUniTaskSource<T>, ITaskPoolNode<AsyncUniTask<TStateMachine, T>>
         where TStateMachine : IAsyncStateMachine
     {
         static TaskPool<AsyncUniTask<TStateMachine, T>> pool;
