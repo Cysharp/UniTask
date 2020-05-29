@@ -2,7 +2,7 @@
     "name": "com.cysharp.unitask",
     "displayName": "UniTask",
     "version": "2.0.12-rc9",
-    "unity": "2019.1",
+    "unity": "2018.4",
     "description": "Provides an efficient async/await integration to Unity.",
     "keywords": [ "async/await", "async", "Task", "UniTask" ],
     "license": "MIT",
