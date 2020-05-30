@@ -15,6 +15,19 @@ using System.Reactive.Concurrency;
 
 namespace NetCoreSandbox
 {
+    public class MySyncContext : SynchronizationContext
+    {
+        public MySyncContext()
+        {
+        }
+
+        public override void Post(SendOrPostCallback d, object state)
+        {
+            Console.WriteLine("Called SyncContext Post!");
+            base.Post(d, state);
+        }
+    }
+
     public class Text
     {
 
@@ -193,12 +206,54 @@ namespace NetCoreSandbox
             await Task.Delay(10, cancellationToken);
         }
 
+        public class MyDisposable : IDisposable
+        {
+            public void Dispose()
+            {
+
+            }
+        }
+
+        static void Test()
+        {
+            var disp = new MyDisposable();
+
+            using var _ = new MyDisposable();
+
+            Console.WriteLine("tako");
+        }
+
+
+        static async UniTask FooBarAsync()
+        {
+            await using (UniTask.ReturnToCurrentSynchronizationContext())
+            {
+                await UniTask.SwitchToThreadPool();
+
+
+
+
+            }
+        }
+
+
+
+
+        static async UniTask Aaa()
+        {
+            await FooBarAsync();
+
+            Console.WriteLine("FooBarAsync End");
+        }
 
 
         static async Task Main(string[] args)
         {
 #if !DEBUG
             
+            
+
+
             //await new AllocationCheck().ViaUniTaskVoid();
             //Console.ReadLine();
             BenchmarkDotNet.Running.BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
@@ -209,6 +264,12 @@ namespace NetCoreSandbox
             // await new AllocationCheck().ViaUniTaskVoid();
 
             // AsyncTest().Forget();
+
+            SynchronizationContext.SetSynchronizationContext(new MySyncContext());
+
+            await Aaa();
+
+
 
 
             //AsyncTest().Forget();

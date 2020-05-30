@@ -35,6 +35,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         // 3. SetException
         [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetException(Exception exception)
         {
             // runner is finished, return first.
@@ -49,6 +50,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         // 4. SetResult
         [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetResult()
         {
             // runner is finished, return.
@@ -61,6 +63,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
         // 5. AwaitOnCompleted
         [DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
@@ -76,6 +79,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         // 6. AwaitUnsafeOnCompleted
         [DebuggerHidden]
         [SecuritySafeCritical]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
             where TAwaiter : ICriticalNotifyCompletion
             where TStateMachine : IAsyncStateMachine
