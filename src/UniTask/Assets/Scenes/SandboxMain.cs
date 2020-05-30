@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using System.Linq;
 using Cysharp.Threading.Tasks.Linq;
 using Cysharp.Threading.Tasks.Triggers;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngine.LowLevel;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
@@ -320,43 +322,132 @@ public class SandboxMain : MonoBehaviour
         //Debug.Log("AGAIN END MOVE");
 
 
-        await UniTask.Yield();
-        // DOTween.To(
 
-        var cts = new CancellationTokenSource();
 
-        //var tween = okButton.GetComponent<RectTransform>().DOLocalMoveX(100, 5.0f);
 
-        cancelButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+
+
+
+        //// DOTween.To(
+
+        //var cts = new CancellationTokenSource();
+
+        ////var tween = okButton.GetComponent<RectTransform>().DOLocalMoveX(100, 5.0f);
+
+        //cancelButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+        //{
+        //    cts.Cancel();
+        //}).Forget();
+
+
+        //// await tween.ToUniTask(TweenCancelBehaviour.KillAndCancelAwait, cts.Token);
+
+        ////tween.SetRecyclable(true);
+
+        //Debug.Log("END");
+
+        //// tween.Play();
+
+        //// DOTween.
+
+        //// DOVirtual.Float(0, 1, 1, x => { }).ToUniTask();
+
+
+        //await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate())
+        //{
+        //    Debug.Log("Update() " + Time.frameCount);
+        //}
+
+
+
+        //await okButton.OnClickAsAsyncEnumerable().Where((x, i) => i % 2 == 0).ForEachAsync(_ =>
+        //{
+        //});
+
+
+        //okButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+        //{
+
+
+
+
+
+        //}).Forget();
+
+        //CloseAsync(this.GetCancellationTokenOnDestroy()).Forget();
+
+        //okButton.onClick.AddListener(UniTask.UnityAction(async () => await UniTask.Yield()));
+
+        PlayerLoopInfo.Inject();
+
+        //UpdateUniTask().Forget();
+
+        //StartCoroutine(Coroutine());
+
+        //await UniTask.Delay(TimeSpan.FromSeconds(1));
+
+
+        _ = ReturnToMainThreadTest();
+
+        //GameObject.Destroy(this.gameObject);
+
+
+        SynchronizationContext.Current.Post(_ =>
         {
-            cts.Cancel();
-        }).Forget();
+            //UnityEngine.Debug.Log("Post:" + PlayerLoopInfo.CurrentLoopType);
+        }, null);
+    }
 
-
-        // await tween.ToUniTask(TweenCancelBehaviour.KillAndCancelAwait, cts.Token);
-
-        //tween.SetRecyclable(true);
-
-        Debug.Log("END");
-
-        // tween.Play();
-
-        // DOTween.
-
-        // DOVirtual.Float(0, 1, 1, x => { }).ToUniTask();
-
-        okButton.OnClickAsAsyncEnumerable().ForEachAsync(_ =>
+    async UniTaskVoid UpdateUniTask()
+    {
+        while (true)
         {
+            await UniTask.Yield();
+            UnityEngine.Debug.Log("UniTaskYield:" + PlayerLoopInfo.CurrentLoopType);
+        }
+    }
 
 
+    async UniTaskVoid ReturnToMainThreadTest()
+    {
+        var d = UniTask.ReturnToCurrentSynchronizationContext();
+        try
+        {
+            UnityEngine.Debug.Log("In MainThread?" + Thread.CurrentThread.ManagedThreadId);
+            UnityEngine.Debug.Log("SyncContext is null?" + (SynchronizationContext.Current == null));
+            await UniTask.SwitchToThreadPool();
+            UnityEngine.Debug.Log("In ThreadPool?" + Thread.CurrentThread.ManagedThreadId);
+            UnityEngine.Debug.Log("SyncContext is null?" + (SynchronizationContext.Current == null));
+        }
+        finally
+        {
+            await d.DisposeAsync();
+        }
+
+        UnityEngine.Debug.Log("In ThreadPool?" + Thread.CurrentThread.ManagedThreadId);
+        UnityEngine.Debug.Log("SyncContext is null2" + (SynchronizationContext.Current == null));
+    }
 
 
+    private void Update()
+    {
+        // UnityEngine.Debug.Log("Update:" + PlayerLoopInfo.CurrentLoopType);
+    }
 
-        }).Forget();
-
-        CloseAsync(this.GetCancellationTokenOnDestroy()).Forget();
-
-        okButton.onClick.AddListener(UniTask.UnityAction(async () => await UniTask.Yield()));
+    IEnumerator Coroutine()
+    {
+        try
+        {
+            while (true)
+            {
+                yield return null;
+                //UnityEngine.Debug.Log("Coroutine null:" + PlayerLoopInfo.CurrentLoopType);
+            }
+        }
+        finally
+        {
+            UnityEngine.Debug.Log("Coroutine Finally");
+        }
     }
 
     async UniTaskVoid CloseAsync(CancellationToken cancellationToken = default)
@@ -597,7 +688,7 @@ public class SandboxMain : MonoBehaviour
     }
 }
 
-public class ShowPlayerLoop
+public class PlayerLoopInfo
 {
     // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void Init()
@@ -627,5 +718,46 @@ public class ShowPlayerLoop
         }
 
         UnityEngine.Debug.Log(sb.ToString());
+    }
+
+    public static Type CurrentLoopType { get; private set; }
+
+    public static void Inject()
+    {
+        var system = PlayerLoop.GetCurrentPlayerLoop();
+
+        for (int i = 0; i < system.subSystemList.Length; i++)
+        {
+            var loop = system.subSystemList[i].subSystemList.SelectMany(x =>
+            {
+                var t = typeof(WrapLoop<>).MakeGenericType(x.type);
+                var instance = (ILoopRunner)Activator.CreateInstance(t, x.type);
+                return new[] { new PlayerLoopSystem { type = t, updateDelegate = instance.Run }, x };
+            }).ToArray();
+
+            system.subSystemList[i].subSystemList = loop;
+        }
+
+        PlayerLoop.SetPlayerLoop(system);
+    }
+
+    interface ILoopRunner
+    {
+        void Run();
+    }
+
+    class WrapLoop<T> : ILoopRunner
+    {
+        readonly Type type;
+
+        public WrapLoop(Type type)
+        {
+            this.type = type;
+        }
+
+        public void Run()
+        {
+            CurrentLoopType = type;
+        }
     }
 }
