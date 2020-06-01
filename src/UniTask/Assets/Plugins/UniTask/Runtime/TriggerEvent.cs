@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks.Internal;
-using System;
+﻿using System;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks
@@ -10,341 +9,283 @@ namespace Cysharp.Threading.Tasks
         void OnError(Exception ex);
         void OnCompleted();
         void OnCanceled(CancellationToken cancellationToken);
+
+        // set/get from TriggerEvent<T>
+        ITriggerHandler<T> Prev { get; set; }
+        ITriggerHandler<T> Next { get; set; }
     }
 
     // be careful to use, itself is struct.
     public struct TriggerEvent<T>
     {
-        // optimize: many cases, handler is single.
-        ITriggerHandler<T> singleHandler;
+        ITriggerHandler<T> head; // head.prev is last.
+        ITriggerHandler<T> iteratingHead;
 
-        ITriggerHandler<T>[] handlers;
+        bool preserveRemoveSelf;
+        ITriggerHandler<T> iteratingNode;
 
-        // when running(in TrySetResult), does not add immediately(trampoline).
-        bool isRunning;
-        ITriggerHandler<T> waitHandler;
-        MinimumQueue<ITriggerHandler<T>> waitQueue;
+
+        void LogError(Exception ex)
+        {
+#if UNITY_2018_3_OR_NEWER
+            UnityEngine.Debug.LogException(ex);
+#else
+            Console.WriteLine(ex);
+#endif
+        }
 
         public void SetResult(T value)
         {
-            isRunning = true;
-
-            if (singleHandler != null)
+            var h = head;
+            while (h != null)
             {
+                iteratingNode = h;
+
                 try
                 {
-                    singleHandler.OnNext(value);
+                    h.OnNext(value);
                 }
                 catch (Exception ex)
                 {
-#if UNITY_2018_3_OR_NEWER
-                    UnityEngine.Debug.LogException(ex);
-#else
-                    Console.WriteLine(ex);
-#endif
+                    LogError(ex);
+                    Remove(h);
                 }
-            }
 
-            if (handlers != null)
-            {
-                for (int i = 0; i < handlers.Length; i++)
+                if (preserveRemoveSelf)
                 {
-                    if (handlers[i] != null)
-                    {
-                        try
-                        {
-                            handlers[i].OnNext(value);
-                        }
-                        catch (Exception ex)
-                        {
-                            handlers[i] = null;
-#if UNITY_2018_3_OR_NEWER
-                            UnityEngine.Debug.LogException(ex);
-#else
-                            Console.WriteLine(ex);
-#endif
-                        }
-                    }
+                    preserveRemoveSelf = false;
+                    iteratingNode = null;
+                    var next = h.Next;
+                    Remove(h);
+                    h = next;
                 }
-            }
-
-            isRunning = false;
-
-            if (waitHandler != null)
-            {
-                var h = waitHandler;
-                waitHandler = null;
-                Add(h);
-            }
-
-            if (waitQueue != null)
-            {
-                while (waitQueue.Count != 0)
+                else
                 {
-                    Add(waitQueue.Dequeue());
+                    h = h.Next;
                 }
+            }
+
+            iteratingNode = null;
+            if (iteratingHead != null)
+            {
+                Add(iteratingHead);
+                iteratingHead = null;
             }
         }
 
         public void SetCanceled(CancellationToken cancellationToken)
         {
-            isRunning = true;
-
-            if (singleHandler != null)
+            var h = head;
+            while (h != null)
             {
+                iteratingNode = h;
                 try
                 {
-                    (singleHandler).OnCanceled(cancellationToken);
+                    h.OnCanceled(cancellationToken);
                 }
                 catch (Exception ex)
                 {
-#if UNITY_2018_3_OR_NEWER
-                    UnityEngine.Debug.LogException(ex);
-#else
-                    Console.WriteLine(ex);
-#endif
+                    LogError(ex);
                 }
+
+                preserveRemoveSelf = false;
+                iteratingNode = null;
+                var next = h.Next;
+                Remove(h);
+                h = next;
             }
 
-            if (handlers != null)
+            iteratingNode = null;
+            if (iteratingHead != null)
             {
-                for (int i = 0; i < handlers.Length; i++)
-                {
-                    if (handlers[i] != null)
-                    {
-                        try
-                        {
-                            (handlers[i]).OnCanceled(cancellationToken);
-                        }
-                        catch (Exception ex)
-                        {
-#if UNITY_2018_3_OR_NEWER
-                            UnityEngine.Debug.LogException(ex);
-#else
-                            Console.WriteLine(ex);
-#endif
-                            handlers[i] = null;
-                        }
-                    }
-                }
-            }
-
-            isRunning = false;
-
-            if (waitHandler != null)
-            {
-                var h = waitHandler;
-                waitHandler = null;
-                Add(h);
-            }
-
-            if (waitQueue != null)
-            {
-                while (waitQueue.Count != 0)
-                {
-                    Add(waitQueue.Dequeue());
-                }
+                Add(iteratingHead);
+                iteratingHead = null;
             }
         }
 
         public void SetCompleted()
         {
-            isRunning = true;
-
-            if (singleHandler != null)
+            var h = head;
+            while (h != null)
             {
+                iteratingNode = h;
                 try
                 {
-                    (singleHandler).OnCompleted();
+                    h.OnCompleted();
                 }
                 catch (Exception ex)
                 {
-#if UNITY_2018_3_OR_NEWER
-                    UnityEngine.Debug.LogException(ex);
-#else
-                    Console.WriteLine(ex);
-#endif
+                    LogError(ex);
                 }
+
+                preserveRemoveSelf = false;
+                iteratingNode = null;
+                var next = h.Next;
+                Remove(h);
+                h = next;
             }
 
-            if (handlers != null)
+            iteratingNode = null;
+            if (iteratingHead != null)
             {
-                for (int i = 0; i < handlers.Length; i++)
-                {
-                    if (handlers[i] != null)
-                    {
-                        try
-                        {
-                            (handlers[i]).OnCompleted();
-                        }
-                        catch (Exception ex)
-                        {
-#if UNITY_2018_3_OR_NEWER
-                            UnityEngine.Debug.LogException(ex);
-#else
-                            Console.WriteLine(ex);
-#endif
-                            handlers[i] = null;
-                        }
-                    }
-                }
-            }
-
-            isRunning = false;
-
-            if (waitHandler != null)
-            {
-                var h = waitHandler;
-                waitHandler = null;
-                Add(h);
-            }
-
-            if (waitQueue != null)
-            {
-                while (waitQueue.Count != 0)
-                {
-                    Add(waitQueue.Dequeue());
-                }
+                Add(iteratingHead);
+                iteratingHead = null;
             }
         }
 
         public void SetError(Exception exception)
         {
-            isRunning = true;
-
-            if (singleHandler != null)
+            var h = head;
+            while (h != null)
             {
+                iteratingNode = h;
                 try
                 {
-                    singleHandler.OnError(exception);
+                    h.OnError(exception);
                 }
                 catch (Exception ex)
                 {
-#if UNITY_2018_3_OR_NEWER
-                    UnityEngine.Debug.LogException(ex);
-#else
-                    Console.WriteLine(ex);
-#endif
+                    LogError(ex);
                 }
+
+                preserveRemoveSelf = false;
+                iteratingNode = null;
+                var next = h.Next;
+                Remove(h);
+                h = next;
             }
 
-            if (handlers != null)
+            iteratingNode = null;
+            if (iteratingHead != null)
             {
-                for (int i = 0; i < handlers.Length; i++)
-                {
-                    if (handlers[i] != null)
-                    {
-                        try
-                        {
-                            handlers[i].OnError(exception);
-                        }
-                        catch (Exception ex)
-                        {
-                            handlers[i] = null;
-#if UNITY_2018_3_OR_NEWER
-                            UnityEngine.Debug.LogException(ex);
-#else
-                            Console.WriteLine(ex);
-#endif
-                        }
-                    }
-                }
-            }
-
-            isRunning = false;
-
-            if (waitHandler != null)
-            {
-                var h = waitHandler;
-                waitHandler = null;
-                Add(h);
-            }
-
-            if (waitQueue != null)
-            {
-                while (waitQueue.Count != 0)
-                {
-                    Add(waitQueue.Dequeue());
-                }
+                Add(iteratingHead);
+                iteratingHead = null;
             }
         }
 
         public void Add(ITriggerHandler<T> handler)
         {
-            if (isRunning)
-            {
-                if (waitHandler == null)
-                {
-                    waitHandler = handler;
-                    return;
-                }
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-                if (waitQueue == null)
-                {
-                    waitQueue = new MinimumQueue<ITriggerHandler<T>>(4);
-                }
-                waitQueue.Enqueue(handler);
+            // zero node.
+            if (head == null)
+            {
+                head = handler;
                 return;
             }
 
-            if (singleHandler == null)
+            if (iteratingNode != null)
             {
-                singleHandler = handler;
+                if (iteratingHead == null)
+                {
+                    iteratingHead = handler;
+                    return;
+                }
+
+                var last = iteratingHead.Prev;
+                if (last == null)
+                {
+                    // single node.
+                    iteratingHead.Prev = handler;
+                    iteratingHead.Next = handler;
+                    handler.Prev = iteratingHead;
+                }
+                else
+                {
+                    // multi node
+                    iteratingHead.Prev = handler;
+                    last.Next = handler;
+                    handler.Prev = last;
+                }
             }
             else
             {
-                if (handlers == null)
+                var last = head.Prev;
+                if (last == null)
                 {
-                    handlers = new ITriggerHandler<T>[4];
+                    // single node.
+                    head.Prev = handler;
+                    head.Next = handler;
+                    handler.Prev = head;
                 }
-
-                // check empty
-                for (int i = 0; i < handlers.Length; i++)
+                else
                 {
-                    if (handlers[i] == null)
-                    {
-                        handlers[i] = handler;
-                        return;
-                    }
-                }
-
-                // full, ensure capacity
-                var last = handlers.Length;
-                {
-                    EnsureCapacity(ref handlers);
-                    handlers[last] = handler;
+                    // multi node
+                    head.Prev = handler;
+                    last.Next = handler;
+                    handler.Prev = last;
                 }
             }
-        }
-
-        static void EnsureCapacity(ref ITriggerHandler<T>[] array)
-        {
-            var newSize = array.Length * 2;
-            var newArray = new ITriggerHandler<T>[newSize];
-            Array.Copy(array, 0, newArray, 0, array.Length);
-            array = newArray;
         }
 
         public void Remove(ITriggerHandler<T> handler)
         {
-            if (singleHandler == handler)
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+
+            if (iteratingNode != null && iteratingNode == handler)
             {
-                singleHandler = null;
+                // if remove self, reserve remove self after invoke completed.
+                preserveRemoveSelf = true;
             }
             else
             {
-                if (handlers != null)
+                var prev = handler.Prev;
+                var next = handler.Next;
+
+                if (next != null)
                 {
-                    for (int i = 0; i < handlers.Length; i++)
+                    next.Prev = prev;
+                }
+
+                if (handler == head)
+                {
+                    head = next;
+                }
+                else if (handler == iteratingHead)
+                {
+                    iteratingHead = next;
+                }
+                else
+                {
+                    // when handler is head, prev indicate last so don't use it.
+                    if (prev != null)
                     {
-                        if (handlers[i] == handler)
+                        prev.Next = next;
+                    }
+                }
+
+                if (head != null)
+                {
+                    if (head.Prev == handler)
+                    {
+                        if (prev != head)
                         {
-                            // fill null.
-                            handlers[i] = null;
-                            return;
+                            head.Prev = prev;
+                        }
+                        else
+                        {
+                            head.Prev = null;
                         }
                     }
                 }
+
+                if (iteratingHead != null)
+                {
+                    if (iteratingHead.Prev == handler)
+                    {
+                        if (prev != iteratingHead.Prev)
+                        {
+                            iteratingHead.Prev = prev;
+                        }
+                        else
+                        {
+                            iteratingHead.Prev = null;
+                        }
+                    }
+                }
+
+                handler.Prev = null;
+                handler.Next = null;
             }
         }
     }

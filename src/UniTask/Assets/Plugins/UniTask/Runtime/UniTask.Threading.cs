@@ -67,12 +67,12 @@ namespace Cysharp.Threading.Tasks
 
         public static ReturnToSynchronizationContext ReturnToSynchronizationContext(SynchronizationContext synchronizationContext)
         {
-            return new ReturnToSynchronizationContext(synchronizationContext);
+            return new ReturnToSynchronizationContext(synchronizationContext, false);
         }
 
-        public static ReturnToSynchronizationContext ReturnToCurrentSynchronizationContext()
+        public static ReturnToSynchronizationContext ReturnToCurrentSynchronizationContext(bool dontPostWhenSameContext = true)
         {
-            return new ReturnToSynchronizationContext(SynchronizationContext.Current);
+            return new ReturnToSynchronizationContext(SynchronizationContext.Current, dontPostWhenSameContext);
         }
     }
 
@@ -319,15 +319,67 @@ namespace Cysharp.Threading.Tasks
     public struct ReturnToSynchronizationContext
     {
         readonly SynchronizationContext syncContext;
+        readonly bool dontPostWhenSameContext;
 
-        public ReturnToSynchronizationContext(SynchronizationContext syncContext)
+        public ReturnToSynchronizationContext(SynchronizationContext syncContext, bool dontPostWhenSameContext)
         {
             this.syncContext = syncContext;
+            this.dontPostWhenSameContext = dontPostWhenSameContext;
         }
 
-        public SwitchToSynchronizationContextAwaitable DisposeAsync()
+        public Awaiter DisposeAsync()
         {
-            return UniTask.SwitchToSynchronizationContext(syncContext);
+            return new Awaiter(syncContext, dontPostWhenSameContext);
+        }
+
+        public struct Awaiter : ICriticalNotifyCompletion
+        {
+            static readonly SendOrPostCallback switchToCallback = Callback;
+
+            readonly SynchronizationContext synchronizationContext;
+            readonly bool dontPostWhenSameContext;
+
+            public Awaiter(SynchronizationContext synchronizationContext, bool dontPostWhenSameContext)
+            {
+                this.synchronizationContext = synchronizationContext;
+                this.dontPostWhenSameContext = dontPostWhenSameContext;
+            }
+
+            public Awaiter GetAwaiter() => this;
+
+            public bool IsCompleted
+            {
+                get
+                {
+                    var current = SynchronizationContext.Current;
+                    if (current == synchronizationContext)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            public void GetResult() { }
+
+            public void OnCompleted(Action continuation)
+            {
+                synchronizationContext.Post(switchToCallback, continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                synchronizationContext.Post(switchToCallback, continuation);
+            }
+
+            static void Callback(object state)
+            {
+                var continuation = (Action)state;
+                continuation();
+            }
         }
     }
 }

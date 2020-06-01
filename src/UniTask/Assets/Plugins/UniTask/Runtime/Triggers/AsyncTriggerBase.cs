@@ -103,6 +103,8 @@ namespace Cysharp.Threading.Tasks.Triggers
             }
 
             public T Current { get; private set; }
+            ITriggerHandler<T> ITriggerHandler<T>.Prev { get; set; }
+            ITriggerHandler<T> ITriggerHandler<T>.Next { get; set; }
 
             public UniTask<bool> MoveNextAsync()
             {
@@ -188,6 +190,9 @@ namespace Cysharp.Threading.Tasks.Triggers
         UniTaskCompletionSourceCore<T> core;
 
         internal CancellationToken CancellationToken => cancellationToken;
+
+        ITriggerHandler<T> ITriggerHandler<T>.Prev { get; set; }
+        ITriggerHandler<T> ITriggerHandler<T>.Next { get; set; }
 
         internal AsyncTriggerHandler(AsyncTriggerBase<T> trigger, bool callOnce)
         {

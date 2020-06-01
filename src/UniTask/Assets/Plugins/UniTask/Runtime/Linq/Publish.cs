@@ -115,6 +115,8 @@ namespace Cysharp.Threading.Tasks.Linq
             }
 
             public TSource Current { get; private set; }
+            ITriggerHandler<TSource> ITriggerHandler<TSource>.Prev { get; set; }
+            ITriggerHandler<TSource> ITriggerHandler<TSource>.Next { get; set; }
 
             public UniTask<bool> MoveNextAsync()
             {

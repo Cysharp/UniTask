@@ -120,6 +120,9 @@ namespace Cysharp.Threading.Tasks
 
             public T Current => value;
 
+            ITriggerHandler<T> ITriggerHandler<T>.Prev { get; set; }
+            ITriggerHandler<T> ITriggerHandler<T>.Next { get; set; }
+
             public UniTask<bool> MoveNextAsync()
             {
                 // raise latest value on first call.
@@ -300,6 +303,8 @@ namespace Cysharp.Threading.Tasks
             }
 
             public T Current => value;
+            ITriggerHandler<T> ITriggerHandler<T>.Prev { get; set; }
+            ITriggerHandler<T> ITriggerHandler<T>.Next { get; set; }
 
             public UniTask<bool> MoveNextAsync()
             {
