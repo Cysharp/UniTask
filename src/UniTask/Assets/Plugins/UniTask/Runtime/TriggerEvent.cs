@@ -24,7 +24,6 @@ namespace Cysharp.Threading.Tasks
         bool preserveRemoveSelf;
         ITriggerHandler<T> iteratingNode;
 
-
         void LogError(Exception ex)
         {
 #if UNITY_2018_3_OR_NEWER
@@ -36,6 +35,11 @@ namespace Cysharp.Threading.Tasks
 
         public void SetResult(T value)
         {
+            if (iteratingNode != null)
+            {
+                throw new InvalidOperationException("Can not trigger itself in iterating.");
+            }
+
             var h = head;
             while (h != null)
             {
@@ -75,6 +79,11 @@ namespace Cysharp.Threading.Tasks
 
         public void SetCanceled(CancellationToken cancellationToken)
         {
+            if (iteratingNode != null)
+            {
+                throw new InvalidOperationException("Can not trigger itself in iterating.");
+            }
+
             var h = head;
             while (h != null)
             {
@@ -105,6 +114,11 @@ namespace Cysharp.Threading.Tasks
 
         public void SetCompleted()
         {
+            if (iteratingNode != null)
+            {
+                throw new InvalidOperationException("Can not trigger itself in iterating.");
+            }
+
             var h = head;
             while (h != null)
             {
@@ -135,6 +149,11 @@ namespace Cysharp.Threading.Tasks
 
         public void SetError(Exception exception)
         {
+            if (iteratingNode != null)
+            {
+                throw new InvalidOperationException("Can not trigger itself in iterating.");
+            }
+
             var h = head;
             while (h != null)
             {
