@@ -18,7 +18,7 @@ namespace Cysharp.Threading.Tasks
     // be careful to use, itself is struct.
     public struct TriggerEvent<T>
     {
-        ITriggerHandler<T> head; // head.prev is last.
+        ITriggerHandler<T> head; // head.prev is last
         ITriggerHandler<T> iteratingHead;
 
         bool preserveRemoveSelf;
