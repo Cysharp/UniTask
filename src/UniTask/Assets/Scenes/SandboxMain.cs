@@ -326,6 +326,10 @@ public class SandboxMain : MonoBehaviour
 
 
 
+        await UniTaskAsyncEnumerable.EveryUpdate().Select((x, _) => x).ForEachAsync(x =>
+         {
+             Debug.Log("test");
+         });
 
 
 

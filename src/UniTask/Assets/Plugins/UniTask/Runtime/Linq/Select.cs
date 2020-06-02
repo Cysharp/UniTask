@@ -71,29 +71,92 @@ namespace Cysharp.Threading.Tasks.Linq
             return new _Select(source, selector, cancellationToken);
         }
 
-        sealed class _Select : AsyncEnumeratorBase<TSource, TResult>
+        sealed class _Select : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, TResult> selector;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            Action moveNextAction;
 
             public _Select(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TResult> selector, CancellationToken cancellationToken)
-                : base(source, cancellationToken)
             {
+                this.source = source;
                 this.selector = selector;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override bool TryMoveNextCore(bool sourceHasCurrent, out bool result)
+            public TResult Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                if (sourceHasCurrent)
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
+            }
+
+            void MoveNext()
+            {
+                try
                 {
-                    Current = selector(SourceCurrent);
-                    result = true;
-                    return true;
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            goto case 0;
+                        case 0:
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                Current = selector(enumerator.Current);
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        default:
+                            goto DONE;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    result = false;
-                    return true;
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
                 }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -111,33 +174,96 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new _SelectInt(source, selector, cancellationToken);
+            return new _Select(source, selector, cancellationToken);
         }
 
-        sealed class _SelectInt : AsyncEnumeratorBase<TSource, TResult>
+        sealed class _Select : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, int, TResult> selector;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            Action moveNextAction;
             int index;
 
-            public _SelectInt(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, TResult> selector, CancellationToken cancellationToken)
-                : base(source, cancellationToken)
+            public _Select(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, TResult> selector, CancellationToken cancellationToken)
             {
+                this.source = source;
                 this.selector = selector;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override bool TryMoveNextCore(bool sourceHasCurrent, out bool result)
+            public TResult Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                if (sourceHasCurrent)
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
+            }
+
+            void MoveNext()
+            {
+                try
                 {
-                    Current = selector(SourceCurrent, checked(index++));
-                    result = true;
-                    return true;
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            goto case 0;
+                        case 0:
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                Current = selector(enumerator.Current, checked(index++));
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        default:
+                            goto DONE;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    result = false;
-                    return true;
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
                 }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -158,26 +284,105 @@ namespace Cysharp.Threading.Tasks.Linq
             return new _SelectAwait(source, selector, cancellationToken);
         }
 
-        sealed class _SelectAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TResult>
+        sealed class _SelectAwait : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, UniTask<TResult>> selector;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            UniTask<TResult>.Awaiter awaiter2;
+            Action moveNextAction;
 
             public _SelectAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TResult>> selector, CancellationToken cancellationToken)
-                : base(source, cancellationToken)
             {
+                this.source = source;
                 this.selector = selector;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override UniTask<TResult> TransformAsync(TSource sourceCurrent)
+            public TResult Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                return selector(sourceCurrent);
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
+            void MoveNext()
             {
-                Current = awaitResult;
-                terminateIteration = false;
-                return true;
+                try
+                {
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            goto case 0;
+                        case 0:
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                awaiter2 = selector(enumerator.Current).GetAwaiter();
+                                if (awaiter2.IsCompleted)
+                                {
+                                    goto case 2;
+                                }
+                                else
+                                {
+                                    state = 2;
+                                    awaiter2.UnsafeOnCompleted(moveNextAction);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 2:
+                            Current = awaiter2.GetResult();
+                            goto CONTINUE;
+                        default:
+                            goto DONE;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
+                }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -195,30 +400,109 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new _SelectIntAwait(source, selector, cancellationToken);
+            return new _SelectAwait(source, selector, cancellationToken);
         }
 
-        sealed class _SelectIntAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TResult>
+        sealed class _SelectAwait : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, int, UniTask<TResult>> selector;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            UniTask<TResult>.Awaiter awaiter2;
+            Action moveNextAction;
             int index;
 
-            public _SelectIntAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, UniTask<TResult>> selector, CancellationToken cancellationToken)
-                : base(source, cancellationToken)
+            public _SelectAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, UniTask<TResult>> selector, CancellationToken cancellationToken)
             {
+                this.source = source;
                 this.selector = selector;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override UniTask<TResult> TransformAsync(TSource sourceCurrent)
+            public TResult Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                return selector(sourceCurrent, checked(index++));
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
+            void MoveNext()
             {
-                Current = awaitResult;
-                terminateIteration = false;
-                return true;
+                try
+                {
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            goto case 0;
+                        case 0:
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                awaiter2 = selector(enumerator.Current, checked(index++)).GetAwaiter();
+                                if (awaiter2.IsCompleted)
+                                {
+                                    goto case 2;
+                                }
+                                else
+                                {
+                                    state = 2;
+                                    awaiter2.UnsafeOnCompleted(moveNextAction);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 2:
+                            Current = awaiter2.GetResult();
+                            goto CONTINUE;
+                        default:
+                            goto DONE;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
+                }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -239,26 +523,105 @@ namespace Cysharp.Threading.Tasks.Linq
             return new _SelectAwaitWithCancellation(source, selector, cancellationToken);
         }
 
-        sealed class _SelectAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TResult>
+        sealed class _SelectAwaitWithCancellation : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, CancellationToken, UniTask<TResult>> selector;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            UniTask<TResult>.Awaiter awaiter2;
+            Action moveNextAction;
 
             public _SelectAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TResult>> selector, CancellationToken cancellationToken)
-                : base(source, cancellationToken)
             {
+                this.source = source;
                 this.selector = selector;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override UniTask<TResult> TransformAsync(TSource sourceCurrent)
+            public TResult Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                return selector(sourceCurrent, cancellationToken);
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
+            void MoveNext()
             {
-                Current = awaitResult;
-                terminateIteration = false;
-                return true;
+                try
+                {
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            goto case 0;
+                        case 0:
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                awaiter2 = selector(enumerator.Current, cancellationToken).GetAwaiter();
+                                if (awaiter2.IsCompleted)
+                                {
+                                    goto case 2;
+                                }
+                                else
+                                {
+                                    state = 2;
+                                    awaiter2.UnsafeOnCompleted(moveNextAction);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 2:
+                            Current = awaiter2.GetResult();
+                            goto CONTINUE;
+                        default:
+                            goto DONE;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
+                }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -276,32 +639,110 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public IUniTaskAsyncEnumerator<TResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new _SelectIntAwaitWithCancellation(source, selector, cancellationToken);
+            return new _SelectAwaitWithCancellation(source, selector, cancellationToken);
         }
 
-        sealed class _SelectIntAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TResult>
+        sealed class _SelectAwaitWithCancellation : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
         {
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, int, CancellationToken, UniTask<TResult>> selector;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            UniTask<TResult>.Awaiter awaiter2;
+            Action moveNextAction;
             int index;
 
-            public _SelectIntAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, CancellationToken, UniTask<TResult>> selector, CancellationToken cancellationToken)
-                : base(source, cancellationToken)
+            public _SelectAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, int, CancellationToken, UniTask<TResult>> selector, CancellationToken cancellationToken)
             {
+                this.source = source;
                 this.selector = selector;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override UniTask<TResult> TransformAsync(TSource sourceCurrent)
+            public TResult Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                return selector(sourceCurrent, checked(index++), cancellationToken);
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
             }
 
-            protected override bool TrySetCurrentCore(TResult awaitResult, out bool terminateIteration)
+            void MoveNext()
             {
-                Current = awaitResult;
-                terminateIteration = false;
-                return true;
+                try
+                {
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            goto case 0;
+                        case 0:
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                awaiter2 = selector(enumerator.Current, checked(index++), cancellationToken).GetAwaiter();
+                                if (awaiter2.IsCompleted)
+                                {
+                                    goto case 2;
+                                }
+                                else
+                                {
+                                    state = 2;
+                                    awaiter2.UnsafeOnCompleted(moveNextAction);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 2:
+                            Current = awaiter2.GetResult();
+                            goto CONTINUE;
+                        default:
+                            goto DONE;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
+                }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
-
 }
