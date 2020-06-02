@@ -246,11 +246,25 @@ namespace NetCoreSandbox
             Console.WriteLine("FooBarAsync End");
         }
 
+        static async UniTask WhereSelect()
+        {
+            await foreach (var item in UniTaskAsyncEnumerable.Range(1, 10)
+                .SelectAwait(async x =>
+                {
+                    await UniTask.Yield();
+                    return x;
+                })
+                .Where(x => x % 2 == 0))
+            {
+                Console.WriteLine(item);
+            }
+        }
+
 
         static async Task Main(string[] args)
         {
 #if !DEBUG
-            
+         
             
 
 
@@ -264,6 +278,7 @@ namespace NetCoreSandbox
             // await new AllocationCheck().ViaUniTaskVoid();
 
             // AsyncTest().Forget();
+            await WhereSelect();
 
             SynchronizationContext.SetSynchronizationContext(new MySyncContext());
 

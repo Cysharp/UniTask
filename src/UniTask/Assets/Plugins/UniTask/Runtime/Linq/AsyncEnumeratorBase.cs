@@ -3,7 +3,9 @@ using System.Threading;
 
 namespace Cysharp.Threading.Tasks.Linq
 {
-    public abstract class AsyncEnumeratorBase<TSource, TResult> : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+    // note: refactor all inherit class and should remove this.
+    // see Select and Where.
+    internal abstract class AsyncEnumeratorBase<TSource, TResult> : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
     {
         static readonly Action<object> moveNextCallbackDelegate = MoveNextCallBack;
 
@@ -129,7 +131,7 @@ namespace Cysharp.Threading.Tasks.Linq
         }
     }
 
-    public abstract class AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TAwait> : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
+    internal abstract class AsyncEnumeratorAwaitSelectorBase<TSource, TResult, TAwait> : MoveNextSource, IUniTaskAsyncEnumerator<TResult>
     {
         static readonly Action<object> moveNextCallbackDelegate = MoveNextCallBack;
         static readonly Action<object> setCurrentCallbackDelegate = SetCurrentCallBack;
@@ -351,5 +353,4 @@ namespace Cysharp.Threading.Tasks.Linq
             return default;
         }
     }
-
 }
