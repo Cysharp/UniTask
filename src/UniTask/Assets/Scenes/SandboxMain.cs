@@ -298,6 +298,8 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Start()
     {
+        await UniTask.SwitchToMainThread();
+
         //UniTaskAsyncEnumerable.EveryValueChanged(mcc, x => x.MyProperty)
         //    .Do(_ => { }, () => Debug.Log("COMPLETED"))
         //    .ForEachAsync(x =>
