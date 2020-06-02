@@ -325,11 +325,11 @@ public class SandboxMain : MonoBehaviour
 
 
 
-
-        await UniTaskAsyncEnumerable.EveryUpdate().Select((x, _) => x).ForEachAsync(x =>
-         {
-             Debug.Log("test");
-         });
+        // check stacktrace
+        await UniTaskAsyncEnumerable.EveryUpdate().Where((x, i) => i % 2 == 0).Select(x => x).DistinctUntilChanged().ForEachAsync(x =>
+        {
+            Debug.Log("test");
+        });
 
 
 

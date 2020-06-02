@@ -79,41 +79,123 @@ namespace Cysharp.Threading.Tasks.Linq
             return new _DistinctUntilChanged(source, comparer, cancellationToken);
         }
 
-        class _DistinctUntilChanged : AsyncEnumeratorBase<TSource, TSource>
+        sealed class _DistinctUntilChanged : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly IEqualityComparer<TSource> comparer;
-            TSource prev;
-            bool first;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            Action moveNextAction;
 
             public _DistinctUntilChanged(IUniTaskAsyncEnumerable<TSource> source, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken)
-
-                : base(source, cancellationToken)
             {
+                this.source = source;
                 this.comparer = comparer;
-                this.first = true;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override bool TryMoveNextCore(bool sourceHasCurrent, out bool result)
+            public TSource Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                if (sourceHasCurrent)
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
+            }
+
+            void MoveNext()
+            {
+                REPEAT:
+                try
                 {
-                    var v = SourceCurrent;
-                    if (first || !comparer.Equals(prev, v))
+                    switch (state)
                     {
-                        first = false;
-                        Current = prev = v;
-                        result = true;
-                        return true;
-                    }
-                    else
-                    {
-                        result = default;
-                        return false;
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case -3;
+                            }
+                            else
+                            {
+                                state = -3;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case -3: // first
+                            if (awaiter.GetResult())
+                            {
+                                Current = enumerator.Current;
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 0: // normal
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                var v = enumerator.Current;
+                                if (!comparer.Equals(Current, v))
+                                {
+                                    Current = v;
+                                    goto CONTINUE;
+                                }
+                                else
+                                {
+                                    state = 0;
+                                    goto REPEAT;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case -2:
+                        default:
+                            goto DONE;
                     }
                 }
+                catch (Exception ex)
+                {
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
+                }
 
-                result = false;
-                return true;
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -136,45 +218,128 @@ namespace Cysharp.Threading.Tasks.Linq
             return new _DistinctUntilChanged(source, keySelector, comparer, cancellationToken);
         }
 
-        class _DistinctUntilChanged : AsyncEnumeratorBase<TSource, TSource>
+        sealed class _DistinctUntilChanged : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
-            readonly IEqualityComparer<TKey> comparer;
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, TKey> keySelector;
+            readonly IEqualityComparer<TKey> comparer;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            Action moveNextAction;
             TKey prev;
-            bool first;
 
             public _DistinctUntilChanged(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
-
-                : base(source, cancellationToken)
             {
-                this.comparer = comparer;
+                this.source = source;
                 this.keySelector = keySelector;
-                this.first = true;
+                this.comparer = comparer;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override bool TryMoveNextCore(bool sourceHasCurrent, out bool result)
+            public TSource Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                if (sourceHasCurrent)
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
+            }
+
+            void MoveNext()
+            {
+                REPEAT:
+                try
                 {
-                    var v = SourceCurrent;
-                    var key = keySelector(v);
-                    if (first || !comparer.Equals(prev, key))
+                    switch (state)
                     {
-                        first = false;
-                        prev = key;
-                        Current = v;
-                        result = true;
-                        return true;
-                    }
-                    else
-                    {
-                        result = default;
-                        return false;
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case -3;
+                            }
+                            else
+                            {
+                                state = -3;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case -3: // first
+                            if (awaiter.GetResult())
+                            {
+                                Current = enumerator.Current;
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 0: // normal
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                var v = enumerator.Current;
+                                var key = keySelector(v);
+                                if (!comparer.Equals(prev, key))
+                                {
+                                    prev = key;
+                                    Current = v;
+                                    goto CONTINUE;
+                                }
+                                else
+                                {
+                                    state = 0;
+                                    goto REPEAT;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case -2:
+                        default:
+                            goto DONE;
                     }
                 }
+                catch (Exception ex)
+                {
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
+                }
 
-                result = false;
-                return true;
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -197,42 +362,142 @@ namespace Cysharp.Threading.Tasks.Linq
             return new _DistinctUntilChangedAwait(source, keySelector, comparer, cancellationToken);
         }
 
-        class _DistinctUntilChangedAwait : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, TKey>
+        sealed class _DistinctUntilChangedAwait : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
-            readonly IEqualityComparer<TKey> comparer;
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, UniTask<TKey>> keySelector;
+            readonly IEqualityComparer<TKey> comparer;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            UniTask<TKey>.Awaiter awaiter2;
+            Action moveNextAction;
+            TSource enumeratorCurrent;
             TKey prev;
-            bool first;
 
             public _DistinctUntilChangedAwait(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
-
-                : base(source, cancellationToken)
             {
-                this.comparer = comparer;
+                this.source = source;
                 this.keySelector = keySelector;
-                this.first = true;
+                this.comparer = comparer;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override UniTask<TKey> TransformAsync(TSource sourceCurrent)
+            public TSource Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                return keySelector(sourceCurrent);
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
             }
 
-            protected override bool TrySetCurrentCore(TKey key, out bool terminateIteration)
+            void MoveNext()
             {
-                if (first || !comparer.Equals(prev, key))
+                REPEAT:
+                try
                 {
-                    first = false;
-                    prev = key;
-                    Current = SourceCurrent;
-                    terminateIteration = false;
-                    return true;
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case -3;
+                            }
+                            else
+                            {
+                                state = -3;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case -3: // first
+                            if (awaiter.GetResult())
+                            {
+                                Current = enumerator.Current;
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 0: // normal
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                enumeratorCurrent = enumerator.Current;
+                                awaiter2 = keySelector(enumeratorCurrent).GetAwaiter();
+                                if (awaiter2.IsCompleted)
+                                {
+                                    goto case 2;
+                                }
+                                else
+                                {
+                                    state = 2;
+                                    awaiter2.UnsafeOnCompleted(moveNextAction);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 2:
+                            var key = awaiter2.GetResult();
+                            if (!comparer.Equals(prev, key))
+                            {
+                                prev = key;
+                                Current = enumeratorCurrent;
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                state = 0;
+                                goto REPEAT;
+                            }
+                        case -2:
+                        default:
+                            goto DONE;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    terminateIteration = false;
-                    return false;
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
                 }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
@@ -255,42 +520,142 @@ namespace Cysharp.Threading.Tasks.Linq
             return new _DistinctUntilChangedAwaitWithCancellation(source, keySelector, comparer, cancellationToken);
         }
 
-        class _DistinctUntilChangedAwaitWithCancellation : AsyncEnumeratorAwaitSelectorBase<TSource, TSource, TKey>
+        sealed class _DistinctUntilChangedAwaitWithCancellation : MoveNextSource, IUniTaskAsyncEnumerator<TSource>
         {
-            readonly IEqualityComparer<TKey> comparer;
+            readonly IUniTaskAsyncEnumerable<TSource> source;
             readonly Func<TSource, CancellationToken, UniTask<TKey>> keySelector;
+            readonly IEqualityComparer<TKey> comparer;
+            readonly CancellationToken cancellationToken;
+
+            int state = -1;
+            IUniTaskAsyncEnumerator<TSource> enumerator;
+            UniTask<bool>.Awaiter awaiter;
+            UniTask<TKey>.Awaiter awaiter2;
+            Action moveNextAction;
+            TSource enumeratorCurrent;
             TKey prev;
-            bool first;
 
             public _DistinctUntilChangedAwaitWithCancellation(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TKey>> keySelector, IEqualityComparer<TKey> comparer, CancellationToken cancellationToken)
-
-                : base(source, cancellationToken)
             {
-                this.comparer = comparer;
+                this.source = source;
                 this.keySelector = keySelector;
-                this.first = true;
+                this.comparer = comparer;
+                this.cancellationToken = cancellationToken;
+                this.moveNextAction = MoveNext;
             }
 
-            protected override UniTask<TKey> TransformAsync(TSource sourceCurrent)
+            public TSource Current { get; private set; }
+
+            public UniTask<bool> MoveNextAsync()
             {
-                return keySelector(sourceCurrent, cancellationToken);
+                if (state == -2) return default;
+
+                completionSource.Reset();
+                MoveNext();
+                return new UniTask<bool>(this, completionSource.Version);
             }
 
-            protected override bool TrySetCurrentCore(TKey key, out bool terminateIteration)
+            void MoveNext()
             {
-                if (first || !comparer.Equals(prev, key))
+                REPEAT:
+                try
                 {
-                    first = false;
-                    prev = key;
-                    Current = SourceCurrent;
-                    terminateIteration = false;
-                    return true;
+                    switch (state)
+                    {
+                        case -1: // init
+                            enumerator = source.GetAsyncEnumerator(cancellationToken);
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case -3;
+                            }
+                            else
+                            {
+                                state = -3;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case -3: // first
+                            if (awaiter.GetResult())
+                            {
+                                Current = enumerator.Current;
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 0: // normal
+                            awaiter = enumerator.MoveNextAsync().GetAwaiter();
+                            if (awaiter.IsCompleted)
+                            {
+                                goto case 1;
+                            }
+                            else
+                            {
+                                state = 1;
+                                awaiter.UnsafeOnCompleted(moveNextAction);
+                                return;
+                            }
+                        case 1:
+                            if (awaiter.GetResult())
+                            {
+                                enumeratorCurrent = enumerator.Current;
+                                awaiter2 = keySelector(enumeratorCurrent, cancellationToken).GetAwaiter();
+                                if (awaiter2.IsCompleted)
+                                {
+                                    goto case 2;
+                                }
+                                else
+                                {
+                                    state = 2;
+                                    awaiter2.UnsafeOnCompleted(moveNextAction);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                goto DONE;
+                            }
+                        case 2:
+                            var key = awaiter2.GetResult();
+                            if (!comparer.Equals(prev, key))
+                            {
+                                prev = key;
+                                Current = enumeratorCurrent;
+                                goto CONTINUE;
+                            }
+                            else
+                            {
+                                state = 0;
+                                goto REPEAT;
+                            }
+                        case -2:
+                        default:
+                            goto DONE;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    terminateIteration = false;
-                    return false;
+                    state = -2;
+                    completionSource.TrySetException(ex);
+                    return;
                 }
+
+                DONE:
+                state = -2;
+                completionSource.TrySetResult(false);
+                return;
+
+                CONTINUE:
+                state = 0;
+                completionSource.TrySetResult(true);
+                return;
+            }
+
+            public UniTask DisposeAsync()
+            {
+                return enumerator.DisposeAsync();
             }
         }
     }
