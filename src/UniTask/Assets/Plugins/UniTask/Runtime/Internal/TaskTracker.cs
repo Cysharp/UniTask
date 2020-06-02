@@ -60,9 +60,9 @@ namespace Cysharp.Threading.Tasks
 #endif
 
 
-        static List<KeyValuePair<IUniTaskSource, (int trackingId, DateTime addTime, string stackTrace)>> listPool = new List<KeyValuePair<IUniTaskSource, (int trackingId, DateTime addTime, string stackTrace)>>();
+        static List<KeyValuePair<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>> listPool = new List<KeyValuePair<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>>();
 
-        static readonly WeakDictionary<IUniTaskSource, (int trackingId, DateTime addTime, string stackTrace)> tracking = new WeakDictionary<IUniTaskSource, (int trackingId, DateTime addTime, string stackTrace)>();
+        static readonly WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)> tracking = new WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>();
 
         [Conditional("UNITY_EDITOR")]
         public static void TrackActiveTask(IUniTaskSource task, int skipFrame)
@@ -71,7 +71,9 @@ namespace Cysharp.Threading.Tasks
             dirty = true;
             if (!EditorEnableState.EnableTracking) return;
             var stackTrace = EditorEnableState.EnableStackTrace ? new StackTrace(skipFrame, true).CleanupAsyncStackTrace() : "";
-            tracking.TryAdd(task, (Interlocked.Increment(ref trackingId), DateTime.UtcNow, stackTrace));
+            var sb = new StringBuilder();
+            TypeBeautify(task.GetType(), sb);
+            tracking.TryAdd(task, (sb.ToString(), Interlocked.Increment(ref trackingId), DateTime.UtcNow, stackTrace));
 #endif
         }
 
@@ -104,14 +106,8 @@ namespace Cysharp.Threading.Tasks
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        var keyType = listPool[i].Key.GetType();
-
-                        var sb = new StringBuilder();
-                        TypeBeautify(keyType, sb);
-                        var typeName = sb.ToString();
-
-                        action(listPool[i].Value.trackingId, typeName, listPool[i].Key.UnsafeGetStatus(), listPool[i].Value.addTime, listPool[i].Value.stackTrace);
-                        listPool[i] = new KeyValuePair<IUniTaskSource, (int trackingId, DateTime addTime, string stackTrace)>(null, (0, default(DateTime), null)); // clear
+                        action(listPool[i].Value.trackingId, listPool[i].Value.formattedType, listPool[i].Key.UnsafeGetStatus(), listPool[i].Value.addTime, listPool[i].Value.stackTrace);
+                        listPool[i] = default;
                     }
                 }
                 catch
@@ -126,17 +122,31 @@ namespace Cysharp.Threading.Tasks
         {
             if (type.IsNested)
             {
-                TypeBeautify(type.DeclaringType, sb);
+                // TypeBeautify(type.DeclaringType, sb);
+                sb.Append(type.DeclaringType.Name.ToString());
                 sb.Append(".");
             }
 
             if (type.IsGenericType)
             {
                 var genericsStart = type.Name.IndexOf("`");
-                sb.Append(type.Name.Substring(0, genericsStart));
+                if (genericsStart != -1)
+                {
+                    sb.Append(type.Name.Substring(0, genericsStart));
+                }
+                else
+                {
+                    sb.Append(type.Name);
+                }
                 sb.Append("<");
+                var first = true;
                 foreach (var item in type.GetGenericArguments())
                 {
+                    if (!first)
+                    {
+                        sb.Append(", ");
+                    }
+                    first = false;
                     TypeBeautify(item, sb);
                 }
                 sb.Append(">");
@@ -146,6 +156,13 @@ namespace Cysharp.Threading.Tasks
                 sb.Append(type.Name);
             }
         }
+
+        //static string RemoveUniTaskNamespace(string str)
+        //{
+        //    return str.Replace("Cysharp.Threading.Tasks.CompilerServices", "")
+        //        .Replace("Cysharp.Threading.Tasks.Linq", "")
+        //        .Replace("Cysharp.Threading.Tasks", "");
+        //}
     }
 }
 
