@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>UniTaskVoid.Awaiter Struct
+    <title>TriggerEvent&lt;T&gt; Struct
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="UniTaskVoid.Awaiter Struct
+    <meta name="title" content="TriggerEvent&lt;T&gt; Struct
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,9 +71,9 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1">
   
-  <h1 id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter" class="text-break">UniTaskVoid.Awaiter Struct
+  <h1 id="Cysharp_Threading_Tasks_TriggerEvent_1" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1" class="text-break">TriggerEvent&lt;T&gt; Struct
   </h1>
   <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
@@ -82,39 +82,24 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public struct Awaiter : ICriticalNotifyCompletion</code></pre>
+    <pre><code class="lang-csharp hljs">public struct TriggerEvent&lt;T&gt;</code></pre>
   </div>
 
   
-  <div classs="implements">
-    <h5>Implements</h5>
-    <div><span class="xref">ICriticalNotifyCompletion</span></div>
-  </div>
   
   
   
   
+  <section>
+  <h4 class="typeParameters">Type Parameters</h4>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
   
   
   <h3 id="members">Members</h3>
-  <h4>Properties
-  </h4>
-  <table class="table table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.html#Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_IsCompleted">IsCompleted</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-    </tbody>
-  </table>
   <h4>Methods
   </h4>
   <table class="table table-condensed">
@@ -127,96 +112,59 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.html#Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_GetResult">GetResult()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.TriggerEvent-1.html#Cysharp_Threading_Tasks_TriggerEvent_1_Add_Cysharp_Threading_Tasks_ITriggerHandler__0__">Add(ITriggerHandler&lt;T&gt;)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.html#Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_OnCompleted_System_Action_">OnCompleted(Action)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.TriggerEvent-1.html#Cysharp_Threading_Tasks_TriggerEvent_1_Remove_Cysharp_Threading_Tasks_ITriggerHandler__0__">Remove(ITriggerHandler&lt;T&gt;)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.html#Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_UnsafeOnCompleted_System_Action_">UnsafeOnCompleted(Action)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.TriggerEvent-1.html#Cysharp_Threading_Tasks_TriggerEvent_1_SetCanceled_CancellationToken_">SetCanceled(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.TriggerEvent-1.html#Cysharp_Threading_Tasks_TriggerEvent_1_SetCompleted">SetCompleted()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.TriggerEvent-1.html#Cysharp_Threading_Tasks_TriggerEvent_1_SetError_System_Exception_">SetError(Exception)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.TriggerEvent-1.html#Cysharp_Threading_Tasks_TriggerEvent_1_SetResult__0_">SetResult(T)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
     </tbody>
   </table>
   
-  <h3 id="properties">Properties
-  </h3>
-  <section>
-  <a id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_IsCompleted_" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.IsCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_IsCompleted" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.IsCompleted">IsCompleted</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool IsCompleted { get; }</code></pre>
-  </div>
-
-  
-  
-  
-  
-  <section>
-  <h5 class="propertyValue">Property Value</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Boolean</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
   <h3 id="methods">Methods
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_GetResult_" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.GetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_GetResult" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.GetResult">GetResult()</h4>
+  <a id="Cysharp_Threading_Tasks_TriggerEvent_1_Add_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.Add*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TriggerEvent_1_Add_Cysharp_Threading_Tasks_ITriggerHandler__0__" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.Add(Cysharp.Threading.Tasks.ITriggerHandler{`0})">Add(ITriggerHandler&lt;T&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void GetResult()</code></pre>
-  </div>
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_OnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.OnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_OnCompleted_System_Action_" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.OnCompleted(System.Action)">OnCompleted(Action)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void OnCompleted(Action continuation)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Add(ITriggerHandler&lt;T&gt; handler)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span></dt>
+    <dt><span class="parametername"><code>handler</code></span> <a class="xref" href="Cysharp.Threading.Tasks.ITriggerHandler-1.html">ITriggerHandler</a>&lt;T&gt;</dt>
     <dd></dd>
   </dl>
   </section>
@@ -234,19 +182,132 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_UnsafeOnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.UnsafeOnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskVoid_Awaiter_UnsafeOnCompleted_System_Action_" data-uid="Cysharp.Threading.Tasks.UniTaskVoid.Awaiter.UnsafeOnCompleted(System.Action)">UnsafeOnCompleted(Action)</h4>
+  <a id="Cysharp_Threading_Tasks_TriggerEvent_1_Remove_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.Remove*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TriggerEvent_1_Remove_Cysharp_Threading_Tasks_ITriggerHandler__0__" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.Remove(Cysharp.Threading.Tasks.ITriggerHandler{`0})">Remove(ITriggerHandler&lt;T&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void UnsafeOnCompleted(Action continuation)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Remove(ITriggerHandler&lt;T&gt; handler)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span></dt>
+    <dt><span class="parametername"><code>handler</code></span> <a class="xref" href="Cysharp.Threading.Tasks.ITriggerHandler-1.html">ITriggerHandler</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_TriggerEvent_1_SetCanceled_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetCanceled*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TriggerEvent_1_SetCanceled_CancellationToken_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetCanceled(CancellationToken)">SetCanceled(CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetCanceled(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_TriggerEvent_1_SetCompleted_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetCompleted*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TriggerEvent_1_SetCompleted" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetCompleted">SetCompleted()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetCompleted()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_TriggerEvent_1_SetError_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetError*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TriggerEvent_1_SetError_System_Exception_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetError(System.Exception)">SetError(Exception)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetError(Exception exception)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>exception</code></span> <span class="xref">System.Exception</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_TriggerEvent_1_SetResult_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TriggerEvent_1_SetResult__0_" data-uid="Cysharp.Threading.Tasks.TriggerEvent`1.SetResult(`0)">SetResult(T)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetResult(T value)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>value</code></span> <span class="xref">T</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -264,10 +325,6 @@
   
   </section>
   
-  <h3 id="implements">Implements</h3>
-  <div>
-      <span class="xref">ICriticalNotifyCompletion</span>
-  </div>
   
   
 </article>

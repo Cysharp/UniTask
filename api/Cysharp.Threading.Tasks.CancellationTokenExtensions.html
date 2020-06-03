@@ -110,19 +110,25 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_System_Threading_CancellationToken_System_Action_">RegisterWithoutCaptureExecutionContext(CancellationToken, Action)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_CancellationToken_System_Action_">RegisterWithoutCaptureExecutionContext(CancellationToken, Action)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_System_Threading_CancellationToken_System_Action_System_Object__System_Object_">RegisterWithoutCaptureExecutionContext(CancellationToken, Action&lt;Object&gt;, Object)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_CancellationToken_System_Action_System_Object__System_Object_">RegisterWithoutCaptureExecutionContext(CancellationToken, Action&lt;Object&gt;, Object)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToUniTask_System_Threading_CancellationToken_">ToUniTask(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToUniTask_CancellationToken_">ToUniTask(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_WaitUntilCanceled_CancellationToken_">WaitUntilCanceled(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -133,7 +139,7 @@
   </h3>
   <section>
   <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext*"></a>
-  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_System_Threading_CancellationToken_System_Action_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext(System.Threading.CancellationToken,System.Action)">RegisterWithoutCaptureExecutionContext(CancellationToken, Action)</h4>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_CancellationToken_System_Action_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext(CancellationToken,System.Action)">RegisterWithoutCaptureExecutionContext(CancellationToken, Action)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -144,7 +150,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>callback</code></span> <span class="xref">System.Action</span></dt>
     <dd></dd>
@@ -154,7 +160,7 @@
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Threading.CancellationTokenRegistration</span></dt>
+    <dt><span class="xref">CancellationTokenRegistration</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -172,7 +178,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext*"></a>
-  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_System_Threading_CancellationToken_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext(System.Threading.CancellationToken,System.Action{System.Object},System.Object)">RegisterWithoutCaptureExecutionContext(CancellationToken, Action&lt;Object&gt;, Object)</h4>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_CancellationToken_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext(CancellationToken,System.Action{System.Object},System.Object)">RegisterWithoutCaptureExecutionContext(CancellationToken, Action&lt;Object&gt;, Object)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -183,7 +189,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>callback</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
     <dd></dd>
@@ -195,7 +201,7 @@
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Threading.CancellationTokenRegistration</span></dt>
+    <dt><span class="xref">CancellationTokenRegistration</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -213,18 +219,18 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToUniTask_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToUniTask*"></a>
-  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToUniTask_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToUniTask(System.Threading.CancellationToken)">ToUniTask(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToUniTask_CancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToUniTask(CancellationToken)">ToUniTask(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static (UniTask, CancellationTokenRegistration) ToUniTask(this CancellationToken cts)</code></pre>
+    <pre><code class="lang-csharp hljs">public static (UniTask, CancellationTokenRegistration) ToUniTask(this CancellationToken cancellationToken)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cts</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -232,7 +238,44 @@
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.ValueTuple</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>, <span class="xref">System.Threading.CancellationTokenRegistration</span>&gt;</dt>
+    <dt><span class="xref">System.ValueTuple</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>, <span class="xref">CancellationTokenRegistration</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_WaitUntilCanceled_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.WaitUntilCanceled*"></a>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_WaitUntilCanceled_CancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.WaitUntilCanceled(CancellationToken)">WaitUntilCanceled(CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CancellationTokenAwaitable WaitUntilCanceled(this CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenAwaitable.html">CancellationTokenAwaitable</a></dt>
     <dd></dd>
   </dl>
   </section>

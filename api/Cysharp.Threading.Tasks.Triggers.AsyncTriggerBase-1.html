@@ -98,6 +98,7 @@
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncApplicationPauseTrigger.html">AsyncApplicationPauseTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncApplicationQuitTrigger.html">AsyncApplicationQuitTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncAudioFilterReadTrigger.html">AsyncAudioFilterReadTrigger</a></div>
+      <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncAwakeTrigger.html">AsyncAwakeTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncBecameInvisibleTrigger.html">AsyncBecameInvisibleTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncBecameVisibleTrigger.html">AsyncBecameVisibleTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncBeforeTransformParentChangedTrigger.html">AsyncBeforeTransformParentChangedTrigger</a></div>
@@ -152,6 +153,7 @@
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncScrollTrigger.html">AsyncScrollTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncSelectTrigger.html">AsyncSelectTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncServerInitializedTrigger.html">AsyncServerInitializedTrigger</a></div>
+      <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncStartTrigger.html">AsyncStartTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncSubmitTrigger.html">AsyncSubmitTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTransformChildrenChangedTrigger.html">AsyncTransformChildrenChangedTrigger</a></div>
       <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTransformParentChangedTrigger.html">AsyncTransformParentChangedTrigger</a></div>
@@ -197,7 +199,13 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html#Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_triggerEvent">triggerEvent</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html#Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_calledAwake">calledAwake</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html#Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_calledDestroy">calledDestroy</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -215,13 +223,13 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html#Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetAsyncEnumerator_System_Threading_CancellationToken_">GetAsyncEnumerator(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html#Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetAsyncEnumerator_CancellationToken_">GetAsyncEnumerator(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html#Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetTriggerEvent">GetTriggerEvent()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html#Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_RaiseEvent__0_">RaiseEvent(T)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -231,12 +239,12 @@
   <h3 id="fields">Fields
   </h3>
   <section>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_triggerEvent" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.triggerEvent">triggerEvent</h4>
+  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_calledAwake" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.calledAwake">calledAwake</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected TriggerEvent&lt;T&gt; triggerEvent</code></pre>
+    <pre><code class="lang-csharp hljs">protected bool calledAwake</code></pre>
   </div>
 
   
@@ -245,7 +253,36 @@
   <section>
   <h5 class="fieldValue">Field Value</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.Triggers.TriggerEvent-1.html">TriggerEvent</a>&lt;T&gt;</dt>
+    <dt><span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_calledDestroy" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.calledDestroy">calledDestroy</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected bool calledDestroy</code></pre>
+  </div>
+
+  
+  
+  
+  <section>
+  <h5 class="fieldValue">Field Value</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Boolean</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -263,18 +300,18 @@
   </h3>
   <section>
   <a id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetAsyncEnumerator_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.GetAsyncEnumerator*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetAsyncEnumerator_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.GetAsyncEnumerator(System.Threading.CancellationToken)">GetAsyncEnumerator(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetAsyncEnumerator_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.GetAsyncEnumerator(CancellationToken)">GetAsyncEnumerator(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IUniTaskAsyncEnumerator&lt;T&gt; GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public IUniTaskAsyncEnumerator&lt;T&gt; GetAsyncEnumerator(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -299,23 +336,23 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetTriggerEvent_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.GetTriggerEvent*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_GetTriggerEvent" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.GetTriggerEvent">GetTriggerEvent()</h4>
+  <a id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_RaiseEvent_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.RaiseEvent*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncTriggerBase_1_RaiseEvent__0_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase`1.RaiseEvent(`0)">RaiseEvent(T)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected TriggerEvent&lt;T&gt; GetTriggerEvent()</code></pre>
+    <pre><code class="lang-csharp hljs">protected void RaiseEvent(T value)</code></pre>
   </div>
 
-  
   <section>
-  <h5 class="returns">Returns</h5>
+  <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.Triggers.TriggerEvent-1.html">TriggerEvent</a>&lt;T&gt;</dt>
+    <dt><span class="parametername"><code>value</code></span> <span class="xref">T</span></dt>
     <dd></dd>
   </dl>
   </section>
+  
   
   
   

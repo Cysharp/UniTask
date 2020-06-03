@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>IResolveCancelPromise Interface
+    <title>Channel Class
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="IResolveCancelPromise Interface
+    <meta name="title" content="Channel Class
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,9 +71,9 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.IResolveCancelPromise">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Channel">
   
-  <h1 id="Cysharp_Threading_Tasks_IResolveCancelPromise" data-uid="Cysharp.Threading.Tasks.IResolveCancelPromise" class="text-break">IResolveCancelPromise Interface
+  <h1 id="Cysharp_Threading_Tasks_Channel" data-uid="Cysharp.Threading.Tasks.Channel" class="text-break">Channel Class
   </h1>
   <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
@@ -82,9 +82,14 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IResolveCancelPromise : IResolvePromise, ICancelPromise</code></pre>
+    <pre><code class="lang-csharp hljs">public static class Channel</code></pre>
   </div>
 
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <span><span class="xref">System.Object</span></span> → 
+    <span class="xref">Channel</span>
+  </div>
   
   
   
@@ -93,7 +98,64 @@
   
   
   <h3 id="members">Members</h3>
+  <h4>Methods
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Channel.html#Cysharp_Threading_Tasks_Channel_CreateSingleConsumerUnbounded__1">CreateSingleConsumerUnbounded&lt;T&gt;()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
   
+  <h3 id="methods">Methods
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Channel_CreateSingleConsumerUnbounded_" data-uid="Cysharp.Threading.Tasks.Channel.CreateSingleConsumerUnbounded*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Channel_CreateSingleConsumerUnbounded__1" data-uid="Cysharp.Threading.Tasks.Channel.CreateSingleConsumerUnbounded``1">CreateSingleConsumerUnbounded&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Channel&lt;T&gt; CreateSingleConsumerUnbounded&lt;T&gt;()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.Channel-1.html">Channel</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
   
   
   

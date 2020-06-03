@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>TriggerEvent&lt;T&gt; Class
+    <title>ChannelReader&lt;T&gt; Class
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="TriggerEvent&lt;T&gt; Class
+    <meta name="title" content="ChannelReader&lt;T&gt; Class
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,32 +71,26 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.ChannelReader`1">
   
-  <h1 id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1" class="text-break">TriggerEvent&lt;T&gt; Class
+  <h1 id="Cysharp_Threading_Tasks_ChannelReader_1" data-uid="Cysharp.Threading.Tasks.ChannelReader`1" class="text-break">ChannelReader&lt;T&gt; Class
   </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.Triggers.html">Cysharp.Threading.Tasks.Triggers</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
   
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class TriggerEvent&lt;T&gt; : IResolveCancelPromise&lt;T&gt;, IResolvePromise&lt;T&gt;, ICancelPromise</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract class ChannelReader&lt;T&gt;</code></pre>
   </div>
 
   <div class="inheritance">
     <h5>Inheritance</h5>
     <span><span class="xref">System.Object</span></span> → 
-    <span class="xref">TriggerEvent&lt;T&gt;</span>
+    <span class="xref">ChannelReader&lt;T&gt;</span>
   </div>
   
-  <div classs="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.IResolveCancelPromise-1.html">IResolveCancelPromise</a>&lt;T&gt;</div>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.IResolvePromise-1.html">IResolvePromise</a>&lt;T&gt;</div>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.ICancelPromise.html">ICancelPromise</a></div>
-  </div>
   
   
   
@@ -111,6 +105,24 @@
   
   
   <h3 id="members">Members</h3>
+  <h4>Properties
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_Completion">Completion</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
   <h4>Methods
   </h4>
   <table class="table table-condensed">
@@ -123,47 +135,87 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.TriggerEvent-1.html#Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_Add_Cysharp_Threading_Tasks_IResolveCancelPromise__0__">Add(IResolveCancelPromise&lt;T&gt;)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_CancellationToken_">ReadAllAsync(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.TriggerEvent-1.html#Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_Remove_Cysharp_Threading_Tasks_IResolveCancelPromise__0__">Remove(IResolveCancelPromise&lt;T&gt;)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_CancellationToken_">ReadAsync(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.TriggerEvent-1.html#Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_TrySetCanceled_System_Threading_CancellationToken_">TrySetCanceled(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_TryRead__0__">TryRead(out T)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.TriggerEvent-1.html#Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_TrySetResult__0_">TrySetResult(T)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_CancellationToken_">WaitToReadAsync(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
     </tbody>
   </table>
   
+  <h3 id="properties">Properties
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_ChannelReader_1_Completion_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.Completion*"></a>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_Completion" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.Completion">Completion</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract UniTask Completion { get; }</code></pre>
+  </div>
+
+  
+  
+  
+  
+  <section>
+  <h5 class="propertyValue">Property Value</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
   <h3 id="methods">Methods
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_Add_" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.Add*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_Add_Cysharp_Threading_Tasks_IResolveCancelPromise__0__" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.Add(Cysharp.Threading.Tasks.IResolveCancelPromise{`0})">Add(IResolveCancelPromise&lt;T&gt;)</h4>
+  <a id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAllAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAllAsync(CancellationToken)">ReadAllAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Add(IResolveCancelPromise&lt;T&gt; handler)</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract IUniTaskAsyncEnumerable&lt;T&gt; ReadAllAsync(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>handler</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IResolveCancelPromise-1.html">IResolveCancelPromise</a>&lt;T&gt;</dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;T&gt;</dt>
     <dd></dd>
   </dl>
   </section>
@@ -178,22 +230,29 @@
   
   
   
-  
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_Remove_" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.Remove*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_Remove_Cysharp_Threading_Tasks_IResolveCancelPromise__0__" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.Remove(Cysharp.Threading.Tasks.IResolveCancelPromise{`0})">Remove(IResolveCancelPromise&lt;T&gt;)</h4>
+  <a id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAsync(CancellationToken)">ReadAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Remove(IResolveCancelPromise&lt;T&gt; handler)</code></pre>
+    <pre><code class="lang-csharp hljs">public virtual UniTask&lt;T&gt; ReadAsync(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>handler</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IResolveCancelPromise-1.html">IResolveCancelPromise</a>&lt;T&gt;</dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
     <dd></dd>
   </dl>
   </section>
@@ -208,22 +267,21 @@
   
   
   
-  
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_TrySetCanceled_" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.TrySetCanceled*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_TrySetCanceled_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.TrySetCanceled(System.Threading.CancellationToken)">TrySetCanceled(CancellationToken)</h4>
+  <a id="Cysharp_Threading_Tasks_ChannelReader_1_TryRead_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.TryRead*"></a>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_TryRead__0__" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.TryRead(`0@)">TryRead(out T)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TrySetCanceled(CancellationToken cancellationToken)</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract bool TryRead(out T item)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>item</code></span> <span class="xref">T</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -248,19 +306,19 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_TrySetResult_" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.TrySetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_TriggerEvent_1_TrySetResult__0_" data-uid="Cysharp.Threading.Tasks.Triggers.TriggerEvent`1.TrySetResult(`0)">TrySetResult(T)</h4>
+  <a id="Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.WaitToReadAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.WaitToReadAsync(CancellationToken)">WaitToReadAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TrySetResult(T value)</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract UniTask&lt;bool&gt; WaitToReadAsync(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>value</code></span> <span class="xref">T</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -268,7 +326,7 @@
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Boolean</span></dt>
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">System.Boolean</span>&gt;</dt>
     <dd></dd>
   </dl>
   </section>
@@ -285,16 +343,6 @@
   
   </section>
   
-  <h3 id="implements">Implements</h3>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.IResolveCancelPromise-1.html">IResolveCancelPromise&lt;T&gt;</a>
-  </div>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.IResolvePromise-1.html">IResolvePromise&lt;T&gt;</a>
-  </div>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.ICancelPromise.html">ICancelPromise</a>
-  </div>
   
   
 </article>

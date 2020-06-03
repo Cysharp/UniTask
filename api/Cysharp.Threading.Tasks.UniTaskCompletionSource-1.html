@@ -82,7 +82,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class UniTaskCompletionSource&lt;T&gt; : IUniTaskSource&lt;T&gt;, IUniTaskSource, IPromise&lt;T&gt;, IResolvePromise&lt;T&gt;, IRejectPromise, ICancelPromise</code></pre>
+    <pre><code class="lang-csharp hljs">public class UniTaskCompletionSource&lt;T&gt; : IUniTaskSource&lt;T&gt;, IUniTaskSource, IValueTaskSource, IValueTaskSource&lt;T&gt;, IPromise&lt;T&gt;, IResolvePromise&lt;T&gt;, IRejectPromise, ICancelPromise</code></pre>
   </div>
 
   <div class="inheritance">
@@ -95,6 +95,8 @@
     <h5>Implements</h5>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource</a>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a></div>
+    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span></div>
+    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IPromise-1.html">IPromise</a>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IResolvePromise-1.html">IResolvePromise</a>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IRejectPromise.html">IRejectPromise</a></div>
@@ -192,7 +194,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_System_Threading_CancellationToken_">TrySetCanceled(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_CancellationToken_">TrySetCanceled(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -450,18 +452,18 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetCanceled*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetCanceled(System.Threading.CancellationToken)">TrySetCanceled(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetCanceled(CancellationToken)">TrySetCanceled(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TrySetCanceled(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public bool TrySetCanceled(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -628,6 +630,12 @@
   </div>
   <div>
       <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a>
+  </div>
+  <div>
+      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>
+  </div>
+  <div>
+      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;</span>
   </div>
   <div>
       <a class="xref" href="Cysharp.Threading.Tasks.IPromise-1.html">IPromise&lt;T&gt;</a>

@@ -160,6 +160,21 @@
     <tbody>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Action_System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__CancellationToken_">Action(Func&lt;CancellationToken, UniTaskVoid&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Action_System_Func_Cysharp_Threading_Tasks_UniTaskVoid__">Action(Func&lt;UniTaskVoid&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.
+For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
+</td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_AsAsyncUnitUniTask">AsAsyncUnitUniTask()</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -178,31 +193,45 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Defer_System_Func_Cysharp_Threading_Tasks_UniTask__">Defer(Func&lt;UniTask&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Defer the task creation just before call await.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Defer__1_System_Func_Cysharp_Threading_Tasks_UniTask___0___">Defer&lt;T&gt;(Func&lt;UniTask&lt;T&gt;&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Defer the task creation just before call await.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">Delay(TimeSpan, Boolean, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">Delay(TimeSpan, Boolean, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayFrame_System_Int32_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">DelayFrame(Int32, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayFrame_System_Int32_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">DelayFrame(Int32, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_FromCanceled_System_Threading_CancellationToken_">FromCanceled(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_FromCanceled_CancellationToken_">FromCanceled(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_FromCanceled__1_System_Threading_CancellationToken_">FromCanceled&lt;T&gt;(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_FromCanceled__1_CancellationToken_">FromCanceled&lt;T&gt;(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -251,6 +280,18 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToCurrentSynchronizationContext_System_Boolean_">ReturnToCurrentSynchronizationContext(Boolean)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToSynchronizationContext_SynchronizationContext_">ReturnToSynchronizationContext(SynchronizationContext)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Action_System_Boolean_">Run(Action, Boolean)</a>
         </td>
         <td class="markdown level1 summary"><p>Run action on the threadPool and return to main thread if configureAwait = true.</p>
@@ -286,7 +327,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_System_Threading_SynchronizationContext_">SwitchToSynchronizationContext(SynchronizationContext)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_SynchronizationContext_">SwitchToSynchronizationContext(SynchronizationContext)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -294,7 +335,8 @@
         <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_SwitchToTaskPool">SwitchToTaskPool()</a>
         </td>
-        <td class="markdown level1 summary"></td>
+        <td class="markdown level1 summary"><p>Note: use SwitchToThreadPool is recommended.</p>
+</td>
       </tr>
       <tr>
         <td>
@@ -316,7 +358,14 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Void_System_Func_Cysharp_Threading_Tasks_UniTask__">Void(Func&lt;UniTask&gt;)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Void_System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__CancellationToken_">Void(Func&lt;CancellationToken, UniTaskVoid&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Void_System_Func_Cysharp_Threading_Tasks_UniTaskVoid__">Void(Func&lt;UniTaskVoid&gt;)</a>
         </td>
         <td class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.
 For example: FooEvent += () =&gt; UniTask.Void(async () =&gt; { /* */ })</p>
@@ -324,7 +373,7 @@ For example: FooEvent += () =&gt; UniTask.Void(async () =&gt; { /* */ })</p>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Void__1_System_Func___0_Cysharp_Threading_Tasks_UniTask____0_">Void&lt;T&gt;(Func&lt;T, UniTask&gt;, T)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Void__1_System_Func___0_Cysharp_Threading_Tasks_UniTaskVoid____0_">Void&lt;T&gt;(Func&lt;T, UniTaskVoid&gt;, T)</a>
         </td>
         <td class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.
 For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ }, (sender, e))</p>
@@ -332,25 +381,25 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_VoidAction_System_Func_Cysharp_Threading_Tasks_UniTask__">VoidAction(Func&lt;UniTask&gt;)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntil_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">WaitUntil(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntil_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">WaitUntil(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntilCanceled_CancellationToken_Cysharp_Threading_Tasks_PlayerLoopTiming_">WaitUntilCanceled(CancellationToken, PlayerLoopTiming)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntilValueChanged__2___0_System_Func___0___1__Cysharp_Threading_Tasks_PlayerLoopTiming_IEqualityComparer___1__System_Threading_CancellationToken_">WaitUntilValueChanged&lt;T, U&gt;(T, Func&lt;T, U&gt;, PlayerLoopTiming, IEqualityComparer&lt;U&gt;, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntilValueChanged__2___0_System_Func___0___1__Cysharp_Threading_Tasks_PlayerLoopTiming_IEqualityComparer___1__CancellationToken_">WaitUntilValueChanged&lt;T, U&gt;(T, Func&lt;T, U&gt;, PlayerLoopTiming, IEqualityComparer&lt;U&gt;, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitWhile_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">WaitWhile(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitWhile_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">WaitWhile(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -586,7 +635,25 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Yield_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">Yield(PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Yield_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">Yield(PlayerLoopTiming, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4>Operators
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask">Implicit(UniTask to ValueTask)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -692,6 +759,85 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <h3 id="methods">Methods
   </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Action_" data-uid="Cysharp.Threading.Tasks.UniTask.Action*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Action_System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Action(System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTaskVoid},CancellationToken)">Action(Func&lt;CancellationToken, UniTaskVoid&gt;, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Action Action(Func&lt;CancellationToken, UniTaskVoid&gt; asyncAction, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;<span class="xref">CancellationToken</span>, <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Action</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Action_" data-uid="Cysharp.Threading.Tasks.UniTask.Action*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Action_System_Func_Cysharp_Threading_Tasks_UniTaskVoid__" data-uid="Cysharp.Threading.Tasks.UniTask.Action(System.Func{Cysharp.Threading.Tasks.UniTaskVoid})">Action(Func&lt;UniTaskVoid&gt;)</h4>
+  <div class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.
+For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Action Action(Func&lt;UniTaskVoid&gt; asyncAction)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Action</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_AsAsyncUnitUniTask_" data-uid="Cysharp.Threading.Tasks.UniTask.AsAsyncUnitUniTask*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_AsAsyncUnitUniTask" data-uid="Cysharp.Threading.Tasks.UniTask.AsAsyncUnitUniTask">AsAsyncUnitUniTask()</h4>
@@ -804,13 +950,96 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   
   </section>
   <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Defer_" data-uid="Cysharp.Threading.Tasks.UniTask.Defer*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Defer_System_Func_Cysharp_Threading_Tasks_UniTask__" data-uid="Cysharp.Threading.Tasks.UniTask.Defer(System.Func{Cysharp.Threading.Tasks.UniTask})">Defer(Func&lt;UniTask&gt;)</h4>
+  <div class="markdown level1 summary"><p>Defer the task creation just before call await.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask Defer(Func&lt;UniTask&gt; factory)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>factory</code></span> <span class="xref">System.Func</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Defer_" data-uid="Cysharp.Threading.Tasks.UniTask.Defer*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Defer__1_System_Func_Cysharp_Threading_Tasks_UniTask___0___" data-uid="Cysharp.Threading.Tasks.UniTask.Defer``1(System.Func{Cysharp.Threading.Tasks.UniTask{``0}})">Defer&lt;T&gt;(Func&lt;UniTask&lt;T&gt;&gt;)</h4>
+  <div class="markdown level1 summary"><p>Defer the task creation just before call await.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; Defer&lt;T&gt;(Func&lt;UniTask&lt;T&gt;&gt; factory)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>factory</code></span> <span class="xref">System.Func</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Delay_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask Delay(int millisecondsDelay, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask Delay(int millisecondsDelay, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -822,7 +1051,7 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
     <dd></dd>
     <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -848,12 +1077,12 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Delay_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay(System.TimeSpan,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">Delay(TimeSpan, Boolean, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay(System.TimeSpan,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">Delay(TimeSpan, Boolean, PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask Delay(TimeSpan delayTimeSpan, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask Delay(TimeSpan delayTimeSpan, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -865,7 +1094,7 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
     <dd></dd>
     <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -891,12 +1120,12 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_DelayFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.DelayFrame*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_DelayFrame_System_Int32_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.DelayFrame(System.Int32,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">DelayFrame(Int32, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_DelayFrame_System_Int32_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.DelayFrame(System.Int32,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">DelayFrame(Int32, PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -906,7 +1135,7 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
     <dd></dd>
     <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -932,18 +1161,18 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_FromCanceled_" data-uid="Cysharp.Threading.Tasks.UniTask.FromCanceled*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_FromCanceled_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.FromCanceled(System.Threading.CancellationToken)">FromCanceled(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_FromCanceled_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.FromCanceled(CancellationToken)">FromCanceled(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask FromCanceled(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask FromCanceled(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -969,18 +1198,18 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_FromCanceled_" data-uid="Cysharp.Threading.Tasks.UniTask.FromCanceled*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_FromCanceled__1_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.FromCanceled``1(System.Threading.CancellationToken)">FromCanceled&lt;T&gt;(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_FromCanceled__1_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.FromCanceled``1(CancellationToken)">FromCanceled&lt;T&gt;(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; FromCanceled&lt;T&gt;(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; FromCanceled&lt;T&gt;(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -1279,6 +1508,80 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   
   </section>
   <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_ReturnToCurrentSynchronizationContext_" data-uid="Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_ReturnToCurrentSynchronizationContext_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext(System.Boolean)">ReturnToCurrentSynchronizationContext(Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ReturnToSynchronizationContext ReturnToCurrentSynchronizationContext(bool dontPostWhenSameContext = true)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>dontPostWhenSameContext</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.ReturnToSynchronizationContext.html">ReturnToSynchronizationContext</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_ReturnToSynchronizationContext_" data-uid="Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_ReturnToSynchronizationContext_SynchronizationContext_" data-uid="Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext(SynchronizationContext)">ReturnToSynchronizationContext(SynchronizationContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ReturnToSynchronizationContext ReturnToSynchronizationContext(SynchronizationContext synchronizationContext)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>synchronizationContext</code></span> <span class="xref">SynchronizationContext</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.ReturnToSynchronizationContext.html">ReturnToSynchronizationContext</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Run_" data-uid="Cysharp.Threading.Tasks.UniTask.Run*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_Run_System_Action_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UniTask.Run(System.Action,System.Boolean)">Run(Action, Boolean)</h4>
   <div class="markdown level1 summary"><p>Run action on the threadPool and return to main thread if configureAwait = true.</p>
@@ -1489,18 +1792,18 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_" data-uid="Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_System_Threading_SynchronizationContext_" data-uid="Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(System.Threading.SynchronizationContext)">SwitchToSynchronizationContext(SynchronizationContext)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_SynchronizationContext_" data-uid="Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(SynchronizationContext)">SwitchToSynchronizationContext(SynchronizationContext)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static SwitchToSynchronizationContextAwaitable SwitchToSynchronizationContext(SynchronizationContext syncContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public static SwitchToSynchronizationContextAwaitable SwitchToSynchronizationContext(SynchronizationContext synchronizationContext)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>syncContext</code></span> <span class="xref">System.Threading.SynchronizationContext</span></dt>
+    <dt><span class="parametername"><code>synchronizationContext</code></span> <span class="xref">SynchronizationContext</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -1527,7 +1830,8 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_SwitchToTaskPool_" data-uid="Cysharp.Threading.Tasks.UniTask.SwitchToTaskPool*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_SwitchToTaskPool" data-uid="Cysharp.Threading.Tasks.UniTask.SwitchToTaskPool">SwitchToTaskPool()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Note: use SwitchToThreadPool is recommended.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
@@ -1655,20 +1959,21 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Void_" data-uid="Cysharp.Threading.Tasks.UniTask.Void*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Void_System_Func_Cysharp_Threading_Tasks_UniTask__" data-uid="Cysharp.Threading.Tasks.UniTask.Void(System.Func{Cysharp.Threading.Tasks.UniTask})">Void(Func&lt;UniTask&gt;)</h4>
-  <div class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.
-For example: FooEvent += () =&gt; UniTask.Void(async () =&gt; { /* */ })</p>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Void_System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Void(System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTaskVoid},CancellationToken)">Void(Func&lt;CancellationToken, UniTaskVoid&gt;, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void Void(Func&lt;UniTask&gt; asyncAction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static void Void(Func&lt;CancellationToken, UniTaskVoid&gt; asyncAction, CancellationToken cancellationToken)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>&gt;</dt>
+    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;<span class="xref">CancellationToken</span>, <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -1687,20 +1992,52 @@ For example: FooEvent += () =&gt; UniTask.Void(async () =&gt; { /* */ })</p>
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Void_" data-uid="Cysharp.Threading.Tasks.UniTask.Void*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Void__1_System_Func___0_Cysharp_Threading_Tasks_UniTask____0_" data-uid="Cysharp.Threading.Tasks.UniTask.Void``1(System.Func{``0,Cysharp.Threading.Tasks.UniTask},``0)">Void&lt;T&gt;(Func&lt;T, UniTask&gt;, T)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Void_System_Func_Cysharp_Threading_Tasks_UniTaskVoid__" data-uid="Cysharp.Threading.Tasks.UniTask.Void(System.Func{Cysharp.Threading.Tasks.UniTaskVoid})">Void(Func&lt;UniTaskVoid&gt;)</h4>
+  <div class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.
+For example: FooEvent += () =&gt; UniTask.Void(async () =&gt; { /* */ })</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Void(Func&lt;UniTaskVoid&gt; asyncAction)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Void_" data-uid="Cysharp.Threading.Tasks.UniTask.Void*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Void__1_System_Func___0_Cysharp_Threading_Tasks_UniTaskVoid____0_" data-uid="Cysharp.Threading.Tasks.UniTask.Void``1(System.Func{``0,Cysharp.Threading.Tasks.UniTaskVoid},``0)">Void&lt;T&gt;(Func&lt;T, UniTaskVoid&gt;, T)</h4>
   <div class="markdown level1 summary"><p>helper of create add UniTaskVoid to delegate.
 For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ }, (sender, e))</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void Void&lt;T&gt;(Func&lt;T, UniTask&gt; asyncAction, T state)</code></pre>
+    <pre><code class="lang-csharp hljs">public static void Void&lt;T&gt;(Func&lt;T, UniTaskVoid&gt; asyncAction, T state)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;T, <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>&gt;</dt>
+    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;T, <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
     <dd></dd>
     <dt><span class="parametername"><code>state</code></span> <span class="xref">T</span></dt>
     <dd></dd>
@@ -1727,50 +2064,13 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_UniTask_VoidAction_" data-uid="Cysharp.Threading.Tasks.UniTask.VoidAction*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_VoidAction_System_Func_Cysharp_Threading_Tasks_UniTask__" data-uid="Cysharp.Threading.Tasks.UniTask.VoidAction(System.Func{Cysharp.Threading.Tasks.UniTask})">VoidAction(Func&lt;UniTask&gt;)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Action VoidAction(Func&lt;UniTask&gt; asyncAction)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>asyncAction</code></span> <span class="xref">System.Func</span>&lt;<a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Action</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
   <a id="Cysharp_Threading_Tasks_UniTask_WaitUntil_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntil*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitUntil_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntil(System.Func{System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">WaitUntil(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitUntil_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntil(System.Func{System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">WaitUntil(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask WaitUntil(Func&lt;bool&gt; predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask WaitUntil(Func&lt;bool&gt; predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -1780,7 +2080,46 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
     <dd></dd>
     <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_WaitUntilCanceled_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntilCanceled*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitUntilCanceled_CancellationToken_Cysharp_Threading_Tasks_PlayerLoopTiming_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntilCanceled(CancellationToken,Cysharp.Threading.Tasks.PlayerLoopTiming)">WaitUntilCanceled(CancellationToken, PlayerLoopTiming)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask WaitUntilCanceled(CancellationToken cancellationToken, PlayerLoopTiming timing = PlayerLoopTiming.Update)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
   </dl>
   </section>
@@ -1806,12 +2145,12 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_WaitUntilValueChanged_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntilValueChanged*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitUntilValueChanged__2___0_System_Func___0___1__Cysharp_Threading_Tasks_PlayerLoopTiming_IEqualityComparer___1__System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntilValueChanged``2(``0,System.Func{``0,``1},Cysharp.Threading.Tasks.PlayerLoopTiming,IEqualityComparer{``1},System.Threading.CancellationToken)">WaitUntilValueChanged&lt;T, U&gt;(T, Func&lt;T, U&gt;, PlayerLoopTiming, IEqualityComparer&lt;U&gt;, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitUntilValueChanged__2___0_System_Func___0___1__Cysharp_Threading_Tasks_PlayerLoopTiming_IEqualityComparer___1__CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitUntilValueChanged``2(``0,System.Func{``0,``1},Cysharp.Threading.Tasks.PlayerLoopTiming,IEqualityComparer{``1},CancellationToken)">WaitUntilValueChanged&lt;T, U&gt;(T, Func&lt;T, U&gt;, PlayerLoopTiming, IEqualityComparer&lt;U&gt;, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;U&gt; WaitUntilValueChanged&lt;T, U&gt;(T target, Func&lt;T, U&gt; monitorFunction, PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update, IEqualityComparer&lt;U&gt; equalityComparer = null, CancellationToken cancellationToken = default(CancellationToken))
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;U&gt; WaitUntilValueChanged&lt;T, U&gt;(T target, Func&lt;T, U&gt; monitorFunction, PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update, IEqualityComparer&lt;U&gt; equalityComparer = null, CancellationToken cancellationToken = null)
     where T : class</code></pre>
   </div>
 
@@ -1826,7 +2165,7 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
     <dd></dd>
     <dt><span class="parametername"><code>equalityComparer</code></span> <span class="xref">IEqualityComparer</span>&lt;U&gt;</dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -1861,12 +2200,12 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_WaitWhile_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitWhile*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitWhile_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitWhile(System.Func{System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">WaitWhile(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitWhile_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitWhile(System.Func{System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">WaitWhile(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask WaitWhile(Func&lt;bool&gt; predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask WaitWhile(Func&lt;bool&gt; predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -1876,7 +2215,7 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
     <dd></dd>
     <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -4383,7 +4722,7 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Yield_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Yield_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield(Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">Yield(PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Yield_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield(Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">Yield(PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -4396,7 +4735,7 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   <dl class="cysharpdocfx-valuedefinition">
     <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -4405,6 +4744,45 @@ For example: FooEvent += (sender, e) =&gt; UniTask.Void(async arg =&gt; { /* */ 
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
     <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <h3 id="operators">Operators
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_op_Implicit_" data-uid="Cysharp.Threading.Tasks.UniTask.op_Implicit*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask" data-uid="Cysharp.Threading.Tasks.UniTask.op_Implicit(Cysharp.Threading.Tasks.UniTask@)~System.Threading.Tasks.ValueTask">Implicit(UniTask to ValueTask)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator ValueTask(in UniTask self)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>self</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Threading.Tasks.ValueTask</span></dt>
     <dd></dd>
   </dl>
   </section>

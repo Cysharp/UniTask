@@ -71,18 +71,18 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.MoveNextSource">
   
-  <h1 id="Cysharp_Threading_Tasks_Linq_MoveNextSource" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource" class="text-break">MoveNextSource Class
+  <h1 id="Cysharp_Threading_Tasks_MoveNextSource" data-uid="Cysharp.Threading.Tasks.MoveNextSource" class="text-break">MoveNextSource Class
   </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.Linq.html">Cysharp.Threading.Tasks.Linq</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
   
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class MoveNextSource : IUniTaskSource&lt;bool&gt;, IUniTaskSource</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract class MoveNextSource : IUniTaskSource&lt;bool&gt;, IUniTaskSource, IValueTaskSource, IValueTaskSource&lt;bool&gt;</code></pre>
   </div>
 
   <div class="inheritance">
@@ -90,16 +90,13 @@
     <span><span class="xref">System.Object</span></span> → 
     <span class="xref">MoveNextSource</span>
   </div>
-  <div class="inheritance">
-    <h5>Derived</h5>
-      <div><a class="xref" href="Cysharp.Threading.Tasks.Linq.AsyncEnumeratorAwaitSelectorBase-3.html">AsyncEnumeratorAwaitSelectorBase&lt;TSource, TResult, TAwait&gt;</a></div>
-      <div><a class="xref" href="Cysharp.Threading.Tasks.Linq.AsyncEnumeratorBase-2.html">AsyncEnumeratorBase&lt;TSource, TResult&gt;</a></div>
-  </div>
   
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource</a>&lt;<span class="xref">System.Boolean</span>&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a></div>
+    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span></div>
+    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>&lt;<span class="xref">System.Boolean</span>&gt;</div>
   </div>
   
   
@@ -120,7 +117,7 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_completionSource">completionSource</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_completionSource">completionSource</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -138,37 +135,37 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_GetResult_System_Int16_">GetResult(Int16)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_GetResult_System_Int16_">GetResult(Int16)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_GetStatus_System_Int16_">GetStatus(Int16)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_GetStatus_System_Int16_">GetStatus(Int16)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_OnCompleted_System_Action_System_Object__System_Object_System_Int16_">OnCompleted(Action&lt;Object&gt;, Object, Int16)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_OnCompleted_System_Action_System_Object__System_Object_System_Int16_">OnCompleted(Action&lt;Object&gt;, Object, Int16)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_TryGetResult_Cysharp_Threading_Tasks_UniTask_Awaiter_">TryGetResult(UniTask.Awaiter)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_TryGetResult_Cysharp_Threading_Tasks_UniTask_Awaiter_">TryGetResult(UniTask.Awaiter)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_TryGetResult__1_Cysharp_Threading_Tasks_UniTask___0__Awaiter___0__">TryGetResult&lt;T&gt;(UniTask&lt;T&gt;.Awaiter, out T)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_TryGetResult__1_Cysharp_Threading_Tasks_UniTask___0__Awaiter___0__">TryGetResult&lt;T&gt;(UniTask&lt;T&gt;.Awaiter, out T)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_UnsafeGetStatus">UnsafeGetStatus()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_UnsafeGetStatus">UnsafeGetStatus()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -186,7 +183,7 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Linq.MoveNextSource.html#Cysharp_Threading_Tasks_Linq_MoveNextSource_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_">IUniTaskSource.GetResult(Int16)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.MoveNextSource.html#Cysharp_Threading_Tasks_MoveNextSource_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_">IUniTaskSource.GetResult(Int16)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -196,7 +193,7 @@
   <h3 id="fields">Fields
   </h3>
   <section>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_completionSource" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.completionSource">completionSource</h4>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_completionSource" data-uid="Cysharp.Threading.Tasks.MoveNextSource.completionSource">completionSource</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -227,8 +224,8 @@
   <h3 id="methods">Methods
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_Linq_MoveNextSource_GetResult_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.GetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.GetResult(System.Int16)">GetResult(Int16)</h4>
+  <a id="Cysharp_Threading_Tasks_MoveNextSource_GetResult_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.GetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.GetResult(System.Int16)">GetResult(Int16)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -264,8 +261,8 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Linq_MoveNextSource_GetStatus_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.GetStatus*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_GetStatus_System_Int16_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.GetStatus(System.Int16)">GetStatus(Int16)</h4>
+  <a id="Cysharp_Threading_Tasks_MoveNextSource_GetStatus_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.GetStatus*"></a>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_GetStatus_System_Int16_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.GetStatus(System.Int16)">GetStatus(Int16)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -301,8 +298,8 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Linq_MoveNextSource_OnCompleted_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.OnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_OnCompleted_System_Action_System_Object__System_Object_System_Int16_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.OnCompleted(System.Action{System.Object},System.Object,System.Int16)">OnCompleted(Action&lt;Object&gt;, Object, Int16)</h4>
+  <a id="Cysharp_Threading_Tasks_MoveNextSource_OnCompleted_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.OnCompleted*"></a>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_OnCompleted_System_Action_System_Object__System_Object_System_Int16_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.OnCompleted(System.Action{System.Object},System.Object,System.Int16)">OnCompleted(Action&lt;Object&gt;, Object, Int16)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -335,8 +332,8 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Linq_MoveNextSource_TryGetResult_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.TryGetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_TryGetResult_Cysharp_Threading_Tasks_UniTask_Awaiter_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.TryGetResult(Cysharp.Threading.Tasks.UniTask.Awaiter)">TryGetResult(UniTask.Awaiter)</h4>
+  <a id="Cysharp_Threading_Tasks_MoveNextSource_TryGetResult_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.TryGetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_TryGetResult_Cysharp_Threading_Tasks_UniTask_Awaiter_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.TryGetResult(Cysharp.Threading.Tasks.UniTask.Awaiter)">TryGetResult(UniTask.Awaiter)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -372,8 +369,8 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Linq_MoveNextSource_TryGetResult_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.TryGetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_TryGetResult__1_Cysharp_Threading_Tasks_UniTask___0__Awaiter___0__" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.TryGetResult``1(Cysharp.Threading.Tasks.UniTask{``0}.Awaiter,``0@)">TryGetResult&lt;T&gt;(UniTask&lt;T&gt;.Awaiter, out T)</h4>
+  <a id="Cysharp_Threading_Tasks_MoveNextSource_TryGetResult_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.TryGetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_TryGetResult__1_Cysharp_Threading_Tasks_UniTask___0__Awaiter___0__" data-uid="Cysharp.Threading.Tasks.MoveNextSource.TryGetResult``1(Cysharp.Threading.Tasks.UniTask{``0}.Awaiter,``0@)">TryGetResult&lt;T&gt;(UniTask&lt;T&gt;.Awaiter, out T)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -418,8 +415,8 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Linq_MoveNextSource_UnsafeGetStatus_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.UnsafeGetStatus*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_UnsafeGetStatus" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.UnsafeGetStatus">UnsafeGetStatus()</h4>
+  <a id="Cysharp_Threading_Tasks_MoveNextSource_UnsafeGetStatus_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.UnsafeGetStatus*"></a>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_UnsafeGetStatus" data-uid="Cysharp.Threading.Tasks.MoveNextSource.UnsafeGetStatus">UnsafeGetStatus()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -450,8 +447,8 @@
   <h3 id="eii">Explicit Interface Implementations
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_Linq_MoveNextSource_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.Cysharp#Threading#Tasks#IUniTaskSource#GetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Linq_MoveNextSource_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.Linq.MoveNextSource.Cysharp#Threading#Tasks#IUniTaskSource#GetResult(System.Int16)">IUniTaskSource.GetResult(Int16)</h4>
+  <a id="Cysharp_Threading_Tasks_MoveNextSource_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.Cysharp#Threading#Tasks#IUniTaskSource#GetResult*"></a>
+  <h4 id="Cysharp_Threading_Tasks_MoveNextSource_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.MoveNextSource.Cysharp#Threading#Tasks#IUniTaskSource#GetResult(System.Int16)">IUniTaskSource.GetResult(Int16)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -486,6 +483,12 @@
   </div>
   <div>
       <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a>
+  </div>
+  <div>
+      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>
+  </div>
+  <div>
+      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;</span>
   </div>
   
   

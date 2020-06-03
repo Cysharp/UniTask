@@ -82,15 +82,20 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class AsyncStartTrigger : MonoBehaviour</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class AsyncStartTrigger : AsyncTriggerBase&lt;AsyncUnit&gt;, IUniTaskAsyncEnumerable&lt;AsyncUnit&gt;</code></pre>
   </div>
 
   <div class="inheritance">
     <h5>Inheritance</h5>
     <span><span class="xref">System.Object</span></span> → 
+    <span><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html">AsyncTriggerBase</a>&lt;<a class="xref" href="Cysharp.Threading.Tasks.AsyncUnit.html">AsyncUnit</a>&gt;</span> → 
     <span class="xref">AsyncStartTrigger</span>
   </div>
   
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;<a class="xref" href="Cysharp.Threading.Tasks.AsyncUnit.html">AsyncUnit</a>&gt;</div>
+  </div>
   
   
   
@@ -150,6 +155,10 @@
   
   </section>
   
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable&lt;T&gt;</a>
+  </div>
   
   
 </article>

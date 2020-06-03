@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>PromisePool&lt;T&gt; Class
+    <title>Channel&lt;TWrite, TRead&gt; Class
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="PromisePool&lt;T&gt; Class
+    <meta name="title" content="Channel&lt;TWrite, TRead&gt; Class
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,25 +71,28 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Channel`2">
   
-  <h1 id="Cysharp_Threading_Tasks_Internal_PromisePool_1" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1" class="text-break">PromisePool&lt;T&gt; Class
+  <h1 id="Cysharp_Threading_Tasks_Channel_2" data-uid="Cysharp.Threading.Tasks.Channel`2" class="text-break">Channel&lt;TWrite, TRead&gt; Class
   </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.Internal.html">Cysharp.Threading.Tasks.Internal</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
   
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class PromisePool&lt;T&gt;
-    where T : class, IPromisePoolItem</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract class Channel&lt;TWrite, TRead&gt;</code></pre>
   </div>
 
   <div class="inheritance">
     <h5>Inheritance</h5>
     <span><span class="xref">System.Object</span></span> → 
-    <span class="xref">PromisePool&lt;T&gt;</span>
+    <span class="xref">Channel&lt;TWrite, TRead&gt;</span>
+  </div>
+  <div class="inheritance">
+    <h5>Derived</h5>
+      <div><a class="xref" href="Cysharp.Threading.Tasks.Channel-1.html">Channel&lt;T&gt;</a></div>
   </div>
   
   
@@ -99,14 +102,16 @@
   <section>
   <h4 class="typeParameters">Type Parameters</h4>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>T</code></span></dt>
+    <dt><span class="parametername"><code>TWrite</code></span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>TRead</code></span></dt>
     <dd></dd>
   </dl>
   </section>
   
   
   <h3 id="members">Members</h3>
-  <h4>Constructors
+  <h4>Properties
   </h4>
   <table class="table table-condensed">
     <thead>
@@ -118,13 +123,19 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Internal.PromisePool-1.html#Cysharp_Threading_Tasks_Internal_PromisePool_1__ctor_System_Int32_">PromisePool(Int32)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.Channel-2.html#Cysharp_Threading_Tasks_Channel_2_Reader">Reader</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Channel-2.html#Cysharp_Threading_Tasks_Channel_2_Writer">Writer</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
     </tbody>
   </table>
-  <h4>Methods
+  <h4>Operators
   </h4>
   <table class="table table-condensed">
     <thead>
@@ -136,68 +147,105 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Internal.PromisePool-1.html#Cysharp_Threading_Tasks_Internal_PromisePool_1_TryRent">TryRent()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.Channel-2.html#Cysharp_Threading_Tasks_Channel_2_op_Implicit_Cysharp_Threading_Tasks_Channel__0__1___Cysharp_Threading_Tasks_ChannelReader__1_">Implicit(Channel&lt;TWrite, TRead&gt; to ChannelReader&lt;TRead&gt;)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Internal.PromisePool-1.html#Cysharp_Threading_Tasks_Internal_PromisePool_1_TryReturn__0_">TryReturn(T)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.Channel-2.html#Cysharp_Threading_Tasks_Channel_2_op_Implicit_Cysharp_Threading_Tasks_Channel__0__1___Cysharp_Threading_Tasks_ChannelWriter__0_">Implicit(Channel&lt;TWrite, TRead&gt; to ChannelWriter&lt;TWrite&gt;)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
     </tbody>
   </table>
   
-  <h3 id="constructors">Constructors
+  <h3 id="properties">Properties
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_Internal_PromisePool_1__ctor_" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1.#ctor*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Internal_PromisePool_1__ctor_System_Int32_" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1.#ctor(System.Int32)">PromisePool(Int32)</h4>
+  <a id="Cysharp_Threading_Tasks_Channel_2_Reader_" data-uid="Cysharp.Threading.Tasks.Channel`2.Reader*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Channel_2_Reader" data-uid="Cysharp.Threading.Tasks.Channel`2.Reader">Reader</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PromisePool(int maxSize = 256)</code></pre>
+    <pre><code class="lang-csharp hljs">public ChannelReader&lt;TRead&gt; Reader { get; protected set; }</code></pre>
+  </div>
+
+  
+  
+  
+  
+  <section>
+  <h5 class="propertyValue">Property Value</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html">ChannelReader</a>&lt;TRead&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Channel_2_Writer_" data-uid="Cysharp.Threading.Tasks.Channel`2.Writer*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Channel_2_Writer" data-uid="Cysharp.Threading.Tasks.Channel`2.Writer">Writer</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChannelWriter&lt;TWrite&gt; Writer { get; protected set; }</code></pre>
+  </div>
+
+  
+  
+  
+  
+  <section>
+  <h5 class="propertyValue">Property Value</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.ChannelWriter-1.html">ChannelWriter</a>&lt;TWrite&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <h3 id="operators">Operators
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Channel_2_op_Implicit_" data-uid="Cysharp.Threading.Tasks.Channel`2.op_Implicit*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Channel_2_op_Implicit_Cysharp_Threading_Tasks_Channel__0__1___Cysharp_Threading_Tasks_ChannelReader__1_" data-uid="Cysharp.Threading.Tasks.Channel`2.op_Implicit(Cysharp.Threading.Tasks.Channel{`0,`1})~Cysharp.Threading.Tasks.ChannelReader{`1}">Implicit(Channel&lt;TWrite, TRead&gt; to ChannelReader&lt;TRead&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator ChannelReader&lt;TRead&gt;(Channel&lt;TWrite, TRead&gt; channel)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>maxSize</code></span> <span class="xref">System.Int32</span></dt>
+    <dt><span class="parametername"><code>channel</code></span> <a class="xref" href="Cysharp.Threading.Tasks.Channel-2.html">Channel</a>&lt;TWrite, TRead&gt;</dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <h3 id="methods">Methods
-  </h3>
-  <section>
-  <a id="Cysharp_Threading_Tasks_Internal_PromisePool_1_TryRent_" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1.TryRent*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Internal_PromisePool_1_TryRent" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1.TryRent">TryRent()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public T TryRent()</code></pre>
-  </div>
-
   
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">T</span></dt>
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html">ChannelReader</a>&lt;TRead&gt;</dt>
     <dd></dd>
   </dl>
   </section>
@@ -214,19 +262,19 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Internal_PromisePool_1_TryReturn_" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1.TryReturn*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Internal_PromisePool_1_TryReturn__0_" data-uid="Cysharp.Threading.Tasks.Internal.PromisePool`1.TryReturn(`0)">TryReturn(T)</h4>
+  <a id="Cysharp_Threading_Tasks_Channel_2_op_Implicit_" data-uid="Cysharp.Threading.Tasks.Channel`2.op_Implicit*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Channel_2_op_Implicit_Cysharp_Threading_Tasks_Channel__0__1___Cysharp_Threading_Tasks_ChannelWriter__0_" data-uid="Cysharp.Threading.Tasks.Channel`2.op_Implicit(Cysharp.Threading.Tasks.Channel{`0,`1})~Cysharp.Threading.Tasks.ChannelWriter{`0}">Implicit(Channel&lt;TWrite, TRead&gt; to ChannelWriter&lt;TWrite&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TryReturn(T value)</code></pre>
+    <pre><code class="lang-csharp hljs">public static implicit operator ChannelWriter&lt;TWrite&gt;(Channel&lt;TWrite, TRead&gt; channel)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>value</code></span> <span class="xref">T</span></dt>
+    <dt><span class="parametername"><code>channel</code></span> <a class="xref" href="Cysharp.Threading.Tasks.Channel-2.html">Channel</a>&lt;TWrite, TRead&gt;</dt>
     <dd></dd>
   </dl>
   </section>
@@ -234,7 +282,7 @@
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Boolean</span></dt>
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.ChannelWriter-1.html">ChannelWriter</a>&lt;TWrite&gt;</dt>
     <dd></dd>
   </dl>
   </section>

@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>IPromisePoolItem Interface
+    <title>CancellationTokenAwaitable Struct
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="IPromisePoolItem Interface
+    <meta name="title" content="CancellationTokenAwaitable Struct
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,18 +71,18 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Internal.IPromisePoolItem">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.CancellationTokenAwaitable">
   
-  <h1 id="Cysharp_Threading_Tasks_Internal_IPromisePoolItem" data-uid="Cysharp.Threading.Tasks.Internal.IPromisePoolItem" class="text-break">IPromisePoolItem Interface
+  <h1 id="Cysharp_Threading_Tasks_CancellationTokenAwaitable" data-uid="Cysharp.Threading.Tasks.CancellationTokenAwaitable" class="text-break">CancellationTokenAwaitable Struct
   </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.Internal.html">Cysharp.Threading.Tasks.Internal</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
   
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IPromisePoolItem</code></pre>
+    <pre><code class="lang-csharp hljs">public struct CancellationTokenAwaitable</code></pre>
   </div>
 
   
@@ -93,6 +93,24 @@
   
   
   <h3 id="members">Members</h3>
+  <h4>Constructors
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenAwaitable.html#Cysharp_Threading_Tasks_CancellationTokenAwaitable__ctor_CancellationToken_">CancellationTokenAwaitable(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
   <h4>Methods
   </h4>
   <table class="table table-condensed">
@@ -105,26 +123,65 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Internal.IPromisePoolItem.html#Cysharp_Threading_Tasks_Internal_IPromisePoolItem_Reset">Reset()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenAwaitable.html#Cysharp_Threading_Tasks_CancellationTokenAwaitable_GetAwaiter">GetAwaiter()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
     </tbody>
   </table>
   
-  <h3 id="methods">Methods
+  <h3 id="constructors">Constructors
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_Internal_IPromisePoolItem_Reset_" data-uid="Cysharp.Threading.Tasks.Internal.IPromisePoolItem.Reset*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Internal_IPromisePoolItem_Reset" data-uid="Cysharp.Threading.Tasks.Internal.IPromisePoolItem.Reset">Reset()</h4>
+  <a id="Cysharp_Threading_Tasks_CancellationTokenAwaitable__ctor_" data-uid="Cysharp.Threading.Tasks.CancellationTokenAwaitable.#ctor*"></a>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenAwaitable__ctor_CancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenAwaitable.#ctor(CancellationToken)">CancellationTokenAwaitable(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Reset()</code></pre>
+    <pre><code class="lang-csharp hljs">public CancellationTokenAwaitable(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <h3 id="methods">Methods
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_CancellationTokenAwaitable_GetAwaiter_" data-uid="Cysharp.Threading.Tasks.CancellationTokenAwaitable.GetAwaiter*"></a>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenAwaitable_GetAwaiter" data-uid="Cysharp.Threading.Tasks.CancellationTokenAwaitable.GetAwaiter">GetAwaiter()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CancellationTokenAwaitable.Awaiter GetAwaiter()</code></pre>
   </div>
 
   
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenAwaitable.Awaiter.html">CancellationTokenAwaitable.Awaiter</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
   
   
   
