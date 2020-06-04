@@ -5,7 +5,25 @@
         <AssemblyName>UniTask</AssemblyName>
         <LangVersion>8.0</LangVersion>
         <RootNamespace>Cysharp.Threading.Tasks</RootNamespace>
+
+        <!-- NuGet Packaging -->
+        <Id>UniTask</Id>
+        <PackageVersion>$(Version)</PackageVersion>
+        <Company>Cysharp</Company>
+        <Authors>Cysharp</Authors>
+        <Copyright>© Cysharp, Inc.</Copyright>
+        <PackageTags>task;async</PackageTags>
+        <Description>Provides an efficient async/await integration to Unity and .NET Core.</Description>
+        <PackageProjectUrl>https://github.com/Cysharp/UniTask</PackageProjectUrl>
+        <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>Icon.png</PackageIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="Icon.png" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
     <ItemGroup>
         <Compile Include="..\UniTask\Assets\Plugins\UniTask\Runtime\**\*.cs"

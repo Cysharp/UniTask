@@ -312,10 +312,10 @@ namespace NetCoreSandbox
             //await c;
 
 
-            foreach (var item in Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo())
-            {
-                Console.WriteLine(item);
-            }
+            //foreach (var item in Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo())
+            //{
+            //    Console.WriteLine(item);
+            //}
 
             Console.ReadLine();
         }
