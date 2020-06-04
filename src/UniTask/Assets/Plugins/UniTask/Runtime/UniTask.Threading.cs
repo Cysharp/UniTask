@@ -351,6 +351,8 @@ namespace Cysharp.Threading.Tasks
             {
                 get
                 {
+                    if (!dontPostWhenSameContext) return false;
+
                     var current = SynchronizationContext.Current;
                     if (current == synchronizationContext)
                     {
