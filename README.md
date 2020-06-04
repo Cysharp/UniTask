@@ -18,17 +18,22 @@ Provides an efficient async/await integration to Unity.
 ## Table of Contents
 
 - [Getting started](#getting-started)
-- [`UniTask<T>`](#unitaskt)
+- [Basics of UniTask and AsyncOperation](#basics-of-unitask-and-asyncoperation)
 - [Cancellation and Exception handling](#cancellation-and-exception-handling)
 - [Progress](#progress)
+- [PlayerLoop](#playerloop)
+- [async void vs async UniTaskVoid](#async-void-vs-async-unitaskvoid)
 - [UniTaskTracker](#unitasktracker)
-- [Reusable Promises](#reusable-promises)
-- [awaitable Events](#awaitable-events)
-- [async void vs async UniTask/UniTaskVoid](#async-void-vs-async-unitaskunitaskvoid)
+- [External Assets](#external-assets)
+- [AsyncEnumerable and Async LINQ](#asyncenumerable-and-async-linq)
+- [Awaitable Events](#awaitable-events)
+- [Channel](#channel)
 - [For Unit Testing](#for-unit-testing)
-- [Method List](#method-list)
+- [API References](#api-references)
 - [UPM Package](#upm-package)
-- [ECS, PlayerLoop](#ecs-playerloop)
+  - [Install via git URL](#install-via-git-url)
+  - [Install via OpenUPM](#install-via-openupm)
+- [.NET Core](#net-core)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
