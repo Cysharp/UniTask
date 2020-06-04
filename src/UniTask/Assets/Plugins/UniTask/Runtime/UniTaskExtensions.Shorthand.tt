@@ -1,0 +1,63 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using System.Collections.Generic;
+
+namespace Cysharp.Threading.Tasks
+{
+    public static partial class UniTaskExtensions
+    {
+        // shorthand of WhenAll
+    
+        public static UniTask.Awaiter GetAwaiter(this UniTask[] tasks)
+        {
+            return UniTask.WhenAll(tasks).GetAwaiter();
+        }
+
+        public static UniTask.Awaiter GetAwaiter(this IEnumerable<UniTask> tasks)
+        {
+            return UniTask.WhenAll(tasks).GetAwaiter();
+        }
+
+        public static UniTask<T[]>.Awaiter GetAwaiter<T>(this UniTask<T>[] tasks)
+        {
+            return UniTask.WhenAll(tasks).GetAwaiter();
+        }
+
+        public static UniTask<T[]>.Awaiter GetAwaiter<T>(this IEnumerable<UniTask<T>> tasks)
+        {
+            return UniTask.WhenAll(tasks).GetAwaiter();
+        }
+
+<# for(var i = 2; i <= 15; i++ ) {
+    var range = Enumerable.Range(1, i);
+    var t = string.Join(", ", range.Select(x => "T" + x));
+    var args = string.Join(", ", range.Select(x => $"UniTask<T{x}> task{x}"));
+    var titems = string.Join(", ", range.Select(x => $"tasks.Item{x}"));
+#>
+        public static UniTask<(<#= t #>)>.Awaiter GetAwaiter<<#= t #>>(this (<#= args #>) tasks)
+        {
+            return UniTask.WhenAll(<#= titems #>).GetAwaiter();
+        }
+
+<# } #>
+
+<# for(var i = 2; i <= 15; i++ ) {
+    var range = Enumerable.Range(1, i);
+    var args = string.Join(", ", range.Select(x => $"UniTask task{x}"));
+    var titems = string.Join(", ", range.Select(x => $"tasks.Item{x}"));
+#>
+
+        public static UniTask.Awaiter GetAwaiter(this (<#= args #>) tasks)
+        {
+            return UniTask.WhenAll(<#= titems #>).GetAwaiter();
+        }
+
+<# } #>
+
+    }
+}

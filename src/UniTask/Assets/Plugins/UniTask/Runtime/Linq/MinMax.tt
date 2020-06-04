@@ -1,0 +1,262 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var types = new[]
+    {
+        typeof(int),
+        typeof(long),
+        typeof(float),
+        typeof(double),
+        typeof(decimal),
+        
+        typeof(int?),
+        typeof(long?),
+        typeof(float?),
+        typeof(double?),
+        typeof(decimal?),
+    };
+
+    Func<Type, bool> IsNullable = x => x.IsGenericType;
+    Func<Type, string> TypeName = x => IsNullable(x) ? x.GetGenericArguments()[0].Name + "?" : x.Name;
+    Func<Type, string> WithSuffix = x => IsNullable(x) ? ".GetValueOrDefault()" : "";
+#>
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks.Internal;
+
+namespace Cysharp.Threading.Tasks.Linq
+{
+<# foreach(var (minMax, op) in new[]{("Min",">"), ("Max", "<")}) { #>
+    public static partial class UniTaskAsyncEnumerable
+    {
+<# foreach(var t in types) { #>
+        public static UniTask<<#= TypeName(t) #>> <#= minMax #>Async(this IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+
+            return <#= minMax #>.<#= minMax #>Async(source, cancellationToken);
+        }
+
+        public static UniTask<<#= TypeName(t) #>> <#= minMax #>Async<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return <#= minMax #>.<#= minMax #>Async(source, selector, cancellationToken);
+        }
+
+        public static UniTask<<#= TypeName(t) #>> <#= minMax #>AwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return <#= minMax #>.<#= minMax #>AwaitAsync(source, selector, cancellationToken);
+        }
+
+        public static UniTask<<#= TypeName(t) #>> <#= minMax #>AwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return <#= minMax #>.<#= minMax #>AwaitWithCancellationAsync(source, selector, cancellationToken);
+        }
+
+<# } #>
+    }
+
+    internal static partial class <#= minMax #>
+    {
+<# foreach(var t in types) { #>
+        public static async UniTask<<#= TypeName(t) #>> <#= minMax #>Async(IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> value = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    value = e.Current;
+<# if (IsNullable(t)) { #>
+                    if(value == null) continue;
+<# } #>                
+                    goto NEXT_LOOP;
+                }
+
+<# if (IsNullable(t)) { #>
+                return default;
+<# } else { #>
+                throw Error.NoElements();
+<# } #>                
+                NEXT_LOOP:
+
+                while (await e.MoveNextAsync())
+                {
+                    var x = e.Current;
+<# if (IsNullable(t)) { #>
+                    if( x == null) continue;
+<# } #>
+                    if (value <#= op #> x)
+                    {
+                        value = x;
+                    }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return value;
+        }
+
+        public static async UniTask<<#= TypeName(t) #>> <#= minMax #>Async<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> value = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    value = selector(e.Current);
+<# if (IsNullable(t)) { #>
+                    if(value == null) continue;
+<# } #>                
+                    goto NEXT_LOOP;
+                }
+
+<# if (IsNullable(t)) { #>
+                return default;
+<# } else { #>
+                throw Error.NoElements();
+<# } #>                
+                NEXT_LOOP:
+
+                while (await e.MoveNextAsync())
+                {
+                    var x = selector(e.Current);
+<# if (IsNullable(t)) { #>
+                    if( x == null) continue;
+<# } #>
+                    if (value <#= op #> x)
+                    {
+                        value = x;
+                    }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return value;
+        }
+
+        public static async UniTask<<#= TypeName(t) #>> <#= minMax #>AwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> value = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    value = await selector(e.Current);
+<# if (IsNullable(t)) { #>
+                    if(value == null) continue;
+<# } #>                
+                    goto NEXT_LOOP;
+                }
+
+<# if (IsNullable(t)) { #>
+                return default;
+<# } else { #>
+                throw Error.NoElements();
+<# } #>                
+                NEXT_LOOP:
+
+                while (await e.MoveNextAsync())
+                {
+                    var x = await selector(e.Current);
+<# if (IsNullable(t)) { #>
+                    if( x == null) continue;
+<# } #>
+                    if (value <#= op #> x)
+                    {
+                        value = x;
+                    }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return value;
+        }
+
+        public static async UniTask<<#= TypeName(t) #>> <#= minMax #>AwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> value = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    value = await selector(e.Current, cancellationToken);
+<# if (IsNullable(t)) { #>
+                    if(value == null) continue;
+<# } #>                
+                    goto NEXT_LOOP;
+                }
+
+<# if (IsNullable(t)) { #>
+                return default;
+<# } else { #>
+                throw Error.NoElements();
+<# } #>                
+                NEXT_LOOP:
+
+                while (await e.MoveNextAsync())
+                {
+                    var x = await selector(e.Current, cancellationToken);
+<# if (IsNullable(t)) { #>
+                    if( x == null) continue;
+<# } #>
+                    if (value <#= op #> x)
+                    {
+                        value = x;
+                    }
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return value;
+        }
+
+<# } #>
+    }
+
+<# } #>
+}

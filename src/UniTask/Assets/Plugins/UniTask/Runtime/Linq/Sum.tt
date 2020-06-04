@@ -1,0 +1,167 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var types = new[]
+    {
+        typeof(int),
+        typeof(long),
+        typeof(float),
+        typeof(double),
+        typeof(decimal),
+        
+        typeof(int?),
+        typeof(long?),
+        typeof(float?),
+        typeof(double?),
+        typeof(decimal?),
+    };
+
+    Func<Type, bool> IsNullable = x => x.IsGenericType;
+    Func<Type, string> TypeName = x => IsNullable(x) ? x.GetGenericArguments()[0].Name + "?" : x.Name;
+    Func<Type, string> WithSuffix = x => IsNullable(x) ? ".GetValueOrDefault()" : "";
+#>
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks.Internal;
+
+namespace Cysharp.Threading.Tasks.Linq
+{
+    public static partial class UniTaskAsyncEnumerable
+    {
+<# foreach(var t in types) { #>
+        public static UniTask<<#= TypeName(t) #>> SumAsync(this IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+
+            return Sum.SumAsync(source, cancellationToken);
+        }
+
+        public static UniTask<<#= TypeName(t) #>> SumAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return Sum.SumAsync(source, selector, cancellationToken);
+        }
+
+        public static UniTask<<#= TypeName(t) #>> SumAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return Sum.SumAwaitAsync(source, selector, cancellationToken);
+        }
+
+        public static UniTask<<#= TypeName(t) #>> SumAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return Sum.SumAwaitWithCancellationAsync(source, selector, cancellationToken);
+        }
+
+<# } #>
+    }
+
+    internal static class Sum
+    {
+<# foreach(var t in types) { #>
+        public static async UniTask<<#= TypeName(t) #>> SumAsync(IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> sum = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    sum += e.Current<#= WithSuffix(t) #>;
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return sum;
+        }
+
+        public static async UniTask<<#= TypeName(t) #>> SumAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> sum = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    sum += selector(e.Current)<#= WithSuffix(t) #>;
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return sum;
+        }
+
+        public static async UniTask<<#= TypeName(t) #>> SumAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> sum = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    sum += (await selector(e.Current))<#= WithSuffix(t) #>;
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return sum;
+        }
+
+        public static async UniTask<<#= TypeName(t) #>> SumAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        {
+            <#= TypeName(t) #> sum = default;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+                    sum += (await selector(e.Current, cancellationToken))<#= WithSuffix(t) #>;
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return sum;
+        }
+
+<# } #>
+    }
+}

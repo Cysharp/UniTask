@@ -1,0 +1,183 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var empty = new (string, string)[0];
+
+    var triggers = new (string triggerName, string methodName, string returnType, string handlerInterface, (string argType, string argName)[] arguments)[]
+    {
+        ("AnimatorIK", "OnAnimatorIK", "int", null, new []{ ("int", "layerIndex") }),
+        ("AnimatorMove", "OnAnimatorMove", "AsyncUnit", null, empty),
+        ("OnCanvasGroupChanged", "OnCanvasGroupChanged", "AsyncUnit", null, empty ),
+        ("CollisionEnter2D", "OnCollisionEnter2D", "Collision2D", null, new []{ ("Collision2D", "coll") }),
+        ("CollisionExit2D", "OnCollisionExit2D", "Collision2D", null, new []{ ("Collision2D", "coll") }),
+        ("CollisionStay2D", "OnCollisionStay2D", "Collision2D", null, new []{ ("Collision2D", "coll") }),
+        ("CollisionEnter", "OnCollisionEnter", "Collision", null, new []{ ("Collision", "coll") }),
+        ("CollisionExit", "OnCollisionExit", "Collision", null, new []{ ("Collision", "coll") }),
+        ("CollisionStay", "OnCollisionStay", "Collision", null, new []{ ("Collision", "coll") }),
+        ("Enable", "OnEnable", "AsyncUnit", null, empty),
+        ("Disable", "OnDisable", "AsyncUnit", null, empty),
+        ("JointBreak", "OnJointBreak", "float", null, new []{ ("float", "breakForce") }),
+        ("JointBreak2D", "OnJointBreak2D", "Joint2D", null, new []{ ("Joint2D", "brokenJoint") }),
+        ("Update", "Update", "AsyncUnit", null, empty),
+        ("FixedUpdate", "FixedUpdate", "AsyncUnit", null, empty),
+        ("LateUpdate", "LateUpdate", "AsyncUnit", null, empty),
+        ("MouseDown", "OnMouseDown", "AsyncUnit", null, empty),
+        ("MouseDrag", "OnMouseDrag", "AsyncUnit", null, empty),
+        ("MouseEnter", "OnMouseEnter", "AsyncUnit", null, empty),
+        ("MouseExit", "OnMouseExit", "AsyncUnit", null, empty),
+        ("MouseOver", "OnMouseOver", "AsyncUnit", null, empty),
+        ("MouseUp", "OnMouseUp", "AsyncUnit", null, empty),
+        ("MouseUpAsButton", "OnMouseUpAsButton", "AsyncUnit", null, empty),
+        ("ParticleCollision", "OnParticleCollision", "GameObject", null, new []{ ("GameObject", "other") }),
+        ("RectTransformDimensionsChange", "OnRectTransformDimensionsChange", "AsyncUnit", null, empty),
+        ("RectTransformRemoved", "OnRectTransformRemoved", "AsyncUnit", null, empty),
+        ("BeforeTransformParentChanged", "OnBeforeTransformParentChanged", "AsyncUnit", null, empty),
+        ("TransformParentChanged", "OnTransformParentChanged", "AsyncUnit", null, empty),
+        ("TransformChildrenChanged", "OnTransformChildrenChanged", "AsyncUnit", null, empty),
+        ("TriggerEnter2D", "OnTriggerEnter2D", "Collider2D", null, new []{ ("Collider2D", "other") }),
+        ("TriggerExit2D", "OnTriggerExit2D", "Collider2D", null, new []{ ("Collider2D", "other") }),
+        ("TriggerStay2D", "OnTriggerStay2D", "Collider2D", null, new []{ ("Collider2D", "other") }),
+        ("TriggerEnter", "OnTriggerEnter", "Collider", null, new []{ ("Collider", "other") }),
+        ("TriggerExit", "OnTriggerExit", "Collider", null, new []{ ("Collider", "other") }),
+        ("TriggerStay", "OnTriggerStay", "Collider", null, new []{ ("Collider", "other") }),
+        ("BecameInvisible", "OnBecameInvisible", "AsyncUnit", null, empty),
+        ("BecameVisible", "OnBecameVisible", "AsyncUnit", null, empty),
+        
+        // new in v2
+        ("ApplicationFocus", "OnApplicationFocus", "bool", null, new []{("bool", "hasFocus") }),
+        ("ApplicationPause", "OnApplicationPause", "bool", null, new []{("bool", "pauseStatus") }),
+        ("ApplicationQuit", "OnApplicationQuit", "AsyncUnit", null, empty),
+        ("AudioFilterRead", "OnAudioFilterRead", "(float[] data, int channels)", null, new[]{("float[]", "data"), ("int", "channels")}),
+        ("ControllerColliderHit", "OnControllerColliderHit", "ControllerColliderHit", null, new[]{("ControllerColliderHit", "hit")}),
+        ("DrawGizmos", "OnDrawGizmos", "AsyncUnit", null, empty),
+        ("DrawGizmosSelected", "OnDrawGizmosSelected", "AsyncUnit", null, empty),
+        ("GUI", "OnGUI", "AsyncUnit", null, empty),
+        ("ParticleSystemStopped", "OnParticleSystemStopped", "AsyncUnit", null, empty),
+        ("ParticleTrigger", "OnParticleTrigger", "AsyncUnit", null, empty),
+        ("PostRender", "OnPostRender", "AsyncUnit", null, empty),
+        ("PreCull", "OnPreCull", "AsyncUnit", null, empty),
+        ("PreRender", "OnPreRender", "AsyncUnit", null, empty),
+        ("RenderImage", "OnRenderImage", "(RenderTexture source, RenderTexture destination)", null, new[]{("RenderTexture", "source"), ("RenderTexture", "destination")}),
+        ("RenderObject", "OnRenderObject", "AsyncUnit", null, empty),
+        ("ServerInitialized", "OnServerInitialized", "AsyncUnit", null, empty),
+        ("Validate", "OnValidate", "AsyncUnit", null, empty),
+        ("WillRenderObject", "OnWillRenderObject", "AsyncUnit", null, empty),
+        ("Reset", "Reset", "AsyncUnit", null, empty),
+
+        // uGUI
+        ("BeginDrag", "OnBeginDrag", "PointerEventData", "IBeginDragHandler", new []{ ("PointerEventData", "eventData") }),
+        ("Cancel", "OnCancel", "BaseEventData", "ICancelHandler", new []{ ("BaseEventData", "eventData") }),
+        ("Deselect", "OnDeselect", "BaseEventData", "IDeselectHandler", new []{ ("BaseEventData", "eventData") }),
+        ("Drag", "OnDrag", "PointerEventData", "IDragHandler", new []{ ("PointerEventData", "eventData") }),
+        ("Drop", "OnDrop", "PointerEventData", "IDropHandler", new []{ ("PointerEventData", "eventData") }),
+        ("EndDrag", "OnEndDrag", "PointerEventData", "IEndDragHandler", new []{ ("PointerEventData", "eventData") }),
+        ("InitializePotentialDrag", "OnInitializePotentialDrag", "PointerEventData", "IInitializePotentialDragHandler", new []{ ("PointerEventData", "eventData") }),
+        ("Move", "OnMove", "AxisEventData", "IMoveHandler", new []{ ("AxisEventData", "eventData") }),
+        ("PointerClick", "OnPointerClick", "PointerEventData", "IPointerClickHandler", new []{ ("PointerEventData", "eventData") }),
+        ("PointerDown", "OnPointerDown", "PointerEventData", "IPointerDownHandler", new []{ ("PointerEventData", "eventData") }),
+        ("PointerEnter", "OnPointerEnter", "PointerEventData", "IPointerEnterHandler", new []{ ("PointerEventData", "eventData") }),
+        ("PointerExit", "OnPointerExit", "PointerEventData", "IPointerExitHandler", new []{ ("PointerEventData", "eventData") }),
+        ("PointerUp", "OnPointerUp", "PointerEventData", "IPointerUpHandler", new []{ ("PointerEventData", "eventData") }),
+        ("Scroll", "OnScroll", "PointerEventData", "IScrollHandler", new []{ ("PointerEventData", "eventData") }),
+        ("Select", "OnSelect", "BaseEventData", "ISelectHandler", new []{ ("BaseEventData", "eventData") }),
+        ("Submit", "OnSubmit", "BaseEventData", "ISubmitHandler", new []{ ("BaseEventData", "eventData") }),
+        ("UpdateSelected", "OnUpdateSelected", "BaseEventData", "IUpdateSelectedHandler", new []{ ("BaseEventData", "eventData") }),
+
+        // 2019.3
+        ("ParticleUpdateJobScheduled", "OnParticleUpdateJobScheduled", "UnityEngine.ParticleSystemJobs.ParticleSystemJobData", null, new[]{("UnityEngine.ParticleSystemJobs.ParticleSystemJobData", "particles")}),
+
+        // Oneshot
+        // Awake, Start, Destroy
+    };
+
+    triggers = triggers.OrderBy(x => x.handlerInterface != null).ThenBy(x => x.handlerInterface != null ? x.handlerInterface : x.methodName).ToArray();
+
+    Func<string, string> ToInterfaceName = x => $"IAsync{x}Handler";
+    Func<string, string> ToUniTaskName = x => x == "AsyncUnit" ? "UniTask" : $"UniTask<{x}>";
+    Func<string, string> ToCastUniTasSourceType = x => x == "AsyncUnit" ? "IUniTaskSource" : $"IUniTaskSource<{x}>";
+    Func<string, string> OnInvokeSuffix = x => x == "AsyncUnit" ? ".AsUniTask()" : $"";
+    Func<(string argType, string argName)[], string> BuildMethodArgument = x => string.Join(", ", x.Select(y => y.argType + " " + y.argName));
+    Func<(string argType, string argName)[], string> BuildResultParameter = x => x.Length == 0 ? "AsyncUnit.Default" : "(" + string.Join(", ", x.Select(y => y.argName)) + ")";
+
+    Func<string, bool> Is2019_3 = x => x == "ParticleUpdateJobScheduled";
+#>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+using System.Threading;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+namespace Cysharp.Threading.Tasks.Triggers
+{
+<# foreach(var t in triggers) { #>
+#region <#= t.triggerName #>
+<# if(Is2019_3(t.triggerName)) { #>
+#if UNITY_2019_3_OR_NEWER
+<# } #>
+
+    public interface <#= ToInterfaceName(t.methodName) #>
+    {
+        <#= ToUniTaskName(t.returnType) #> <#= t.methodName #>Async();
+    }
+
+    public partial class AsyncTriggerHandler<T> : <#= ToInterfaceName(t.methodName) #>
+    {
+        <#= ToUniTaskName(t.returnType) #> <#= ToInterfaceName(t.methodName) #>.<#= t.methodName #>Async()
+        {
+            core.Reset();
+            return new <#= ToUniTaskName(t.returnType) #>((<#= ToCastUniTasSourceType(t.returnType) #>)(object)this, core.Version);
+        }
+    }
+
+    public static partial class AsyncTriggerExtensions
+    {
+        public static Async<#= t.triggerName #>Trigger GetAsync<#= t.triggerName #>Trigger(this GameObject gameObject)
+        {
+            return GetOrAddComponent<Async<#= t.triggerName #>Trigger>(gameObject);
+        }
+        
+        public static Async<#= t.triggerName #>Trigger GetAsync<#= t.triggerName #>Trigger(this Component component)
+        {
+            return component.gameObject.GetAsync<#= t.triggerName #>Trigger();
+        }
+    }
+
+    [DisallowMultipleComponent]
+    public sealed class Async<#= t.triggerName #>Trigger : AsyncTriggerBase<<#= t.returnType #>><#= (t.handlerInterface == null) ? "" : $", {t.handlerInterface}" #>
+    {
+        void <#= (t.handlerInterface == null) ? "" : $"{t.handlerInterface}." #><#= t.methodName #>(<#= BuildMethodArgument(t.arguments) #>)
+        {
+            RaiseEvent(<#= BuildResultParameter(t.arguments) #>);
+        }
+
+        public <#= ToInterfaceName(t.methodName) #> Get<#= t.methodName #>AsyncHandler()
+        {
+            return new AsyncTriggerHandler<<#= t.returnType #>>(this, false);
+        }
+
+        public <#= ToInterfaceName(t.methodName) #> Get<#= t.methodName #>AsyncHandler(CancellationToken cancellationToken)
+        {
+            return new AsyncTriggerHandler<<#= t.returnType #>>(this, cancellationToken, false);
+        }
+
+        public <#= ToUniTaskName(t.returnType) #> <#= t.methodName #>Async()
+        {
+            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(this, true)).<#= t.methodName #>Async();
+        }
+
+        public <#= ToUniTaskName(t.returnType) #> <#= t.methodName #>Async(CancellationToken cancellationToken)
+        {
+            return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(this, cancellationToken, true)).<#= t.methodName #>Async();
+        }
+    }
+<# if(Is2019_3(t.triggerName)) { #>
+#endif
+<# } #>
+#endregion
+
+<# } #>
+}

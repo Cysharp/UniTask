@@ -1,0 +1,33 @@
+{
+    "name": "UniTask",
+    "references": [
+        "Unity.ResourceManager",
+        "Unity.TextMeshPro",
+        "DOTween.Modules"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.addressables",
+            "expression": "",
+            "define": "UNITASK_ADDRESSABLE_SUPPORT"
+        },
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "",
+            "define": "UNITASK_TEXTMESHPRO_SUPPORT"
+        },
+        {
+            "name": "com.demigiant.dotween",
+            "expression": "",
+            "define": "UNITASK_DOTWEEN_SUPPORT"
+        }
+    ],
+    "noEngineReferences": false
+}

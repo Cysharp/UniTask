@@ -1,0 +1,73 @@
+name: Build-Debug
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "!*" # not a tag push
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  build-dotnet:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - run: dotnet test -c Debug ./src/UniTask.NetCoreTests/UniTask.NetCoreTests.csproj
+
+  build-unity:
+    strategy:
+      matrix:
+        unity: ['2019.3.9f1', '2020.1.0b5']
+        include:
+          - unity: 2019.3.9f1
+            license: UNITY_2019_3
+          - unity: 2020.1.0b5
+            license: UNITY_2020_1
+    runs-on: ubuntu-latest
+    container:
+      # with linux-il2cpp. image from https://hub.docker.com/r/gableroux/unity3d/tags
+      image: gableroux/unity3d:${{ matrix.unity }}-linux-il2cpp
+    steps:
+      - run: apt update && apt install git -y
+      - uses: actions/checkout@v2
+      # create unity activation file and store to artifacts.
+      - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -createManualActivationFile || exit 0
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Unity_v${{ matrix.unity }}.alf
+          path: ./Unity_v${{ matrix.unity }}.alf
+      # activate Unity from manual license file(ulf)
+      - run: echo -n "$UNITY_LICENSE" >> .Unity.ulf
+        env:
+          UNITY_LICENSE: ${{ secrets[matrix.license] }}
+      - name: Activate Unity, always returns a success. But if a subsequent run fails, the activation may have failed(if succeeded, shows `Next license update check is after` and not shows other message(like GUID != GUID). If fails not). In that case, upload the artifact's .alf file to https://license.unity3d.com/manual to get the .ulf file and set it to secrets.
+        run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile .Unity.ulf || exit 0
+
+      # Execute scripts: RuntimeUnitTestToolkit
+      - name: Build UnitTest(Linux64, mono)
+        run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend mono /BuildTarget StandaloneLinux64
+        working-directory: src/UniTask
+      - name: Execute UnitTest
+        run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_Mono2x/test
+
+      # Execute scripts: Export Package
+      - name: Export unitypackage
+        run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
+        working-directory: src/UniTask
+
+      # Store artifacts.      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: UniTask.unitypackage.zip
+          path: ./src/UniTask/*.unitypackage

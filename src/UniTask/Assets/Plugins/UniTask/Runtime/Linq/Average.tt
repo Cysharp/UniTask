@@ -1,0 +1,237 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var types = new[]
+    {
+        (typeof(int), "double"),
+        (typeof(long), "double"),
+        (typeof(float),"float"),
+        (typeof(double),"double"),
+        (typeof(decimal),"decimal"),
+        
+        (typeof(int?),"double?"),
+        (typeof(long?),"double?"),
+        (typeof(float?),"float?"),
+        (typeof(double?),"double?"),
+        (typeof(decimal?),"decimal?"),
+    };
+
+    Func<Type, bool> IsNullable = x => x.IsGenericType;
+    Func<Type, Type> ElementType = x => IsNullable(x) ? x.GetGenericArguments()[0] : x;
+    Func<Type, string> TypeName = x => IsNullable(x) ? x.GetGenericArguments()[0].Name + "?" : x.Name;
+    Func<Type, string> WithSuffix = x => IsNullable(x) ? ".GetValueOrDefault()" : "";
+    Func<Type, string> CalcResult = x => { var e = ElementType(x); return (e == typeof(int) || e == typeof(long)) ? "(double)sum / count" : (e == typeof(float)) ? "(float)(sum / count)" : "sum / count"; };
+#>
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks.Internal;
+
+namespace Cysharp.Threading.Tasks.Linq
+{
+    public static partial class UniTaskAsyncEnumerable
+    {
+<# foreach(var (t, ret) in types) { #>
+        public static UniTask<<#= ret #>> AverageAsync(this IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+
+            return Average.AverageAsync(source, cancellationToken);
+        }
+
+        public static UniTask<<#= ret #>> AverageAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return Average.AverageAsync(source, selector, cancellationToken);
+        }
+
+        public static UniTask<<#= ret #>> AverageAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return Average.AverageAwaitAsync(source, selector, cancellationToken);
+        }
+
+        public static UniTask<<#= ret #>> AverageAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(source, nameof(source));
+            Error.ThrowArgumentNullException(source, nameof(selector));
+
+            return Average.AverageAwaitWithCancellationAsync(source, selector, cancellationToken);
+        }
+
+<# } #>
+    }
+
+    internal static class Average
+    {
+<# foreach(var (t, ret) in types) { #>
+        public static async UniTask<<#= ret #>> AverageAsync(IUniTaskAsyncEnumerable<<#= TypeName(t) #>> source, CancellationToken cancellationToken)
+        {
+            long count = 0;
+            <#= TypeName(t) #> sum = 0;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+<# if (IsNullable(t)) { #>
+                    var v = e.Current;
+                    if (v.HasValue)
+                    {
+                        checked    
+                        {
+                            sum += v.Value;
+                            count++;
+                        }
+                    }
+<# } else { #>
+                    checked
+                    {
+                        sum += e.Current;
+                        count++;
+                    }
+<# } #>
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return <#= CalcResult(t) #>;
+        }
+
+        public static async UniTask<<#= ret #>> AverageAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, <#= TypeName(t) #>> selector, CancellationToken cancellationToken)
+        {
+            long count = 0;
+            <#= TypeName(t) #> sum = 0;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+<# if (IsNullable(t)) { #>
+                    var v = selector(e.Current);
+                    if (v.HasValue)
+                    {
+                        checked    
+                        {
+                            sum += v.Value;
+                            count++;
+                        }
+                    }
+<# } else { #>
+                    checked
+                    {
+                        sum += selector(e.Current);
+                        count++;
+                    }
+<# } #>
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return <#= CalcResult(t) #>;
+        }
+
+        public static async UniTask<<#= ret #>> AverageAwaitAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        {
+            long count = 0;
+            <#= TypeName(t) #> sum = 0;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+<# if (IsNullable(t)) { #>
+                    var v = await selector(e.Current);
+                    if (v.HasValue)
+                    {
+                        checked    
+                        {
+                            sum += v.Value;
+                            count++;
+                        }
+                    }
+<# } else { #>
+                    checked
+                    {
+                        sum += await selector(e.Current);
+                        count++;
+                    }
+<# } #>
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return <#= CalcResult(t) #>;
+        }
+
+        public static async UniTask<<#= ret #>> AverageAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<<#= TypeName(t) #>>> selector, CancellationToken cancellationToken)
+        {
+            long count = 0;
+            <#= TypeName(t) #> sum = 0;
+
+            var e = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (await e.MoveNextAsync())
+                {
+<# if (IsNullable(t)) { #>
+                    var v = await selector(e.Current, cancellationToken);
+                    if (v.HasValue)
+                    {
+                        checked    
+                        {
+                            sum += v.Value;
+                            count++;
+                        }
+                    }
+<# } else { #>
+                    checked
+                    {
+                        sum += await selector(e.Current, cancellationToken);
+                        count++;
+                    }
+<# } #>
+                }
+            }
+            finally
+            {
+                if (e != null)
+                {
+                    await e.DisposeAsync();
+                }
+            }
+
+            return <#= CalcResult(t) #>;
+        }
+
+<# } #>
+    }
+}

@@ -1,0 +1,15 @@
+name: TOC Generator
+
+on:
+  push:
+    paths:
+      - 'README.md'
+
+jobs:
+  generateTOC:
+    name: TOC Generator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/toc-generator@v2.4.0
+        with:
+          TOC_TITLE: "## Table of Contents"

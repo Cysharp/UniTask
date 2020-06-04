@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;netstandard2.1</TargetFrameworks>
+        <AssemblyName>UniTask</AssemblyName>
+        <LangVersion>8.0</LangVersion>
+        <RootNamespace>Cysharp.Threading.Tasks</RootNamespace>
+
+        <!-- NuGet Packaging -->
+        <Id>UniTask</Id>
+        <PackageVersion>$(Version)</PackageVersion>
+        <Company>Cysharp</Company>
+        <Authors>Cysharp</Authors>
+        <Copyright>© Cysharp, Inc.</Copyright>
+        <PackageTags>task;async</PackageTags>
+        <Description>Provides an efficient async/await integration to Unity and .NET Core.</Description>
+        <PackageProjectUrl>https://github.com/Cysharp/UniTask</PackageProjectUrl>
+        <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>Icon.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="Icon.png" Pack="true" PackagePath="/" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\UniTask\Assets\Plugins\UniTask\Runtime\**\*.cs"
+                 Exclude="
+..\UniTask\Assets\Plugins\UniTask\Editor\*.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Triggers\*.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Linq\UnityExtensions\*.cs;
+  
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\UnityEqualityComparer.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\DiagnosticsExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\PlayerLoopRunner.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\ContinuationQueue.cs;
+  
+..\UniTask\Assets\Plugins\UniTask\Runtime\CancellationTokenSourceExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\EnumeratorAsyncExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\PlayerLoopHelper.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Delay.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Run.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Bridge.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.WaitUntil.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.uGUI.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.MonoBehaviour.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UnityBindingExtensions.cs;
+" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    </ItemGroup>
+
+</Project>

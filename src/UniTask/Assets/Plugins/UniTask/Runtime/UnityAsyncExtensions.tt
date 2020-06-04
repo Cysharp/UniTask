@@ -1,0 +1,236 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var types = new (string typeName, string returnType, string returnField)[]
+    {
+        ("AsyncOperation", "void", null),
+        ("ResourceRequest", "UnityEngine.Object", "asset"),
+        ("AssetBundleRequest", "UnityEngine.Object", "asset"), // allAssets?
+        ("AssetBundleCreateRequest", "AssetBundle", "assetBundle"),
+        ("UnityWebRequestAsyncOperation", "UnityWebRequest", "webRequest") // -> #if ENABLE_UNITYWEBREQUEST
+    };
+
+    Func<string, string> ToUniTaskReturnType = x => (x == "void") ? "UniTask" : $"UniTask<{x}>";
+    Func<string, string> ToIUniTaskSourceReturnType = x => (x == "void") ? "IUniTaskSource" : $"IUniTaskSource<{x}>";
+    Func<(string typeName, string returnType, string returnField), bool> IsVoid = x => x.returnType == "void";
+#>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using UnityEngine;
+using Cysharp.Threading.Tasks.Internal;
+#if ENABLE_UNITYWEBREQUEST
+using UnityEngine.Networking;
+#endif
+
+namespace Cysharp.Threading.Tasks
+{
+    public static partial class UnityAsyncExtensions
+    {
+<# foreach(var t in types) { #>
+<# if(t.returnType == "UnityWebRequest") { #>
+#if ENABLE_UNITYWEBREQUEST
+<# } #>
+#region <#= t.typeName #>
+
+        public static <#= t.typeName #>Awaiter GetAwaiter(this <#= t.typeName #> asyncOperation)
+        {
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            return new <#= t.typeName #>Awaiter(asyncOperation);
+        }
+
+        public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation)
+        {
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+
+            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, PlayerLoopTiming.Update, null, CancellationToken.None, out var token), token);
+        }
+
+        public static <#= ToUniTaskReturnType(t.returnType) #> ConfigureAwait(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        {
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+
+            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, timing, progress, cancellation, out var token), token);
+        }
+
+        public struct <#= t.typeName #>Awaiter : ICriticalNotifyCompletion
+        {
+            <#= t.typeName #> asyncOperation;
+            Action<AsyncOperation> continuationAction;
+
+            public <#= t.typeName #>Awaiter(<#= t.typeName #> asyncOperation)
+            {
+                this.asyncOperation = asyncOperation;
+                this.continuationAction = null;
+            }
+
+            public bool IsCompleted => asyncOperation.isDone;
+
+            public <#= t.returnType #> GetResult()
+            {
+                if (continuationAction != null)
+                {
+                    asyncOperation.completed -= continuationAction;
+                    continuationAction = null;
+<# if (!IsVoid(t)) { #>
+                    var result = <#= $"asyncOperation.{t.returnField}" #>;
+                    asyncOperation = null;
+                    return result;
+<# } else { #>
+                    asyncOperation = null;
+<# } #>
+                }
+                else
+                {
+<# if (!IsVoid(t)) { #>
+                    var result = <#= $"asyncOperation.{t.returnField}" #>;
+                    asyncOperation = null;
+                    return result;
+<# } else { #>
+                    asyncOperation = null;
+<# } #>
+                }
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                UnsafeOnCompleted(continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
+                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
+                asyncOperation.completed += continuationAction;
+            }
+        }
+
+        class <#= t.typeName #>ConfiguredSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, IPlayerLoopItem, IPromisePoolItem
+        {
+            static readonly PromisePool<<#= t.typeName #>ConfiguredSource> pool = new PromisePool<<#= t.typeName #>ConfiguredSource>();
+
+            <#= t.typeName #> asyncOperation;
+            IProgress<float> progress;
+            CancellationToken cancellationToken;
+
+            UniTaskCompletionSourceCore<<#= IsVoid(t) ? "AsyncUnit" : t.returnType #>> core;
+
+            <#= t.typeName #>ConfiguredSource()
+            {
+
+            }
+
+            public static <#= ToIUniTaskSourceReturnType(t.returnType) #> Create(<#= t.typeName #> asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource<#= IsVoid(t) ? "" : $"<{t.returnType}>" #>.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                var result = pool.TryRent() ?? new <#= t.typeName #>ConfiguredSource();
+
+                result.asyncOperation = asyncOperation;
+                result.progress = progress;
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public <#= t.returnType #> GetResult(short token)
+            {
+                try
+                {
+                    TaskTracker.RemoveTracking(this);
+                    
+<# if (!IsVoid(t)) { #>
+                    return core.GetResult(token);
+<# } else { #>
+                    core.GetResult(token);
+<# } #>
+                }
+                finally
+                {
+                    pool.TryReturn(this);
+                }
+            }
+
+<# if (!IsVoid(t)) { #>
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+<# } #>
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
+                    return false;
+                }
+
+                if (progress != null)
+                {
+                    progress.Report(asyncOperation.progress);
+                }
+
+                if (asyncOperation.isDone)
+                {
+                    core.TrySetResult(<#= IsVoid(t) ? "AsyncUnit.Default" : $"asyncOperation.{t.returnField}" #>);
+                    return false;
+                }
+
+                return true;
+            }
+
+            public void Reset()
+            {
+                core.Reset();
+                asyncOperation = default;
+                progress = default;
+                cancellationToken = default;
+            }
+
+            ~<#= t.typeName #>ConfiguredSource()
+            {
+                if (pool.TryReturn(this))
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
+            }
+        }
+
+# endregion
+<# if(t.returnType == "UnityWebRequest") { #>
+#endif
+<# } #>
+
+<# } #>
+    }
+}
