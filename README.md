@@ -6,7 +6,7 @@ Provides an efficient async/await integration to Unity.
 
 * Struct based `UniTask<T>` and custom AsyncMethodBuilder to achive zero allocation
 * All Unity AsyncOperations and Coroutine to awaitable
-* PlayerLoop based task(`UniTask.Yield`, `UniTask.Delay`, `UniTask.DelayFrame`, etc...) that enable to replace all coroutine operation
+* PlayerLoop based task(`UniTask.Yield`, `UniTask.Delay`, `UniTask.DelayFrame`, etc..) that enable to replace all coroutine operation
 * MonoBehaviour Message Events and uGUI Events as awaitable/async-enumerable
 * Completely run on Unity's PlayerLoop so don't use thread and run on WebGL, wasm, etc.
 * Asynchronous LINQ, with Channel and AsyncReactiveProperty
