@@ -204,7 +204,7 @@ namespace Cysharp.Threading.Tasks
                 if (f == null) throw new InvalidOperationException("Can't call twice.");
 
                 task = f();
-                awaiter = f().GetAwaiter();
+                awaiter = task.GetAwaiter();
                 return task.Status;
             }
 
@@ -246,7 +246,7 @@ namespace Cysharp.Threading.Tasks
                 if (f == null) throw new InvalidOperationException("Can't call twice.");
 
                 task = f();
-                awaiter = f().GetAwaiter();
+                awaiter = task.GetAwaiter();
                 return task.Status;
             }
 
