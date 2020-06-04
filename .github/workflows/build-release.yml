@@ -7,29 +7,29 @@ on:
 
 jobs:
   build-dotnet:
-  runs-on: ubuntu-latest
-  env:
-    DOTNET_CLI_TELEMETRY_OPTOUT: 1
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-    NUGET_XMLDOC_MODE: skip
-  steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-    # set release tag(*.*.*) to env.GIT_TAG
-    - run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      # set release tag(*.*.*) to env.GIT_TAG
+      - run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
 
-    # build and pack
-    - run: dotnet build -c Release -p:Version=${{ env.GIT_TAG }}
-    - run: dotnet test -c Release --no-build
-    - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ env.GIT_TAG }}
+      # build and pack
+      - run: dotnet build -c Release -p:Version=${{ env.GIT_TAG }}
+      - run: dotnet test -c Release --no-build
+      - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ env.GIT_TAG }}
 
-    # Store artifacts.
-    - uses: actions/upload-artifact@v1
-      with:
-        name: nuget
-        path: ./src/UniTask.NetCore/bin/Release/UniTask.${{ env.GIT_TAG }}.nupkg
+      # Store artifacts.
+      - uses: actions/upload-artifact@v1
+        with:
+          name: nuget
+          path: ./src/UniTask.NetCore/bin/Release/UniTask.${{ env.GIT_TAG }}.nupkg
 
   build-unity:
     strategy:
