@@ -1,6 +1,8 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using Cysharp.Threading.Tasks.Internal;
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks
@@ -102,8 +104,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         /// <summary>
-        /// helper of create add UniTaskVoid to delegate.
-        /// For example: FooEvent += () => UniTask.Void(async () => { /* */ })
+        /// helper of fire and forget void action.
         /// </summary>
         public static void Void(Func<UniTaskVoid> asyncAction)
         {
@@ -111,7 +112,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         /// <summary>
-        /// helper of create add UniTaskVoid to delegate.
+        /// helper of fire and forget void action.
         /// </summary>
         public static void Void(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
         {
@@ -119,8 +120,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         /// <summary>
-        /// helper of create add UniTaskVoid to delegate.
-        /// For example: FooEvent += (sender, e) => UniTask.Void(async arg => { /* */ }, (sender, e))
+        /// helper of fire and forget void action.
         /// </summary>
         public static void Void<T>(Func<T, UniTaskVoid> asyncAction, T state)
         {
@@ -133,7 +133,7 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static Action Action(Func<UniTaskVoid> asyncAction)
         {
-            return () => asyncAction().Forget();
+            return AsyncAction.Create(asyncAction);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static Action Action(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
         {
-            return () => asyncAction(cancellationToken).Forget();
+            return AsyncActionWithCancellation.Create(asyncAction, cancellationToken);
         }
 
 #if UNITY_2018_3_OR_NEWER
@@ -152,7 +152,7 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static UnityEngine.Events.UnityAction UnityAction(Func<UniTaskVoid> asyncAction)
         {
-            return () => asyncAction().Forget();
+            return AsyncUnityAction.Create(asyncAction);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static UnityEngine.Events.UnityAction UnityAction(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
         {
-            return () => asyncAction(cancellationToken).Forget();
+            return AsyncUnityActionWithCancellation.Create(asyncAction, cancellationToken);
         }
 
 #endif
@@ -260,6 +260,194 @@ namespace Cysharp.Threading.Tasks
                 return task.Status;
             }
         }
+
+        sealed class AsyncAction : ITaskPoolNode<AsyncAction>
+        {
+            static TaskPool<AsyncAction> pool;
+
+            public AsyncAction NextNode { get; set; }
+
+            static AsyncAction()
+            {
+                TaskPool.RegisterSizeGetter(typeof(AsyncAction), () => pool.Size);
+            }
+
+            readonly Action runDelegate;
+            Func<UniTaskVoid> voidAction;
+
+            AsyncAction()
+            {
+                runDelegate = Run;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static Action Create(Func<UniTaskVoid> voidAction)
+            {
+                if (!pool.TryPop(out var item))
+                {
+                    item = new AsyncAction();
+                }
+
+                item.voidAction = voidAction;
+                return item.runDelegate;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            void Run()
+            {
+                var call = voidAction;
+                voidAction = null;
+                if (call != null)
+                {
+                    pool.TryPush(this);
+                    call.Invoke();
+                }
+            }
+        }
+
+        sealed class AsyncActionWithCancellation : ITaskPoolNode<AsyncActionWithCancellation>
+        {
+            static TaskPool<AsyncActionWithCancellation> pool;
+
+            public AsyncActionWithCancellation NextNode { get; set; }
+
+            static AsyncActionWithCancellation()
+            {
+                TaskPool.RegisterSizeGetter(typeof(AsyncActionWithCancellation), () => pool.Size);
+            }
+
+            readonly Action runDelegate;
+            CancellationToken cancellationToken;
+            Func<CancellationToken, UniTaskVoid> voidAction;
+
+            AsyncActionWithCancellation()
+            {
+                runDelegate = Run;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static Action Create(Func<CancellationToken, UniTaskVoid> voidAction, CancellationToken cancellationToken)
+            {
+                if (!pool.TryPop(out var item))
+                {
+                    item = new AsyncActionWithCancellation();
+                }
+
+                item.voidAction = voidAction;
+                item.cancellationToken = cancellationToken;
+                return item.runDelegate;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            void Run()
+            {
+                var call = voidAction;
+                var ct = cancellationToken;
+                voidAction = null;
+                cancellationToken = default;
+                if (call != null)
+                {
+                    pool.TryPush(this);
+                    call.Invoke(ct);
+                }
+            }
+        }
+
+#if UNITY_2018_3_OR_NEWER
+
+        sealed class AsyncUnityAction : ITaskPoolNode<AsyncUnityAction>
+        {
+            static TaskPool<AsyncUnityAction> pool;
+
+            public AsyncUnityAction NextNode { get; set; }
+
+            static AsyncUnityAction()
+            {
+                TaskPool.RegisterSizeGetter(typeof(AsyncUnityAction), () => pool.Size);
+            }
+
+            readonly UnityEngine.Events.UnityAction runDelegate;
+            Func<UniTaskVoid> voidAction;
+
+            AsyncUnityAction()
+            {
+                runDelegate = Run;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static UnityEngine.Events.UnityAction Create(Func<UniTaskVoid> voidAction)
+            {
+                if (!pool.TryPop(out var item))
+                {
+                    item = new AsyncUnityAction();
+                }
+
+                item.voidAction = voidAction;
+                return item.runDelegate;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            void Run()
+            {
+                var call = voidAction;
+                voidAction = null;
+                if (call != null)
+                {
+                    pool.TryPush(this);
+                    call.Invoke();
+                }
+            }
+        }
+
+        sealed class AsyncUnityActionWithCancellation : ITaskPoolNode<AsyncUnityActionWithCancellation>
+        {
+            static TaskPool<AsyncUnityActionWithCancellation> pool;
+
+            public AsyncUnityActionWithCancellation NextNode { get; set; }
+
+            static AsyncUnityActionWithCancellation()
+            {
+                TaskPool.RegisterSizeGetter(typeof(AsyncUnityActionWithCancellation), () => pool.Size);
+            }
+
+            readonly UnityEngine.Events.UnityAction runDelegate;
+            CancellationToken cancellationToken;
+            Func<CancellationToken, UniTaskVoid> voidAction;
+
+            AsyncUnityActionWithCancellation()
+            {
+                runDelegate = Run;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static UnityEngine.Events.UnityAction Create(Func<CancellationToken, UniTaskVoid> voidAction, CancellationToken cancellationToken)
+            {
+                if (!pool.TryPop(out var item))
+                {
+                    item = new AsyncUnityActionWithCancellation();
+                }
+
+                item.voidAction = voidAction;
+                item.cancellationToken = cancellationToken;
+                return item.runDelegate;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            void Run()
+            {
+                var call = voidAction;
+                var ct = cancellationToken;
+                voidAction = null;
+                cancellationToken = default;
+                if (call != null)
+                {
+                    pool.TryPush(this);
+                    call.Invoke(ct);
+                }
+            }
+        }
+
+#endif
     }
 
     internal static class CompletedTasks

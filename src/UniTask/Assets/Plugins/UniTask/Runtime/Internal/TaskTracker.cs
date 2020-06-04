@@ -71,9 +71,19 @@ namespace Cysharp.Threading.Tasks
             dirty = true;
             if (!EditorEnableState.EnableTracking) return;
             var stackTrace = EditorEnableState.EnableStackTrace ? new StackTrace(skipFrame, true).CleanupAsyncStackTrace() : "";
-            var sb = new StringBuilder();
-            TypeBeautify(task.GetType(), sb);
-            tracking.TryAdd(task, (sb.ToString(), Interlocked.Increment(ref trackingId), DateTime.UtcNow, stackTrace));
+
+            string typeName;
+            if (EditorEnableState.EnableStackTrace)
+            {
+                var sb = new StringBuilder();
+                TypeBeautify(task.GetType(), sb);
+                typeName = sb.ToString();
+            }
+            else
+            {
+                typeName = task.GetType().Name;
+            }
+            tracking.TryAdd(task, (typeName, Interlocked.Increment(ref trackingId), DateTime.UtcNow, stackTrace));
 #endif
         }
 

@@ -295,6 +295,12 @@ public class SandboxMain : MonoBehaviour
         return req;
     }
 
+    async Task<int> Test()
+    {
+        await Task.Yield();
+        return 10;
+    }
+
 
     async UniTaskVoid Start()
     {
@@ -323,13 +329,15 @@ public class SandboxMain : MonoBehaviour
         //await okButton.GetComponent<RectTransform>().DOMoveY(10.2f, 3).WithCancellation(CancellationToken.None);
         //Debug.Log("AGAIN END MOVE");
 
+        Debug.Log(Test().GetType().FullName);
+
 
 
         // check stacktrace
-        await UniTaskAsyncEnumerable.EveryUpdate().Where((x, i) => i % 2 == 0).Select(x => x).DistinctUntilChanged().ForEachAsync(x =>
-        {
-            Debug.Log("test");
-        });
+        // await UniTaskAsyncEnumerable.EveryUpdate().Where((x, i) => i % 2 == 0).Select(x => x).DistinctUntilChanged().ForEachAsync(x =>
+        //{
+        // Debug.Log("test");
+        //});
 
 
 
