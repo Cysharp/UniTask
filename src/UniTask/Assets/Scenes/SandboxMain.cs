@@ -389,6 +389,11 @@ public class SandboxMain : MonoBehaviour
             Debug.Log("Yeha");
         }));
 
+        foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
+        {
+            Debug.Log(type + ":" + size);
+        }
+
 
         //}).Forget();
 

@@ -324,6 +324,10 @@ It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.
 
 `PlayerLoopTiming.FixedUpdate` is similar as `WaitForFixedUpdate`, `PlayerLoopTiming.LastPostLateUpdate` is similar as `WaitForEndOfFrame` in coroutine.
 
+In stacktrace, you can check where is running in playerloop.
+
+![image](https://user-images.githubusercontent.com/46207/83735571-83caea80-a68b-11ea-8d22-5e22864f0d24.png)
+
 In default, UniTask's PlayerLoop is initialized at `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`.
 
 The order in which methods are called in BeforeSceneLoad is indeterminate, so if you want to use UniTask in other BeforeSceneLoad methods, you should try to initialize it before this.
@@ -413,7 +417,7 @@ For debug use, enable tracking and capture stacktrace is useful but it it declin
 
 External Assets
 ---
-In default, UniTask supports DOTween and Addressable(`AsyncOperationHandle` and `AsyncOpereationHandle<T>` as awaitable).
+In default, UniTask supports DOTween and Addressables(`AsyncOperationHandle` and `AsyncOpereationHandle<T>` as awaitable).
 
 For DOTween support, require to `com.demigiant.dotween` import from [OpenUPM](https://openupm.com/packages/com.demigiant.dotween/) or define `UNITASK_DOTWEEN_SUPPORT` to enable it.
 
@@ -648,6 +652,17 @@ public IEnumerator DelayIgnore() => UniTask.ToCoroutine(async () =>
 ```
 
 UniTask itself's unit test is written by Unity Test Runner and [Cysharp/RuntimeUnitTestToolkit](https://github.com/Cysharp/RuntimeUnitTestToolkit) to check on CI and IL2CPP working.
+
+Pooling Configuration
+---
+UniTask is aggressively caching async promise object to achive zero allocation. In default, cache all promises but you can configure `TaskPool.SetMaxPoolSize` to your value, the value indicates cache size per type. `TaskPool.GetCacheSizeInfo` returns current cached object in pool.
+
+```csharp
+foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
+{
+    Debug.Log(type + ":" + size);
+}
+```
 
 API References
 ---
