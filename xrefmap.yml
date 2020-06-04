@@ -2272,147 +2272,6 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.IConnectableUniTaskAsyncEnumerable(Of T).Connect
   nameWithType: IConnectableUniTaskAsyncEnumerable<T>.Connect
   nameWithType.vb: IConnectableUniTaskAsyncEnumerable(Of T).Connect
-- uid: Cysharp.Threading.Tasks.Internal
-  name: Cysharp.Threading.Tasks.Internal
-  href: api/Cysharp.Threading.Tasks.Internal.html
-  commentId: N:Cysharp.Threading.Tasks.Internal
-  fullName: Cysharp.Threading.Tasks.Internal
-  nameWithType: Cysharp.Threading.Tasks.Internal
-- uid: Cysharp.Threading.Tasks.Internal.ITaskPoolNode`1
-  name: ITaskPoolNode<T>
-  href: api/Cysharp.Threading.Tasks.Internal.ITaskPoolNode-1.html
-  commentId: T:Cysharp.Threading.Tasks.Internal.ITaskPoolNode`1
-  name.vb: ITaskPoolNode(Of T)
-  fullName: Cysharp.Threading.Tasks.Internal.ITaskPoolNode<T>
-  fullName.vb: Cysharp.Threading.Tasks.Internal.ITaskPoolNode(Of T)
-  nameWithType: ITaskPoolNode<T>
-  nameWithType.vb: ITaskPoolNode(Of T)
-- uid: Cysharp.Threading.Tasks.Internal.ITaskPoolNode`1.NextNode
-  name: NextNode
-  href: api/Cysharp.Threading.Tasks.Internal.ITaskPoolNode-1.html#Cysharp_Threading_Tasks_Internal_ITaskPoolNode_1_NextNode
-  commentId: P:Cysharp.Threading.Tasks.Internal.ITaskPoolNode`1.NextNode
-  fullName: Cysharp.Threading.Tasks.Internal.ITaskPoolNode<T>.NextNode
-  fullName.vb: Cysharp.Threading.Tasks.Internal.ITaskPoolNode(Of T).NextNode
-  nameWithType: ITaskPoolNode<T>.NextNode
-  nameWithType.vb: ITaskPoolNode(Of T).NextNode
-- uid: Cysharp.Threading.Tasks.Internal.ITaskPoolNode`1.NextNode*
-  name: NextNode
-  href: api/Cysharp.Threading.Tasks.Internal.ITaskPoolNode-1.html#Cysharp_Threading_Tasks_Internal_ITaskPoolNode_1_NextNode_
-  commentId: Overload:Cysharp.Threading.Tasks.Internal.ITaskPoolNode`1.NextNode
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.Internal.ITaskPoolNode<T>.NextNode
-  fullName.vb: Cysharp.Threading.Tasks.Internal.ITaskPoolNode(Of T).NextNode
-  nameWithType: ITaskPoolNode<T>.NextNode
-  nameWithType.vb: ITaskPoolNode(Of T).NextNode
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool
-  name: TaskPool
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool.html
-  commentId: T:Cysharp.Threading.Tasks.Internal.TaskPool
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool
-  nameWithType: TaskPool
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo
-  name: GetCacheSizeInfo()
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool.html#Cysharp_Threading_Tasks_Internal_TaskPool_GetCacheSizeInfo
-  commentId: M:Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo()
-  nameWithType: TaskPool.GetCacheSizeInfo()
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo*
-  name: GetCacheSizeInfo
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool.html#Cysharp_Threading_Tasks_Internal_TaskPool_GetCacheSizeInfo_
-  commentId: Overload:Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo
-  nameWithType: TaskPool.GetCacheSizeInfo
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool.RegisterSizeGetter(System.Type,System.Func{System.Int32})
-  name: RegisterSizeGetter(Type, Func<Int32>)
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool.html#Cysharp_Threading_Tasks_Internal_TaskPool_RegisterSizeGetter_System_Type_System_Func_System_Int32__
-  commentId: M:Cysharp.Threading.Tasks.Internal.TaskPool.RegisterSizeGetter(System.Type,System.Func{System.Int32})
-  name.vb: RegisterSizeGetter(Type, Func(Of Int32))
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool.RegisterSizeGetter(System.Type, System.Func<System.Int32>)
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool.RegisterSizeGetter(System.Type, System.Func(Of System.Int32))
-  nameWithType: TaskPool.RegisterSizeGetter(Type, Func<Int32>)
-  nameWithType.vb: TaskPool.RegisterSizeGetter(Type, Func(Of Int32))
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool.RegisterSizeGetter*
-  name: RegisterSizeGetter
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool.html#Cysharp_Threading_Tasks_Internal_TaskPool_RegisterSizeGetter_
-  commentId: Overload:Cysharp.Threading.Tasks.Internal.TaskPool.RegisterSizeGetter
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool.RegisterSizeGetter
-  nameWithType: TaskPool.RegisterSizeGetter
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool.SetMaxPoolSize(System.Int32)
-  name: SetMaxPoolSize(Int32)
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool.html#Cysharp_Threading_Tasks_Internal_TaskPool_SetMaxPoolSize_System_Int32_
-  commentId: M:Cysharp.Threading.Tasks.Internal.TaskPool.SetMaxPoolSize(System.Int32)
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool.SetMaxPoolSize(System.Int32)
-  nameWithType: TaskPool.SetMaxPoolSize(Int32)
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool.SetMaxPoolSize*
-  name: SetMaxPoolSize
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool.html#Cysharp_Threading_Tasks_Internal_TaskPool_SetMaxPoolSize_
-  commentId: Overload:Cysharp.Threading.Tasks.Internal.TaskPool.SetMaxPoolSize
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool.SetMaxPoolSize
-  nameWithType: TaskPool.SetMaxPoolSize
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool`1
-  name: TaskPool<T>
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool-1.html
-  commentId: T:Cysharp.Threading.Tasks.Internal.TaskPool`1
-  name.vb: TaskPool(Of T)
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool<T>
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool(Of T)
-  nameWithType: TaskPool<T>
-  nameWithType.vb: TaskPool(Of T)
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool`1.Size
-  name: Size
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool-1.html#Cysharp_Threading_Tasks_Internal_TaskPool_1_Size
-  commentId: P:Cysharp.Threading.Tasks.Internal.TaskPool`1.Size
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool<T>.Size
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool(Of T).Size
-  nameWithType: TaskPool<T>.Size
-  nameWithType.vb: TaskPool(Of T).Size
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool`1.Size*
-  name: Size
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool-1.html#Cysharp_Threading_Tasks_Internal_TaskPool_1_Size_
-  commentId: Overload:Cysharp.Threading.Tasks.Internal.TaskPool`1.Size
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool<T>.Size
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool(Of T).Size
-  nameWithType: TaskPool<T>.Size
-  nameWithType.vb: TaskPool(Of T).Size
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPop(`0@)
-  name: TryPop(out T)
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool-1.html#Cysharp_Threading_Tasks_Internal_TaskPool_1_TryPop__0__
-  commentId: M:Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPop(`0@)
-  name.vb: TryPop(ByRef T)
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool<T>.TryPop(out T)
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool(Of T).TryPop(ByRef T)
-  nameWithType: TaskPool<T>.TryPop(out T)
-  nameWithType.vb: TaskPool(Of T).TryPop(ByRef T)
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPop*
-  name: TryPop
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool-1.html#Cysharp_Threading_Tasks_Internal_TaskPool_1_TryPop_
-  commentId: Overload:Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPop
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool<T>.TryPop
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool(Of T).TryPop
-  nameWithType: TaskPool<T>.TryPop
-  nameWithType.vb: TaskPool(Of T).TryPop
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPush(`0)
-  name: TryPush(T)
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool-1.html#Cysharp_Threading_Tasks_Internal_TaskPool_1_TryPush__0_
-  commentId: M:Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPush(`0)
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool<T>.TryPush(T)
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool(Of T).TryPush(T)
-  nameWithType: TaskPool<T>.TryPush(T)
-  nameWithType.vb: TaskPool(Of T).TryPush(T)
-- uid: Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPush*
-  name: TryPush
-  href: api/Cysharp.Threading.Tasks.Internal.TaskPool-1.html#Cysharp_Threading_Tasks_Internal_TaskPool_1_TryPush_
-  commentId: Overload:Cysharp.Threading.Tasks.Internal.TaskPool`1.TryPush
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.Internal.TaskPool<T>.TryPush
-  fullName.vb: Cysharp.Threading.Tasks.Internal.TaskPool(Of T).TryPush
-  nameWithType: TaskPool<T>.TryPush
-  nameWithType.vb: TaskPool(Of T).TryPush
 - uid: Cysharp.Threading.Tasks.IPlayerLoopItem
   name: IPlayerLoopItem
   href: api/Cysharp.Threading.Tasks.IPlayerLoopItem.html
@@ -2554,6 +2413,32 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.IResolvePromise(Of T).TrySetResult
   nameWithType: IResolvePromise<T>.TrySetResult
   nameWithType.vb: IResolvePromise(Of T).TrySetResult
+- uid: Cysharp.Threading.Tasks.ITaskPoolNode`1
+  name: ITaskPoolNode<T>
+  href: api/Cysharp.Threading.Tasks.ITaskPoolNode-1.html
+  commentId: T:Cysharp.Threading.Tasks.ITaskPoolNode`1
+  name.vb: ITaskPoolNode(Of T)
+  fullName: Cysharp.Threading.Tasks.ITaskPoolNode<T>
+  fullName.vb: Cysharp.Threading.Tasks.ITaskPoolNode(Of T)
+  nameWithType: ITaskPoolNode<T>
+  nameWithType.vb: ITaskPoolNode(Of T)
+- uid: Cysharp.Threading.Tasks.ITaskPoolNode`1.NextNode
+  name: NextNode
+  href: api/Cysharp.Threading.Tasks.ITaskPoolNode-1.html#Cysharp_Threading_Tasks_ITaskPoolNode_1_NextNode
+  commentId: P:Cysharp.Threading.Tasks.ITaskPoolNode`1.NextNode
+  fullName: Cysharp.Threading.Tasks.ITaskPoolNode<T>.NextNode
+  fullName.vb: Cysharp.Threading.Tasks.ITaskPoolNode(Of T).NextNode
+  nameWithType: ITaskPoolNode<T>.NextNode
+  nameWithType.vb: ITaskPoolNode(Of T).NextNode
+- uid: Cysharp.Threading.Tasks.ITaskPoolNode`1.NextNode*
+  name: NextNode
+  href: api/Cysharp.Threading.Tasks.ITaskPoolNode-1.html#Cysharp_Threading_Tasks_ITaskPoolNode_1_NextNode_
+  commentId: Overload:Cysharp.Threading.Tasks.ITaskPoolNode`1.NextNode
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.ITaskPoolNode<T>.NextNode
+  fullName.vb: Cysharp.Threading.Tasks.ITaskPoolNode(Of T).NextNode
+  nameWithType: ITaskPoolNode<T>.NextNode
+  nameWithType.vb: ITaskPoolNode(Of T).NextNode
 - uid: Cysharp.Threading.Tasks.ITriggerHandler`1
   name: ITriggerHandler<T>
   href: api/Cysharp.Threading.Tasks.ITriggerHandler-1.html
@@ -8812,6 +8697,115 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.SwitchToThreadPoolAwaitable.GetAwaiter
   nameWithType: SwitchToThreadPoolAwaitable.GetAwaiter
+- uid: Cysharp.Threading.Tasks.TaskPool
+  name: TaskPool
+  href: api/Cysharp.Threading.Tasks.TaskPool.html
+  commentId: T:Cysharp.Threading.Tasks.TaskPool
+  fullName: Cysharp.Threading.Tasks.TaskPool
+  nameWithType: TaskPool
+- uid: Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo
+  name: GetCacheSizeInfo()
+  href: api/Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_GetCacheSizeInfo
+  commentId: M:Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo
+  fullName: Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo()
+  nameWithType: TaskPool.GetCacheSizeInfo()
+- uid: Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo*
+  name: GetCacheSizeInfo
+  href: api/Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_GetCacheSizeInfo_
+  commentId: Overload:Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo
+  nameWithType: TaskPool.GetCacheSizeInfo
+- uid: Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter(System.Type,System.Func{System.Int32})
+  name: RegisterSizeGetter(Type, Func<Int32>)
+  href: api/Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_RegisterSizeGetter_System_Type_System_Func_System_Int32__
+  commentId: M:Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter(System.Type,System.Func{System.Int32})
+  name.vb: RegisterSizeGetter(Type, Func(Of Int32))
+  fullName: Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter(System.Type, System.Func<System.Int32>)
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter(System.Type, System.Func(Of System.Int32))
+  nameWithType: TaskPool.RegisterSizeGetter(Type, Func<Int32>)
+  nameWithType.vb: TaskPool.RegisterSizeGetter(Type, Func(Of Int32))
+- uid: Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter*
+  name: RegisterSizeGetter
+  href: api/Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_RegisterSizeGetter_
+  commentId: Overload:Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter
+  nameWithType: TaskPool.RegisterSizeGetter
+- uid: Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize(System.Int32)
+  name: SetMaxPoolSize(Int32)
+  href: api/Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_SetMaxPoolSize_System_Int32_
+  commentId: M:Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize(System.Int32)
+  fullName: Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize(System.Int32)
+  nameWithType: TaskPool.SetMaxPoolSize(Int32)
+- uid: Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize*
+  name: SetMaxPoolSize
+  href: api/Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_SetMaxPoolSize_
+  commentId: Overload:Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize
+  nameWithType: TaskPool.SetMaxPoolSize
+- uid: Cysharp.Threading.Tasks.TaskPool`1
+  name: TaskPool<T>
+  href: api/Cysharp.Threading.Tasks.TaskPool-1.html
+  commentId: T:Cysharp.Threading.Tasks.TaskPool`1
+  name.vb: TaskPool(Of T)
+  fullName: Cysharp.Threading.Tasks.TaskPool<T>
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool(Of T)
+  nameWithType: TaskPool<T>
+  nameWithType.vb: TaskPool(Of T)
+- uid: Cysharp.Threading.Tasks.TaskPool`1.Size
+  name: Size
+  href: api/Cysharp.Threading.Tasks.TaskPool-1.html#Cysharp_Threading_Tasks_TaskPool_1_Size
+  commentId: P:Cysharp.Threading.Tasks.TaskPool`1.Size
+  fullName: Cysharp.Threading.Tasks.TaskPool<T>.Size
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool(Of T).Size
+  nameWithType: TaskPool<T>.Size
+  nameWithType.vb: TaskPool(Of T).Size
+- uid: Cysharp.Threading.Tasks.TaskPool`1.Size*
+  name: Size
+  href: api/Cysharp.Threading.Tasks.TaskPool-1.html#Cysharp_Threading_Tasks_TaskPool_1_Size_
+  commentId: Overload:Cysharp.Threading.Tasks.TaskPool`1.Size
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.TaskPool<T>.Size
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool(Of T).Size
+  nameWithType: TaskPool<T>.Size
+  nameWithType.vb: TaskPool(Of T).Size
+- uid: Cysharp.Threading.Tasks.TaskPool`1.TryPop(`0@)
+  name: TryPop(out T)
+  href: api/Cysharp.Threading.Tasks.TaskPool-1.html#Cysharp_Threading_Tasks_TaskPool_1_TryPop__0__
+  commentId: M:Cysharp.Threading.Tasks.TaskPool`1.TryPop(`0@)
+  name.vb: TryPop(ByRef T)
+  fullName: Cysharp.Threading.Tasks.TaskPool<T>.TryPop(out T)
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool(Of T).TryPop(ByRef T)
+  nameWithType: TaskPool<T>.TryPop(out T)
+  nameWithType.vb: TaskPool(Of T).TryPop(ByRef T)
+- uid: Cysharp.Threading.Tasks.TaskPool`1.TryPop*
+  name: TryPop
+  href: api/Cysharp.Threading.Tasks.TaskPool-1.html#Cysharp_Threading_Tasks_TaskPool_1_TryPop_
+  commentId: Overload:Cysharp.Threading.Tasks.TaskPool`1.TryPop
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.TaskPool<T>.TryPop
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool(Of T).TryPop
+  nameWithType: TaskPool<T>.TryPop
+  nameWithType.vb: TaskPool(Of T).TryPop
+- uid: Cysharp.Threading.Tasks.TaskPool`1.TryPush(`0)
+  name: TryPush(T)
+  href: api/Cysharp.Threading.Tasks.TaskPool-1.html#Cysharp_Threading_Tasks_TaskPool_1_TryPush__0_
+  commentId: M:Cysharp.Threading.Tasks.TaskPool`1.TryPush(`0)
+  fullName: Cysharp.Threading.Tasks.TaskPool<T>.TryPush(T)
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool(Of T).TryPush(T)
+  nameWithType: TaskPool<T>.TryPush(T)
+  nameWithType.vb: TaskPool(Of T).TryPush(T)
+- uid: Cysharp.Threading.Tasks.TaskPool`1.TryPush*
+  name: TryPush
+  href: api/Cysharp.Threading.Tasks.TaskPool-1.html#Cysharp_Threading_Tasks_TaskPool_1_TryPush_
+  commentId: Overload:Cysharp.Threading.Tasks.TaskPool`1.TryPush
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.TaskPool<T>.TryPush
+  fullName.vb: Cysharp.Threading.Tasks.TaskPool(Of T).TryPush
+  nameWithType: TaskPool<T>.TryPush
+  nameWithType.vb: TaskPool(Of T).TryPush
 - uid: Cysharp.Threading.Tasks.TaskTracker
   name: TaskTracker
   href: api/Cysharp.Threading.Tasks.TaskTracker.html
