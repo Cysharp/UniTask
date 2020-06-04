@@ -383,7 +383,11 @@ public class SandboxMain : MonoBehaviour
         //{
 
 
-
+        okButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        {
+            await UniTask.Yield();
+            Debug.Log("Yeha");
+        }));
 
 
         //}).Forget();
