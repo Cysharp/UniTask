@@ -29,6 +29,7 @@ Provides an efficient async/await integration to Unity.
 - [Awaitable Events](#awaitable-events)
 - [Channel](#channel)
 - [For Unit Testing](#for-unit-testing)
+- [Pooling Configuration](#pooling-configuration)
 - [API References](#api-references)
 - [UPM Package](#upm-package)
   - [Install via git URL](#install-via-git-url)
