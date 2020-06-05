@@ -78,7 +78,11 @@ namespace Cysharp.Threading.Tasks
                 return default;
             }
 
+#if NETSTANDARD2_0
+            return self.AsValueTask();
+#else
             return new System.Threading.Tasks.ValueTask(self.source, self.token);
+#endif
         }
 
 #endif
@@ -439,7 +443,11 @@ namespace Cysharp.Threading.Tasks
                 return new System.Threading.Tasks.ValueTask<T>(self.result);
             }
 
+#if NETSTANDARD2_0
+            return self.AsValueTask();
+#else
             return new System.Threading.Tasks.ValueTask<T>(self.source, self.token);
+#endif
         }
 
 #endif
