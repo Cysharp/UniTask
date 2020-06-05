@@ -93,28 +93,30 @@ namespace Cysharp.Threading.Tasks
                 TaskPool.RegisterSizeGetter(typeof(TweenConfiguredSource), () => pool.Size);
             }
 
-            static readonly Action<object> CancellationCallbackDelegate = CancellationCallback;
             static readonly TweenCallback EmptyTweenCallback = () => { };
 
             readonly TweenCallback onKillDelegate;
+            readonly TweenCallback onUpdateDelegate;
 
             Tween tween;
             TweenCancelBehaviour cancelBehaviour;
             CancellationToken cancellationToken;
             bool canceled;
 
-            CancellationTokenRegistration cancellationTokenRegistration;
+            TweenCallback originalUpdateAction;
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
             TweenConfiguredSource()
             {
                 onKillDelegate = OnKill;
+                onUpdateDelegate = OnUpdate;
             }
 
             public static IUniTaskSource Create(Tween tween, TweenCancelBehaviour cancelBehaviour, CancellationToken cancellationToken, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    DoCancelBeforeCreate(tween, cancelBehaviour);
                     return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
                 }
 
@@ -127,27 +129,25 @@ namespace Cysharp.Threading.Tasks
                 result.cancelBehaviour = cancelBehaviour;
                 result.cancellationToken = cancellationToken;
 
-                TaskTracker.TrackActiveTask(result, 3);
+                result.originalUpdateAction = tween.onUpdate;
+                result.canceled = false;
 
-                result.RegisterEvent();
+                if (result.originalUpdateAction == result.onUpdateDelegate)
+                {
+                    result.originalUpdateAction = null;
+                }
+
+                tween.onUpdate = result.onUpdateDelegate;
+                tween.onKill = result.onKillDelegate;
+
+                TaskTracker.TrackActiveTask(result, 3);
 
                 token = result.core.Version;
                 return result;
             }
 
-            void RegisterEvent()
-            {
-                if (cancellationToken.CanBeCanceled)
-                {
-                    cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(CancellationCallbackDelegate, this);
-                }
-
-                tween.OnKill(onKillDelegate);
-            }
-
             void OnKill()
             {
-                cancellationTokenRegistration.Dispose();
                 if (canceled)
                 {
                     core.TrySetCanceled(cancellationToken);
@@ -158,44 +158,84 @@ namespace Cysharp.Threading.Tasks
                 }
             }
 
-            static void CancellationCallback(object state)
+            void OnUpdate()
             {
-                var self = (TweenConfiguredSource)state;
+                originalUpdateAction?.Invoke();
 
-                switch (self.cancelBehaviour)
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                switch (this.cancelBehaviour)
                 {
                     case TweenCancelBehaviour.Kill:
                     default:
-                        self.tween.Kill(false);
+                        this.tween.Kill(false);
                         break;
                     case TweenCancelBehaviour.KillAndCancelAwait:
-                        self.canceled = true;
-                        self.tween.Kill(false);
+                        this.canceled = true;
+                        this.tween.Kill(false);
                         break;
                     case TweenCancelBehaviour.KillWithCompleteCallback:
-                        self.tween.Kill(true);
+                        this.tween.Kill(true);
                         break;
                     case TweenCancelBehaviour.KillWithCompleteCallbackAndCancelAwait:
-                        self.canceled = true;
-                        self.tween.Kill(true);
+                        this.canceled = true;
+                        this.tween.Kill(true);
                         break;
                     case TweenCancelBehaviour.Complete:
-                        self.tween.Complete(false);
+                        this.tween.Complete(false);
                         break;
                     case TweenCancelBehaviour.CompleteAndCancelAwait:
-                        self.canceled = true;
-                        self.tween.Complete(false);
+                        this.canceled = true;
+                        this.tween.Complete(false);
                         break;
                     case TweenCancelBehaviour.CompleteWithSeqeunceCallback:
-                        self.tween.Complete(true);
+                        this.tween.Complete(true);
                         break;
                     case TweenCancelBehaviour.CompleteWithSeqeunceCallbackAndCancelAwait:
-                        self.canceled = true;
-                        self.tween.Complete(true);
+                        this.canceled = true;
+                        this.tween.Complete(true);
                         break;
                     case TweenCancelBehaviour.CancelAwait:
-                        self.tween.onKill = EmptyTweenCallback; // replace to empty(avoid callback after Caceled(instance is returned to pool.)
-                        self.core.TrySetCanceled(self.cancellationToken);
+                        this.tween.onKill = EmptyTweenCallback; // replace to empty(avoid callback after Canceled(instance is returned to pool.)
+                        this.core.TrySetCanceled(this.cancellationToken);
+                        break;
+                }
+            }
+
+            static void DoCancelBeforeCreate(Tween tween, TweenCancelBehaviour tweenCancelBehaviour)
+            {
+
+                switch (tweenCancelBehaviour)
+                {
+                    case TweenCancelBehaviour.Kill:
+                    default:
+                        tween.Kill(false);
+                        break;
+                    case TweenCancelBehaviour.KillAndCancelAwait:
+                        tween.Kill(false);
+                        break;
+                    case TweenCancelBehaviour.KillWithCompleteCallback:
+                        tween.Kill(true);
+                        break;
+                    case TweenCancelBehaviour.KillWithCompleteCallbackAndCancelAwait:
+                        tween.Kill(true);
+                        break;
+                    case TweenCancelBehaviour.Complete:
+                        tween.Complete(false);
+                        break;
+                    case TweenCancelBehaviour.CompleteAndCancelAwait:
+                        tween.Complete(false);
+                        break;
+                    case TweenCancelBehaviour.CompleteWithSeqeunceCallback:
+                        tween.Complete(true);
+                        break;
+                    case TweenCancelBehaviour.CompleteWithSeqeunceCallbackAndCancelAwait:
+                        tween.Complete(true);
+                        break;
+                    case TweenCancelBehaviour.CancelAwait:
                         break;
                 }
             }
@@ -211,7 +251,6 @@ namespace Cysharp.Threading.Tasks
                     TryReturn();
                 }
             }
-
 
             public UniTaskStatus GetStatus(short token)
             {
@@ -232,8 +271,11 @@ namespace Cysharp.Threading.Tasks
             {
                 TaskTracker.RemoveTracking(this);
                 core.Reset();
+                tween.onUpdate = originalUpdateAction;
+                tween.onKill = null;
                 tween = default;
                 cancellationToken = default;
+                originalUpdateAction = default;
                 return pool.TryPush(this);
             }
 

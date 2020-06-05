@@ -15,6 +15,7 @@ using UnityEngine.LowLevel;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+
 // using DG.Tweening;
 
 public struct MyJob : IJob
@@ -302,9 +303,17 @@ public class SandboxMain : MonoBehaviour
     }
 
 
-    async UniTaskVoid Start()
+    void Start()
     {
-        await UniTask.SwitchToMainThread();
+        //_ = UniTask.Run(async () =>
+        //{
+        //    var watch = System.Diagnostics.Stopwatch.StartNew();
+        //    await UniTask.Delay(new TimeSpan(0, 0, seconds: 10));
+        //    Debug.Log(watch.Elapsed);
+        //});
+
+        //return;
+        //await UniTask.SwitchToMainThread();
 
         //UniTaskAsyncEnumerable.EveryValueChanged(mcc, x => x.MyProperty)
         //    .Do(_ => { }, () => Debug.Log("COMPLETED"))
@@ -315,8 +324,27 @@ public class SandboxMain : MonoBehaviour
         //    .Forget();
 
         //_ = Test1();
-        Test2().Forget();
+        //Test2().Forget();
         //StartCoroutine(Test3("https://bing.com/"));
+
+
+
+
+
+        //bool flip = false;
+        //var rect = cancelButton.GetComponent<RectTransform>();
+        //var cts = new CancellationTokenSource();
+        //var ct = cts.Token;
+        //okButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        //{
+        //    await rect.DOMoveX(10f * (flip ? -1 : 1), 3).OnUpdate(() => { Debug.Log("UPDATE YEAH"); }).WithCancellation(ct);
+        //    flip = !flip;
+        //    // ok.
+        //}));
+        //cancelButton.onClick.AddListener(() =>
+        //{
+        //    cts.Cancel();
+        //});
 
 
         // DG.Tweening.Core.TweenerCore<int>
@@ -329,7 +357,7 @@ public class SandboxMain : MonoBehaviour
         //await okButton.GetComponent<RectTransform>().DOMoveY(10.2f, 3).WithCancellation(CancellationToken.None);
         //Debug.Log("AGAIN END MOVE");
 
-        Debug.Log(Test().GetType().FullName);
+        //Debug.Log(Test().GetType().FullName);
 
 
 
@@ -383,16 +411,10 @@ public class SandboxMain : MonoBehaviour
         //{
 
 
-        okButton.onClick.AddListener(UniTask.UnityAction(async () =>
-        {
-            await UniTask.Yield();
-            Debug.Log("Yeha");
-        }));
-
-        foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
-        {
-            Debug.Log(type + ":" + size);
-        }
+        //foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
+        //{
+        //    Debug.Log(type + ":" + size);
+        //}
 
 
         //}).Forget();
@@ -410,7 +432,7 @@ public class SandboxMain : MonoBehaviour
         //await UniTask.Delay(TimeSpan.FromSeconds(1));
 
 
-        _ = ReturnToMainThreadTest();
+        // _ = ReturnToMainThreadTest();
 
         //GameObject.Destroy(this.gameObject);
 
