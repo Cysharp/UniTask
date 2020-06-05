@@ -2072,12 +2072,6 @@ references:
   commentId: T:Cysharp.Threading.Tasks.EnumeratorAsyncExtensions
   fullName: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions
   nameWithType: EnumeratorAsyncExtensions
-- uid: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter(IEnumerator)
-  name: GetAwaiter(IEnumerator)
-  href: api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html#Cysharp_Threading_Tasks_EnumeratorAsyncExtensions_GetAwaiter_IEnumerator_
-  commentId: M:Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter(IEnumerator)
-  fullName: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter(IEnumerator)
-  nameWithType: EnumeratorAsyncExtensions.GetAwaiter(IEnumerator)
 - uid: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter*
   name: GetAwaiter
   href: api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html#Cysharp_Threading_Tasks_EnumeratorAsyncExtensions_GetAwaiter_
@@ -2085,6 +2079,15 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter
   nameWithType: EnumeratorAsyncExtensions.GetAwaiter
+- uid: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter``1(``0)
+  name: GetAwaiter<T>(T)
+  href: api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html#Cysharp_Threading_Tasks_EnumeratorAsyncExtensions_GetAwaiter__1___0_
+  commentId: M:Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter``1(``0)
+  name.vb: GetAwaiter(Of T)(T)
+  fullName: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter<T>(T)
+  fullName.vb: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter(Of T)(T)
+  nameWithType: EnumeratorAsyncExtensions.GetAwaiter<T>(T)
+  nameWithType.vb: EnumeratorAsyncExtensions.GetAwaiter(Of T)(T)
 - uid: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.ToUniTask(IEnumerator,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   name: ToUniTask(IEnumerator, PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html#Cysharp_Threading_Tasks_EnumeratorAsyncExtensions_ToUniTask_IEnumerator_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
