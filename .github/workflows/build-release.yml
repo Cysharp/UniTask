@@ -61,8 +61,8 @@ jobs:
       # Store artifacts.      
       - uses: actions/upload-artifact@v2
         with:
-          name: UniTask.unitypackage.zip
-          path: ./src/UniTask/*.unitypackage
+          name: UniTask.${{ env.GIT_TAG }}.unitypackage
+          path: ./src/UniTask/UniTask.${{ env.GIT_TAG }}.unitypackage
 
   create-release:
     needs: [build-dotnet, build-unity]

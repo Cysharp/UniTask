@@ -277,7 +277,11 @@ namespace NetCoreSandbox
 #endif
             // await new AllocationCheck().ViaUniTaskVoid();
 
-            // AsyncTest().Forget();
+            // AsyncTest().Forge
+
+            Console.WriteLine("A?");
+            var a = await new ZeroAllocAsyncAwaitInDotNetCore().NanikaAsync(1, 2);
+            Console.WriteLine("RET:" + a);
             await WhereSelect();
 
             SynchronizationContext.SetSynchronizationContext(new MySyncContext());
