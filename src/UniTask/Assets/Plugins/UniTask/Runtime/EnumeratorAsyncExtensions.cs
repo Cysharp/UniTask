@@ -12,10 +12,12 @@ namespace Cysharp.Threading.Tasks
 {
     public static class EnumeratorAsyncExtensions
     {
-        public static UniTask.Awaiter GetAwaiter(this IEnumerator enumerator)
+        public static UniTask.Awaiter GetAwaiter<T>(this T enumerator)
+            where T : IEnumerator
         {
-            Error.ThrowArgumentNullException(enumerator, nameof(enumerator));
-            return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, CancellationToken.None, out var token), token).GetAwaiter();
+            var e = (IEnumerator)enumerator;
+            Error.ThrowArgumentNullException(e, nameof(enumerator));
+            return new UniTask(EnumeratorPromise.Create(e, PlayerLoopTiming.Update, CancellationToken.None, out var token), token).GetAwaiter();
         }
 
         public static UniTask WithCancellation(this IEnumerator enumerator, CancellationToken cancellationToken)
