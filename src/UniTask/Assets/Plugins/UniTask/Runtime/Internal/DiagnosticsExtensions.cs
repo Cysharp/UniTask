@@ -239,7 +239,7 @@ namespace Cysharp.Threading.Tasks.Internal
             }
             else
             {
-                var fname = fi.FullName.Replace(Path.DirectorySeparatorChar, '/').Replace(Application.dataPath, "");
+                var fname = fi.FullName.Replace(Path.DirectorySeparatorChar, '/').Replace(PlayerLoopHelper.ApplicationDataPath, "");
                 var withAssetsPath = "Assets/" + fname;
                 return "<a href=\"" + withAssetsPath + "\" line=\"" + line + "\">" + withAssetsPath + ":" + line + "</a>";
             }

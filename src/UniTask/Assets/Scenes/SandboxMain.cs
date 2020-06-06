@@ -302,15 +302,25 @@ public class SandboxMain : MonoBehaviour
         return 10;
     }
 
+    async UniTask<int> Ex()
+    {
+        await UniTask.Yield();
+        //throw new Exception();
+        await UniTask.Delay(TimeSpan.FromSeconds(15));
+        return 0;
+    }
+
 
     void Start()
     {
-        //_ = UniTask.Run(async () =>
-        //{
-        //    var watch = System.Diagnostics.Stopwatch.StartNew();
-        //    await UniTask.Delay(new TimeSpan(0, 0, seconds: 10));
-        //    Debug.Log(watch.Elapsed);
-        //});
+        _ = Ex();
+
+        _ = UniTask.Run(async () =>
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            await UniTask.Delay(new TimeSpan(0, 0, seconds: 10));
+            Debug.Log(watch.Elapsed);
+        });
 
         //return;
         //await UniTask.SwitchToMainThread();

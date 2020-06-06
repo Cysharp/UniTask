@@ -92,8 +92,10 @@ namespace Cysharp.Threading.Tasks
     {
         public static SynchronizationContext UnitySynchronizationContext => unitySynchronizationContetext;
         public static int MainThreadId => mainThreadId;
+        internal static string ApplicationDataPath => applicationDataPath;
 
         static int mainThreadId;
+        static string applicationDataPath;
         static SynchronizationContext unitySynchronizationContetext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
@@ -177,6 +179,11 @@ namespace Cysharp.Threading.Tasks
             // capture default(unity) sync-context.
             unitySynchronizationContetext = SynchronizationContext.Current;
             mainThreadId = Thread.CurrentThread.ManagedThreadId;
+            try
+            {
+                applicationDataPath = Application.dataPath;
+            }
+            catch { }
 
 #if UNITY_EDITOR && UNITY_2019_3_OR_NEWER
             // When domain reload is disabled, re-initialization is required when entering play mode; 
