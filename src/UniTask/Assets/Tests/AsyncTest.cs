@@ -126,15 +126,15 @@ namespace Cysharp.Threading.TasksTests
             await ToaruCoroutineEnumerator(); // wait 5 frame:)
         });
 
-        [UnityTest]
-        public IEnumerator JobSystem() => UniTask.ToCoroutine(async () =>
-        {
-            var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
-            JobHandle.ScheduleBatchedJobs();
-            await job.Schedule();
-            job.inOut[0].Should().Be(999);
-            job.inOut.Dispose();
-        });
+        //[UnityTest]
+        //public IEnumerator JobSystem() => UniTask.ToCoroutine(async () =>
+        //{
+        //    var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
+        //    JobHandle.ScheduleBatchedJobs();
+        //    await job.Schedule();
+        //    job.inOut[0].Should().Be(999);
+        //    job.inOut.Dispose();
+        //});
 
         class MyMyClass
         {
