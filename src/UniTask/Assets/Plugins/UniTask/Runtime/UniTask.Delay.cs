@@ -3,7 +3,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Cysharp.Threading.Tasks.Internal;
 using UnityEngine;
 
 namespace Cysharp.Threading.Tasks
@@ -19,6 +18,30 @@ namespace Cysharp.Threading.Tasks
         public static UniTask Yield(PlayerLoopTiming timing, CancellationToken cancellationToken)
         {
             return new UniTask(YieldPromise.Create(timing, cancellationToken, out var token), token);
+        }
+
+        /// <summary>
+        /// Similar as UniTask.Yield but guaranteed run on next frame.
+        /// </summary>
+        public static UniTask NextFrame(PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default)
+        {
+            return new UniTask(NextFramePromise.Create(timing, cancellationToken, out var token), token);
+        }
+
+        /// <summary>
+        /// Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate).
+        /// </summary>
+        public static YieldAwaitable WaitForEndOfFrame()
+        {
+            return UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+        }
+
+        /// <summary>
+        /// Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken).
+        /// </summary>
+        public static UniTask WaitForEndOfFrame(CancellationToken cancellationToken)
+        {
+            return UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken);
         }
 
         public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
@@ -144,6 +167,108 @@ namespace Cysharp.Threading.Tasks
             }
 
             ~YieldPromise()
+            {
+                if (TryReturn())
+                {
+                    GC.ReRegisterForFinalize(this);
+                }
+            }
+        }
+
+        sealed class NextFramePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<NextFramePromise>
+        {
+            static TaskPool<NextFramePromise> pool;
+            public NextFramePromise NextNode { get; set; }
+
+            static NextFramePromise()
+            {
+                TaskPool.RegisterSizeGetter(typeof(NextFramePromise), () => pool.Size);
+            }
+
+            int frameCount;
+            CancellationToken cancellationToken;
+            UniTaskCompletionSourceCore<AsyncUnit> core;
+
+            NextFramePromise()
+            {
+            }
+
+            public static IUniTaskSource Create(PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                if (!pool.TryPop(out var result))
+                {
+                    result = new NextFramePromise();
+                }
+
+                result.frameCount = Time.frameCount;
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public void GetResult(short token)
+            {
+                try
+                {
+                    core.GetResult(token);
+                }
+                finally
+                {
+                    TryReturn();
+                }
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
+                    return false;
+                }
+
+                if (frameCount == Time.frameCount)
+                {
+                    return true;
+                }
+
+                core.TrySetResult(AsyncUnit.Default);
+                return false;
+            }
+
+            bool TryReturn()
+            {
+                TaskTracker.RemoveTracking(this);
+                core.Reset();
+                cancellationToken = default;
+                return pool.TryPush(this);
+            }
+
+            ~NextFramePromise()
             {
                 if (TryReturn())
                 {
