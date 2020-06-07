@@ -197,7 +197,7 @@ namespace Cysharp.Threading.TasksTests
             //await UniTask.SwitchToThreadPool();
 
 
-            
+
 
 
 
@@ -368,6 +368,24 @@ namespace Cysharp.Threading.TasksTests
             await UniTask.Yield();
             throw new Exception("MyException");
         }
+
+        [UnityTest]
+        public IEnumerator NextFrame1() => UniTask.ToCoroutine(async () =>
+        {
+            await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+            var frame = Time.frameCount;
+            await UniTask.NextFrame();
+            Time.frameCount.Should().Be(frame + 1);
+        });
+
+        [UnityTest]
+        public IEnumerator NextFrame2() => UniTask.ToCoroutine(async () =>
+        {
+            await UniTask.Yield(PlayerLoopTiming.PreUpdate);
+            var frame = Time.frameCount;
+            await UniTask.NextFrame();
+            Time.frameCount.Should().Be(frame + 1);
+        });
 
         [UnityTest]
         public IEnumerator NestedEnumerator() => UniTask.ToCoroutine(async () =>

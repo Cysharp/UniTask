@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 // using DG.Tweening;
@@ -265,11 +266,14 @@ public class SandboxMain : MonoBehaviour
             //var r = UniAsync("https://bing.com/", cts.Token);
             //cts.Cancel();
             //await r;
-            _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
-            Debug.Log("UNIASYNC1 ");
+            Debug.Log("SendWebRequestDone:" + PlayerLoopInfo.CurrentLoopType);
+            
 
-            _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
-            Debug.Log("UNIASYNC2");
+    //        var foo = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
+  //          foo.downloadHandler.text;
+//
+            _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest().WithCancellation(CancellationToken.None);
+            Debug.Log("SendWebRequestWithCancellationDone:" + PlayerLoopInfo.CurrentLoopType);
         }
         catch
         {
@@ -310,17 +314,107 @@ public class SandboxMain : MonoBehaviour
         return 0;
     }
 
+    IEnumerator CoroutineRun()
+    {
+        UnityEngine.Debug.Log("Before Coroutine yield return null," + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+        yield return null;
+        UnityEngine.Debug.Log("After Coroutine yield return null," + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+    }
+
+    IEnumerator CoroutineRun2()
+    {
+        UnityEngine.Debug.Log("Before Coroutine yield return WaitForEndOfFrame," + Time.frameCount);
+        yield return new WaitForEndOfFrame();
+        UnityEngine.Debug.Log("After Coroutine yield return WaitForEndOfFrame," + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+        yield return new WaitForEndOfFrame();
+        UnityEngine.Debug.Log("Onemore After Coroutine yield return WaitForEndOfFrame," + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+    }
+
+
+    async UniTaskVoid AsyncRun()
+    {
+        UnityEngine.Debug.Log("Before async Yield(default)," + Time.frameCount);
+        await UniTask.Yield();
+        UnityEngine.Debug.Log("After async Yield(default)," + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+    }
+
+    async UniTaskVoid AsyncLastUpdate()
+    {
+        UnityEngine.Debug.Log("Before async Yield(LastUpdate)," + Time.frameCount);
+        await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+        UnityEngine.Debug.Log("After async Yield(LastUpdate)," + Time.frameCount);
+    }
+
+    async UniTaskVoid AsyncLastLast()
+    {
+        UnityEngine.Debug.Log("Before async Yield(LastPostLateUpdate)," + Time.frameCount);
+        await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+        UnityEngine.Debug.Log("After async Yield(LastPostLateUpdate)," + Time.frameCount);
+    }
+
+    async UniTaskVoid Yieldding()
+    {
+        await UniTask.Yield(PlayerLoopTiming.PreUpdate);
+        StartCoroutine(CoroutineRun());
+    }
+
 
     void Start()
     {
-        _ = Ex();
+        PlayerLoopInfo.Inject();
 
-        _ = UniTask.Run(async () =>
+        okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            await UniTask.Delay(new TimeSpan(0, 0, seconds: 10));
-            Debug.Log(watch.Elapsed);
-        });
+            /*
+            UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
+            StartCoroutine(CoroutineRun());
+            StartCoroutine(CoroutineRun2());
+            _ = AsyncRun();
+            _ = AsyncLastUpdate();
+            _ = AsyncLastLast();
+            */
+            await UniTask.Yield();
+            _ = Test2();
+            // EarlyUpdate.ExecuteMainThreadJobs
+            // _ = Test2();
+
+            //var t = await Resources.LoadAsync<TextAsset>(Application.streamingAssetsPath + "test.txt");
+            //Debug.Log("LoadEnd" + PlayerLoopInfo.CurrentLoopType + ", " + (t != null));
+            //Debug.Log("LoadEnd" + PlayerLoopInfo.CurrentLoopType + ", " + ((TextAsset)t).text);
+
+
+            //await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+            //UnityEngine.Debug.Log("after update:" + Time.frameCount);
+            ////await UniTask.NextFrame();
+            ////await UniTask.Yield();
+            ////UnityEngine.Debug.Log("after update nextframe:" + Time.frameCount);
+
+            //StartCoroutine(CoroutineRun2());
+            ////StartCoroutine(CoroutineRun());
+            //UnityEngine.Debug.Log("FOO?");
+        }));
+
+        cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        {
+            //await UniTask.Yield(PlayerLoopTiming.LastPreUpdate);
+            //UnityEngine.Debug.Log("before update:" + Time.frameCount);
+            //await UniTask.NextFrame();
+            //await UniTask.Yield();
+            //UnityEngine.Debug.Log("before update nextframe:" + Time.frameCount);
+
+            //StartCoroutine(CoroutineRun());
+
+            //UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
+            //_ = Yieldding();
+
+            var cts = new CancellationTokenSource();
+
+            UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
+            var la = SceneManager.LoadSceneAsync("Scenes/ExceptionExamples").WithCancellation(cts.Token);
+            //cts.Cancel();
+            await la;
+            UnityEngine.Debug.Log("End LoadSceneAsync" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
+        }));
 
         //return;
         //await UniTask.SwitchToMainThread();
@@ -433,7 +527,7 @@ public class SandboxMain : MonoBehaviour
 
         //okButton.onClick.AddListener(UniTask.UnityAction(async () => await UniTask.Yield()));
 
-        PlayerLoopInfo.Inject();
+
 
         //UpdateUniTask().Forget();
 
@@ -447,10 +541,6 @@ public class SandboxMain : MonoBehaviour
         //GameObject.Destroy(this.gameObject);
 
 
-        SynchronizationContext.Current.Post(_ =>
-        {
-            //UnityEngine.Debug.Log("Post:" + PlayerLoopInfo.CurrentLoopType);
-        }, null);
     }
 
     async UniTaskVoid UpdateUniTask()

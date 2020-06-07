@@ -53,21 +53,32 @@ async UniTask<string> DemoAsync()
 {
     // You can await Unity's AsyncObject
     var asset = await Resources.LoadAsync<TextAsset>("foo");
-    
+    var txt = (await UnityWebRequest.Get("https://...").SendWebRequest()).downloadHandler.text;
+    await SceneManager.LoadSceneAsync("scene2");
+
     // .WithCancellation enables Cancel, GetCancellationTokenOnDestroy synchornizes with lifetime of GameObject
-    var asset2 = await Resources.LoadAsync<TextAsset>("foo").WithCancellation(this.GetCancellationTokenOnDestroy());
+    var asset2 = await Resources.LoadAsync<TextAsset>("bar").WithCancellation(this.GetCancellationTokenOnDestroy());
 
     // .ToUniTask accepts progress callback(and all options), Progress.Create is a lightweight alternative of IProgress<T>
-    await SceneManager.LoadSceneAsync("scene2").ToUniTask(Progress.Create<float>(x => Debug.Log(x)));
-    
+    var asset3 = await Resources.LoadAsync<TextAsset>("baz").ToUniTask(Progress.Create<float>(x => Debug.Log(x)));
+
     // await frame-based operation like coroutine
     await UniTask.DelayFrame(100); 
 
-    // replacement of WaitForSeconds/WaitForSecondsRealtime
+    // replacement of yield return new WaitForSeconds/WaitForSecondsRealtime
     await UniTask.Delay(TimeSpan.FromSeconds(10), ignoreTimeScale: false);
     
-    // replacement of WaitForEndOfFrame(or other timing like yield return null, yield return WaitForFixedUpdate)
-    await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+    // yield any playerloop timing(PreUpdate, Update, LateUpdate, etc...)
+    await UniTask.Yield(PlayerLoopTiming.PreLateUpdate);
+
+    // replacement of yield return null
+    await UniTask.NextFrame();
+
+    // replacement of WaitForEndOfFrame(same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate))
+    await UniTask.WaitForEndOfFrame();
+
+    // replacement of yield return new WaitForFixedUpdate
+    await UniTask.Yield(PlayerLoopTiming.FixedUpdate);
     
     // replacement of yield return WaitUntil
     await UniTask.WaitUntil(() => isActive == false);
@@ -126,6 +137,8 @@ UniTask provides three pattern of extension methods.
 ```
 
 `WithCancellation` is a simple version of `ToUniTask`, both returns `UniTask`. Details of cancellation, see: [Cancellation and Exception handling](#cancellation-and-exception-handling) section.
+
+> Note: WithCancellation is returned from native timing of PlayerLoop but ToUniTask is returned from specified PlayerLoopTiming. Details of timing, see: [PlayerLoop](#playerloop) section.
 
 The type of `UniTask` can use utility like `UniTask.WhenAll`, `UniTask.WhenAny`. It is like Task.WhenAll/WhenAny but return type is more useful, returns value tuple so can deconsrtuct each result and pass multiple type.
 
@@ -321,9 +334,15 @@ public enum PlayerLoopTiming
 
 It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.com/neuecc/bc3a1cfd4d74501ad057e49efcd7bdae) to Unity's default playerloop and injected UniTask's custom loop.
 
-`PlayerLoopTiming.Update` is similar as `yield return null` in coroutine, but it is called before Update(Update is called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`). If change timing to `PlayerLoopTiming.LastUpdate`, called after these Unity's update methods.
+`PlayerLoopTiming.Update` is similar as `yield return null` in coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`).
 
 `PlayerLoopTiming.FixedUpdate` is similar as `WaitForFixedUpdate`, `PlayerLoopTiming.LastPostLateUpdate` is similar as `WaitForEndOfFrame` in coroutine.
+
+`yield return null` and `UniTask.Yield` is similar but different. `yield return null` always return next frame but `UniTask.Yield` return next called, that is, call `UniTask.Yield(PlayerLoopTiming.Update)` on `PreUpdate`, it returns same frame. `UniTask.NextFrame()` gurantees return next frame, this would be expected to behave exactly the same as `yield return null`.
+
+AsyncOperation is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after called, loaded scene called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
+
+In UniTask, await directly and `WithCancellation` use native timing, `ToUniTask` use specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, causes different order of Start and continuation after await. so recommend not to use `LoadSceneAsync.ToUniTask`.
 
 In stacktrace, you can check where is running in playerloop.
 

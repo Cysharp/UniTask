@@ -21,13 +21,15 @@ public class ExceptionExamples : MonoBehaviour
 
     private void Start()
     {
-        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+        UnityEngine.Debug.Log("ExceptionScene, LoopType:" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
 
-        ThrowFromAsyncVoid();
-        _ = ThrowFromTask();
-        _ = ThrowFromUniTask();
+        //TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
-        ThrowFromNonAsync();
+        //ThrowFromAsyncVoid();
+        //_ = ThrowFromTask();
+        //_ = ThrowFromUniTask();
+
+        //ThrowFromNonAsync();
     }
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
