@@ -741,6 +741,16 @@ public class ZeroAllocAsyncAwaitInDotNetCore
         }
     }
 }
+
+// UniTask does not return to original SynchronizationContext but you can use helper `ReturnToCurrentSynchronizationContext`.
+public ValueTask TestAsync()
+{
+    await using (UniTask.ReturnToCurrentSynchronizationContext())
+    {
+        await UniTask.SwitchToThreadPool();
+        // do anything..
+    }
+}
 ```
 
 .NET Core version is intended to allow users to use UniTask as an interface when sharing code with Unity (such as [Cysharp/MagicOnion](https://github.com/Cysharp/MagicOnion/)). .NET Core version of UniTask enables smooth code sharing.
