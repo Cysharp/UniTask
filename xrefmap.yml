@@ -17217,6 +17217,19 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTask.Lazy(Of T)(System.Func(Of Cysharp.Threading.Tasks.UniTask(Of T)))
   nameWithType: UniTask.Lazy<T>(Func<UniTask<T>>)
   nameWithType.vb: UniTask.Lazy(Of T)(Func(Of UniTask(Of T)))
+- uid: Cysharp.Threading.Tasks.UniTask.NextFrame(Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  name: NextFrame(PlayerLoopTiming, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.NextFrame(Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.NextFrame(Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
+  nameWithType: UniTask.NextFrame(PlayerLoopTiming, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.NextFrame*
+  name: NextFrame
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTask.NextFrame
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTask.NextFrame
+  nameWithType: UniTask.NextFrame
 - uid: Cysharp.Threading.Tasks.UniTask.op_Implicit(Cysharp.Threading.Tasks.UniTask@)~System.Threading.Tasks.ValueTask
   name: Implicit(UniTask to ValueTask)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask
@@ -17443,6 +17456,25 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTask.Void(Of T)(System.Func(Of T, Cysharp.Threading.Tasks.UniTaskVoid), T)
   nameWithType: UniTask.Void<T>(Func<T, UniTaskVoid>, T)
   nameWithType.vb: UniTask.Void(Of T)(Func(Of T, UniTaskVoid), T)
+- uid: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame
+  name: WaitForEndOfFrame()
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame
+  commentId: M:Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame()
+  nameWithType: UniTask.WaitForEndOfFrame()
+- uid: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(CancellationToken)
+  name: WaitForEndOfFrame(CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(CancellationToken)
+  nameWithType: UniTask.WaitForEndOfFrame(CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame*
+  name: WaitForEndOfFrame
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame
+  nameWithType: UniTask.WaitForEndOfFrame
 - uid: Cysharp.Threading.Tasks.UniTask.WaitUntil(System.Func{System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   name: WaitUntil(Func<Boolean>, PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntil_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
