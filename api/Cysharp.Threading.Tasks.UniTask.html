@@ -400,6 +400,20 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate">WaitForFixedUpdate()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate).</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate_CancellationToken_">WaitForFixedUpdate(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate, cancellationToken).</p>
+</td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntil_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">WaitUntil(Func&lt;Boolean&gt;, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -2160,6 +2174,75 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static UniTask WaitForEndOfFrame(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate">WaitForFixedUpdate()</h4>
+  <div class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static YieldAwaitable WaitForFixedUpdate()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.YieldAwaitable.html">YieldAwaitable</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate(CancellationToken)">WaitForFixedUpdate(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate, cancellationToken).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask WaitForFixedUpdate(CancellationToken cancellationToken)</code></pre>
   </div>
 
   <section>

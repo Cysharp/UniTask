@@ -17475,6 +17475,25 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame
   nameWithType: UniTask.WaitForEndOfFrame
+- uid: Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate
+  name: WaitForFixedUpdate()
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate
+  commentId: M:Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate()
+  nameWithType: UniTask.WaitForFixedUpdate()
+- uid: Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate(CancellationToken)
+  name: WaitForFixedUpdate(CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate(CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate(CancellationToken)
+  nameWithType: UniTask.WaitForFixedUpdate(CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate*
+  name: WaitForFixedUpdate
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForFixedUpdate_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitForFixedUpdate
+  nameWithType: UniTask.WaitForFixedUpdate
 - uid: Cysharp.Threading.Tasks.UniTask.WaitUntil(System.Func{System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   name: WaitUntil(Func<Boolean>, PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntil_System_Func_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
