@@ -44,6 +44,22 @@ namespace Cysharp.Threading.Tasks
             return UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken);
         }
 
+        /// <summary>
+        /// Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate).
+        /// </summary>
+        public static YieldAwaitable WaitForFixedUpdate()
+        {
+            return UniTask.Yield(PlayerLoopTiming.FixedUpdate);
+        }
+
+        /// <summary>
+        /// Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate, cancellationToken).
+        /// </summary>
+        public static UniTask WaitForFixedUpdate(CancellationToken cancellationToken)
+        {
+            return UniTask.Yield(PlayerLoopTiming.FixedUpdate, cancellationToken);
+        }
+
         public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (delayFrameCount < 0)

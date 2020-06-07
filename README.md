@@ -72,13 +72,14 @@ async UniTask<string> DemoAsync()
     await UniTask.Yield(PlayerLoopTiming.PreLateUpdate);
 
     // replacement of yield return null
+    await UniTask.Yield();
     await UniTask.NextFrame();
 
     // replacement of WaitForEndOfFrame(same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate))
     await UniTask.WaitForEndOfFrame();
 
-    // replacement of yield return new WaitForFixedUpdate
-    await UniTask.Yield(PlayerLoopTiming.FixedUpdate);
+    // replacement of yield return new WaitForFixedUpdate(same as UniTask.Yield(PlayerLoopTiming.FixedUpdate))
+    await UniTask.WaitForFixedUpdate();
     
     // replacement of yield return WaitUntil
     await UniTask.WaitUntil(() => isActive == false);
@@ -92,8 +93,13 @@ async UniTask<string> DemoAsync()
     // You can await standard task
     await Task.Run(() => 100);
 
-    // Multithreading, run on ThreadPool under this code(use SwitchToMainThread, same as `ObserveOnMainThreadDispatcher`)
+    // Multithreading, run on ThreadPool under this code
     await UniTask.SwitchToThreadPool();
+
+    /* work on ThreadPool */
+
+    // return to MainThread(same as `ObserveOnMainThread` in UniRx)
+    await UniTask.SwitchToMainThread();
 
     // get async webrequest
     async UniTask<string> GetTextAsync(UnityWebRequest req)
@@ -334,11 +340,11 @@ public enum PlayerLoopTiming
 
 It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.com/neuecc/bc3a1cfd4d74501ad057e49efcd7bdae) to Unity's default playerloop and injected UniTask's custom loop.
 
-`PlayerLoopTiming.Update` is similar as `yield return null` in coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`).
-
-`PlayerLoopTiming.FixedUpdate` is similar as `WaitForFixedUpdate`, `PlayerLoopTiming.LastPostLateUpdate` is similar as `WaitForEndOfFrame` in coroutine.
+`PlayerLoopTiming.Update` is similar as `yield return null` in coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`). `PlayerLoopTiming.FixedUpdate` is similar as `WaitForFixedUpdate`, `PlayerLoopTiming.LastPostLateUpdate` is similar as `WaitForEndOfFrame` in coroutine.
 
 `yield return null` and `UniTask.Yield` is similar but different. `yield return null` always return next frame but `UniTask.Yield` return next called, that is, call `UniTask.Yield(PlayerLoopTiming.Update)` on `PreUpdate`, it returns same frame. `UniTask.NextFrame()` gurantees return next frame, this would be expected to behave exactly the same as `yield return null`.
+
+> UniTask.Yield(without CancellationToken) is a special type, returns `YieldAwaitable` and run on YieldRunner. It is most lightweight and faster.
 
 AsyncOperation is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after called, loaded scene called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
 

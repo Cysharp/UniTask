@@ -267,11 +267,11 @@ public class SandboxMain : MonoBehaviour
             //cts.Cancel();
             //await r;
             Debug.Log("SendWebRequestDone:" + PlayerLoopInfo.CurrentLoopType);
-            
 
-    //        var foo = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
-  //          foo.downloadHandler.text;
-//
+
+            //        var foo = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
+            //          foo.downloadHandler.text;
+            //
             _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest().WithCancellation(CancellationToken.None);
             Debug.Log("SendWebRequestWithCancellationDone:" + PlayerLoopInfo.CurrentLoopType);
         }
@@ -358,10 +358,38 @@ public class SandboxMain : MonoBehaviour
         StartCoroutine(CoroutineRun());
     }
 
+    async UniTaskVoid AsyncFixedUpdate()
+    {
+        while (true)
+        {
+            await UniTask.WaitForFixedUpdate();
+            Debug.Log("Async:" + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+        }
+    }
+
+    IEnumerator CoroutineFixedUpdate()
+    {
+        while (true)
+        {
+            yield return new WaitForFixedUpdate();
+            Debug.Log("Coroutine:" + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        Debug.Log("FixedUpdate:" + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+    }
+
 
     void Start()
     {
         PlayerLoopInfo.Inject();
+
+        _ = AsyncFixedUpdate();
+        StartCoroutine(CoroutineFixedUpdate());
+
+        
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
