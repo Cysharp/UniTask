@@ -37,7 +37,7 @@ namespace Cysharp.Threading.Tasks
 <# if(t.returnType == "UnityWebRequest") { #>
 #if ENABLE_UNITYWEBREQUEST
 <# } #>
-#region <#= t.typeName #>
+        #region <#= t.typeName #>
 
         public static <#= t.typeName #>Awaiter GetAwaiter(this <#= t.typeName #> asyncOperation)
         {
@@ -45,18 +45,18 @@ namespace Cysharp.Threading.Tasks
             return new <#= t.typeName #>Awaiter(asyncOperation);
         }
 
-        public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation)
+        public static <#= ToUniTaskReturnType(t.returnType) #> WithCancellation(this <#= t.typeName #> asyncOperation, CancellationToken cancellationToken)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-
-            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, PlayerLoopTiming.Update, null, CancellationToken.None, out var token), token);
+            if (asyncOperation.isDone) return <#= IsVoid(t) ? "UniTask.CompletedTask" : $"UniTask.FromResult(asyncOperation.{t.returnField})" #>;
+            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, PlayerLoopTiming.Update, null, cancellationToken, out var token), token);
         }
 
-        public static <#= ToUniTaskReturnType(t.returnType) #> ConfigureAwait(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-
-            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, timing, progress, cancellation, out var token), token);
+            if (asyncOperation.isDone) return <#= IsVoid(t) ? "UniTask.CompletedTask" : $"UniTask.FromResult(asyncOperation.{t.returnField})" #>;
+            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
         }
 
         public struct <#= t.typeName #>Awaiter : ICriticalNotifyCompletion
@@ -106,14 +106,20 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
-                continuationAction = continuation.AsFuncOfT<AsyncOperation>(); // allocate delegate.
+                continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
         }
 
-        class <#= t.typeName #>ConfiguredSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, IPlayerLoopItem, IPromisePoolItem
+        class <#= t.typeName #>ConfiguredSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, IPlayerLoopItem, ITaskPoolNode<<#= t.typeName #>ConfiguredSource>
         {
-            static readonly PromisePool<<#= t.typeName #>ConfiguredSource> pool = new PromisePool<<#= t.typeName #>ConfiguredSource>();
+            static TaskPool<<#= t.typeName #>ConfiguredSource> pool;
+            public <#= t.typeName #>ConfiguredSource NextNode { get; set; }
+
+            static <#= t.typeName #>ConfiguredSource()
+            {
+                TaskPool.RegisterSizeGetter(typeof(<#= t.typeName #>ConfiguredSource), () => pool.Size);
+            }
 
             <#= t.typeName #> asyncOperation;
             IProgress<float> progress;
@@ -133,7 +139,10 @@ namespace Cysharp.Threading.Tasks
                     return AutoResetUniTaskCompletionSource<#= IsVoid(t) ? "" : $"<{t.returnType}>" #>.CreateFromCanceled(cancellationToken, out token);
                 }
 
-                var result = pool.TryRent() ?? new <#= t.typeName #>ConfiguredSource();
+                if (!pool.TryPop(out var result))
+                {
+                    result = new <#= t.typeName #>ConfiguredSource();
+                }
 
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
@@ -151,8 +160,6 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-                    TaskTracker.RemoveTracking(this);
-                    
 <# if (!IsVoid(t)) { #>
                     return core.GetResult(token);
 <# } else { #>
@@ -161,7 +168,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    pool.TryReturn(this);
+                    TryReturn();
                 }
             }
 
@@ -191,6 +198,9 @@ namespace Cysharp.Threading.Tasks
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
+<# if(t.returnType == "UnityWebRequest") { #>
+                    asyncOperation.webRequest.Abort();
+<# } #>
                     core.TrySetCanceled(cancellationToken);
                     return false;
                 }
@@ -209,24 +219,26 @@ namespace Cysharp.Threading.Tasks
                 return true;
             }
 
-            public void Reset()
+            bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                return pool.TryPush(this);
             }
 
             ~<#= t.typeName #>ConfiguredSource()
             {
-                if (pool.TryReturn(this))
+                if (TryReturn())
                 {
                     GC.ReRegisterForFinalize(this);
                 }
             }
         }
 
-# endregion
+        #endregion
 <# if(t.returnType == "UnityWebRequest") { #>
 #endif
 <# } #>

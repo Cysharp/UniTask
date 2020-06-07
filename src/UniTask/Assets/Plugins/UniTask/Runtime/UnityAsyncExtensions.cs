@@ -124,7 +124,6 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-
                     core.GetResult(token);
                 }
                 finally
@@ -132,6 +131,7 @@ namespace Cysharp.Threading.Tasks
                     TryReturn();
                 }
             }
+
 
             public UniTaskStatus GetStatus(short token)
             {
@@ -306,7 +306,6 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-
                     return core.GetResult(token);
                 }
                 finally
@@ -545,11 +544,11 @@ namespace Cysharp.Threading.Tasks
 
             bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                TaskTracker.RemoveTracking(this);
                 return pool.TryPush(this);
             }
 
@@ -731,11 +730,11 @@ namespace Cysharp.Threading.Tasks
 
             bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                TaskTracker.RemoveTracking(this);
                 return pool.TryPush(this);
             }
 
@@ -866,7 +865,6 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
-
                     return core.GetResult(token);
                 }
                 finally
@@ -920,11 +918,11 @@ namespace Cysharp.Threading.Tasks
 
             bool TryReturn()
             {
+                TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                TaskTracker.RemoveTracking(this);
                 return pool.TryPush(this);
             }
 
