@@ -413,6 +413,19 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("after");
     }
 
+    private async UniTaskVoid ExecuteAsync()
+    {
+        Debug.Log("1");
+        {
+            var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
+        }
+        Debug.Log("------------------");
+        {
+            var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
+            Debug.Log("2");
+        }
+    }
+
 
     void Start()
     {
@@ -423,7 +436,7 @@ public class SandboxMain : MonoBehaviour
 
         //StartCoroutine(TestCoroutine().ToCoroutine());
 
-        Application.logMessageReceived += Application_logMessageReceived;
+        // Application.logMessageReceived += Application_logMessageReceived;
 
 
 
@@ -432,13 +445,9 @@ public class SandboxMain : MonoBehaviour
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
-            {
-                var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
-            }
-            Debug.Log("------------------");
-            {
-                var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
-            }
+            _ = ExecuteAsync();
+
+            await UniTask.Yield();
 
             //await DelayCheck();
             /*

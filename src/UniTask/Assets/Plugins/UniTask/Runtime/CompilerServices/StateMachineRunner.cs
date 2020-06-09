@@ -2,6 +2,7 @@
 
 using Cysharp.Threading.Tasks.Internal;
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -29,12 +30,26 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         void SetException(Exception exception);
     }
 
+    internal static class StateMachineUtility
+    {
+        public static int GetState(IAsyncStateMachine stateMachine)
+        {
+            var info = stateMachine.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .First(x => x.Name.EndsWith("__state"));
+            return (int)info.GetValue(stateMachine);
+        }
+    }
+
     internal sealed class AsyncUniTaskVoid<TStateMachine> : IStateMachineRunner, ITaskPoolNode<AsyncUniTaskVoid<TStateMachine>>, IUniTaskSource
         where TStateMachine : IAsyncStateMachine
     {
         static TaskPool<AsyncUniTaskVoid<TStateMachine>> pool;
 
+#if ENABLE_IL2CPP
+        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
+#else
         TStateMachine stateMachine;
+#endif
 
         public Action MoveNext { get; }
 
@@ -43,7 +58,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             MoveNext = Run;
         }
 
-        public static void SetStateMachine(ref AsyncUniTaskVoidMethodBuilder builder, ref TStateMachine stateMachine)
+        public static void SetStateMachine(ref TStateMachine stateMachine, ref IStateMachineRunner runnerFieldRef)
         {
             if (!pool.TryPop(out var result))
             {
@@ -51,7 +66,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             TaskTracker.TrackActiveTask(result, 3);
 
-            builder.runner = result; // set runner before copied.
+            runnerFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
@@ -102,7 +117,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTask<TStateMachine>> pool;
 
+#if ENABLE_IL2CPP
+        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
+#else
         TStateMachine stateMachine;
+#endif
 
         public Action MoveNext { get; }
 
@@ -113,7 +132,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             MoveNext = Run;
         }
 
-        public static void SetStateMachine(ref AsyncUniTaskMethodBuilder builder, ref TStateMachine stateMachine)
+        public static void SetStateMachine(ref TStateMachine stateMachine, ref IStateMachineRunnerPromise runnerPromiseFieldRef)
         {
             if (!pool.TryPop(out var result))
             {
@@ -121,7 +140,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             TaskTracker.TrackActiveTask(result, 3);
 
-            builder.runnerPromise = result; // set runner before copied.
+            runnerPromiseFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
@@ -213,7 +232,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTask<TStateMachine, T>> pool;
 
+#if ENABLE_IL2CPP
+        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
+#else
         TStateMachine stateMachine;
+#endif
 
         public Action MoveNext { get; }
 
@@ -224,7 +247,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             MoveNext = Run;
         }
 
-        public static void SetStateMachine(ref AsyncUniTaskMethodBuilder<T> builder, ref TStateMachine stateMachine)
+        public static void SetStateMachine(ref TStateMachine stateMachine, ref IStateMachineRunnerPromise<T> runnerPromiseFieldRef)
         {
             if (!pool.TryPop(out var result))
             {
@@ -232,9 +255,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             TaskTracker.TrackActiveTask(result, 3);
 
-            builder.runnerPromise = result; // set runner before copied.
+            runnerPromiseFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
+            
+            // UnityEngine.Debug.Log($"SetStateMachine State:" + StateMachineUtility.GetState(stateMachine));
         }
+
 
         public AsyncUniTask<TStateMachine, T> NextNode { get; set; }
 
@@ -255,6 +281,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
+            // UnityEngine.Debug.Log($"MoveNext State:" + StateMachineUtility.GetState(stateMachine));
             stateMachine.MoveNext();
         }
 

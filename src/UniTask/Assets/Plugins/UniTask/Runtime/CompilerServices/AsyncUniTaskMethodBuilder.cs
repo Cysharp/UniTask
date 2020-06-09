@@ -12,7 +12,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     [StructLayout(LayoutKind.Auto)]
     public struct AsyncUniTaskMethodBuilder
     {
-        internal IStateMachineRunnerPromise runnerPromise;
+        IStateMachineRunnerPromise runnerPromise;
         Exception ex;
 
         // 1. Static Create method.
@@ -80,7 +80,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runnerPromise == null)
             {
-                AsyncUniTask<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
+                AsyncUniTask<TStateMachine>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
             awaiter.OnCompleted(runnerPromise.MoveNext);
@@ -96,7 +96,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runnerPromise == null)
             {
-                AsyncUniTask<TStateMachine>.SetStateMachine(ref this, ref stateMachine);
+                AsyncUniTask<TStateMachine>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
             awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
@@ -138,7 +138,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     [StructLayout(LayoutKind.Auto)]
     public struct AsyncUniTaskMethodBuilder<T>
     {
-        internal IStateMachineRunnerPromise<T> runnerPromise;
+        IStateMachineRunnerPromise<T> runnerPromise;
         Exception ex;
         T result;
 
@@ -211,7 +211,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runnerPromise == null)
             {
-                AsyncUniTask<TStateMachine, T>.SetStateMachine(ref this, ref stateMachine);
+                AsyncUniTask<TStateMachine, T>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
             awaiter.OnCompleted(runnerPromise.MoveNext);
@@ -227,7 +227,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             if (runnerPromise == null)
             {
-                AsyncUniTask<TStateMachine, T>.SetStateMachine(ref this, ref stateMachine);
+                AsyncUniTask<TStateMachine, T>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
             awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
