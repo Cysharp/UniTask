@@ -690,6 +690,8 @@ foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
 }
 ```
 
+> In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build. And also currently due to IL2CPP limitation, in IL2CPP build, UniTask do boxing AsyncStateMachine when needed so sometimes exists `one` allocation.
+
 API References
 ---
 UniTask's API References is hosted at [cysharp.github.io/UniTask](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.html) by [DocFX](https://dotnet.github.io/docfx/) and [Cysharp/DocfXTemplate](https://github.com/Cysharp/DocfxTemplate).

@@ -45,7 +45,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTaskVoid<TStateMachine>> pool;
 
+#if ENABLE_IL2CPP
         IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
+#else
+        TStateMachine stateMachine;
+#endif
 
         public Action MoveNext { get; }
 
@@ -113,7 +117,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTask<TStateMachine>> pool;
 
+#if ENABLE_IL2CPP
         IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
+#else
+        TStateMachine stateMachine;
+#endif
 
         public Action MoveNext { get; }
 
@@ -224,7 +232,11 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTask<TStateMachine, T>> pool;
 
+#if ENABLE_IL2CPP
         IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
+#else
+        TStateMachine stateMachine;
+#endif
 
         public Action MoveNext { get; }
 
