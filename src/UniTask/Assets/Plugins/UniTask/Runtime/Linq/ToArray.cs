@@ -19,7 +19,7 @@ namespace Cysharp.Threading.Tasks.Linq
     {
         internal static async UniTask<TSource[]> ToArrayAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, CancellationToken cancellationToken)
         {
-            UnityEngine.Debug.Log("Called ToArray");
+            // UnityEngine.Debug.Log("Called ToArray");
 
             var pool = ArrayPool<TSource>.Shared;
             var array = pool.Rent(16);

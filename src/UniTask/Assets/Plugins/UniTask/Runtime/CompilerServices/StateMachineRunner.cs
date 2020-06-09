@@ -45,7 +45,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTaskVoid<TStateMachine>> pool;
 
-        TStateMachine stateMachine;
+        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
 
         public Action MoveNext { get; }
 
@@ -113,7 +113,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTask<TStateMachine>> pool;
 
-        TStateMachine stateMachine;
+        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
 
         public Action MoveNext { get; }
 
@@ -224,7 +224,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         static TaskPool<AsyncUniTask<TStateMachine, T>> pool;
 
-        TStateMachine stateMachine;
+        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
 
         public Action MoveNext { get; }
 
@@ -245,7 +245,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
             runnerPromiseFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
-            UnityEngine.Debug.Log($"SetStateMachine State:" + StateMachineUtility.GetState(stateMachine));
+            
+            // UnityEngine.Debug.Log($"SetStateMachine State:" + StateMachineUtility.GetState(stateMachine));
         }
 
 
@@ -268,7 +269,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
-            UnityEngine.Debug.Log($"MoveNext State:" + StateMachineUtility.GetState(stateMachine));
+            // UnityEngine.Debug.Log($"MoveNext State:" + StateMachineUtility.GetState(stateMachine));
             stateMachine.MoveNext();
         }
 
