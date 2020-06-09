@@ -5,7 +5,8 @@
         "UnityEditor.TestRunner",
         "UniTask",
         "Unity.ResourceManager",
-        "DOTween.Modules"
+        "DOTween.Modules",
+        "UniTask.Linq"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

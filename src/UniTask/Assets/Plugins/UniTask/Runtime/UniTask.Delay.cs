@@ -303,11 +303,12 @@ namespace Cysharp.Threading.Tasks
                 TaskPool.RegisterSizeGetter(typeof(DelayFramePromise), () => pool.Size);
             }
 
+            int initialFrame;
             int delayFrameCount;
             CancellationToken cancellationToken;
 
             int currentFrameCount;
-            UniTaskCompletionSourceCore<object> core;
+            UniTaskCompletionSourceCore<AsyncUnit> core;
 
             DelayFramePromise()
             {
@@ -327,6 +328,7 @@ namespace Cysharp.Threading.Tasks
 
                 result.delayFrameCount = delayFrameCount;
                 result.cancellationToken = cancellationToken;
+                result.initialFrame = Time.frameCount;
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -371,13 +373,27 @@ namespace Cysharp.Threading.Tasks
                     return false;
                 }
 
-                if (currentFrameCount == delayFrameCount)
+                if (currentFrameCount == 0)
                 {
-                    core.TrySetResult(null);
+                    if (delayFrameCount == 0) // same as Yield
+                    {
+                        core.TrySetResult(AsyncUnit.Default);
+                        return false;
+                    }
+
+                    // skip in initial frame.
+                    if (initialFrame == Time.frameCount)
+                    {
+                        return true;
+                    }
+                }
+
+                if (++currentFrameCount >= delayFrameCount)
+                {
+                    core.TrySetResult(AsyncUnit.Default);
                     return false;
                 }
 
-                currentFrameCount++;
                 return true;
             }
 
@@ -410,6 +426,7 @@ namespace Cysharp.Threading.Tasks
                 TaskPool.RegisterSizeGetter(typeof(DelayPromise), () => pool.Size);
             }
 
+            int initialFrame;
             float delayFrameTimeSpan;
             float elapsed;
             CancellationToken cancellationToken;
@@ -435,6 +452,7 @@ namespace Cysharp.Threading.Tasks
                 result.elapsed = 0.0f;
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
                 result.cancellationToken = cancellationToken;
+                result.initialFrame = Time.frameCount;
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -477,6 +495,14 @@ namespace Cysharp.Threading.Tasks
                 {
                     core.TrySetCanceled(cancellationToken);
                     return false;
+                }
+
+                if (elapsed == 0.0f)
+                {
+                    if (initialFrame == Time.frameCount)
+                    {
+                        return true;
+                    }
                 }
 
                 elapsed += Time.deltaTime;
@@ -520,6 +546,7 @@ namespace Cysharp.Threading.Tasks
 
             float delayFrameTimeSpan;
             float elapsed;
+            int initialFrame;
             CancellationToken cancellationToken;
 
             UniTaskCompletionSourceCore<object> core;
@@ -542,6 +569,7 @@ namespace Cysharp.Threading.Tasks
 
                 result.elapsed = 0.0f;
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
+                result.initialFrame = Time.frameCount;
                 result.cancellationToken = cancellationToken;
 
                 TaskTracker.TrackActiveTask(result, 3);
@@ -585,6 +613,14 @@ namespace Cysharp.Threading.Tasks
                 {
                     core.TrySetCanceled(cancellationToken);
                     return false;
+                }
+
+                if (elapsed == 0.0f)
+                {
+                    if (initialFrame == Time.frameCount)
+                    {
+                        return true;
+                    }
                 }
 
                 elapsed += Time.unscaledDeltaTime;

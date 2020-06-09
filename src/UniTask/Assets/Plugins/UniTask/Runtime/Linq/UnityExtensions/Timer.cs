@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using UnityEngine;
 
 namespace Cysharp.Threading.Tasks.Linq
 {
@@ -22,16 +23,34 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public static IUniTaskAsyncEnumerable<AsyncUnit> TimerFrame(int dueTimeFrameCount, PlayerLoopTiming updateTiming = PlayerLoopTiming.Update)
         {
+            if (dueTimeFrameCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. dueTimeFrameCount:" + dueTimeFrameCount);
+            }
+
             return new TimerFrame(dueTimeFrameCount, null, updateTiming);
         }
 
         public static IUniTaskAsyncEnumerable<AsyncUnit> TimerFrame(int dueTimeFrameCount, int periodFrameCount, PlayerLoopTiming updateTiming = PlayerLoopTiming.Update)
         {
+            if (dueTimeFrameCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. dueTimeFrameCount:" + dueTimeFrameCount);
+            }
+            if (periodFrameCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Delay does not allow minus periodFrameCount. periodFrameCount:" + dueTimeFrameCount);
+            }
+
             return new TimerFrame(dueTimeFrameCount, periodFrameCount, updateTiming);
         }
 
         public static IUniTaskAsyncEnumerable<AsyncUnit> IntervalFrame(int intervalFrameCount, PlayerLoopTiming updateTiming = PlayerLoopTiming.Update)
         {
+            if (intervalFrameCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Delay does not allow minus intervalFrameCount. intervalFrameCount:" + intervalFrameCount);
+            }
             return new TimerFrame(intervalFrameCount, intervalFrameCount, updateTiming);
         }
     }
@@ -64,6 +83,7 @@ namespace Cysharp.Threading.Tasks.Linq
             readonly bool ignoreTimeScale;
             CancellationToken cancellationToken;
 
+            int initialFrame;
             float elapsed;
             bool dueTimePhase;
             bool completed;
@@ -80,6 +100,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     if (this.period <= 0) this.period = 1;
                 }
 
+                this.initialFrame = Time.frameCount;
                 this.dueTimePhase = true;
                 this.updateTiming = updateTiming;
                 this.ignoreTimeScale = ignoreTimeScale;
@@ -119,9 +140,19 @@ namespace Cysharp.Threading.Tasks.Linq
                     return false;
                 }
 
-                elapsed += (ignoreTimeScale) ? UnityEngine.Time.unscaledDeltaTime : UnityEngine.Time.deltaTime;
                 if (dueTimePhase)
                 {
+                    if (elapsed == 0)
+                    {
+                        // skip in initial frame.
+                        if (initialFrame == Time.frameCount)
+                        {
+                            return true;
+                        }
+                    }
+
+                    elapsed += (ignoreTimeScale) ? UnityEngine.Time.unscaledDeltaTime : UnityEngine.Time.deltaTime;
+
                     if (elapsed >= dueTime)
                     {
                         dueTimePhase = false;
@@ -136,6 +167,8 @@ namespace Cysharp.Threading.Tasks.Linq
                         completionSource.TrySetResult(false);
                         return false;
                     }
+
+                    elapsed += (ignoreTimeScale) ? UnityEngine.Time.unscaledDeltaTime : UnityEngine.Time.deltaTime;
 
                     if (elapsed >= period)
                     {
@@ -172,6 +205,7 @@ namespace Cysharp.Threading.Tasks.Linq
             readonly int? periodFrameCount;
             CancellationToken cancellationToken;
 
+            int initialFrame;
             int currentFrame;
             bool dueTimePhase;
             bool completed;
@@ -185,6 +219,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     if (periodFrameCount <= 0) periodFrameCount = 1;
                 }
 
+                this.initialFrame = Time.frameCount;
                 this.dueTimePhase = true;
                 this.dueTimeFrameCount = dueTimeFrameCount;
                 this.periodFrameCount = periodFrameCount;
@@ -228,10 +263,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 if (dueTimePhase)
                 {
-                    if (currentFrame++ >= dueTimeFrameCount)
+                    if (currentFrame == 0)
+                    {
+                        if (dueTimeFrameCount == 0)
+                        {
+                            dueTimePhase = false;
+                            completionSource.TrySetResult(true);
+                            return true;
+                        }
+
+                        // skip in initial frame.
+                        if (initialFrame == Time.frameCount)
+                        {
+                            return true;
+                        }
+                    }
+
+                    if (++currentFrame >= dueTimeFrameCount)
                     {
                         dueTimePhase = false;
                         completionSource.TrySetResult(true);
+                    }
+                    else
+                    {
                     }
                 }
                 else

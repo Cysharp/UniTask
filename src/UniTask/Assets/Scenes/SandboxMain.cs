@@ -378,7 +378,39 @@ public class SandboxMain : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log("FixedUpdate:" + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+        // Debug.Log("FixedUpdate:" + Time.frameCount + ", " + PlayerLoopInfo.CurrentLoopType);
+    }
+
+    async UniTaskVoid DelayFrame3_Pre()
+    {
+        await UniTask.Yield(PlayerLoopTiming.PreUpdate);
+        Debug.Log("Before framecount:" + Time.frameCount);
+        await UniTask.DelayFrame(3);
+        Debug.Log("After framecount:" + Time.frameCount);
+    }
+
+    async UniTaskVoid DelayFrame3_Post()
+    {
+        await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+        Debug.Log("Before framecount:" + Time.frameCount);
+        await UniTask.DelayFrame(3);
+        Debug.Log("After framecount:" + Time.frameCount);
+    }
+
+    async UniTask TestCoroutine()
+    {
+        await UniTask.Yield();
+        throw new Exception("foobarbaz");
+    }
+
+    async UniTask DelayCheck()
+    {
+        await UniTask.Yield(PlayerLoopTiming.PreUpdate);
+        Debug.Log("before");
+        var t = UniTask.Delay(TimeSpan.FromSeconds(1), ignoreTimeScale: false);
+
+        await t;
+        Debug.Log("after");
     }
 
 
@@ -386,13 +418,29 @@ public class SandboxMain : MonoBehaviour
     {
         PlayerLoopInfo.Inject();
 
-        _ = AsyncFixedUpdate();
-        StartCoroutine(CoroutineFixedUpdate());
+        //_ = AsyncFixedUpdate();
+        //StartCoroutine(CoroutineFixedUpdate());
 
-        
+        //StartCoroutine(TestCoroutine().ToCoroutine());
+
+        Application.logMessageReceived += Application_logMessageReceived;
+
+
+
+
+
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
+            {
+                var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
+            }
+            Debug.Log("------------------");
+            {
+                var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
+            }
+
+            //await DelayCheck();
             /*
             UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
             StartCoroutine(CoroutineRun());
@@ -401,8 +449,8 @@ public class SandboxMain : MonoBehaviour
             _ = AsyncLastUpdate();
             _ = AsyncLastLast();
             */
-            await UniTask.Yield();
-            _ = Test2();
+            //await UniTask.Yield();
+            //_ = Test2();
             // EarlyUpdate.ExecuteMainThreadJobs
             // _ = Test2();
 
@@ -420,10 +468,17 @@ public class SandboxMain : MonoBehaviour
             //StartCoroutine(CoroutineRun2());
             ////StartCoroutine(CoroutineRun());
             //UnityEngine.Debug.Log("FOO?");
+
+            //_ = DelayFrame3_Pre();
+            //await UniTask.Yield();
+
         }));
 
         cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
+            _ = DelayFrame3_Post();
+            await UniTask.Yield();
+
             //await UniTask.Yield(PlayerLoopTiming.LastPreUpdate);
             //UnityEngine.Debug.Log("before update:" + Time.frameCount);
             //await UniTask.NextFrame();
@@ -435,13 +490,13 @@ public class SandboxMain : MonoBehaviour
             //UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
             //_ = Yieldding();
 
-            var cts = new CancellationTokenSource();
+            //var cts = new CancellationTokenSource();
 
-            UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
-            var la = SceneManager.LoadSceneAsync("Scenes/ExceptionExamples").WithCancellation(cts.Token);
-            //cts.Cancel();
-            await la;
-            UnityEngine.Debug.Log("End LoadSceneAsync" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
+            //UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
+            //var la = SceneManager.LoadSceneAsync("Scenes/ExceptionExamples").WithCancellation(cts.Token);
+            ////cts.Cancel();
+            //await la;
+            //UnityEngine.Debug.Log("End LoadSceneAsync" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
         }));
 
         //return;
@@ -569,6 +624,16 @@ public class SandboxMain : MonoBehaviour
         //GameObject.Destroy(this.gameObject);
 
 
+    }
+
+    private void Application_logMessageReceived2(string condition, string stackTrace, LogType type)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void Application_logMessageReceived1(string condition, string stackTrace, LogType type)
+    {
+        throw new NotImplementedException();
     }
 
     async UniTaskVoid UpdateUniTask()

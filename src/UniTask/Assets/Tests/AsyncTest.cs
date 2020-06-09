@@ -269,7 +269,8 @@ namespace Cysharp.Threading.TasksTests
             var first = Time.frameCount;
             var canceled = await UniTask.DelayFrame(100, cancellationToken: cts.Token).SuppressCancellationThrow();
 
-            (Time.frameCount - first).Should().Be(11); // 10 frame canceled
+            var r = (Time.frameCount - first);
+            (9 < r && r < 11).Should().BeTrue();
             canceled.Should().Be(true);
         });
 
