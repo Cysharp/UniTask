@@ -621,9 +621,8 @@ namespace Cysharp.Threading.Tasks
 
                 if (exception != null)
                 {
-                    // throw exception on iterator (main)thread.
-                    // unfortunately unity test-runner can not handle throw exception on hand-write IEnumerator.MoveNext.
-                    UnityEngine.Debug.LogException(exception.SourceException);
+                    exception.Throw();
+                    return false;
                 }
 
                 return !completed;
@@ -692,9 +691,8 @@ namespace Cysharp.Threading.Tasks
 
                 if (exception != null)
                 {
-                    // throw exception on iterator (main)thread.
-                    // unfortunately unity test-runner can not handle throw exception on hand-write IEnumerator.MoveNext.
-                    UnityEngine.Debug.LogException(exception.SourceException);
+                    exception.Throw();
+                    return false;
                 }
 
                 return !completed;
