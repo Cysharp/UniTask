@@ -12,6 +12,15 @@ on:
       - synchronize
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Dump GitHub context
+        run: echo "$CONTEXT"
+        env:
+          CONTEXT: ${{ toJson(github) }}
+
   build-dotnet:
     runs-on: ubuntu-latest
     env:
