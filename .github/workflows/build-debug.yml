@@ -26,7 +26,7 @@ jobs:
       - run: dotnet test -c Debug ./src/UniTask.NetCoreTests/UniTask.NetCoreTests.csproj
 
   build-unity:
-    if: "(github.event == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp')"
+    if: "(github.event == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:')"
     strategy:
       matrix:
         unity: ["2019.3.9f1", "2020.1.0b5"]
