@@ -20,6 +20,7 @@ jobs:
         run: echo "$CONTEXT"
         env:
           CONTEXT: ${{ toJson(github) }}
+      - run: echo "${{ github.pull_request.head.label }}"
 
   build-dotnet:
     runs-on: ubuntu-latest
@@ -35,7 +36,7 @@ jobs:
       - run: dotnet test -c Debug ./src/UniTask.NetCoreTests/UniTask.NetCoreTests.csproj
 
   build-unity:
-    if: "(github.event == 'push' && github.repository_owner == 'Cysharp') || (startsWith(github.pull_request.head.repo.full_name, 'Cysharp/'))"
+    if: "(github.event == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.pull_request.head.label, 'Cysharp')"
     strategy:
       matrix:
         unity: ["2019.3.9f1", "2020.1.0b5"]
