@@ -12,6 +12,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     {
         Action MoveNext { get; }
         void Return();
+
+#if ENABLE_IL2CPP
+        Action ReturnAction { get; }
+#endif
     }
 
     internal interface IStateMachineRunnerPromise : IUniTaskSource
@@ -32,6 +36,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
     internal static class StateMachineUtility
     {
+        // Get AsyncStateMachine internal state to check IL2CPP bug
         public static int GetState(IAsyncStateMachine stateMachine)
         {
             var info = stateMachine.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
@@ -46,16 +51,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         static TaskPool<AsyncUniTaskVoid<TStateMachine>> pool;
 
 #if ENABLE_IL2CPP
-        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
-#else
-        TStateMachine stateMachine;
+        public Action ReturnAction { get; }
 #endif
+
+        TStateMachine stateMachine;
 
         public Action MoveNext { get; }
 
         public AsyncUniTaskVoid()
         {
             MoveNext = Run;
+#if ENABLE_IL2CPP
+            ReturnAction = Return;
+#endif
         }
 
         public static void SetStateMachine(ref TStateMachine stateMachine, ref IStateMachineRunner runnerFieldRef)
@@ -118,18 +126,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         static TaskPool<AsyncUniTask<TStateMachine>> pool;
 
 #if ENABLE_IL2CPP
-        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
-#else
-        TStateMachine stateMachine;
+        readonly Action returnDelegate;  
 #endif
-
         public Action MoveNext { get; }
 
+        TStateMachine stateMachine;
         UniTaskCompletionSourceCore<AsyncUnit> core;
 
         AsyncUniTask()
         {
             MoveNext = Run;
+#if ENABLE_IL2CPP
+            returnDelegate = Return;
+#endif
         }
 
         public static void SetStateMachine(ref TStateMachine stateMachine, ref IStateMachineRunnerPromise runnerPromiseFieldRef)
@@ -149,6 +158,14 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         static AsyncUniTask()
         {
             TaskPool.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine>), () => pool.Size);
+        }
+
+        void Return()
+        {
+            TaskTracker.RemoveTracking(this);
+            core.Reset();
+            stateMachine = default;
+            pool.TryPush(this);
         }
 
         bool TryReturn()
@@ -196,7 +213,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             finally
             {
+#if ENABLE_IL2CPP
+                // workaround for IL2CPP bug.
+                PlayerLoopHelper.AddContinuation(PlayerLoopTiming.LastPostLateUpdate, returnDelegate);
+#else
                 TryReturn();
+#endif
             }
         }
 
@@ -233,18 +255,20 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         static TaskPool<AsyncUniTask<TStateMachine, T>> pool;
 
 #if ENABLE_IL2CPP
-        IAsyncStateMachine stateMachine; // unfortunatelly boxed to fix IL2CPP issue.
-#else
-        TStateMachine stateMachine;
+        readonly Action returnDelegate;  
 #endif
 
         public Action MoveNext { get; }
 
+        TStateMachine stateMachine;
         UniTaskCompletionSourceCore<T> core;
 
         AsyncUniTask()
         {
             MoveNext = Run;
+#if ENABLE_IL2CPP
+            returnDelegate = Return;
+#endif
         }
 
         public static void SetStateMachine(ref TStateMachine stateMachine, ref IStateMachineRunnerPromise<T> runnerPromiseFieldRef)
@@ -257,16 +281,21 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 
             runnerPromiseFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
-            
-            // UnityEngine.Debug.Log($"SetStateMachine State:" + StateMachineUtility.GetState(stateMachine));
         }
-
 
         public AsyncUniTask<TStateMachine, T> NextNode { get; set; }
 
         static AsyncUniTask()
         {
             TaskPool.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine, T>), () => pool.Size);
+        }
+
+        void Return()
+        {
+            TaskTracker.RemoveTracking(this);
+            core.Reset();
+            stateMachine = default;
+            pool.TryPush(this);
         }
 
         bool TryReturn()
@@ -315,7 +344,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             finally
             {
+#if ENABLE_IL2CPP
+                // workaround for IL2CPP bug.
+                PlayerLoopHelper.AddContinuation(PlayerLoopTiming.LastPostLateUpdate, returnDelegate);
+#else
                 TryReturn();
+#endif
             }
         }
 
