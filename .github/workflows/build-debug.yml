@@ -26,9 +26,10 @@ jobs:
       - run: dotnet test -c Debug ./src/UniTask.NetCoreTests/UniTask.NetCoreTests.csproj
 
   build-unity:
+    if: "(github.event == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp')"
     strategy:
       matrix:
-        unity: ['2019.3.9f1', '2020.1.0b5']
+        unity: ["2019.3.9f1", "2020.1.0b5"]
         include:
           - unity: 2019.3.9f1
             license: UNITY_2019_3
@@ -66,7 +67,7 @@ jobs:
         run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
         working-directory: src/UniTask
 
-      # Store artifacts.      
+      # Store artifacts.
       - uses: actions/upload-artifact@v2
         with:
           name: UniTask.unitypackage.zip
