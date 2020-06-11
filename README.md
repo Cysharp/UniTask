@@ -347,7 +347,7 @@ It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.
 
 > UniTask.Yield(without CancellationToken) is a special type, returns `YieldAwaitable` and run on YieldRunner. It is most lightweight and faster.
 
-AsyncOperation is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after called, loaded scene called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
+AsyncOperation is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after called, loaded scene's `Start` called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
 
 In UniTask, await directly and `WithCancellation` use native timing, `ToUniTask` use specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, causes different order of Start and continuation after await. so recommend not to use `LoadSceneAsync.ToUniTask`.
 
@@ -584,9 +584,30 @@ await this.GetAsyncMoveTrigger().ForEachAsync(axisEventData =>
 });
 ```
 
-`AsyncReactiveProperty`, `AsyncReadOnlyReactiveProperty` is UniTask version of UniTask's ReactiveProperty.
+`AsyncReactiveProperty`, `AsyncReadOnlyReactiveProperty` is UniTask version of UniTask's ReactiveProperty. `BindTo` extension method of `IUniTaskAsyncEnumerable<T>` for binding asynchronous stream values to Unity components(Text/Selectable/TMP/Text).
 
-`BindTo` extension method of `IUniTaskAsyncEnumerable<T>` for binding asynchronous stream values to Unity components(Text/Selectable/TMP/Text).
+```csharp
+var rp = new AsyncReactiveProperty<int>(99);
+
+// AsyncReactiveProperty itself is IUniTaskAsyncEnumerable, you can query by LINQ
+rp.ForEachAsync(x =>
+{
+    Debug.Log(x);
+}, this.GetCancellationTokenOnDestroy()).Forget();
+
+rp.Value = 10; // push 10 to all subscriber
+rp.Value = 11; // push 11 to all subscriber
+
+// WithoutCurrent ignore initial value
+// BindTo bind stream value to unity components.
+rp.WithoutCurrent().BindTo(this.textComponent);
+
+await rp.WaitAsync(); // wait until next value set
+
+// also exists ToReadOnlyReactiveProperty
+var rp2 = new AsyncReactiveProperty<int>(99);
+var rorp = rp.CombineLatest(rp2, (x, y) => (x, y)).ToReadOnlyReactiveProperty();
+```
 
 A pull-type asynchronous stream does not get the next values until the asynchronous processing in the sequence is complete. This could spill data from push-type events such as buttons.
 
@@ -699,6 +720,7 @@ Use UniTask type.
 | `Task`/`ValueTask` | `UniTask` |
 | `Task<T>`/`ValueTask<T>` | `UniTask<T>` |
 | `async void` | `async UniTaskVoid` | 
+| `+= async () => { }` | `UniTask.Void`, `UniTask.Action`, `UniTask.UnityAction` |
 | --- | `UniTaskCompletionSource` |
 | `TaskCompletionSource<T>` | `UniTaskCompletionSource<T>`/`AutoResetUniTaskCompletionSource<T>` |
 | `ManualResetValueTaskSourceCore<T>` | `UniTaskCompletionSourceCore<T>` |
@@ -708,6 +730,7 @@ Use UniTask type.
 | `ValueTask<T>.IsCompleted` | `UniTask<T>.Status.IsCompleted()` |
 | `new Progress<T>` | `Progress.Create<T>` |
 | `CancellationToken.Register(UnsafeRegister)` | `CancellationToken.RegisterWithoutCaptureExecutionContext` |
+| `CancellationTokenSource.CancelAfter` | `CancellationTokenSource.CancelAfterSlim` |
 | `Channel.CreateUnbounded<T>(false){ SingleReader = true }` | `Channel.CreateSingleConsumerUnbounded<T>` |
 | `IAsyncEnumerable<T>` | `IUniTaskAsyncEnumerable<T>` |
 | `IAsyncEnumerator<T>` | `IUniTaskAsyncEnumerator<T>` |
