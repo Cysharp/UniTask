@@ -687,7 +687,7 @@ UniTask has many standard Task-like APIs. This table shows what is the alternati
 Use standard type.
 
 | .NET Type | UniTask Type | 
-| --- | --- | --- |
+| --- | --- |
 | `IProgress<T>` | --- |
 | `CancellationToken` | --- | 
 | `CancellationTokenSource` | --- |
@@ -695,7 +695,7 @@ Use standard type.
 Use UniTask type.
 
 | .NET Type | UniTask Type | 
-| --- | --- | --- |
+| --- | --- |
 | `Task`/`ValueTask` | `UniTask` |
 | `Task<T>`/`ValueTask<T>` | `UniTask<T>` |
 | `void` | `UniTaskVoid` | 
