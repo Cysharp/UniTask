@@ -112,6 +112,85 @@ namespace NetCoreTests
             state.Value.Should().Be(20);
         }
 
+        [Fact]
+        public async Task WaitAsyncTest()
+        {
+            var rp = new AsyncReactiveProperty<int>(128);
+
+            var f = await rp.FirstAsync();
+            f.Should().Be(128);
+
+            {
+                var t = rp.WaitAsync();
+                rp.Value = 99;
+                rp.Value = 100;
+                var v = await t;
+
+                v.Should().Be(99);
+            }
+
+            {
+                var t = rp.WaitAsync();
+                rp.Value = 99;
+                rp.Value = 100;
+                var v = await t;
+
+                v.Should().Be(99);
+            }
+        }
+
+
+        [Fact]
+        public async Task WaitAsyncCancellationTest()
+        {
+            var cts = new CancellationTokenSource();
+
+            var rp = new AsyncReactiveProperty<int>(128);
+
+            var t = rp.WaitAsync(cts.Token);
+
+            cts.Cancel();
+
+            rp.Value = 99;
+            rp.Value = 100;
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => { await t; });
+        }
+
+
+        [Fact]
+        public async Task ReadOnlyWaitAsyncTest()
+        {
+            var rp = new AsyncReactiveProperty<int>(128);
+            var rrp = rp.ToReadOnlyAsyncReactiveProperty(CancellationToken.None);
+
+            var t = rrp.WaitAsync();
+            rp.Value = 99;
+            rp.Value = 100;
+            var v = await t;
+
+            v.Should().Be(99);
+        }
+
+
+        [Fact]
+        public async Task ReadOnlyWaitAsyncCancellationTest()
+        {
+            var cts = new CancellationTokenSource();
+
+            var rp = new AsyncReactiveProperty<int>(128);
+            var rrp = rp.ToReadOnlyAsyncReactiveProperty(CancellationToken.None);
+
+            var t = rrp.WaitAsync(cts.Token);
+
+            cts.Cancel();
+
+            rp.Value = 99;
+            rp.Value = 100;
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => { await t; });
+        }
+
     }
 
 
