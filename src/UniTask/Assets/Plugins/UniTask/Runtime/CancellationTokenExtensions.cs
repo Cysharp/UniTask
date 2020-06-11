@@ -9,6 +9,7 @@ namespace Cysharp.Threading.Tasks
     public static class CancellationTokenExtensions
     {
         static readonly Action<object> cancellationTokenCallback = Callback;
+        static readonly Action<object> disposeCallback = DisposeCallback;
 
         public static (UniTask, CancellationTokenRegistration) ToUniTask(this CancellationToken cancellationToken)
         {
@@ -74,6 +75,17 @@ namespace Cysharp.Threading.Tasks
                     ExecutionContext.RestoreFlow();
                 }
             }
+        }
+
+        public static CancellationTokenRegistration AddTo(this IDisposable disposable, CancellationToken cancellationToken)
+        {
+            return cancellationToken.RegisterWithoutCaptureExecutionContext(disposeCallback, disposable);
+        }
+
+        static void DisposeCallback(object state)
+        {
+            var d = (IDisposable)state;
+            d.Dispose();
         }
     }
 

@@ -429,7 +429,9 @@ public class SandboxMain : MonoBehaviour
 
     void Start()
     {
-        PlayerLoopInfo.Inject();
+        UnityEngine.Debug.Log("Start:" + PlayerLoopInfo.CurrentLoopType);
+
+        //PlayerLoopInfo.Inject();
 
         //_ = AsyncFixedUpdate();
         //StartCoroutine(CoroutineFixedUpdate());
@@ -438,7 +440,10 @@ public class SandboxMain : MonoBehaviour
 
         // Application.logMessageReceived += Application_logMessageReceived;
 
+        // var rp = new AsyncReactiveProperty<int>();
 
+
+        // rp.AddTo(this.GetCancellationTokenOnDestroy());
 
 
 
@@ -969,6 +974,7 @@ public class PlayerLoopInfo
 
     public static Type CurrentLoopType { get; private set; }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     public static void Inject()
     {
         var system = PlayerLoop.GetCurrentPlayerLoop();
