@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace Cysharp.Threading.Tasks.Internal
@@ -131,6 +130,7 @@ namespace Cysharp.Threading.Tasks.Internal
         void PostLateUpdate() => RunCore();
         void LastPostLateUpdate() => RunCore();
 
+        
         [System.Diagnostics.DebuggerHidden]
         void RunCore()
         {
@@ -141,85 +141,29 @@ namespace Cysharp.Threading.Tasks.Internal
 
             lock (arrayLock)
             {
-                var j = tail - 1;
-
-                // eliminate array-bound check for i
-                for (int i = 0; i < loopItems.Length; i++)
+                var pivot = ArrayUtil.Partition(loopItems, playerLoopItem =>
                 {
-                    var action = loopItems[i];
-                    if (action != null)
+                    try
+                    {
+                        return playerLoopItem != null && playerLoopItem.MoveNext();
+                    }
+                    catch (Exception e)
                     {
                         try
                         {
-                            if (!action.MoveNext())
-                            {
-                                loopItems[i] = null;
-                            }
-                            else
-                            {
-                                continue; // next i 
-                            }
+                            unhandledExceptionCallback(e);
+                            return false;
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            loopItems[i] = null;
-                            try
-                            {
-                                unhandledExceptionCallback(ex);
-                            }
-                            catch { }
+                            return false;
                         }
                     }
-
-                    // find null, loop from tail
-                    while (i < j)
-                    {
-                        var fromTail = loopItems[j];
-                        if (fromTail != null)
-                        {
-                            try
-                            {
-                                if (!fromTail.MoveNext())
-                                {
-                                    loopItems[j] = null;
-                                    j--;
-                                    continue; // next j
-                                }
-                                else
-                                {
-                                    // swap
-                                    loopItems[i] = fromTail;
-                                    loopItems[j] = null;
-                                    j--;
-                                    goto NEXT_LOOP; // next i
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                loopItems[j] = null;
-                                j--;
-                                try
-                                {
-                                    unhandledExceptionCallback(ex);
-                                }
-                                catch { }
-                                continue; // next j
-                            }
-                        }
-                        else
-                        {
-                            j--;
-                        }
-                    }
-
-                    tail = i; // loop end
-                    break; // LOOP END
-
-                    NEXT_LOOP:
-                    continue;
-                }
-
-
+                });
+                
+                for (var i = pivot; i < loopItems.Length; ++i)
+                    loopItems[i] = null;
+                
                 lock (runningAndQueueLock)
                 {
                     running = false;

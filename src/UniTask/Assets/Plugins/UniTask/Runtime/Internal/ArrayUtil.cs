@@ -68,6 +68,55 @@ namespace Cysharp.Threading.Tasks.Internal
                 return (buffer, index);
             }
         }
+        
+        public static void Swap<T>(IList<T> array, int indexA, int indexB)
+        {
+            var tmp = array[indexA];
+            array[indexA] = array[indexB];
+            array[indexB] = tmp;
+        }
+        
+        /// <summary>
+        /// Returns the index of the first element satisfying the <paramref name="predicate"/>.
+        /// Returns -1 if no such element exists.
+        /// </summary>
+        /// <param name="array">The array to search.</param>
+        /// <param name="predicate">The predicate use to search the array.</param>
+        /// <typeparam name="T">The type of elements in the array.</typeparam>
+        /// <returns>Index of the first element satisfying the <paramref name="predicate"/> otherwise returns -1.</returns>
+        public static int FirstIndexOf<T>(IReadOnlyList<T> array, Func<T, bool> predicate)
+        {
+            for (var i = 0; i < array.Count; ++i)
+            {
+                if (!predicate(array[i])) continue;
+                return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Reorders the elements in <paramref name="array"/> in such a way that all elements for which the <paramref name="predicate"/>
+        /// returns <c>true </c> precede the elements for which <paramref name="predicate"/> returns <c>false</c>.
+        /// Relative order of the elements is not preserved. 
+        /// </summary>
+        /// <param name="array">The array to partition.</param>
+        /// <param name="predicate">The predicate that determine how the elements are partitioned.</param>
+        /// <typeparam name="T">The type of the elements in the array.</typeparam>
+        /// <returns>Return the index of first element of the second group.</returns>
+        public static int Partition<T>(T[] array, Func<T, bool> predicate)
+        {
+            var pivot = FirstIndexOf(array, element => !predicate(element));
+            if (pivot == -1) return array.Length;
+            for (var i = pivot + 1; i < array.Length; ++i)
+            {
+                if (!predicate(array[i])) continue;
+                Swap(array, pivot, i);
+                ++pivot;
+            }
+
+            return pivot;
+        }
     }
 }
 
