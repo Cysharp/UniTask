@@ -29,6 +29,7 @@ Provides an efficient async/await integration to Unity.
 - [Awaitable Events](#awaitable-events)
 - [Channel](#channel)
 - [For Unit Testing](#for-unit-testing)
+- [Compare with Standard Task API](#compare-with-standard-task-api)
 - [Pooling Configuration](#pooling-configuration)
 - [API References](#api-references)
 - [UPM Package](#upm-package)
@@ -686,7 +687,7 @@ UniTask has many standard Task-like APIs. This table shows what is the alternati
 Use standard type.
 
 | .NET Type | UniTask Type | 
-| --- | --- | --- |
+| --- | --- |
 | `IProgress<T>` | --- |
 | `CancellationToken` | --- | 
 | `CancellationTokenSource` | --- |
@@ -694,10 +695,10 @@ Use standard type.
 Use UniTask type.
 
 | .NET Type | UniTask Type | 
-| --- | --- | --- |
+| --- | --- |
 | `Task`/`ValueTask` | `UniTask` |
 | `Task<T>`/`ValueTask<T>` | `UniTask<T>` |
-| `void` | `UniTaskVoid` | 
+| `async void` | `async UniTaskVoid` | 
 | --- | `UniTaskCompletionSource` |
 | `TaskCompletionSource<T>` | `UniTaskCompletionSource<T>`/`AutoResetUniTaskCompletionSource<T>` |
 | `ManualResetValueTaskSourceCore<T>` | `UniTaskCompletionSourceCore<T>` |
