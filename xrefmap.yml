@@ -1256,6 +1256,19 @@ references:
   commentId: T:Cysharp.Threading.Tasks.CancellationTokenExtensions
   fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions
   nameWithType: CancellationTokenExtensions
+- uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.AddTo(IDisposable,System.Threading.CancellationToken)
+  name: AddTo(IDisposable, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_AddTo_IDisposable_System_Threading_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.CancellationTokenExtensions.AddTo(IDisposable,System.Threading.CancellationToken)
+  fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.AddTo(IDisposable, System.Threading.CancellationToken)
+  nameWithType: CancellationTokenExtensions.AddTo(IDisposable, CancellationToken)
+- uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.AddTo*
+  name: AddTo
+  href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_AddTo_
+  commentId: Overload:Cysharp.Threading.Tasks.CancellationTokenExtensions.AddTo
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.AddTo
+  nameWithType: CancellationTokenExtensions.AddTo
 - uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext(System.Threading.CancellationToken,Action)
   name: RegisterWithoutCaptureExecutionContext(CancellationToken, Action)
   href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_RegisterWithoutCaptureExecutionContext_System_Threading_CancellationToken_Action_
