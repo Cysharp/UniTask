@@ -698,7 +698,7 @@ Use UniTask type.
 | --- | --- |
 | `Task`/`ValueTask` | `UniTask` |
 | `Task<T>`/`ValueTask<T>` | `UniTask<T>` |
-| `void` | `UniTaskVoid` | 
+| `async void` | `async UniTaskVoid` | 
 | --- | `UniTaskCompletionSource` |
 | `TaskCompletionSource<T>` | `UniTaskCompletionSource<T>`/`AutoResetUniTaskCompletionSource<T>` |
 | `ManualResetValueTaskSourceCore<T>` | `UniTaskCompletionSourceCore<T>` |
