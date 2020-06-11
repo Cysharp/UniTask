@@ -443,6 +443,7 @@ namespace Cysharp.Threading.TasksTests
             public void OnError(Exception error) => OnErrorCalled = true;
         }
 
+
 #endif
 #endif
     }
