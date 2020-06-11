@@ -679,6 +679,50 @@ public IEnumerator DelayIgnore() => UniTask.ToCoroutine(async () =>
 
 UniTask itself's unit test is written by Unity Test Runner and [Cysharp/RuntimeUnitTestToolkit](https://github.com/Cysharp/RuntimeUnitTestToolkit) to check on CI and IL2CPP working.
 
+Compare with Standard Task API
+---
+UniTask has many standard Task-like APIs. This table shows what is the alternative apis.
+
+Use standard type.
+
+| .NET Type | UniTask Type | 
+| --- | --- | --- |
+| `IProgress<T>` | --- |
+| `CancellationToken` | --- | 
+| `CancellationTokenSource` | --- |
+
+Use UniTask type.
+
+| .NET Type | UniTask Type | 
+| --- | --- | --- |
+| `Task`/`ValueTask` | `UniTask` |
+| `Task<T>`/`ValueTask<T>` | `UniTask<T>` |
+| `void` | `UniTaskVoid` | 
+| --- | `UniTaskCompletionSource` |
+| `TaskCompletionSource<T>` | `UniTaskCompletionSource<T>`/`AutoResetUniTaskCompletionSource<T>` |
+| `ManualResetValueTaskSourceCore<T>` | `UniTaskCompletionSourceCore<T>` |
+| `IValueTaskSource` | `IUniTaskSource` |
+| `IValueTaskSource<T>` | `IUniTaskSource<T>` |
+| `ValueTask.IsCompleted` | `UniTask.Status.IsCompleted()` |
+| `ValueTask<T>.IsCompleted` | `UniTask<T>.Status.IsCompleted()` |
+| `new Progress<T>` | `Progress.Create<T>` |
+| `CancellationToken.Register(UnsafeRegister)` | `CancellationToken.RegisterWithoutCaptureExecutionContext` |
+| `Channel.CreateUnbounded<T>(false){ SingleReader = true }` | `Channel.CreateSingleConsumerUnbounded<T>` |
+| `IAsyncEnumerable<T>` | `IUniTaskAsyncEnumerable<T>` |
+| `IAsyncEnumerator<T>` | `IUniTaskAsyncEnumerator<T>` |
+| `IAsyncDisposable` | `IUniTaskAsyncDisposable` |
+| `Task.Delay` | `UniTask.Delay` |
+| `Task.Yield` | `UniTask.Yield` |
+| `Task.Run` | `UniTask.Run` |
+| `Task.WhenAll` | `UniTask.WhenAll` |
+| `Task.WhenAny` | `UniTask.WhenAny` |
+| `Task.CompletedTask` | `UniTask.CompletedTask` |
+| `Task.FromException` | `UniTask.FromException` |
+| `Task.FromResult` | `UniTask.FromResult` |
+| `Task.FromCanceled` | `UniTask.FromCanceled` |
+| `Task.ContinueWith` | `UniTask.ContinueWith` |
+| `TaskScheduler.UnobservedTaskException` | `UniTaskScheduler.UnobservedTaskException` |
+
 Pooling Configuration
 ---
 UniTask is aggressively caching async promise object to achive zero allocation. In default, cache all promises but you can configure `TaskPool.SetMaxPoolSize` to your value, the value indicates cache size per type. `TaskPool.GetCacheSizeInfo` returns current cached object in pool.
@@ -690,7 +734,7 @@ foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
 }
 ```
 
-> In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build. And also currently due to IL2CPP limitation, in IL2CPP build, UniTask do boxing AsyncStateMachine when needed so sometimes exists `one` allocation.
+> In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build.
 
 API References
 ---
