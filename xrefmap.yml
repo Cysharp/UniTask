@@ -229,6 +229,23 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.AsyncReactiveProperty(Of T).Value
   nameWithType: AsyncReactiveProperty<T>.Value
   nameWithType.vb: AsyncReactiveProperty(Of T).Value
+- uid: Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WaitAsync(System.Threading.CancellationToken)
+  name: WaitAsync(CancellationToken)
+  href: api/Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WaitAsync_System_Threading_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WaitAsync(System.Threading.CancellationToken)
+  fullName: Cysharp.Threading.Tasks.AsyncReactiveProperty<T>.WaitAsync(System.Threading.CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.AsyncReactiveProperty(Of T).WaitAsync(System.Threading.CancellationToken)
+  nameWithType: AsyncReactiveProperty<T>.WaitAsync(CancellationToken)
+  nameWithType.vb: AsyncReactiveProperty(Of T).WaitAsync(CancellationToken)
+- uid: Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WaitAsync*
+  name: WaitAsync
+  href: api/Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WaitAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WaitAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.AsyncReactiveProperty<T>.WaitAsync
+  fullName.vb: Cysharp.Threading.Tasks.AsyncReactiveProperty(Of T).WaitAsync
+  nameWithType: AsyncReactiveProperty<T>.WaitAsync
+  nameWithType.vb: AsyncReactiveProperty(Of T).WaitAsync
 - uid: Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WithoutCurrent
   name: WithoutCurrent()
   href: api/Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WithoutCurrent
@@ -2335,6 +2352,23 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty(Of T).Value
   nameWithType: IReadOnlyAsyncReactiveProperty<T>.Value
   nameWithType.vb: IReadOnlyAsyncReactiveProperty(Of T).Value
+- uid: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty`1.WaitAsync(System.Threading.CancellationToken)
+  name: WaitAsync(CancellationToken)
+  href: api/Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_IReadOnlyAsyncReactiveProperty_1_WaitAsync_System_Threading_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty`1.WaitAsync(System.Threading.CancellationToken)
+  fullName: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty<T>.WaitAsync(System.Threading.CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty(Of T).WaitAsync(System.Threading.CancellationToken)
+  nameWithType: IReadOnlyAsyncReactiveProperty<T>.WaitAsync(CancellationToken)
+  nameWithType.vb: IReadOnlyAsyncReactiveProperty(Of T).WaitAsync(CancellationToken)
+- uid: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty`1.WaitAsync*
+  name: WaitAsync
+  href: api/Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_IReadOnlyAsyncReactiveProperty_1_WaitAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty`1.WaitAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty<T>.WaitAsync
+  fullName.vb: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty(Of T).WaitAsync
+  nameWithType: IReadOnlyAsyncReactiveProperty<T>.WaitAsync
+  nameWithType.vb: IReadOnlyAsyncReactiveProperty(Of T).WaitAsync
 - uid: Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty`1.WithoutCurrent
   name: WithoutCurrent()
   href: api/Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_IReadOnlyAsyncReactiveProperty_1_WithoutCurrent
@@ -8242,6 +8276,23 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty(Of T).Value
   nameWithType: ReadOnlyAsyncReactiveProperty<T>.Value
   nameWithType.vb: ReadOnlyAsyncReactiveProperty(Of T).Value
+- uid: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty`1.WaitAsync(System.Threading.CancellationToken)
+  name: WaitAsync(CancellationToken)
+  href: api/Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_ReadOnlyAsyncReactiveProperty_1_WaitAsync_System_Threading_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty`1.WaitAsync(System.Threading.CancellationToken)
+  fullName: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty<T>.WaitAsync(System.Threading.CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty(Of T).WaitAsync(System.Threading.CancellationToken)
+  nameWithType: ReadOnlyAsyncReactiveProperty<T>.WaitAsync(CancellationToken)
+  nameWithType.vb: ReadOnlyAsyncReactiveProperty(Of T).WaitAsync(CancellationToken)
+- uid: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty`1.WaitAsync*
+  name: WaitAsync
+  href: api/Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_ReadOnlyAsyncReactiveProperty_1_WaitAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty`1.WaitAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty<T>.WaitAsync
+  fullName.vb: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty(Of T).WaitAsync
+  nameWithType: ReadOnlyAsyncReactiveProperty<T>.WaitAsync
+  nameWithType.vb: ReadOnlyAsyncReactiveProperty(Of T).WaitAsync
 - uid: Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty`1.WithoutCurrent
   name: WithoutCurrent()
   href: api/Cysharp.Threading.Tasks.ReadOnlyAsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_ReadOnlyAsyncReactiveProperty_1_WithoutCurrent
