@@ -248,15 +248,18 @@ namespace Cysharp.Threading.Tasks.Linq
                         return current;
                     }
 
-                    if (queuedResult.Count != 0)
+                    lock (queuedResult)
                     {
-                        current = queuedResult.Dequeue();
-                        useCachedCurrent = true;
-                        return current;
-                    }
-                    else
-                    {
-                        return default; // undefined.
+                        if (queuedResult.Count != 0)
+                        {
+                            current = queuedResult.Dequeue();
+                            useCachedCurrent = true;
+                            return current;
+                        }
+                        else
+                        {
+                            return default; // undefined.
+                        }
                     }
                 }
             }
