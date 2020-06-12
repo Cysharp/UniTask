@@ -2,7 +2,7 @@ UniTask
 ===
 [![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
 
-Provides an efficient async/await integration to Unity. 
+Provides an efficient allocation free async/await integration to Unity.
 
 * Struct based `UniTask<T>` and custom AsyncMethodBuilder to achive zero allocation
 * All Unity AsyncOperations and Coroutine to awaitable
