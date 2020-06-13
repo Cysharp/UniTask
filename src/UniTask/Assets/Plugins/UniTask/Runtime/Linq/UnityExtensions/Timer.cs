@@ -104,6 +104,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.dueTimePhase = true;
                 this.updateTiming = updateTiming;
                 this.ignoreTimeScale = ignoreTimeScale;
+                this.cancellationToken = cancellationToken;
                 TaskTracker.TrackActiveTask(this, 2);
                 PlayerLoopHelper.AddAction(updateTiming, this);
             }
@@ -223,6 +224,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.dueTimePhase = true;
                 this.dueTimeFrameCount = dueTimeFrameCount;
                 this.periodFrameCount = periodFrameCount;
+                this.cancellationToken = cancellationToken;
 
                 TaskTracker.TrackActiveTask(this, 2);
                 PlayerLoopHelper.AddAction(updateTiming, this);
