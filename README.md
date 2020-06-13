@@ -2,7 +2,7 @@ UniTask
 ===
 [![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
 
-Provides an efficient async/await integration to Unity. 
+Provides an efficient allocation free async/await integration to Unity.
 
 * Struct based `UniTask<T>` and custom AsyncMethodBuilder to achive zero allocation
 * All Unity AsyncOperations and Coroutine to awaitable
@@ -12,6 +12,9 @@ Provides an efficient async/await integration to Unity.
 * Asynchronous LINQ, with Channel and AsyncReactiveProperty
 * TaskTracker window to prevent memory leak
 * Highly compatible behaviour with Task/ValueTask/IValueTaskSource
+
+Techinical details, see blog post: [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ
+](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
