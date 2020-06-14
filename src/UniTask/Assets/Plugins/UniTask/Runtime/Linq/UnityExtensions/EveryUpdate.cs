@@ -34,6 +34,7 @@ namespace Cysharp.Threading.Tasks.Linq
             public _EveryUpdate(PlayerLoopTiming updateTiming, CancellationToken cancellationToken)
             {
                 this.updateTiming = updateTiming;
+                this.cancellationToken = cancellationToken;
 
                 TaskTracker.TrackActiveTask(this, 2);
                 PlayerLoopHelper.AddAction(updateTiming, this);
