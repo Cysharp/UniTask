@@ -494,11 +494,19 @@ await okButton.OnClickAsAsyncEnumerable().Where((x, i) => i % 2 == 0).ForEachAsy
 });
 ```
 
+Fire and Forget style(for example, event handling), also you can use `Subscribe`.
+
+```csharp
+okButton.OnClickAsAsyncEnumerable().Where((x, i) => i % 2 == 0).Subscribe(_ =>
+{
+});
+```
+
 Async LINQ is enabled when `using Cysharp.Threading.Tasks.Linq;`, and `UniTaskAsyncEnumerable` is defined in `UniTask.Linq` asmdef.
 
 It's closer to UniRx (Reactive Extensions), but UniTaskAsyncEnumerable is a pull-based asynchronous stream, whereas Rx was a push-based asynchronous stream. Note that although similar, the characteristics are different and the details behave differently along with them.
 
-`UniTaskAsyncEnumerable` is the entry point like `Enumerbale`. In addition to the standard query operators, there are other generators for Unity such as `EveryUpdate`, `Timer`, `TimerFrame`, `Interval`, `IntervalFrame`, and `EveryValueChanged`. And also added additional UniTask original query operators like `Append`, `Prepend`, `DistinctUntilChanged`, `ToHashSet`, `Buffer`, `CombineLatest`, `Do`, `Never`, `ForEachAsync`, `Pairwise`, `Publish`, `Queue`, `Return`, `SkipUntilCanceled`, `TakeUntilCanceled`, `TakeLast`.
+`UniTaskAsyncEnumerable` is the entry point like `Enumerbale`. In addition to the standard query operators, there are other generators for Unity such as `EveryUpdate`, `Timer`, `TimerFrame`, `Interval`, `IntervalFrame`, and `EveryValueChanged`. And also added additional UniTask original query operators like `Append`, `Prepend`, `DistinctUntilChanged`, `ToHashSet`, `Buffer`, `CombineLatest`, `Do`, `Never`, `ForEachAsync`, `Pairwise`, `Publish`, `Queue`, `Return`, `SkipUntilCanceled`, `TakeUntilCanceled`, `TakeLast`, `Subscribe`.
 
 The method with Func as an argument has three additional overloads, `***Await`, `***AwaitWithCancellation`.
 
@@ -616,10 +624,10 @@ A pull-type asynchronous stream does not get the next values until the asynchron
 
 ```csharp
 // can not get click event during 3 seconds complete.
-await button.OnClickAsAsyncEnumerable().ForEachAwaitAsync()
+await button.OnClickAsAsyncEnumerable().ForEachAwaitAsync(async x =>
 {
     await UniTask.Delay(TimeSpan.FromSeconds(3));
-}
+});
 ```
 
 It is useful(prevent double-click) but not useful in sometimes.
@@ -628,10 +636,19 @@ Using `Queue()` method, which will also queue events during asynchronous process
 
 ```csharp
 // queued message in asynchronous processing
-await button.OnClickAsAsyncEnumerable().Queue().ForEachAwaitAsync()
+await button.OnClickAsAsyncEnumerable().Queue().ForEachAwaitAsync(async x =>
 {
     await UniTask.Delay(TimeSpan.FromSeconds(3));
-}
+});
+```
+
+Or use `Subscribe`, fire and forget style.
+
+```csharp
+button.OnClickAsAsyncEnumerable().Subscribe(async x =>
+{
+    await UniTask.Delay(TimeSpan.FromSeconds(3));
+});
 ```
 
 Channel
