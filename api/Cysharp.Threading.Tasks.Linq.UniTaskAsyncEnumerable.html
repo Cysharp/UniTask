@@ -2146,6 +2146,18 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Subscribe__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Func___0_System_Threading_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__">Subscribe&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;TSource, CancellationToken, UniTaskVoid&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Subscribe__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Func___0_System_Threading_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__System_Threading_CancellationToken_">Subscribe&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;TSource, CancellationToken, UniTaskVoid&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Subscribe__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__IObserver___0__">Subscribe&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, IObserver&lt;TSource&gt;)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -19381,6 +19393,93 @@
     <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><span class="parametername"><code>action</code></span> <span class="xref">Func</span>&lt;TSource, <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>TSource</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Subscribe_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Subscribe*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Subscribe__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Func___0_System_Threading_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Subscribe``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Func{``0,System.Threading.CancellationToken,Cysharp.Threading.Tasks.UniTaskVoid})">Subscribe&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;TSource, CancellationToken, UniTaskVoid&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDisposable Subscribe&lt;TSource&gt;(this IUniTaskAsyncEnumerable&lt;TSource&gt; source, Func&lt;TSource, CancellationToken, UniTaskVoid&gt; action)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>action</code></span> <span class="xref">Func</span>&lt;TSource, <span class="xref">System.Threading.CancellationToken</span>, <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">IDisposable</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>TSource</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Subscribe_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Subscribe*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Subscribe__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Func___0_System_Threading_CancellationToken_Cysharp_Threading_Tasks_UniTaskVoid__System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Subscribe``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Func{``0,System.Threading.CancellationToken,Cysharp.Threading.Tasks.UniTaskVoid},System.Threading.CancellationToken)">Subscribe&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;TSource, CancellationToken, UniTaskVoid&gt;, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Subscribe&lt;TSource&gt;(this IUniTaskAsyncEnumerable&lt;TSource&gt; source, Func&lt;TSource, CancellationToken, UniTaskVoid&gt; action, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>action</code></span> <span class="xref">Func</span>&lt;TSource, <span class="xref">System.Threading.CancellationToken</span>, <a class="xref" href="Cysharp.Threading.Tasks.UniTaskVoid.html">UniTaskVoid</a>&gt;</dt>
     <dd></dd>
     <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
     <dd></dd>
