@@ -26,15 +26,14 @@ namespace Cysharp.Threading.Tasks
 #endif
         }
 
-        public static UniTask<T> AsUniTask<T>(this ValueTask<T> task, bool useCurrentSynchronizationContext = true)
+        public static async UniTask<T> AsUniTask<T>(this ValueTask<T> task)
         {
-            // NOTE: get _obj and _token directly for low overhead conversion but not yet implemented.
-            return task.AsTask().AsUniTask(useCurrentSynchronizationContext);
+            return await task;
         }
 
-        public static UniTask AsUniTask(this ValueTask task, bool useCurrentSynchronizationContext = true)
+        public static async UniTask AsUniTask(this ValueTask task)
         {
-            return task.AsTask().AsUniTask(useCurrentSynchronizationContext);
+            await task;
         }
 
 #if NETSTANDARD2_0
