@@ -415,15 +415,12 @@ public class SandboxMain : MonoBehaviour
 
     private async UniTaskVoid ExecuteAsync()
     {
-        Debug.Log("1");
-        {
-            var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
-        }
-        Debug.Log("------------------");
-        {
-            var xs = await UniTaskAsyncEnumerable.TimerFrame(1).ToArrayAsync();
-            Debug.Log("2");
-        }
+        var req = UnityWebRequest.Get("https://google.com/");
+
+        var v = await req.SendWebRequest().ToUniTask();
+        // req.Dispose();
+        Debug.Log($"{v.isDone} {v.isHttpError} {v.isNetworkError}");
+        Debug.Log(v.downloadHandler.text);
     }
 
 
@@ -446,7 +443,7 @@ public class SandboxMain : MonoBehaviour
         // rp.AddTo(this.GetCancellationTokenOnDestroy());
         var cts = new CancellationTokenSource();
 
-        
+
 
 
 

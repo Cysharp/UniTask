@@ -160,7 +160,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             public bool MoveNext()
-            {
+            {   
                 if (completed)
                 {
                     TryReturn();
@@ -466,7 +466,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             public bool MoveNext()
-            {
+            {   
                 if (completed)
                 {
                     TryReturn();
@@ -776,7 +776,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             public bool MoveNext()
-            {
+            {   
                 if (completed)
                 {
                     TryReturn();
@@ -1086,7 +1086,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             public bool MoveNext()
-            {
+            {   
                 if (completed)
                 {
                     TryReturn();
@@ -1285,12 +1285,20 @@ namespace Cysharp.Threading.Tasks
                     continuationAction = null;
                     var result = asyncOperation.webRequest;
                     asyncOperation = null;
+                    if (result.isHttpError || result.isNetworkError)
+                    {
+                        throw new UnityWebRequestException(result);
+                    }
                     return result;
                 }
                 else
                 {
                     var result = asyncOperation.webRequest;
                     asyncOperation = null;
+                    if (result.isHttpError || result.isNetworkError)
+                    {
+                        throw new UnityWebRequestException(result);
+                    }
                     return result;
                 }
             }
@@ -1367,7 +1375,15 @@ namespace Cysharp.Threading.Tasks
                 else
                 {
                     completed = true;
-                    core.TrySetResult(asyncOperation.webRequest);
+                    var result = asyncOperation.webRequest;
+                    if (result.isHttpError || result.isNetworkError)
+                    {
+                        core.TrySetException(new UnityWebRequestException(result));
+                    }
+                    else
+                    {
+                        core.TrySetResult(result);
+                    }
                 }
             }
 
@@ -1397,7 +1413,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             public bool MoveNext()
-            {
+            {   
                 if (completed)
                 {
                     TryReturn();
@@ -1526,7 +1542,14 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
-                    core.TrySetResult(asyncOperation.webRequest);
+                    if (asyncOperation.webRequest.isHttpError || asyncOperation.webRequest.isNetworkError)
+                    {
+                        core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
+                    }
+                    else
+                    {
+                        core.TrySetResult(asyncOperation.webRequest);
+                    }
                     return false;
                 }
 

@@ -81,6 +81,12 @@ namespace Cysharp.Threading.Tasks
 <# if (!IsVoid(t)) { #>
                     var result = <#= $"asyncOperation.{t.returnField}" #>;
                     asyncOperation = null;
+<# if(t.returnType == "UnityWebRequest") { #>
+                    if (result.isHttpError || result.isNetworkError)
+                    {
+                        throw new UnityWebRequestException(result);
+                    }
+<# } #>
                     return result;
 <# } else { #>
                     asyncOperation = null;
@@ -91,6 +97,12 @@ namespace Cysharp.Threading.Tasks
 <# if (!IsVoid(t)) { #>
                     var result = <#= $"asyncOperation.{t.returnField}" #>;
                     asyncOperation = null;
+<# if(t.returnType == "UnityWebRequest") { #>
+                    if (result.isHttpError || result.isNetworkError)
+                    {
+                        throw new UnityWebRequestException(result);
+                    }
+<# } #>
                     return result;
 <# } else { #>
                     asyncOperation = null;
@@ -170,7 +182,19 @@ namespace Cysharp.Threading.Tasks
                 else
                 {
                     completed = true;
+<# if(t.returnType == "UnityWebRequest") { #>
+                    var result = asyncOperation.webRequest;
+                    if (result.isHttpError || result.isNetworkError)
+                    {
+                        core.TrySetException(new UnityWebRequestException(result));
+                    }
+                    else
+                    {
+                        core.TrySetResult(result);
+                    }
+<# } else { #>
                     core.TrySetResult(<#= IsVoid(t) ? "AsyncUnit.Default" : $"asyncOperation.{t.returnField}" #>);
+<# } #>
                 }
             }
 
@@ -345,7 +369,18 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
+<# if(t.returnType == "UnityWebRequest") { #>
+                    if (asyncOperation.webRequest.isHttpError || asyncOperation.webRequest.isNetworkError)
+                    {
+                        core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
+                    }
+                    else
+                    {
+                        core.TrySetResult(asyncOperation.webRequest);
+                    }
+<# } else { #>
                     core.TrySetResult(<#= IsVoid(t) ? "AsyncUnit.Default" : $"asyncOperation.{t.returnField}" #>);
+<# } #>
                     return false;
                 }
 
