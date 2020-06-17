@@ -171,11 +171,6 @@ namespace Cysharp.Threading.Tasks
             {
                 GetResult(token);
             }
-
-            ~WhenAnyLRPromise()
-            {
-                core.Reset();
-            }
         }
 
 
@@ -268,11 +263,6 @@ namespace Cysharp.Threading.Tasks
             {
                 GetResult(token);
             }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
-            }
         }
 
         sealed class WhenAnyPromise : IUniTaskSource<int>
@@ -362,11 +352,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
     }

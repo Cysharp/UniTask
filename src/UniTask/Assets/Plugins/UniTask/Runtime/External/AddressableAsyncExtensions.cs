@@ -193,14 +193,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~AsyncOperationHandleWithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class AsyncOperationHandleConfiguredSource : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<AsyncOperationHandleConfiguredSource>
@@ -313,14 +305,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~AsyncOperationHandleConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 
@@ -512,14 +496,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~AsyncOperationHandleWithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class AsyncOperationHandleConfiguredSource<T> : IUniTaskSource<T>, IPlayerLoopItem, ITaskPoolNode<AsyncOperationHandleConfiguredSource<T>>
@@ -636,14 +612,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~AsyncOperationHandleConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 

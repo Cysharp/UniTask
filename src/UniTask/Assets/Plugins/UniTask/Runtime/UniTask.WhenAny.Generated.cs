@@ -127,11 +127,6 @@ namespace Cysharp.Threading.Tasks
             {
                 GetResult(token);
             }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
-            }
         }
 
         public static UniTask<(int winArgumentIndex, T1 result1, T2 result2, T3 result3)> WhenAny<T1, T2, T3>(UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3)
@@ -288,11 +283,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -487,11 +477,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -723,11 +708,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -996,11 +976,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -1306,11 +1281,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -1653,11 +1623,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -2037,11 +2002,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -2458,11 +2418,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -2916,11 +2871,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -3411,11 +3361,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -3943,11 +3888,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -4512,11 +4452,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 
@@ -5118,11 +5053,6 @@ namespace Cysharp.Threading.Tasks
             void IUniTaskSource.GetResult(short token)
             {
                 GetResult(token);
-            }
-
-            ~WhenAnyPromise()
-            {
-                core.Reset();
             }
         }
 

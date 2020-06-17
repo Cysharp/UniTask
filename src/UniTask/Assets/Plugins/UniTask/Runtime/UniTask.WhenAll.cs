@@ -142,11 +142,6 @@ namespace Cysharp.Threading.Tasks
             {
                 core.OnCompleted(continuation, state, token);
             }
-
-            ~WhenAllPromise()
-            {
-                core.Reset();
-            }
         }
 
         sealed class WhenAllPromise : IUniTaskSource
@@ -236,11 +231,6 @@ namespace Cysharp.Threading.Tasks
             public void OnCompleted(Action<object> continuation, object state, short token)
             {
                 core.OnCompleted(continuation, state, token);
-            }
-
-            ~WhenAllPromise()
-            {
-                core.Reset();
             }
         }
     }

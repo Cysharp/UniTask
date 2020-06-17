@@ -137,14 +137,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~WaitUntilPromise()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class WaitWhilePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitWhilePromise>
@@ -249,14 +241,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~WaitWhilePromise()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class WaitUntilCanceledPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitUntilCanceledPromise>
@@ -343,14 +327,6 @@ namespace Cysharp.Threading.Tasks
                 core.Reset();
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~WaitUntilCanceledPromise()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 
@@ -475,14 +451,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~WaitUntilValueChangedUnityObjectPromise()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class WaitUntilValueChangedStandardObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, ITaskPoolNode<WaitUntilValueChangedStandardObjectPromise<T, U>>
@@ -603,14 +571,6 @@ namespace Cysharp.Threading.Tasks
                 equalityComparer = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~WaitUntilValueChangedStandardObjectPromise()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
     }

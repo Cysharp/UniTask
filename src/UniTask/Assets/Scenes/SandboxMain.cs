@@ -184,6 +184,7 @@ public class SandboxMain : MonoBehaviour
     }
 
 
+
     async UniTask RunStandardDelayAsync()
     {
         UnityEngine.Debug.Log("DEB");
@@ -422,10 +423,23 @@ public class SandboxMain : MonoBehaviour
         Debug.Log($"{v.isDone} {v.isHttpError} {v.isNetworkError}");
         Debug.Log(v.downloadHandler.text);
     }
+    private async void Go()
+    {
+        await UniTask.DelayFrame(0);
+    }
+
+    async UniTask Foo()
+    {
+        await UniTask.DelayFrame(10);
+        throw new Exception("yeah");
+    }
 
 
     void Start()
     {
+        _ = Foo(); // unhandled.
+        Go();
+
         UnityEngine.Debug.Log("Start:" + PlayerLoopInfo.CurrentLoopType);
 
         //PlayerLoopInfo.Inject();
@@ -441,76 +455,76 @@ public class SandboxMain : MonoBehaviour
 
 
         // rp.AddTo(this.GetCancellationTokenOnDestroy());
-        var cts = new CancellationTokenSource();
+        //var cts = new CancellationTokenSource();
 
 
 
 
 
-        okButton.onClick.AddListener(UniTask.UnityAction(async () =>
-        {
-            _ = ExecuteAsync();
+        //okButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        //{
+        //    _ = ExecuteAsync();
 
-            await UniTask.Yield();
+        //    await UniTask.Yield();
 
-            //await DelayCheck();
-            /*
-            UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
-            StartCoroutine(CoroutineRun());
-            StartCoroutine(CoroutineRun2());
-            _ = AsyncRun();
-            _ = AsyncLastUpdate();
-            _ = AsyncLastLast();
-            */
-            //await UniTask.Yield();
-            //_ = Test2();
-            // EarlyUpdate.ExecuteMainThreadJobs
-            // _ = Test2();
+        //    //await DelayCheck();
+        //    /*
+        //    UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
+        //    StartCoroutine(CoroutineRun());
+        //    StartCoroutine(CoroutineRun2());
+        //    _ = AsyncRun();
+        //    _ = AsyncLastUpdate();
+        //    _ = AsyncLastLast();
+        //    */
+        //    //await UniTask.Yield();
+        //    //_ = Test2();
+        //    // EarlyUpdate.ExecuteMainThreadJobs
+        //    // _ = Test2();
 
-            //var t = await Resources.LoadAsync<TextAsset>(Application.streamingAssetsPath + "test.txt");
-            //Debug.Log("LoadEnd" + PlayerLoopInfo.CurrentLoopType + ", " + (t != null));
-            //Debug.Log("LoadEnd" + PlayerLoopInfo.CurrentLoopType + ", " + ((TextAsset)t).text);
+        //    //var t = await Resources.LoadAsync<TextAsset>(Application.streamingAssetsPath + "test.txt");
+        //    //Debug.Log("LoadEnd" + PlayerLoopInfo.CurrentLoopType + ", " + (t != null));
+        //    //Debug.Log("LoadEnd" + PlayerLoopInfo.CurrentLoopType + ", " + ((TextAsset)t).text);
 
 
-            //await UniTask.Yield(PlayerLoopTiming.LastUpdate);
-            //UnityEngine.Debug.Log("after update:" + Time.frameCount);
-            ////await UniTask.NextFrame();
-            ////await UniTask.Yield();
-            ////UnityEngine.Debug.Log("after update nextframe:" + Time.frameCount);
+        //    //await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+        //    //UnityEngine.Debug.Log("after update:" + Time.frameCount);
+        //    ////await UniTask.NextFrame();
+        //    ////await UniTask.Yield();
+        //    ////UnityEngine.Debug.Log("after update nextframe:" + Time.frameCount);
 
-            //StartCoroutine(CoroutineRun2());
-            ////StartCoroutine(CoroutineRun());
-            //UnityEngine.Debug.Log("FOO?");
+        //    //StartCoroutine(CoroutineRun2());
+        //    ////StartCoroutine(CoroutineRun());
+        //    //UnityEngine.Debug.Log("FOO?");
 
-            //_ = DelayFrame3_Pre();
-            //await UniTask.Yield();
+        //    //_ = DelayFrame3_Pre();
+        //    //await UniTask.Yield();
 
-        }));
+        //}));
 
-        cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
-        {
-            _ = DelayFrame3_Post();
-            await UniTask.Yield();
+        //cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        //{
+        //    _ = DelayFrame3_Post();
+        //    await UniTask.Yield();
 
-            //await UniTask.Yield(PlayerLoopTiming.LastPreUpdate);
-            //UnityEngine.Debug.Log("before update:" + Time.frameCount);
-            //await UniTask.NextFrame();
-            //await UniTask.Yield();
-            //UnityEngine.Debug.Log("before update nextframe:" + Time.frameCount);
+        //    //await UniTask.Yield(PlayerLoopTiming.LastPreUpdate);
+        //    //UnityEngine.Debug.Log("before update:" + Time.frameCount);
+        //    //await UniTask.NextFrame();
+        //    //await UniTask.Yield();
+        //    //UnityEngine.Debug.Log("before update nextframe:" + Time.frameCount);
 
-            //StartCoroutine(CoroutineRun());
+        //    //StartCoroutine(CoroutineRun());
 
-            //UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
-            //_ = Yieldding();
+        //    //UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType);
+        //    //_ = Yieldding();
 
-            //var cts = new CancellationTokenSource();
+        //    //var cts = new CancellationTokenSource();
 
-            //UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
-            //var la = SceneManager.LoadSceneAsync("Scenes/ExceptionExamples").WithCancellation(cts.Token);
-            ////cts.Cancel();
-            //await la;
-            //UnityEngine.Debug.Log("End LoadSceneAsync" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
-        }));
+        //    //UnityEngine.Debug.Log("click:" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
+        //    //var la = SceneManager.LoadSceneAsync("Scenes/ExceptionExamples").WithCancellation(cts.Token);
+        //    ////cts.Cancel();
+        //    //await la;
+        //    //UnityEngine.Debug.Log("End LoadSceneAsync" + PlayerLoopInfo.CurrentLoopType + ":" + Time.frameCount);
+        //}));
 
         //return;
         //await UniTask.SwitchToMainThread();

@@ -45,7 +45,7 @@ namespace Cysharp.Threading.Tasks
 
             public WhenAllPromise(<#= args #>)
             {
-                TaskTracker2.TrackActiveTask(this, 3);
+                TaskTracker.TrackActiveTask(this, 3);
 
                 this.completedCount = 0;
 <# for(var j = 1; j <= i; j++) { #>
@@ -92,7 +92,7 @@ namespace Cysharp.Threading.Tasks
 
             public (<#= t #>) GetResult(short token)
             {
-                TaskTracker2.RemoveTracking(this);
+                TaskTracker.RemoveTracking(this);
                 GC.SuppressFinalize(this);
                 return core.GetResult(token);
             }
@@ -115,11 +115,6 @@ namespace Cysharp.Threading.Tasks
             public void OnCompleted(Action<object> continuation, object state, short token)
             {
                 core.OnCompleted(continuation, state, token);
-            }
-
-            ~WhenAllPromise()
-            {
-                core.Reset();
             }
         }
 <# } #>

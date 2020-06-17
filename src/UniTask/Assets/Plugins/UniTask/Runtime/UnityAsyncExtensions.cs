@@ -185,14 +185,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~AsyncOperationWithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class AsyncOperationConfiguredSource : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<AsyncOperationConfiguredSource>
@@ -298,14 +290,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~AsyncOperationConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 
@@ -491,14 +475,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~ResourceRequestWithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class ResourceRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<ResourceRequestConfiguredSource>
@@ -608,14 +584,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~ResourceRequestConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 
@@ -801,14 +769,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~AssetBundleRequestWithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class AssetBundleRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<AssetBundleRequestConfiguredSource>
@@ -918,14 +878,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~AssetBundleRequestConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 
@@ -1111,14 +1063,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~AssetBundleCreateRequestWithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class AssetBundleCreateRequestConfiguredSource : IUniTaskSource<AssetBundle>, IPlayerLoopItem, ITaskPoolNode<AssetBundleCreateRequestConfiguredSource>
@@ -1228,14 +1172,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~AssetBundleCreateRequestConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 
@@ -1439,14 +1375,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~UnityWebRequestAsyncOperationWithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class UnityWebRequestAsyncOperationConfiguredSource : IUniTaskSource<UnityWebRequest>, IPlayerLoopItem, ITaskPoolNode<UnityWebRequestAsyncOperationConfiguredSource>
@@ -1564,14 +1492,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~UnityWebRequestAsyncOperationConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 

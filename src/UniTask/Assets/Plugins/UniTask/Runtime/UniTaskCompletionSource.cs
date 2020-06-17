@@ -38,13 +38,42 @@ namespace Cysharp.Threading.Tasks
     {
     }
 
+    internal class ExceptionHolder
+    {
+        ExceptionDispatchInfo exception;
+        bool calledGet = false;
+
+        public ExceptionHolder(ExceptionDispatchInfo exception)
+        {
+            this.exception = exception;
+        }
+
+        public ExceptionDispatchInfo GetException()
+        {
+            if (!calledGet)
+            {
+                calledGet = true;
+                GC.SuppressFinalize(this);
+            }
+            return exception;
+        }
+
+        ~ExceptionHolder()
+        {
+            if (!calledGet)
+            {
+                UniTaskScheduler.PublishUnobservedTaskException(exception.SourceException);
+            }
+        }
+    }
+
     [StructLayout(LayoutKind.Auto)]
     public struct UniTaskCompletionSourceCore<TResult>
     {
         // Struct Size: TResult + (8 + 2 + 1 + 1 + 8 + 8)
 
         TResult result;
-        object error; // ExceptionDispatchInfo or OperationCanceledException
+        object error; // ExceptionHolder or OperationCanceledException
         short version;
         bool hasUnhandledError;
         int completedCount; // 0: completed == false
@@ -78,9 +107,9 @@ namespace Cysharp.Threading.Tasks
                     {
                         UniTaskScheduler.PublishUnobservedTaskException(oc);
                     }
-                    else if (error is ExceptionDispatchInfo ei)
+                    else if (error is ExceptionHolder e)
                     {
-                        UniTaskScheduler.PublishUnobservedTaskException(ei.SourceException);
+                        UniTaskScheduler.PublishUnobservedTaskException(e.GetException().SourceException);
                     }
                 }
                 catch
@@ -129,7 +158,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
-                    this.error = ExceptionDispatchInfo.Capture(error);
+                    this.error = new ExceptionHolder(ExceptionDispatchInfo.Capture(error));
                 }
 
                 if (continuation != null || Interlocked.CompareExchange(ref this.continuation, UniTaskCompletionSourceCoreShared.s_sentinel, null) != null)
@@ -209,9 +238,9 @@ namespace Cysharp.Threading.Tasks
                 {
                     throw oce;
                 }
-                else if (error is ExceptionDispatchInfo edi)
+                else if (error is ExceptionHolder eh)
                 {
-                    edi.Throw();
+                    eh.GetException().Throw();
                 }
 
                 throw new InvalidOperationException("Critical: invalid exception type was held.");
@@ -367,12 +396,6 @@ namespace Cysharp.Threading.Tasks
         {
             core.OnCompleted(continuation, state, token);
         }
-
-        ~UniTaskCompletionSource()
-        {
-            // clear error information.
-            core.Reset();
-        }
     }
 
     public class AutoResetUniTaskCompletionSource : IUniTaskSource, ITaskPoolNode<AutoResetUniTaskCompletionSource>, IPromise
@@ -495,15 +518,6 @@ namespace Cysharp.Threading.Tasks
             core.Reset();
             return pool.TryPush(this);
         }
-
-        ~AutoResetUniTaskCompletionSource()
-        {
-            if (TryReturn())
-            {
-                GC.ReRegisterForFinalize(this);
-                return;
-            }
-        }
     }
 
     public class UniTaskCompletionSource<T> : IUniTaskSource<T>, IPromise<T>
@@ -592,12 +606,6 @@ namespace Cysharp.Threading.Tasks
         public void OnCompleted(Action<object> continuation, object state, short token)
         {
             core.OnCompleted(continuation, state, token);
-        }
-
-        ~UniTaskCompletionSource()
-        {
-            // clear error information.
-            core.Reset();
         }
     }
 
@@ -725,15 +733,6 @@ namespace Cysharp.Threading.Tasks
             TaskTracker.RemoveTracking(this);
             core.Reset();
             return pool.TryPush(this);
-        }
-
-
-        ~AutoResetUniTaskCompletionSource()
-        {
-            if (TryReturn())
-            {
-                GC.ReRegisterForFinalize(this);
-            }
         }
     }
 }

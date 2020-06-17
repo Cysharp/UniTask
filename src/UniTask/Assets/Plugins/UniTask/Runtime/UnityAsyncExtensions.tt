@@ -258,14 +258,6 @@ namespace Cysharp.Threading.Tasks
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
-
-            ~<#= t.typeName #>WithCancellationSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
 
         sealed class <#= t.typeName #>ConfiguredSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, IPlayerLoopItem, ITaskPoolNode<<#= t.typeName #>ConfiguredSource>
@@ -395,14 +387,6 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~<#= t.typeName #>ConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
         }
 

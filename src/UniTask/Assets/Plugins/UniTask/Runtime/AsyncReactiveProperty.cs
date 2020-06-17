@@ -143,14 +143,6 @@ namespace Cysharp.Threading.Tasks
                 return pool.TryPush(this);
             }
 
-            ~WaitAsyncSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
-
             static void CancellationCallback(object state)
             {
                 var self = (WaitAsyncSource)state;
@@ -466,14 +458,6 @@ namespace Cysharp.Threading.Tasks
                 parent = null;
                 cancellationToken = default;
                 return pool.TryPush(this);
-            }
-
-            ~WaitAsyncSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
             }
 
             static void CancellationCallback(object state)

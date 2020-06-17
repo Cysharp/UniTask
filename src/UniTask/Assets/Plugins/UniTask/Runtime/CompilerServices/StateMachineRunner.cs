@@ -239,14 +239,6 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             core.OnCompleted(continuation, state, token);
         }
-
-        ~AsyncUniTask()
-        {
-            if (TryReturn())
-            {
-                GC.ReRegisterForFinalize(this);
-            }
-        }
     }
 
     internal sealed class AsyncUniTask<TStateMachine, T> : IStateMachineRunnerPromise<T>, IUniTaskSource<T>, ITaskPoolNode<AsyncUniTask<TStateMachine, T>>
@@ -375,14 +367,6 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         public void OnCompleted(Action<object> continuation, object state, short token)
         {
             core.OnCompleted(continuation, state, token);
-        }
-
-        ~AsyncUniTask()
-        {
-            if (TryReturn())
-            {
-                GC.ReRegisterForFinalize(this);
-            }
         }
     }
 }

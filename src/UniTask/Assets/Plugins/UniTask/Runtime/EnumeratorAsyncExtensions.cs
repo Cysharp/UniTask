@@ -134,14 +134,6 @@ namespace Cysharp.Threading.Tasks
                 return pool.TryPush(this);
             }
 
-            ~EnumeratorPromise()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
-
             // Unwrap YieldInstructions
 
             static IEnumerator ConsumeEnumerator(IEnumerator enumerator)

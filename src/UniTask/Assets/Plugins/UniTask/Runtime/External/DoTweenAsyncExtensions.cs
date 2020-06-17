@@ -278,14 +278,6 @@ namespace Cysharp.Threading.Tasks
                 originalUpdateAction = default;
                 return pool.TryPush(this);
             }
-
-            ~TweenConfiguredSource()
-            {
-                if (TryReturn())
-                {
-                    GC.ReRegisterForFinalize(this);
-                }
-            }
         }
     }
 
