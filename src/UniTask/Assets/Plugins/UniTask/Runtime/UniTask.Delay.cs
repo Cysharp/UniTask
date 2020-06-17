@@ -214,7 +214,7 @@ namespace Cysharp.Threading.Tasks
                     result = new NextFramePromise();
                 }
 
-                result.frameCount = Time.frameCount;
+                result.frameCount = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
                 result.cancellationToken = cancellationToken;
 
                 TaskTracker.TrackActiveTask(result, 3);
@@ -313,7 +313,7 @@ namespace Cysharp.Threading.Tasks
 
                 result.delayFrameCount = delayFrameCount;
                 result.cancellationToken = cancellationToken;
-                result.initialFrame = Time.frameCount;
+                result.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -429,7 +429,7 @@ namespace Cysharp.Threading.Tasks
                 result.elapsed = 0.0f;
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
                 result.cancellationToken = cancellationToken;
-                result.initialFrame = Time.frameCount;
+                result.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -538,7 +538,7 @@ namespace Cysharp.Threading.Tasks
 
                 result.elapsed = 0.0f;
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
-                result.initialFrame = Time.frameCount;
+                result.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
                 result.cancellationToken = cancellationToken;
 
                 TaskTracker.TrackActiveTask(result, 3);

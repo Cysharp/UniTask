@@ -100,7 +100,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     if (this.period <= 0) this.period = 1;
                 }
 
-                this.initialFrame = Time.frameCount;
+                this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
                 this.dueTimePhase = true;
                 this.updateTiming = updateTiming;
                 this.ignoreTimeScale = ignoreTimeScale;
@@ -220,7 +220,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     if (periodFrameCount <= 0) periodFrameCount = 1;
                 }
 
-                this.initialFrame = Time.frameCount;
+                this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
                 this.dueTimePhase = true;
                 this.dueTimeFrameCount = dueTimeFrameCount;
                 this.periodFrameCount = periodFrameCount;

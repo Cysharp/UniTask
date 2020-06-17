@@ -94,6 +94,8 @@ namespace Cysharp.Threading.Tasks
         public static int MainThreadId => mainThreadId;
         internal static string ApplicationDataPath => applicationDataPath;
 
+        public static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == mainThreadId;
+
         static int mainThreadId;
         static string applicationDataPath;
         static SynchronizationContext unitySynchronizationContetext;

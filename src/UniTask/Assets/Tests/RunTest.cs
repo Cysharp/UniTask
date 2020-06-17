@@ -78,7 +78,9 @@ namespace Cysharp.Threading.TasksTests
             var main = Thread.CurrentThread.ManagedThreadId;
             try
             {
-                await UniTask.Run<int>(() => throw new Exception(), true);
+#pragma warning disable CS1998
+                await UniTask.Run<int>(async () => throw new Exception(), true);
+#pragma warning restore CS1998
             }
             catch
             {
