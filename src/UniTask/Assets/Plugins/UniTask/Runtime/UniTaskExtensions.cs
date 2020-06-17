@@ -315,7 +315,7 @@ namespace Cysharp.Threading.Tasks
                     taskCancellationTokenSource.Dispose();
                 }
 
-                throw new TimeoutException("Exceed Timeout:" + timeout);
+                return true;
             }
             else
             {
@@ -325,7 +325,7 @@ namespace Cysharp.Threading.Tasks
 
             if (taskResultIsCanceled)
             {
-                Error.ThrowOperationCanceledException();
+                return true;
             }
 
             return false;
@@ -361,7 +361,7 @@ namespace Cysharp.Threading.Tasks
                     taskCancellationTokenSource.Dispose();
                 }
 
-                throw new TimeoutException("Exceed Timeout:" + timeout);
+                return (true, default);
             }
             else
             {
@@ -371,7 +371,7 @@ namespace Cysharp.Threading.Tasks
 
             if (taskResult.IsCanceled)
             {
-                Error.ThrowOperationCanceledException();
+                return (true, default);
             }
 
             return (false, taskResult.Result);
