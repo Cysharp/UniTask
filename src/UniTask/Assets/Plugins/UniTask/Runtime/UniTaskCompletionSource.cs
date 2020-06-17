@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
@@ -315,89 +316,6 @@ namespace Cysharp.Threading.Tasks
         }
     }
 
-    public class UniTaskCompletionSource : IUniTaskSource, IPromise
-    {
-        UniTaskCompletionSourceCore<AsyncUnit> core;
-        bool handled = false;
-
-        public UniTaskCompletionSource()
-        {
-            TaskTracker.TrackActiveTask(this, 2);
-        }
-
-        [DebuggerHidden]
-        internal void MarkHandled()
-        {
-            if (!handled)
-            {
-                handled = true;
-                core.MarkHandled();
-                TaskTracker.RemoveTracking(this);
-            }
-        }
-
-        public UniTask Task
-        {
-            [DebuggerHidden]
-            get
-            {
-                return new UniTask(this, core.Version);
-            }
-        }
-
-        [DebuggerHidden]
-        public void Reset()
-        {
-            // Reset, re-active tracker
-            handled = false;
-            TaskTracker.TrackActiveTask(this, 2);
-            core.Reset();
-        }
-
-        [DebuggerHidden]
-        public bool TrySetResult()
-        {
-            return core.TrySetResult(AsyncUnit.Default);
-        }
-
-        [DebuggerHidden]
-        public bool TrySetCanceled(CancellationToken cancellationToken = default)
-        {
-            return core.TrySetCanceled(cancellationToken);
-        }
-
-        [DebuggerHidden]
-        public bool TrySetException(Exception exception)
-        {
-            return core.TrySetException(exception);
-        }
-
-        [DebuggerHidden]
-        public void GetResult(short token)
-        {
-            MarkHandled();
-            core.GetResult(token);
-        }
-
-        [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
-
-        [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
-
-        [DebuggerHidden]
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
-    }
-
     public class AutoResetUniTaskCompletionSource : IUniTaskSource, ITaskPoolNode<AutoResetUniTaskCompletionSource>, IPromise
     {
         static TaskPool<AutoResetUniTaskCompletionSource> pool;
@@ -517,95 +435,6 @@ namespace Cysharp.Threading.Tasks
             TaskTracker.RemoveTracking(this);
             core.Reset();
             return pool.TryPush(this);
-        }
-    }
-
-    public class UniTaskCompletionSource<T> : IUniTaskSource<T>, IPromise<T>
-    {
-        UniTaskCompletionSourceCore<T> core;
-        bool handled = false;
-
-        [DebuggerHidden]
-        public UniTaskCompletionSource()
-        {
-            TaskTracker.TrackActiveTask(this, 2);
-        }
-
-        [DebuggerHidden]
-        internal void MarkHandled()
-        {
-            if (!handled)
-            {
-                handled = true;
-                core.MarkHandled();
-                TaskTracker.RemoveTracking(this);
-            }
-        }
-
-        [DebuggerHidden]
-        public UniTask<T> Task
-        {
-            get
-            {
-                return new UniTask<T>(this, core.Version);
-            }
-        }
-
-        [DebuggerHidden]
-        public void Reset()
-        {
-            handled = false;
-            core.Reset();
-            TaskTracker.TrackActiveTask(this, 2);
-        }
-
-        [DebuggerHidden]
-        public bool TrySetResult(T result)
-        {
-            return core.TrySetResult(result);
-        }
-
-        [DebuggerHidden]
-        public bool TrySetCanceled(CancellationToken cancellationToken = default)
-        {
-            return core.TrySetCanceled(cancellationToken);
-        }
-
-        [DebuggerHidden]
-        public bool TrySetException(Exception exception)
-        {
-            return core.TrySetException(exception);
-        }
-
-        [DebuggerHidden]
-        public T GetResult(short token)
-        {
-            MarkHandled();
-            return core.GetResult(token);
-        }
-
-        [DebuggerHidden]
-        void IUniTaskSource.GetResult(short token)
-        {
-            GetResult(token);
-        }
-
-        [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
-
-        [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
-
-        [DebuggerHidden]
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
         }
     }
 
@@ -735,5 +564,374 @@ namespace Cysharp.Threading.Tasks
             return pool.TryPush(this);
         }
     }
-}
 
+    public class UniTaskCompletionSource : IUniTaskSource, IPromise
+    {
+        CancellationToken cancellationToken;
+        ExceptionHolder exception;
+        object gate;
+        Action<object> singleContinuation;
+        object singleState;
+        List<(Action<object>, object)> secondaryContinuationList;
+
+        int intStatus; // UniTaskStatus
+        bool handled = false;
+
+        public UniTaskCompletionSource()
+        {
+            TaskTracker.TrackActiveTask(this, 2);
+        }
+
+        [DebuggerHidden]
+        internal void MarkHandled()
+        {
+            if (!handled)
+            {
+                handled = true;
+                TaskTracker.RemoveTracking(this);
+            }
+        }
+
+        public UniTask Task
+        {
+            [DebuggerHidden]
+            get
+            {
+                return new UniTask(this, 0);
+            }
+        }
+
+        [DebuggerHidden]
+        public bool TrySetResult()
+        {
+            return TrySignalCompletion(UniTaskStatus.Succeeded);
+        }
+
+        [DebuggerHidden]
+        public bool TrySetCanceled(CancellationToken cancellationToken = default)
+        {
+            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
+
+            this.cancellationToken = cancellationToken;
+            return TrySignalCompletion(UniTaskStatus.Canceled);
+        }
+
+        [DebuggerHidden]
+        public bool TrySetException(Exception exception)
+        {
+            if (exception is OperationCanceledException oce)
+            {
+                return TrySetCanceled(oce.CancellationToken);
+            }
+
+            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
+
+            this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
+            return TrySignalCompletion(UniTaskStatus.Faulted);
+        }
+
+        [DebuggerHidden]
+        public void GetResult(short token)
+        {
+            MarkHandled();
+
+            var status = (UniTaskStatus)intStatus;
+            switch (status)
+            {
+                case UniTaskStatus.Succeeded:
+                    return;
+                case UniTaskStatus.Faulted:
+                    exception.GetException().Throw();
+                    return;
+                case UniTaskStatus.Canceled:
+                    throw new OperationCanceledException(cancellationToken);
+                default:
+                case UniTaskStatus.Pending:
+                    throw new InvalidOperationException("not yet completed.");
+            }
+        }
+
+        [DebuggerHidden]
+        public UniTaskStatus GetStatus(short token)
+        {
+            return (UniTaskStatus)intStatus;
+        }
+
+        [DebuggerHidden]
+        public UniTaskStatus UnsafeGetStatus()
+        {
+            return (UniTaskStatus)intStatus;
+        }
+
+        [DebuggerHidden]
+        public void OnCompleted(Action<object> continuation, object state, short token)
+        {
+            if (gate == null)
+            {
+                Interlocked.CompareExchange(ref gate, new object(), null);
+            }
+
+            var lockGate = Thread.VolatileRead(ref gate);
+            lock (lockGate) // wait TrySignalCompletion, after status is not pending.
+            {
+                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending)
+                {
+                    continuation(state);
+                    return;
+                }
+
+                if (singleContinuation == null)
+                {
+                    singleContinuation = continuation;
+                    singleState = state;
+                }
+                else
+                {
+                    if (secondaryContinuationList == null)
+                    {
+                        secondaryContinuationList = new List<(Action<object>, object)>();
+                    }
+                    secondaryContinuationList.Add((continuation, state));
+                }
+            }
+        }
+
+        bool TrySignalCompletion(UniTaskStatus status)
+        {
+            if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
+            {
+                if (gate == null)
+                {
+                    Interlocked.CompareExchange(ref gate, new object(), null);
+                }
+
+                var lockGate = Thread.VolatileRead(ref gate);
+                lock (lockGate) // wait OnCompleted.
+                {
+                    if (singleContinuation != null)
+                    {
+                        try
+                        {
+                            singleContinuation(singleState);
+                        }
+                        catch (Exception ex)
+                        {
+                            UniTaskScheduler.PublishUnobservedTaskException(ex);
+                        }
+                    }
+
+                    if (secondaryContinuationList != null)
+                    {
+                        foreach (var (c, state) in secondaryContinuationList)
+                        {
+                            try
+                            {
+                                c(state);
+                            }
+                            catch (Exception ex)
+                            {
+                                UniTaskScheduler.PublishUnobservedTaskException(ex);
+                            }
+                        }
+                    }
+
+                    singleContinuation = null;
+                    singleState = null;
+                    secondaryContinuationList = null;
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class UniTaskCompletionSource<T> : IUniTaskSource<T>, IPromise<T>
+    {
+        CancellationToken cancellationToken;
+        T result;
+        ExceptionHolder exception;
+        object gate;
+        Action<object> singleContinuation;
+        object singleState;
+        List<(Action<object>, object)> secondaryContinuationList;
+
+        int intStatus; // UniTaskStatus
+        bool handled = false;
+
+        public UniTaskCompletionSource()
+        {
+            TaskTracker.TrackActiveTask(this, 2);
+        }
+
+        [DebuggerHidden]
+        internal void MarkHandled()
+        {
+            if (!handled)
+            {
+                handled = true;
+                TaskTracker.RemoveTracking(this);
+            }
+        }
+
+        public UniTask<T> Task
+        {
+            [DebuggerHidden]
+            get
+            {
+                return new UniTask<T>(this, 0);
+            }
+        }
+
+        [DebuggerHidden]
+        public bool TrySetResult(T result)
+        {
+            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
+
+            this.result = result;
+            return TrySignalCompletion(UniTaskStatus.Succeeded);
+        }
+
+        [DebuggerHidden]
+        public bool TrySetCanceled(CancellationToken cancellationToken = default)
+        {
+            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
+
+            this.cancellationToken = cancellationToken;
+            return TrySignalCompletion(UniTaskStatus.Canceled);
+        }
+
+        [DebuggerHidden]
+        public bool TrySetException(Exception exception)
+        {
+            if (exception is OperationCanceledException oce)
+            {
+                return TrySetCanceled(oce.CancellationToken);
+            }
+
+            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
+
+            this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
+            return TrySignalCompletion(UniTaskStatus.Faulted);
+        }
+
+        [DebuggerHidden]
+        public T GetResult(short token)
+        {
+            MarkHandled();
+
+            var status = (UniTaskStatus)intStatus;
+            switch (status)
+            {
+                case UniTaskStatus.Succeeded:
+                    return result;
+                case UniTaskStatus.Faulted:
+                    exception.GetException().Throw();
+                    return default;
+                case UniTaskStatus.Canceled:
+                    throw new OperationCanceledException(cancellationToken);
+                default:
+                case UniTaskStatus.Pending:
+                    throw new InvalidOperationException("not yet completed.");
+            }
+        }
+
+        [DebuggerHidden]
+        void IUniTaskSource.GetResult(short token)
+        {
+            GetResult(token);
+        }
+
+        [DebuggerHidden]
+        public UniTaskStatus GetStatus(short token)
+        {
+            return (UniTaskStatus)intStatus;
+        }
+
+        [DebuggerHidden]
+        public UniTaskStatus UnsafeGetStatus()
+        {
+            return (UniTaskStatus)intStatus;
+        }
+
+        [DebuggerHidden]
+        public void OnCompleted(Action<object> continuation, object state, short token)
+        {
+            if (gate == null)
+            {
+                Interlocked.CompareExchange(ref gate, new object(), null);
+            }
+
+            var lockGate = Thread.VolatileRead(ref gate);
+            lock (lockGate) // wait TrySignalCompletion, after status is not pending.
+            {
+                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending)
+                {
+                    continuation(state);
+                    return;
+                }
+
+                if (singleContinuation == null)
+                {
+                    singleContinuation = continuation;
+                    singleState = state;
+                }
+                else
+                {
+                    if (secondaryContinuationList == null)
+                    {
+                        secondaryContinuationList = new List<(Action<object>, object)>();
+                    }
+                    secondaryContinuationList.Add((continuation, state));
+                }
+            }
+        }
+
+        bool TrySignalCompletion(UniTaskStatus status)
+        {
+            if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
+            {
+                if (gate == null)
+                {
+                    Interlocked.CompareExchange(ref gate, new object(), null);
+                }
+
+                var lockGate = Thread.VolatileRead(ref gate);
+                lock (lockGate) // wait OnCompleted.
+                {
+                    if (singleContinuation != null)
+                    {
+                        try
+                        {
+                            singleContinuation(singleState);
+                        }
+                        catch (Exception ex)
+                        {
+                            UniTaskScheduler.PublishUnobservedTaskException(ex);
+                        }
+                    }
+
+                    if (secondaryContinuationList != null)
+                    {
+                        foreach (var (c, state) in secondaryContinuationList)
+                        {
+                            try
+                            {
+                                c(state);
+                            }
+                            catch (Exception ex)
+                            {
+                                UniTaskScheduler.PublishUnobservedTaskException(ex);
+                            }
+                        }
+                    }
+
+                    singleContinuation = null;
+                    singleState = null;
+                    secondaryContinuationList = null;
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+}

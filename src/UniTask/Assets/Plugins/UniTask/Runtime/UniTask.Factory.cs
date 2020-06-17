@@ -11,10 +11,7 @@ namespace Cysharp.Threading.Tasks
     {
         static readonly UniTask CanceledUniTask = new Func<UniTask>(() =>
         {
-            var promise = new UniTaskCompletionSource();
-            promise.TrySetCanceled(CancellationToken.None);
-            promise.MarkHandled();
-            return promise.Task;
+            return new UniTask(new CanceledResultSource(CancellationToken.None), 0);
         })();
 
         static class CanceledUniTaskCache<T>
@@ -23,10 +20,7 @@ namespace Cysharp.Threading.Tasks
 
             static CanceledUniTaskCache()
             {
-                var promise = new UniTaskCompletionSource<T>();
-                promise.TrySetCanceled(CancellationToken.None);
-                promise.MarkHandled();
-                Task = promise.Task;
+                Task = new UniTask<T>(new CanceledResultSource<T>(CancellationToken.None), 0);
             }
         }
 
@@ -34,18 +28,22 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask FromException(Exception ex)
         {
-            var promise = new UniTaskCompletionSource();
-            promise.TrySetException(ex);
-            promise.MarkHandled();
-            return promise.Task;
+            if (ex is OperationCanceledException oce)
+            {
+                return FromCanceled(oce.CancellationToken);
+            }
+
+            return new UniTask(new ExceptionResultSource(ex), 0);
         }
 
         public static UniTask<T> FromException<T>(Exception ex)
         {
-            var promise = new UniTaskCompletionSource<T>();
-            promise.TrySetException(ex);
-            promise.MarkHandled();
-            return promise.Task;
+            if (ex is OperationCanceledException oce)
+            {
+                return FromCanceled<T>(oce.CancellationToken);
+            }
+
+            return new UniTask<T>(new ExceptionResultSource<T>(ex), 0);
         }
 
         public static UniTask<T> FromResult<T>(T value)
@@ -61,10 +59,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
-                var promise = new UniTaskCompletionSource();
-                promise.TrySetCanceled(cancellationToken);
-                promise.MarkHandled();
-                return promise.Task;
+                return new UniTask(new CanceledResultSource(cancellationToken), 0);
             }
         }
 
@@ -76,10 +71,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
-                var promise = new UniTaskCompletionSource<T>();
-                promise.TrySetCanceled(cancellationToken);
-                promise.MarkHandled();
-                return promise.Task;
+                return new UniTask<T>(new CanceledResultSource<T>(cancellationToken), 0);
             }
         }
 
@@ -180,6 +172,136 @@ namespace Cysharp.Threading.Tasks
         public static UniTask<T> Defer<T>(Func<UniTask<T>> factory)
         {
             return new UniTask<T>(new DeferPromise<T>(factory), 0);
+        }
+
+        sealed class ExceptionResultSource : IUniTaskSource
+        {
+            readonly Exception exception;
+
+            public ExceptionResultSource(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public void GetResult(short token)
+            {
+                throw exception;
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return UniTaskStatus.Faulted;
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return UniTaskStatus.Faulted;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                continuation(state);
+            }
+        }
+
+        sealed class ExceptionResultSource<T> : IUniTaskSource<T>
+        {
+            readonly Exception exception;
+
+            public ExceptionResultSource(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public T GetResult(short token)
+            {
+                throw exception;
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                throw exception;
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return UniTaskStatus.Faulted;
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return UniTaskStatus.Faulted;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                continuation(state);
+            }
+        }
+
+        sealed class CanceledResultSource : IUniTaskSource
+        {
+            readonly CancellationToken cancellationToken;
+
+            public CanceledResultSource(CancellationToken cancellationToken)
+            {
+                this.cancellationToken = cancellationToken;
+            }
+
+            public void GetResult(short token)
+            {
+                throw new OperationCanceledException(cancellationToken);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return UniTaskStatus.Canceled;
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return UniTaskStatus.Canceled;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                continuation(state);
+            }
+        }
+
+        sealed class CanceledResultSource<T> : IUniTaskSource<T>
+        {
+            readonly CancellationToken cancellationToken;
+
+            public CanceledResultSource(CancellationToken cancellationToken)
+            {
+                this.cancellationToken = cancellationToken;
+            }
+
+            public T GetResult(short token)
+            {
+                throw new OperationCanceledException(cancellationToken);
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                throw new OperationCanceledException(cancellationToken);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return UniTaskStatus.Canceled;
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return UniTaskStatus.Canceled;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                continuation(state);
+            }
         }
 
         sealed class DeferPromise : IUniTaskSource
