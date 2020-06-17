@@ -181,12 +181,12 @@ namespace Cysharp.Threading.Tasks
 
         public static AsyncLazy ToAsyncLazy(this UniTask task)
         {
-            return new AsyncLazy(task.Preserve()); // require Preserve
+            return new AsyncLazy(task);
         }
 
         public static AsyncLazy<T> ToAsyncLazy<T>(this UniTask<T> task)
         {
-            return new AsyncLazy<T>(task.Preserve()); // require Preserve
+            return new AsyncLazy<T>(task);
         }
 
 #if UNITY_2018_3_OR_NEWER

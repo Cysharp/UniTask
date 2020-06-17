@@ -696,6 +696,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+        [DebuggerHidden]
         bool TrySignalCompletion(UniTaskStatus status)
         {
             if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
@@ -886,6 +887,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+        [DebuggerHidden]
         bool TrySignalCompletion(UniTaskStatus status)
         {
             if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
