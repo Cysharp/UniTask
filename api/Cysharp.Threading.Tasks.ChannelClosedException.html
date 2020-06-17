@@ -82,15 +82,23 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ChannelClosedException : InvalidOperationException</code></pre>
+    <pre><code class="lang-csharp hljs">public class ChannelClosedException : InvalidOperationException, ISerializable, _Exception</code></pre>
   </div>
 
   <div class="inheritance">
     <h5>Inheritance</h5>
     <span><span class="xref">System.Object</span></span> → 
+    <span><span class="xref">System.Exception</span></span> → 
+    <span><span class="xref">System.SystemException</span></span> → 
+    <span><span class="xref">System.InvalidOperationException</span></span> → 
     <span class="xref">ChannelClosedException</span>
   </div>
   
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.Runtime.Serialization.ISerializable</span></div>
+    <div><span class="xref">System.Runtime.InteropServices._Exception</span></div>
+  </div>
   
   
   
@@ -116,7 +124,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.ChannelClosedException.html#Cysharp_Threading_Tasks_ChannelClosedException__ctor_Exception_">ChannelClosedException(Exception)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelClosedException.html#Cysharp_Threading_Tasks_ChannelClosedException__ctor_System_Exception_">ChannelClosedException(Exception)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -128,7 +136,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.ChannelClosedException.html#Cysharp_Threading_Tasks_ChannelClosedException__ctor_System_String_Exception_">ChannelClosedException(String, Exception)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelClosedException.html#Cysharp_Threading_Tasks_ChannelClosedException__ctor_System_String_System_Exception_">ChannelClosedException(String, Exception)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -162,7 +170,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_ChannelClosedException__ctor_" data-uid="Cysharp.Threading.Tasks.ChannelClosedException.#ctor*"></a>
-  <h4 id="Cysharp_Threading_Tasks_ChannelClosedException__ctor_Exception_" data-uid="Cysharp.Threading.Tasks.ChannelClosedException.#ctor(Exception)">ChannelClosedException(Exception)</h4>
+  <h4 id="Cysharp_Threading_Tasks_ChannelClosedException__ctor_System_Exception_" data-uid="Cysharp.Threading.Tasks.ChannelClosedException.#ctor(System.Exception)">ChannelClosedException(Exception)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -173,7 +181,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>innerException</code></span> <span class="xref">Exception</span></dt>
+    <dt><span class="parametername"><code>innerException</code></span> <span class="xref">System.Exception</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -222,7 +230,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_ChannelClosedException__ctor_" data-uid="Cysharp.Threading.Tasks.ChannelClosedException.#ctor*"></a>
-  <h4 id="Cysharp_Threading_Tasks_ChannelClosedException__ctor_System_String_Exception_" data-uid="Cysharp.Threading.Tasks.ChannelClosedException.#ctor(System.String,Exception)">ChannelClosedException(String, Exception)</h4>
+  <h4 id="Cysharp_Threading_Tasks_ChannelClosedException__ctor_System_String_System_Exception_" data-uid="Cysharp.Threading.Tasks.ChannelClosedException.#ctor(System.String,System.Exception)">ChannelClosedException(String, Exception)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -235,7 +243,7 @@
   <dl class="cysharpdocfx-valuedefinition">
     <dt><span class="parametername"><code>message</code></span> <span class="xref">System.String</span></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>innerException</code></span> <span class="xref">Exception</span></dt>
+    <dt><span class="parametername"><code>innerException</code></span> <span class="xref">System.Exception</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -253,6 +261,13 @@
   
   </section>
   
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.Runtime.Serialization.ISerializable</span>
+  </div>
+  <div>
+      <span class="xref">System.Runtime.InteropServices._Exception</span>
+  </div>
   
   
 </article>
