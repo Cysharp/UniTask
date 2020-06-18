@@ -208,7 +208,37 @@ await task;
 await task; // NG, throws Exception
 ```
 
-Store to the class field, you can use `UniTask.Lazy` that gurantee call multipletimes. `.Prevent()` allows for multiple calls (internally cached results). This is useful when multiple calls in a function scope.
+To allow awaiting multiple times you can make use of AsyncLazy.
+
+```csharp
+    async UniTask<string> TestAsync(string text)
+    {
+        Debug.Log("TestAsync called: " + text);
+        // Pretend there is a slow load.
+        await UniTask.Delay(TimeSpan.FromSeconds(5));
+        return text;
+    }
+
+
+  public async void TestFunc() {
+    var task = TestAsync("Testing");
+    var asyncLazyTestAsync = task.ToAsyncLazy();
+        
+    Debug.Log("Before all");
+    Debug.Log("Result 1: " + await asyncLazyTestAsync);
+    Debug.Log("Result 2: " + await asyncLazyTestAsync);
+    Debug.Log("After all");
+  }
+```
+
+If you want to store the task/result as a proprety you can declare it like this.
+
+```csharp
+private AsyncLazy<string> _lazyTask;
+```
+
+`UniTask<T>.ToAsyncLazy` calls `.Prevent()` which allows for multiple calls (the results are internally cached).
+This is useful when multiple calls in a function scope.
 
 Cancellation and Exception handling
 ---
