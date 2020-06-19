@@ -82,7 +82,7 @@ namespace Cysharp.Threading.Tasks
                     var result = <#= $"asyncOperation.{t.returnField}" #>;
                     asyncOperation = null;
 <# if(t.returnType == "UnityWebRequest") { #>
-                    if (result.isHttpError || result.isNetworkError)
+                    if (result.IsError())
                     {
                         throw new UnityWebRequestException(result);
                     }
@@ -98,7 +98,7 @@ namespace Cysharp.Threading.Tasks
                     var result = <#= $"asyncOperation.{t.returnField}" #>;
                     asyncOperation = null;
 <# if(t.returnType == "UnityWebRequest") { #>
-                    if (result.isHttpError || result.isNetworkError)
+                    if (result.IsError())
                     {
                         throw new UnityWebRequestException(result);
                     }
@@ -184,7 +184,7 @@ namespace Cysharp.Threading.Tasks
                     completed = true;
 <# if(t.returnType == "UnityWebRequest") { #>
                     var result = asyncOperation.webRequest;
-                    if (result.isHttpError || result.isNetworkError)
+                    if (result.IsError())
                     {
                         core.TrySetException(new UnityWebRequestException(result));
                     }
@@ -362,7 +362,7 @@ namespace Cysharp.Threading.Tasks
                 if (asyncOperation.isDone)
                 {
 <# if(t.returnType == "UnityWebRequest") { #>
-                    if (asyncOperation.webRequest.isHttpError || asyncOperation.webRequest.isNetworkError)
+                    if (asyncOperation.webRequest.IsError())
                     {
                         core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
                     }

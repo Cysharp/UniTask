@@ -1221,7 +1221,7 @@ namespace Cysharp.Threading.Tasks
                     continuationAction = null;
                     var result = asyncOperation.webRequest;
                     asyncOperation = null;
-                    if (result.isHttpError || result.isNetworkError)
+                    if (result.IsError())
                     {
                         throw new UnityWebRequestException(result);
                     }
@@ -1231,7 +1231,7 @@ namespace Cysharp.Threading.Tasks
                 {
                     var result = asyncOperation.webRequest;
                     asyncOperation = null;
-                    if (result.isHttpError || result.isNetworkError)
+                    if (result.IsError())
                     {
                         throw new UnityWebRequestException(result);
                     }
@@ -1312,7 +1312,7 @@ namespace Cysharp.Threading.Tasks
                 {
                     completed = true;
                     var result = asyncOperation.webRequest;
-                    if (result.isHttpError || result.isNetworkError)
+                    if (result.IsError())
                     {
                         core.TrySetException(new UnityWebRequestException(result));
                     }
@@ -1470,7 +1470,7 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
-                    if (asyncOperation.webRequest.isHttpError || asyncOperation.webRequest.isNetworkError)
+                    if (asyncOperation.webRequest.IsError())
                     {
                         core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
                     }

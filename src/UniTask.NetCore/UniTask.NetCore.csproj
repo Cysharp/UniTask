@@ -36,6 +36,7 @@
 ..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\DiagnosticsExtensions.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\PlayerLoopRunner.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\ContinuationQueue.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\UnityWebRequestExtensions.cs;
   
 ..\UniTask\Assets\Plugins\UniTask\Runtime\CancellationTokenSourceExtensions.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\EnumeratorAsyncExtensions.cs;
