@@ -9,7 +9,7 @@ namespace Cysharp.Threading.Tasks.Internal
     {
         const int MaxArrayLength = 0X7FEFFFFF;
         const int InitialSize = 16;
-        
+
         readonly PlayerLoopTiming timing;
 
         SpinLock gate = new SpinLock();
@@ -173,7 +173,14 @@ namespace Cysharp.Threading.Tasks.Internal
                 var action = actionList[i];
                 actionList[i] = null;
 
-                action();
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    UnityEngine.Debug.LogException(ex);
+                }
             }
 
             {

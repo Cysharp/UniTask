@@ -44,6 +44,14 @@ namespace Cysharp.Threading.Tasks
             return new ReturnToMainThread(timing);
         }
 
+        /// <summary>
+        /// Queue the action to PlayerLoop.
+        /// </summary>
+        public static void Post(Action action, PlayerLoopTiming timing = PlayerLoopTiming.Update)
+        {
+            PlayerLoopHelper.AddContinuation(timing, action);
+        }
+
 #endif
 
         public static SwitchToThreadPoolAwaitable SwitchToThreadPool()
