@@ -208,7 +208,7 @@ await task;
 await task; // NG, throws Exception
 ```
 
-Store to the class field, you can use `UniTask.Lazy` that gurantee call multipletimes. `.Prevent()` allows for multiple calls (internally cached results). This is useful when multiple calls in a function scope.
+Store to the class field, you can use `UniTask.Lazy` that gurantee call multipletimes. `.Preserve()` allows for multiple calls (internally cached results). This is useful when multiple calls in a function scope.
 
 Cancellation and Exception handling
 ---
