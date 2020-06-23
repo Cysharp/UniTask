@@ -472,6 +472,25 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).AsyncUnityEventHandler
   nameWithType: AsyncUnityEventHandler<T>.AsyncUnityEventHandler
   nameWithType.vb: AsyncUnityEventHandler(Of T).AsyncUnityEventHandler
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncDeselectEventHandler{T}#OnDeselectAsync
+  name: IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncDeselectEventHandler_T__OnDeselectAsync
+  commentId: M:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncDeselectEventHandler{T}#OnDeselectAsync
+  name.vb: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncDeselectEventHandler{T}#OnDeselectAsync*
+  name: IAsyncDeselectEventHandler<T>.OnDeselectAsync
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncDeselectEventHandler_T__OnDeselectAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncDeselectEventHandler{T}#OnDeselectAsync
+  isSpec: "True"
+  name.vb: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncDeselectEventHandler<T>.OnDeselectAsync
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync
 - uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndEditEventHandler{T}#OnEndEditAsync
   name: IAsyncEndEditEventHandler<T>.OnEndEditAsync()
   href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndEditEventHandler_T__OnEndEditAsync
@@ -491,6 +510,82 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncEndEditEventHandler<T>.OnEndEditAsync
   nameWithType: AsyncUnityEventHandler<T>.IAsyncEndEditEventHandler<T>.OnEndEditAsync
   nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncEndEditEventHandler<T>.OnEndEditAsync
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndTextSelectionEventHandler{T}#OnEndTextSelectionAsync
+  name: IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndTextSelectionEventHandler_T__OnEndTextSelectionAsync
+  commentId: M:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndTextSelectionEventHandler{T}#OnEndTextSelectionAsync
+  name.vb: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndTextSelectionEventHandler{T}#OnEndTextSelectionAsync*
+  name: IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndTextSelectionEventHandler_T__OnEndTextSelectionAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndTextSelectionEventHandler{T}#OnEndTextSelectionAsync
+  isSpec: "True"
+  name.vb: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSelectEventHandler{T}#OnSelectAsync
+  name: IAsyncSelectEventHandler<T>.OnSelectAsync()
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSelectEventHandler_T__OnSelectAsync
+  commentId: M:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSelectEventHandler{T}#OnSelectAsync
+  name.vb: Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync()
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync()
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync()
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncSelectEventHandler<T>.OnSelectAsync()
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync()
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSelectEventHandler{T}#OnSelectAsync*
+  name: IAsyncSelectEventHandler<T>.OnSelectAsync
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSelectEventHandler_T__OnSelectAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSelectEventHandler{T}#OnSelectAsync
+  isSpec: "True"
+  name.vb: Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncSelectEventHandler<T>.OnSelectAsync
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSubmitEventHandler{T}#OnSubmitAsync
+  name: IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSubmitEventHandler_T__OnSubmitAsync
+  commentId: M:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSubmitEventHandler{T}#OnSubmitAsync
+  name.vb: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSubmitEventHandler{T}#OnSubmitAsync*
+  name: IAsyncSubmitEventHandler<T>.OnSubmitAsync
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSubmitEventHandler_T__OnSubmitAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSubmitEventHandler{T}#OnSubmitAsync
+  isSpec: "True"
+  name.vb: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncSubmitEventHandler<T>.OnSubmitAsync
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncTextSelectionEventHandler{T}#OnTextSelectionAsync
+  name: IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncTextSelectionEventHandler_T__OnTextSelectionAsync
+  commentId: M:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncTextSelectionEventHandler{T}#OnTextSelectionAsync
+  name.vb: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+- uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncTextSelectionEventHandler{T}#OnTextSelectionAsync*
+  name: IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
+  href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncTextSelectionEventHandler_T__OnTextSelectionAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncTextSelectionEventHandler{T}#OnTextSelectionAsync
+  isSpec: "True"
+  name.vb: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
+  fullName: Cysharp.Threading.Tasks.AsyncUnityEventHandler<T>.Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
+  fullName.vb: Cysharp.Threading.Tasks.AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
+  nameWithType: AsyncUnityEventHandler<T>.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
+  nameWithType.vb: AsyncUnityEventHandler(Of T).Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
 - uid: Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncValueChangedEventHandler{T}#OnValueChangedAsync
   name: IAsyncValueChangedEventHandler<T>.OnValueChangedAsync()
   href: api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncValueChangedEventHandler_T__OnValueChangedAsync
@@ -2152,6 +2247,32 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.IAsyncClickEventHandler.OnClickAsync
   nameWithType: IAsyncClickEventHandler.OnClickAsync
+- uid: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler`1
+  name: IAsyncDeselectEventHandler<T>
+  href: api/Cysharp.Threading.Tasks.IAsyncDeselectEventHandler-1.html
+  commentId: T:Cysharp.Threading.Tasks.IAsyncDeselectEventHandler`1
+  name.vb: IAsyncDeselectEventHandler(Of T)
+  fullName: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler(Of T)
+  nameWithType: IAsyncDeselectEventHandler<T>
+  nameWithType.vb: IAsyncDeselectEventHandler(Of T)
+- uid: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler`1.OnDeselectAsync
+  name: OnDeselectAsync()
+  href: api/Cysharp.Threading.Tasks.IAsyncDeselectEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncDeselectEventHandler_1_OnDeselectAsync
+  commentId: M:Cysharp.Threading.Tasks.IAsyncDeselectEventHandler`1.OnDeselectAsync
+  fullName: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler(Of T).OnDeselectAsync()
+  nameWithType: IAsyncDeselectEventHandler<T>.OnDeselectAsync()
+  nameWithType.vb: IAsyncDeselectEventHandler(Of T).OnDeselectAsync()
+- uid: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler`1.OnDeselectAsync*
+  name: OnDeselectAsync
+  href: api/Cysharp.Threading.Tasks.IAsyncDeselectEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncDeselectEventHandler_1_OnDeselectAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.IAsyncDeselectEventHandler`1.OnDeselectAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler<T>.OnDeselectAsync
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncDeselectEventHandler(Of T).OnDeselectAsync
+  nameWithType: IAsyncDeselectEventHandler<T>.OnDeselectAsync
+  nameWithType.vb: IAsyncDeselectEventHandler(Of T).OnDeselectAsync
 - uid: Cysharp.Threading.Tasks.IAsyncEndEditEventHandler`1
   name: IAsyncEndEditEventHandler<T>
   href: api/Cysharp.Threading.Tasks.IAsyncEndEditEventHandler-1.html
@@ -2178,6 +2299,32 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.IAsyncEndEditEventHandler(Of T).OnEndEditAsync
   nameWithType: IAsyncEndEditEventHandler<T>.OnEndEditAsync
   nameWithType.vb: IAsyncEndEditEventHandler(Of T).OnEndEditAsync
+- uid: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler`1
+  name: IAsyncEndTextSelectionEventHandler<T>
+  href: api/Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler-1.html
+  commentId: T:Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler`1
+  name.vb: IAsyncEndTextSelectionEventHandler(Of T)
+  fullName: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler(Of T)
+  nameWithType: IAsyncEndTextSelectionEventHandler<T>
+  nameWithType.vb: IAsyncEndTextSelectionEventHandler(Of T)
+- uid: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler`1.OnEndTextSelectionAsync
+  name: OnEndTextSelectionAsync()
+  href: api/Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncEndTextSelectionEventHandler_1_OnEndTextSelectionAsync
+  commentId: M:Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler`1.OnEndTextSelectionAsync
+  fullName: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler(Of T).OnEndTextSelectionAsync()
+  nameWithType: IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
+  nameWithType.vb: IAsyncEndTextSelectionEventHandler(Of T).OnEndTextSelectionAsync()
+- uid: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler`1.OnEndTextSelectionAsync*
+  name: OnEndTextSelectionAsync
+  href: api/Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncEndTextSelectionEventHandler_1_OnEndTextSelectionAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler`1.OnEndTextSelectionAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler(Of T).OnEndTextSelectionAsync
+  nameWithType: IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync
+  nameWithType.vb: IAsyncEndTextSelectionEventHandler(Of T).OnEndTextSelectionAsync
 - uid: Cysharp.Threading.Tasks.IAsyncReactiveProperty`1
   name: IAsyncReactiveProperty<T>
   href: api/Cysharp.Threading.Tasks.IAsyncReactiveProperty-1.html
@@ -2204,6 +2351,84 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.IAsyncReactiveProperty(Of T).Value
   nameWithType: IAsyncReactiveProperty<T>.Value
   nameWithType.vb: IAsyncReactiveProperty(Of T).Value
+- uid: Cysharp.Threading.Tasks.IAsyncSelectEventHandler`1
+  name: IAsyncSelectEventHandler<T>
+  href: api/Cysharp.Threading.Tasks.IAsyncSelectEventHandler-1.html
+  commentId: T:Cysharp.Threading.Tasks.IAsyncSelectEventHandler`1
+  name.vb: IAsyncSelectEventHandler(Of T)
+  fullName: Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncSelectEventHandler(Of T)
+  nameWithType: IAsyncSelectEventHandler<T>
+  nameWithType.vb: IAsyncSelectEventHandler(Of T)
+- uid: Cysharp.Threading.Tasks.IAsyncSelectEventHandler`1.OnSelectAsync
+  name: OnSelectAsync()
+  href: api/Cysharp.Threading.Tasks.IAsyncSelectEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncSelectEventHandler_1_OnSelectAsync
+  commentId: M:Cysharp.Threading.Tasks.IAsyncSelectEventHandler`1.OnSelectAsync
+  fullName: Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync()
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncSelectEventHandler(Of T).OnSelectAsync()
+  nameWithType: IAsyncSelectEventHandler<T>.OnSelectAsync()
+  nameWithType.vb: IAsyncSelectEventHandler(Of T).OnSelectAsync()
+- uid: Cysharp.Threading.Tasks.IAsyncSelectEventHandler`1.OnSelectAsync*
+  name: OnSelectAsync
+  href: api/Cysharp.Threading.Tasks.IAsyncSelectEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncSelectEventHandler_1_OnSelectAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.IAsyncSelectEventHandler`1.OnSelectAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.IAsyncSelectEventHandler<T>.OnSelectAsync
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncSelectEventHandler(Of T).OnSelectAsync
+  nameWithType: IAsyncSelectEventHandler<T>.OnSelectAsync
+  nameWithType.vb: IAsyncSelectEventHandler(Of T).OnSelectAsync
+- uid: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler`1
+  name: IAsyncSubmitEventHandler<T>
+  href: api/Cysharp.Threading.Tasks.IAsyncSubmitEventHandler-1.html
+  commentId: T:Cysharp.Threading.Tasks.IAsyncSubmitEventHandler`1
+  name.vb: IAsyncSubmitEventHandler(Of T)
+  fullName: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler(Of T)
+  nameWithType: IAsyncSubmitEventHandler<T>
+  nameWithType.vb: IAsyncSubmitEventHandler(Of T)
+- uid: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler`1.OnSubmitAsync
+  name: OnSubmitAsync()
+  href: api/Cysharp.Threading.Tasks.IAsyncSubmitEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncSubmitEventHandler_1_OnSubmitAsync
+  commentId: M:Cysharp.Threading.Tasks.IAsyncSubmitEventHandler`1.OnSubmitAsync
+  fullName: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler(Of T).OnSubmitAsync()
+  nameWithType: IAsyncSubmitEventHandler<T>.OnSubmitAsync()
+  nameWithType.vb: IAsyncSubmitEventHandler(Of T).OnSubmitAsync()
+- uid: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler`1.OnSubmitAsync*
+  name: OnSubmitAsync
+  href: api/Cysharp.Threading.Tasks.IAsyncSubmitEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncSubmitEventHandler_1_OnSubmitAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.IAsyncSubmitEventHandler`1.OnSubmitAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler<T>.OnSubmitAsync
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncSubmitEventHandler(Of T).OnSubmitAsync
+  nameWithType: IAsyncSubmitEventHandler<T>.OnSubmitAsync
+  nameWithType.vb: IAsyncSubmitEventHandler(Of T).OnSubmitAsync
+- uid: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler`1
+  name: IAsyncTextSelectionEventHandler<T>
+  href: api/Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler-1.html
+  commentId: T:Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler`1
+  name.vb: IAsyncTextSelectionEventHandler(Of T)
+  fullName: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler(Of T)
+  nameWithType: IAsyncTextSelectionEventHandler<T>
+  nameWithType.vb: IAsyncTextSelectionEventHandler(Of T)
+- uid: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler`1.OnTextSelectionAsync
+  name: OnTextSelectionAsync()
+  href: api/Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncTextSelectionEventHandler_1_OnTextSelectionAsync
+  commentId: M:Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler`1.OnTextSelectionAsync
+  fullName: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler(Of T).OnTextSelectionAsync()
+  nameWithType: IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
+  nameWithType.vb: IAsyncTextSelectionEventHandler(Of T).OnTextSelectionAsync()
+- uid: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler`1.OnTextSelectionAsync*
+  name: OnTextSelectionAsync
+  href: api/Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler-1.html#Cysharp_Threading_Tasks_IAsyncTextSelectionEventHandler_1_OnTextSelectionAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler`1.OnTextSelectionAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
+  fullName.vb: Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler(Of T).OnTextSelectionAsync
+  nameWithType: IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync
+  nameWithType.vb: IAsyncTextSelectionEventHandler(Of T).OnTextSelectionAsync
 - uid: Cysharp.Threading.Tasks.IAsyncValueChangedEventHandler`1
   name: IAsyncValueChangedEventHandler<T>
   href: api/Cysharp.Threading.Tasks.IAsyncValueChangedEventHandler-1.html
@@ -17317,6 +17542,19 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.DelayFrame
   nameWithType: UniTask.DelayFrame
+- uid: Cysharp.Threading.Tasks.UniTask.DelayRealtime(System.TimeSpan,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  name: DelayRealtime(TimeSpan, PlayerLoopTiming, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayRealtime_System_TimeSpan_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.DelayRealtime(System.TimeSpan,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.DelayRealtime(System.TimeSpan, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
+  nameWithType: UniTask.DelayRealtime(TimeSpan, PlayerLoopTiming, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.DelayRealtime*
+  name: DelayRealtime
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayRealtime_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTask.DelayRealtime
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTask.DelayRealtime
+  nameWithType: UniTask.DelayRealtime
 - uid: Cysharp.Threading.Tasks.UniTask.FromCanceled(CancellationToken)
   name: FromCanceled(CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_FromCanceled_CancellationToken_

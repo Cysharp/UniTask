@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html",
-          "hash": "uFgkZrN5vUqqrWMUqkoVTQ=="
+          "hash": "4TasGZB8eMaV+8m2JyBQBw=="
         }
       },
       "is_incremental": false,
@@ -329,6 +329,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncDeselectEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncDeselectEventHandler-1.html",
+          "hash": "3Q/DQ0Sk8eEJz1M4N++ahA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncEndEditEventHandler-1.yml",
       "output": {
         ".html": {
@@ -341,11 +353,59 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler-1.html",
+          "hash": "Zb0Y6WJPsQgUcp3JkCxRfQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncReactiveProperty-1.yml",
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.IAsyncReactiveProperty-1.html",
           "hash": "Hp6l4c9WcpYcuMXGylKBqw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncSelectEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncSelectEventHandler-1.html",
+          "hash": "0cvXwHyL+8VdWMUwMjc7Gg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncSubmitEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncSubmitEventHandler-1.html",
+          "hash": "0PyYjkQ361Vm5YQtiNmEoQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler-1.html",
+          "hash": "7xnnyXLIJ3GEh2hm8suBSw=="
         }
       },
       "is_incremental": false,
@@ -2697,7 +2757,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UniTask.html",
-          "hash": "OmkQuEezV3aFvNbLNRl4rg=="
+          "hash": "EouaDtguVkQAMsC15+oHwg=="
         }
       },
       "is_incremental": false,
@@ -3333,7 +3393,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.html",
-          "hash": "8XI33tsJ3VP1JaNbDUWXAA=="
+          "hash": "m+14BkYa8OUoxFTu0ehHdg=="
         }
       },
       "is_incremental": false,
@@ -3345,7 +3405,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "qqQibUvqlZk4MvSQEGqK8w=="
+          "hash": "ROmAOvLOSrIYIfo4ZfhvwQ=="
         }
       },
       "is_incremental": false,
@@ -3399,7 +3459,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 278,
+          "total_file_count": 283,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {

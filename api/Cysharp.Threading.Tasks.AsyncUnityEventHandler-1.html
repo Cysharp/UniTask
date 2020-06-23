@@ -82,7 +82,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class AsyncUnityEventHandler&lt;T&gt; : IUniTaskSource&lt;T&gt;, IUniTaskSource, IValueTaskSource, IValueTaskSource&lt;T&gt;, IAsyncValueChangedEventHandler&lt;T&gt;, IAsyncEndEditEventHandler&lt;T&gt;, IDisposable</code></pre>
+    <pre><code class="lang-csharp hljs">public class AsyncUnityEventHandler&lt;T&gt; : IUniTaskSource&lt;T&gt;, IUniTaskSource, IValueTaskSource, IValueTaskSource&lt;T&gt;, IAsyncValueChangedEventHandler&lt;T&gt;, IAsyncEndEditEventHandler&lt;T&gt;, IAsyncEndTextSelectionEventHandler&lt;T&gt;, IAsyncTextSelectionEventHandler&lt;T&gt;, IAsyncDeselectEventHandler&lt;T&gt;, IAsyncSelectEventHandler&lt;T&gt;, IAsyncSubmitEventHandler&lt;T&gt;, IDisposable</code></pre>
   </div>
 
   <div class="inheritance">
@@ -99,6 +99,11 @@
     <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncValueChangedEventHandler-1.html">IAsyncValueChangedEventHandler</a>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncEndEditEventHandler-1.html">IAsyncEndEditEventHandler</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler-1.html">IAsyncEndTextSelectionEventHandler</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler-1.html">IAsyncTextSelectionEventHandler</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncDeselectEventHandler-1.html">IAsyncDeselectEventHandler</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncSelectEventHandler-1.html">IAsyncSelectEventHandler</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncSubmitEventHandler-1.html">IAsyncSubmitEventHandler</a>&lt;T&gt;</div>
     <div><span class="xref">System.IDisposable</span></div>
   </div>
   
@@ -169,7 +174,37 @@
     <tbody>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncDeselectEventHandler_T__OnDeselectAsync">IAsyncDeselectEventHandler&lt;T&gt;.OnDeselectAsync()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndEditEventHandler_T__OnEndEditAsync">IAsyncEndEditEventHandler&lt;T&gt;.OnEndEditAsync()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndTextSelectionEventHandler_T__OnEndTextSelectionAsync">IAsyncEndTextSelectionEventHandler&lt;T&gt;.OnEndTextSelectionAsync()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSelectEventHandler_T__OnSelectAsync">IAsyncSelectEventHandler&lt;T&gt;.OnSelectAsync()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSubmitEventHandler_T__OnSubmitAsync">IAsyncSubmitEventHandler&lt;T&gt;.OnSubmitAsync()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler-1.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncTextSelectionEventHandler_T__OnTextSelectionAsync">IAsyncTextSelectionEventHandler&lt;T&gt;.OnTextSelectionAsync()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -306,6 +341,36 @@
   <h3 id="eii">Explicit Interface Implementations
   </h3>
   <section>
+  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncDeselectEventHandler_T__OnDeselectAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncDeselectEventHandler{T}#OnDeselectAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncDeselectEventHandler_T__OnDeselectAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncDeselectEventHandler{T}#OnDeselectAsync">IAsyncDeselectEventHandler&lt;T&gt;.OnDeselectAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UniTask&lt;T&gt; IAsyncDeselectEventHandler&lt;T&gt;.OnDeselectAsync()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
   <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndEditEventHandler_T__OnEndEditAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndEditEventHandler{T}#OnEndEditAsync*"></a>
   <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndEditEventHandler_T__OnEndEditAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndEditEventHandler{T}#OnEndEditAsync">IAsyncEndEditEventHandler&lt;T&gt;.OnEndEditAsync()</h4>
   <div class="markdown level1 summary"></div>
@@ -313,6 +378,126 @@
   
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">UniTask&lt;T&gt; IAsyncEndEditEventHandler&lt;T&gt;.OnEndEditAsync()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndTextSelectionEventHandler_T__OnEndTextSelectionAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndTextSelectionEventHandler{T}#OnEndTextSelectionAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncEndTextSelectionEventHandler_T__OnEndTextSelectionAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncEndTextSelectionEventHandler{T}#OnEndTextSelectionAsync">IAsyncEndTextSelectionEventHandler&lt;T&gt;.OnEndTextSelectionAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UniTask&lt;T&gt; IAsyncEndTextSelectionEventHandler&lt;T&gt;.OnEndTextSelectionAsync()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSelectEventHandler_T__OnSelectAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSelectEventHandler{T}#OnSelectAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSelectEventHandler_T__OnSelectAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSelectEventHandler{T}#OnSelectAsync">IAsyncSelectEventHandler&lt;T&gt;.OnSelectAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UniTask&lt;T&gt; IAsyncSelectEventHandler&lt;T&gt;.OnSelectAsync()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSubmitEventHandler_T__OnSubmitAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSubmitEventHandler{T}#OnSubmitAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncSubmitEventHandler_T__OnSubmitAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncSubmitEventHandler{T}#OnSubmitAsync">IAsyncSubmitEventHandler&lt;T&gt;.OnSubmitAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UniTask&lt;T&gt; IAsyncSubmitEventHandler&lt;T&gt;.OnSubmitAsync()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncTextSelectionEventHandler_T__OnTextSelectionAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncTextSelectionEventHandler{T}#OnTextSelectionAsync*"></a>
+  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_1_Cysharp_Threading_Tasks_IAsyncTextSelectionEventHandler_T__OnTextSelectionAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler`1.Cysharp#Threading#Tasks#IAsyncTextSelectionEventHandler{T}#OnTextSelectionAsync">IAsyncTextSelectionEventHandler&lt;T&gt;.OnTextSelectionAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UniTask&lt;T&gt; IAsyncTextSelectionEventHandler&lt;T&gt;.OnTextSelectionAsync()</code></pre>
   </div>
 
   
@@ -552,6 +737,21 @@
   </div>
   <div>
       <a class="xref" href="Cysharp.Threading.Tasks.IAsyncEndEditEventHandler-1.html">IAsyncEndEditEventHandler&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IAsyncEndTextSelectionEventHandler-1.html">IAsyncEndTextSelectionEventHandler&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IAsyncTextSelectionEventHandler-1.html">IAsyncTextSelectionEventHandler&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IAsyncDeselectEventHandler-1.html">IAsyncDeselectEventHandler&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IAsyncSelectEventHandler-1.html">IAsyncSelectEventHandler&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IAsyncSubmitEventHandler-1.html">IAsyncSubmitEventHandler&lt;T&gt;</a>
   </div>
   <div>
       <span class="xref">System.IDisposable</span>
