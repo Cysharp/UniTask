@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using Cysharp.Threading.Tasks.Internal;
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
@@ -94,6 +94,16 @@ namespace Cysharp.Threading.Tasks
             return (ignoreTimeScale)
                 ? new UniTask(DelayIgnoreTimeScalePromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token)
                 : new UniTask(DelayPromise.Create(delayTimeSpan, delayTiming, cancellationToken, out token), token);
+        }
+
+        public static UniTask DelayRealtime(TimeSpan delayTimeSpan, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (delayTimeSpan < TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException("Delay does not allow minus delayTimeSpan. delayTimeSpan:" + delayTimeSpan);
+            }
+
+            return new UniTask(DelayRealtimePromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token);
         }
 
         sealed class YieldPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<YieldPromise>
@@ -404,7 +414,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             int initialFrame;
-            float delayFrameTimeSpan;
+            float delayTimeSpan;
             float elapsed;
             CancellationToken cancellationToken;
 
@@ -414,7 +424,7 @@ namespace Cysharp.Threading.Tasks
             {
             }
 
-            public static IUniTaskSource Create(TimeSpan delayFrameTimeSpan, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource Create(TimeSpan delayTimeSpan, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -427,7 +437,7 @@ namespace Cysharp.Threading.Tasks
                 }
 
                 result.elapsed = 0.0f;
-                result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
+                result.delayTimeSpan = (float)delayTimeSpan.TotalSeconds;
                 result.cancellationToken = cancellationToken;
                 result.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
 
@@ -483,7 +493,7 @@ namespace Cysharp.Threading.Tasks
                 }
 
                 elapsed += Time.deltaTime;
-                if (elapsed >= delayFrameTimeSpan)
+                if (elapsed >= delayTimeSpan)
                 {
                     core.TrySetResult(null);
                     return false;
@@ -496,7 +506,7 @@ namespace Cysharp.Threading.Tasks
             {
                 TaskTracker.RemoveTracking(this);
                 core.Reset();
-                delayFrameTimeSpan = default;
+                delayTimeSpan = default;
                 elapsed = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
@@ -608,6 +618,104 @@ namespace Cysharp.Threading.Tasks
                 core.Reset();
                 delayFrameTimeSpan = default;
                 elapsed = default;
+                cancellationToken = default;
+                return pool.TryPush(this);
+            }
+        }
+
+        sealed class DelayRealtimePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayRealtimePromise>
+        {
+            static TaskPool<DelayRealtimePromise> pool;
+            public DelayRealtimePromise NextNode { get; set; }
+
+            static DelayRealtimePromise()
+            {
+                TaskPool.RegisterSizeGetter(typeof(DelayRealtimePromise), () => pool.Size);
+            }
+
+            long delayTimeSpanTicks;
+            ValueStopwatch stopwatch;
+            CancellationToken cancellationToken;
+
+            UniTaskCompletionSourceCore<AsyncUnit> core;
+
+            DelayRealtimePromise()
+            {
+            }
+
+            public static IUniTaskSource Create(TimeSpan delayTimeSpan, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                if (!pool.TryPop(out var result))
+                {
+                    result = new DelayRealtimePromise();
+                }
+
+                result.stopwatch = ValueStopwatch.StartNew();
+                result.delayTimeSpanTicks = delayTimeSpan.Ticks;
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public void GetResult(short token)
+            {
+                try
+                {
+                    core.GetResult(token);
+                }
+                finally
+                {
+                    TryReturn();
+                }
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
+                    return false;
+                }
+
+                if (stopwatch.ElapsedTicks >= delayTimeSpanTicks)
+                {
+                    core.TrySetResult(AsyncUnit.Default);
+                    return false;
+                }
+
+                return true;
+            }
+
+            bool TryReturn()
+            {
+                TaskTracker.RemoveTracking(this);
+                core.Reset();
+                stopwatch = default;
                 cancellationToken = default;
                 return pool.TryPush(this);
             }
