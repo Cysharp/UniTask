@@ -800,7 +800,7 @@ After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of gi
 
 or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"` to `Packages/manifest.json`.
 
-If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.0.19`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.0.19`.
+If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.0.20`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.0.20`.
 
 ### Install via OpenUPM
 
