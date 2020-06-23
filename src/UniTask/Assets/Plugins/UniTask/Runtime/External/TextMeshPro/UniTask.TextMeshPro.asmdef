@@ -1,6 +1,8 @@
 {
-    "name": "UniTask",
+    "name": "UniTask.TextMeshPro",
     "references": [
+        "UniTask",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -10,6 +12,11 @@
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "",
+            "define": "UNITASK_TEXTMESHPRO_SUPPORT"
+        }
     ],
     "noEngineReferences": false
 }

@@ -1,0 +1,66 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var handlers = new (string name, string type)[] {
+        ("ValueChanged", "string"),
+        ("EndEdit", "string"),
+        ("EndTextSelection", "(string, int, int)"),
+        ("TextSelection", "(string, int, int)"),
+        ("Deselect", "string"),
+        ("Select", "string"),
+        ("Submit", "string"),
+    };
+
+    Func<string, bool> shouldConvert = x => x.EndsWith("TextSelection");
+    Func<string, string> eventName = x => shouldConvert(x) ? $"new TextSelectionEventConverter(inputField.on{x})" : $"inputField.on{x}";
+#>
+#if UNITASK_TEXTMESHPRO_SUPPORT
+
+using System;
+using System.Threading;
+using TMPro;
+
+namespace Cysharp.Threading.Tasks
+{
+    public static partial class TextMeshProAsyncExtensions
+    {
+<# foreach(var (name, type) in handlers) { #>
+        public static IAsync<#= (name) #>EventHandler<<#= type #>> GetAsync<#= (name) #>EventHandler(this TMP_InputField inputField)
+        {
+            return new AsyncUnityEventHandler<<#= type #>>(<#= eventName(name) #>, inputField.GetCancellationTokenOnDestroy(), false);
+        }
+
+        public static IAsync<#= (name) #>EventHandler<<#= type #>> GetAsync<#= (name) #>EventHandler(this TMP_InputField inputField, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<<#= type #>>(<#= eventName(name) #>, cancellationToken, false);
+        }
+
+        public static UniTask<<#= type #>> On<#= (name) #>Async(this TMP_InputField inputField)
+        {
+            return new AsyncUnityEventHandler<<#= type #>>(<#= eventName(name) #>, inputField.GetCancellationTokenOnDestroy(), true).OnInvokeAsync();
+        }
+
+        public static UniTask<<#= type #>> On<#= (name) #>Async(this TMP_InputField inputField, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<<#= type #>>(<#= eventName(name) #>, cancellationToken, true).OnInvokeAsync();
+        }
+
+        public static IUniTaskAsyncEnumerable<<#= type #>> On<#= (name) #>AsAsyncEnumerable(this TMP_InputField inputField)
+        {
+            return new UnityEventHandlerAsyncEnumerable<<#= type #>>(<#= eventName(name) #>, inputField.GetCancellationTokenOnDestroy());
+        }
+
+        public static IUniTaskAsyncEnumerable<<#= type #>> On<#= (name) #>AsAsyncEnumerable(this TMP_InputField inputField, CancellationToken cancellationToken)
+        {
+            return new UnityEventHandlerAsyncEnumerable<<#= type #>>(<#= eventName(name) #>, cancellationToken);
+        }
+
+<# } #>
+    }
+}
+
+#endif

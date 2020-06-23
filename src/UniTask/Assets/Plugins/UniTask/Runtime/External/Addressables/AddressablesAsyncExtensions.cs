@@ -11,7 +11,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Cysharp.Threading.Tasks
 {
-    public static class AddressableAsyncExtensions
+    public static class AddressablesAsyncExtensions
     {
         #region AsyncOperationHandle
 

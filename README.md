@@ -447,9 +447,11 @@ For debug use, enable tracking and capture stacktrace is useful but it it declin
 
 External Assets
 ---
-In default, UniTask supports DOTween and Addressables(`AsyncOperationHandle` and `AsyncOpereationHandle<T>` as awaitable).
+In default, UniTask supports TextMeshPro(`BindTo(TMP_Text)` and `TMP_InputField` event extensions like standard uGUI `InputField`), DOTween(`Tween` as awaitable) and Addressables(`AsyncOperationHandle` and `AsyncOpereationHandle<T>` as awaitable).
 
-For DOTween support, require to `com.demigiant.dotween` import from [OpenUPM](https://openupm.com/packages/com.demigiant.dotween/) or define `UNITASK_DOTWEEN_SUPPORT` to enable it.
+There are defined in separated asmdef like `UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
+
+TextMeshPro and Addressables support are automatically enabled when import there package from package manager. However DOTween support, require to `com.demigiant.dotween` import from [OpenUPM](https://openupm.com/packages/com.demigiant.dotween/) or define `UNITASK_DOTWEEN_SUPPORT` to enable it.
 
 ```csharp
 // sequential
