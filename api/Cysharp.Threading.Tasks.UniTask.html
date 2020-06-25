@@ -207,7 +207,19 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">Delay(Int32, DelayType, PlayerLoopTiming, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">Delay(TimeSpan, DelayType, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -220,12 +232,6 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
       <tr>
         <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayFrame_System_Int32_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">DelayFrame(Int32, PlayerLoopTiming, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayRealtime_System_TimeSpan_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">DelayRealtime(TimeSpan, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -1101,6 +1107,49 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Delay_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">Delay(Int32, DelayType, PlayerLoopTiming, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask Delay(int millisecondsDelay, DelayType delayType, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>millisecondsDelay</code></span> <span class="xref">System.Int32</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>delayType</code></span> <a class="xref" href="Cysharp.Threading.Tasks.DelayType.html">DelayType</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Delay_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
@@ -1115,6 +1164,49 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
     <dt><span class="parametername"><code>millisecondsDelay</code></span> <span class="xref">System.Int32</span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>ignoreTimeScale</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Delay_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Delay(System.TimeSpan,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">Delay(TimeSpan, DelayType, PlayerLoopTiming, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask Delay(TimeSpan delayTimeSpan, DelayType delayType, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>delayTimeSpan</code></span> <span class="xref">System.TimeSpan</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>delayType</code></span> <a class="xref" href="Cysharp.Threading.Tasks.DelayType.html">DelayType</a></dt>
     <dd></dd>
     <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
@@ -1199,47 +1291,6 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
     <dt><span class="parametername"><code>delayFrameCount</code></span> <span class="xref">System.Int32</span></dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_UniTask_DelayRealtime_" data-uid="Cysharp.Threading.Tasks.UniTask.DelayRealtime*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_DelayRealtime_System_TimeSpan_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.DelayRealtime(System.TimeSpan,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">DelayRealtime(TimeSpan, PlayerLoopTiming, CancellationToken)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask DelayRealtime(TimeSpan delayTimeSpan, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>delayTimeSpan</code></span> <span class="xref">System.TimeSpan</span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>delayTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>

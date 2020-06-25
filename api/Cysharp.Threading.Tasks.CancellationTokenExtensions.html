@@ -128,6 +128,30 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_Cysharp_Threading_Tasks_UniTask_">ToCancellationToken(UniTask)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_Cysharp_Threading_Tasks_UniTask_CancellationToken_">ToCancellationToken(UniTask, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken__1_Cysharp_Threading_Tasks_UniTask___0__">ToCancellationToken&lt;T&gt;(UniTask&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_">ToCancellationToken&lt;T&gt;(UniTask&lt;T&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToUniTask_CancellationToken_">ToUniTask(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -251,6 +275,172 @@
   </dl>
   </section>
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken*"></a>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_Cysharp_Threading_Tasks_UniTask_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask)">ToCancellationToken(UniTask)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CancellationToken ToCancellationToken(this UniTask task)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken*"></a>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_Cysharp_Threading_Tasks_UniTask_CancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask,CancellationToken)">ToCancellationToken(UniTask, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CancellationToken ToCancellationToken(this UniTask task, CancellationToken linkToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>linkToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken*"></a>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken__1_Cysharp_Threading_Tasks_UniTask___0__" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken``1(Cysharp.Threading.Tasks.UniTask{``0})">ToCancellationToken&lt;T&gt;(UniTask&lt;T&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CancellationToken ToCancellationToken&lt;T&gt;(this UniTask&lt;T&gt; task)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken*"></a>
+  <h4 id="Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_" data-uid="Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)">ToCancellationToken&lt;T&gt;(UniTask&lt;T&gt;, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CancellationToken ToCancellationToken&lt;T&gt;(this UniTask&lt;T&gt; task, CancellationToken linkToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>linkToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
   
   
   

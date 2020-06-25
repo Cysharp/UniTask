@@ -1356,6 +1356,43 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext
   nameWithType: CancellationTokenExtensions.RegisterWithoutCaptureExecutionContext
+- uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask)
+  name: ToCancellationToken(UniTask)
+  href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_Cysharp_Threading_Tasks_UniTask_
+  commentId: M:Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask)
+  fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask)
+  nameWithType: CancellationTokenExtensions.ToCancellationToken(UniTask)
+- uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask,CancellationToken)
+  name: ToCancellationToken(UniTask, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_Cysharp_Threading_Tasks_UniTask_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Cysharp.Threading.Tasks.UniTask, CancellationToken)
+  nameWithType: CancellationTokenExtensions.ToCancellationToken(UniTask, CancellationToken)
+- uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken*
+  name: ToCancellationToken
+  href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken_
+  commentId: Overload:Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken
+  nameWithType: CancellationTokenExtensions.ToCancellationToken
+- uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken``1(Cysharp.Threading.Tasks.UniTask{``0})
+  name: ToCancellationToken<T>(UniTask<T>)
+  href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken__1_Cysharp_Threading_Tasks_UniTask___0__
+  commentId: M:Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken``1(Cysharp.Threading.Tasks.UniTask{``0})
+  name.vb: ToCancellationToken(Of T)(UniTask(Of T))
+  fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken<T>(Cysharp.Threading.Tasks.UniTask<T>)
+  fullName.vb: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Of T)(Cysharp.Threading.Tasks.UniTask(Of T))
+  nameWithType: CancellationTokenExtensions.ToCancellationToken<T>(UniTask<T>)
+  nameWithType.vb: CancellationTokenExtensions.ToCancellationToken(Of T)(UniTask(Of T))
+- uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)
+  name: ToCancellationToken<T>(UniTask<T>, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToCancellationToken__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)
+  name.vb: ToCancellationToken(Of T)(UniTask(Of T), CancellationToken)
+  fullName: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken<T>(Cysharp.Threading.Tasks.UniTask<T>, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToCancellationToken(Of T)(Cysharp.Threading.Tasks.UniTask(Of T), CancellationToken)
+  nameWithType: CancellationTokenExtensions.ToCancellationToken<T>(UniTask<T>, CancellationToken)
+  nameWithType.vb: CancellationTokenExtensions.ToCancellationToken(Of T)(UniTask(Of T), CancellationToken)
 - uid: Cysharp.Threading.Tasks.CancellationTokenExtensions.ToUniTask(CancellationToken)
   name: ToUniTask(CancellationToken)
   href: api/Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_ToUniTask_CancellationToken_
@@ -1388,18 +1425,18 @@ references:
   commentId: T:Cysharp.Threading.Tasks.CancellationTokenSourceExtensions
   fullName: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions
   nameWithType: CancellationTokenSourceExtensions
-- uid: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.Int32,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming)
-  name: CancelAfterSlim(CancellationTokenSource, Int32, Boolean, PlayerLoopTiming)
-  href: api/Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.html#Cysharp_Threading_Tasks_CancellationTokenSourceExtensions_CancelAfterSlim_CancellationTokenSource_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_
-  commentId: M:Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.Int32,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming)
-  fullName: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, System.Int32, System.Boolean, Cysharp.Threading.Tasks.PlayerLoopTiming)
-  nameWithType: CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, Int32, Boolean, PlayerLoopTiming)
-- uid: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.TimeSpan,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming)
-  name: CancelAfterSlim(CancellationTokenSource, TimeSpan, Boolean, PlayerLoopTiming)
-  href: api/Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.html#Cysharp_Threading_Tasks_CancellationTokenSourceExtensions_CancelAfterSlim_CancellationTokenSource_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_
-  commentId: M:Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.TimeSpan,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming)
-  fullName: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, System.TimeSpan, System.Boolean, Cysharp.Threading.Tasks.PlayerLoopTiming)
-  nameWithType: CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, TimeSpan, Boolean, PlayerLoopTiming)
+- uid: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.Int32,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming)
+  name: CancelAfterSlim(CancellationTokenSource, Int32, DelayType, PlayerLoopTiming)
+  href: api/Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.html#Cysharp_Threading_Tasks_CancellationTokenSourceExtensions_CancelAfterSlim_CancellationTokenSource_System_Int32_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_
+  commentId: M:Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.Int32,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming)
+  fullName: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, System.Int32, Cysharp.Threading.Tasks.DelayType, Cysharp.Threading.Tasks.PlayerLoopTiming)
+  nameWithType: CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, Int32, DelayType, PlayerLoopTiming)
+- uid: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.TimeSpan,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming)
+  name: CancelAfterSlim(CancellationTokenSource, TimeSpan, DelayType, PlayerLoopTiming)
+  href: api/Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.html#Cysharp_Threading_Tasks_CancellationTokenSourceExtensions_CancelAfterSlim_CancellationTokenSource_System_TimeSpan_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_
+  commentId: M:Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource,System.TimeSpan,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming)
+  fullName: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, System.TimeSpan, Cysharp.Threading.Tasks.DelayType, Cysharp.Threading.Tasks.PlayerLoopTiming)
+  nameWithType: CancellationTokenSourceExtensions.CancelAfterSlim(CancellationTokenSource, TimeSpan, DelayType, PlayerLoopTiming)
 - uid: Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.CancelAfterSlim*
   name: CancelAfterSlim
   href: api/Cysharp.Threading.Tasks.CancellationTokenSourceExtensions.html#Cysharp_Threading_Tasks_CancellationTokenSourceExtensions_CancelAfterSlim_
@@ -2112,6 +2149,30 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Task
   nameWithType: AsyncUniTaskVoidMethodBuilder.Task
+- uid: Cysharp.Threading.Tasks.DelayType
+  name: DelayType
+  href: api/Cysharp.Threading.Tasks.DelayType.html
+  commentId: T:Cysharp.Threading.Tasks.DelayType
+  fullName: Cysharp.Threading.Tasks.DelayType
+  nameWithType: DelayType
+- uid: Cysharp.Threading.Tasks.DelayType.DeltaTime
+  name: DeltaTime
+  href: api/Cysharp.Threading.Tasks.DelayType.html#Cysharp_Threading_Tasks_DelayType_DeltaTime
+  commentId: F:Cysharp.Threading.Tasks.DelayType.DeltaTime
+  fullName: Cysharp.Threading.Tasks.DelayType.DeltaTime
+  nameWithType: DelayType.DeltaTime
+- uid: Cysharp.Threading.Tasks.DelayType.Realtime
+  name: Realtime
+  href: api/Cysharp.Threading.Tasks.DelayType.html#Cysharp_Threading_Tasks_DelayType_Realtime
+  commentId: F:Cysharp.Threading.Tasks.DelayType.Realtime
+  fullName: Cysharp.Threading.Tasks.DelayType.Realtime
+  nameWithType: DelayType.Realtime
+- uid: Cysharp.Threading.Tasks.DelayType.UnscaledDeltaTime
+  name: UnscaledDeltaTime
+  href: api/Cysharp.Threading.Tasks.DelayType.html#Cysharp_Threading_Tasks_DelayType_UnscaledDeltaTime
+  commentId: F:Cysharp.Threading.Tasks.DelayType.UnscaledDeltaTime
+  fullName: Cysharp.Threading.Tasks.DelayType.UnscaledDeltaTime
+  nameWithType: DelayType.UnscaledDeltaTime
 - uid: Cysharp.Threading.Tasks.EnumerableAsyncExtensions
   name: EnumerableAsyncExtensions
   href: api/Cysharp.Threading.Tasks.EnumerableAsyncExtensions.html
@@ -17510,12 +17571,24 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTask.Defer(Of T)(System.Func(Of Cysharp.Threading.Tasks.UniTask(Of T)))
   nameWithType: UniTask.Defer<T>(Func<UniTask<T>>)
   nameWithType.vb: UniTask.Defer(Of T)(Func(Of UniTask(Of T)))
+- uid: Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  name: Delay(Int32, DelayType, PlayerLoopTiming, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Delay(System.Int32, Cysharp.Threading.Tasks.DelayType, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
+  nameWithType: UniTask.Delay(Int32, DelayType, PlayerLoopTiming, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   name: Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
   commentId: M:Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   fullName: Cysharp.Threading.Tasks.UniTask.Delay(System.Int32, System.Boolean, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
   nameWithType: UniTask.Delay(Int32, Boolean, PlayerLoopTiming, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Delay(System.TimeSpan,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  name: Delay(TimeSpan, DelayType, PlayerLoopTiming, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Delay(System.TimeSpan,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Delay(System.TimeSpan, Cysharp.Threading.Tasks.DelayType, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
+  nameWithType: UniTask.Delay(TimeSpan, DelayType, PlayerLoopTiming, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.Delay(System.TimeSpan,System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   name: Delay(TimeSpan, Boolean, PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
@@ -17542,19 +17615,6 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.DelayFrame
   nameWithType: UniTask.DelayFrame
-- uid: Cysharp.Threading.Tasks.UniTask.DelayRealtime(System.TimeSpan,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
-  name: DelayRealtime(TimeSpan, PlayerLoopTiming, CancellationToken)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayRealtime_System_TimeSpan_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.DelayRealtime(System.TimeSpan,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
-  fullName: Cysharp.Threading.Tasks.UniTask.DelayRealtime(System.TimeSpan, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
-  nameWithType: UniTask.DelayRealtime(TimeSpan, PlayerLoopTiming, CancellationToken)
-- uid: Cysharp.Threading.Tasks.UniTask.DelayRealtime*
-  name: DelayRealtime
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_DelayRealtime_
-  commentId: Overload:Cysharp.Threading.Tasks.UniTask.DelayRealtime
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UniTask.DelayRealtime
-  nameWithType: UniTask.DelayRealtime
 - uid: Cysharp.Threading.Tasks.UniTask.FromCanceled(CancellationToken)
   name: FromCanceled(CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_FromCanceled_CancellationToken_
