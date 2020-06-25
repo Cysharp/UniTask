@@ -8,6 +8,16 @@ using UnityEngine;
 
 namespace Cysharp.Threading.Tasks
 {
+    public enum DelayType
+    {
+        /// <summary>use Time.deltaTime.</summary>
+        DeltaTime,
+        /// <summary>Ignore timescale, use Time.unscaledDeltaTime.</summary>
+        UnscaledDeltaTime,
+        /// <summary>use Stopwatch.GetTimestamp().</summary>
+        Realtime
+    }
+
     public partial struct UniTask
     {
         public static YieldAwaitable Yield(PlayerLoopTiming timing = PlayerLoopTiming.Update)
@@ -74,36 +84,44 @@ namespace Cysharp.Threading.Tasks
         public static UniTask Delay(int millisecondsDelay, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             var delayTimeSpan = TimeSpan.FromMilliseconds(millisecondsDelay);
-            if (delayTimeSpan < TimeSpan.Zero)
-            {
-                throw new ArgumentOutOfRangeException("Delay does not allow minus millisecondsDelay. millisecondsDelay:" + millisecondsDelay);
-            }
-
-            return (ignoreTimeScale)
-                ? new UniTask(DelayIgnoreTimeScalePromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token)
-                : new UniTask(DelayPromise.Create(delayTimeSpan, delayTiming, cancellationToken, out token), token);
+            return Delay(delayTimeSpan, ignoreTimeScale, delayTiming, cancellationToken);
         }
 
         public static UniTask Delay(TimeSpan delayTimeSpan, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (delayTimeSpan < TimeSpan.Zero)
-            {
-                throw new ArgumentOutOfRangeException("Delay does not allow minus delayTimeSpan. delayTimeSpan:" + delayTimeSpan);
-            }
-
-            return (ignoreTimeScale)
-                ? new UniTask(DelayIgnoreTimeScalePromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token)
-                : new UniTask(DelayPromise.Create(delayTimeSpan, delayTiming, cancellationToken, out token), token);
+            var delayType = ignoreTimeScale ? DelayType.UnscaledDeltaTime : DelayType.DeltaTime;
+            return Delay(delayTimeSpan, delayType, delayTiming, cancellationToken);
         }
 
-        public static UniTask DelayRealtime(TimeSpan delayTimeSpan, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask Delay(int millisecondsDelay, DelayType delayType, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var delayTimeSpan = TimeSpan.FromMilliseconds(millisecondsDelay);
+            return Delay(delayTimeSpan, delayType, delayTiming, cancellationToken);
+        }
+
+        public static UniTask Delay(TimeSpan delayTimeSpan, DelayType delayType, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (delayTimeSpan < TimeSpan.Zero)
             {
                 throw new ArgumentOutOfRangeException("Delay does not allow minus delayTimeSpan. delayTimeSpan:" + delayTimeSpan);
             }
 
-            return new UniTask(DelayRealtimePromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token);
+            switch (delayType)
+            {
+                case DelayType.UnscaledDeltaTime:
+                    {
+                        return new UniTask(DelayIgnoreTimeScalePromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token);
+                    }
+                case DelayType.Realtime:
+                    {
+                        return new UniTask(DelayRealtimePromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token);
+                    }
+                case DelayType.DeltaTime:
+                default:
+                    {
+                        return new UniTask(DelayPromise.Create(delayTimeSpan, delayTiming, cancellationToken, out var token), token);
+                    }
+            }
         }
 
         sealed class YieldPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<YieldPromise>
