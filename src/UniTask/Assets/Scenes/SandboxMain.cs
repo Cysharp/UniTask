@@ -434,6 +434,8 @@ public class SandboxMain : MonoBehaviour
         throw new Exception("yeah");
     }
 
+    
+
 
     void Start()
     {
@@ -441,6 +443,9 @@ public class SandboxMain : MonoBehaviour
         Go();
 
         UnityEngine.Debug.Log("Start:" + PlayerLoopInfo.CurrentLoopType);
+
+
+        // this.GetCancellationTokenOnDestroy()
 
         //PlayerLoopInfo.Inject();
 
@@ -458,7 +463,11 @@ public class SandboxMain : MonoBehaviour
         //var cts = new CancellationTokenSource();
 
 
+        // UniTask.Post(
 
+        // CancellationToken.
+
+        //UniTask.Delay(TimeSpan.FromSeconds(3)).
 
 
         //okButton.onClick.AddListener(UniTask.UnityAction(async () =>

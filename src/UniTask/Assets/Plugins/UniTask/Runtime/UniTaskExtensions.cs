@@ -201,10 +201,10 @@ namespace Cysharp.Threading.Tasks
             return new ToCoroutineEnumerator(task, exceptionHandler);
         }
 
-        public static async UniTask Timeout(this UniTask task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask Timeout(this UniTask task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
+            var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
 
             int winArgIndex;
             bool taskResultIsCanceled;
@@ -242,10 +242,10 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
+            var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
 
             int winArgIndex;
             (bool IsCanceled, T Result) taskResult;
@@ -288,10 +288,10 @@ namespace Cysharp.Threading.Tasks
         /// <summary>
         /// Timeout with suppress OperationCanceledException. Returns (bool, IsCacneled).
         /// </summary>
-        public static async UniTask<bool> TimeoutWithoutException(this UniTask task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask<bool> TimeoutWithoutException(this UniTask task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
+            var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
 
             int winArgIndex;
             bool taskResultIsCanceled;
@@ -334,10 +334,10 @@ namespace Cysharp.Threading.Tasks
         /// <summary>
         /// Timeout with suppress OperationCanceledException. Returns (bool IsTimeout, T Result).
         /// </summary>
-        public static async UniTask<(bool IsTimeout, T Result)> TimeoutWithoutException<T>(this UniTask<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask<(bool IsTimeout, T Result)> TimeoutWithoutException<T>(this UniTask<T> task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
+            var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
 
             int winArgIndex;
             (bool IsCanceled, T Result) taskResult;
