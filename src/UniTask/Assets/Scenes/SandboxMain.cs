@@ -434,15 +434,30 @@ public class SandboxMain : MonoBehaviour
         throw new Exception("yeah");
     }
 
-    
 
 
-    void Start()
+
+    async UniTaskVoid Start()
     {
-        _ = Foo(); // unhandled.
-        Go();
+        //_ = Foo(); // unhandled.
+        //Go();
+        var cts = new CancellationTokenSource();
+
+        okButton.onClick.AddListener(() =>
+        {
+            cts.Cancel();
+        });
+
 
         UnityEngine.Debug.Log("Start:" + PlayerLoopInfo.CurrentLoopType);
+
+        var token = UniTask.Delay(TimeSpan.FromSeconds(3), DelayType.Realtime).ToCancellationToken(cts.Token);
+        while (!token.IsCancellationRequested)
+        {
+            UnityEngine.Debug.Log("in loop");
+            await UniTask.Yield();
+        }
+        UnityEngine.Debug.Log("end");
 
 
         // this.GetCancellationTokenOnDestroy()

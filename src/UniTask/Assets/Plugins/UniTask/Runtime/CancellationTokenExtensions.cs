@@ -18,11 +18,32 @@ namespace Cysharp.Threading.Tasks
             return cts.Token;
         }
 
-        public static CancellationToken ToCancellationToken<T>(this UniTask<T> task)
+        public static CancellationToken ToCancellationToken(this UniTask task, CancellationToken linkToken)
         {
+            if (linkToken.IsCancellationRequested)
+            {
+                return linkToken;
+            }
+
+            if (!linkToken.CanBeCanceled)
+            {
+                return ToCancellationToken(task);
+            }
+
             var cts = new CancellationTokenSource();
             ToCancellationTokenCore(task, cts).Forget();
-            return cts.Token;
+
+            return CancellationTokenSource.CreateLinkedTokenSource(linkToken).Token;
+        }
+
+        public static CancellationToken ToCancellationToken<T>(this UniTask<T> task)
+        {
+            return ToCancellationToken(task.AsUniTask());
+        }
+
+        public static CancellationToken ToCancellationToken<T>(this UniTask<T> task, CancellationToken linkToken)
+        {
+            return ToCancellationToken(task.AsUniTask(), linkToken);
         }
 
         static async UniTaskVoid ToCancellationTokenCore(UniTask task, CancellationTokenSource cts)

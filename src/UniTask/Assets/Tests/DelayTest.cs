@@ -190,7 +190,7 @@ namespace Cysharp.Threading.TasksTests
         {
             var now = DateTimeOffset.UtcNow;
 
-            await UniTask.DelayRealtime(TimeSpan.FromSeconds(2));
+            await UniTask.Delay(TimeSpan.FromSeconds(2), DelayType.Realtime);
 
             var elapsed = DateTimeOffset.UtcNow - now;
 
