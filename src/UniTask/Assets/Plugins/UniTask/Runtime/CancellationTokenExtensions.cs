@@ -36,6 +36,7 @@ namespace Cysharp.Threading.Tasks
                 UniTaskScheduler.PublishUnobservedTaskException(ex);
             }
             cts.Cancel();
+            cts.Dispose();
         }
 
         public static (UniTask, CancellationTokenRegistration) ToUniTask(this CancellationToken cancellationToken)
