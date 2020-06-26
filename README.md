@@ -386,7 +386,7 @@ PlayerLoopHelper.Initialize(ref playerLoop);
 
 async void vs async UniTaskVoid
 ---
-`async void` is a standard C# taks system so does not run on UniTask systems. It is better not to use. `async UniTaskVoid` is a lightweight version of `async UniTask` because it does not have awaitable completion and report error immediately to `UniTaskScheduler.UnobservedTaskException`. If you don't require to await it(fire and forget), use `UniTaskVoid` is better. Unfortunately to dismiss warning, require to using with `Forget()`.
+`async void` is a standard C# task system so does not run on UniTask systems. It is better not to use. `async UniTaskVoid` is a lightweight version of `async UniTask` because it does not have awaitable completion and report error immediately to `UniTaskScheduler.UnobservedTaskException`. If you don't require to await it(fire and forget), use `UniTaskVoid` is better. Unfortunately to dismiss warning, require to using with `Forget()`.
 
 ```csharp
 public async UniTaskVoid FireAndForgetMethod()
