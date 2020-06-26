@@ -431,6 +431,18 @@ actEvent += UniTask.Action(async () => { await UniTask.Yield(); });
 unityEvent += UniTask.UnityAction(async () => { await UniTask.Yield(); });
 ```
 
+`UniTaskVoid` can also use in MonoBehaviour's `Start` method.
+
+```csharp
+class Sample : MonoBehaviour
+{
+    async UniTaskVoid Start()
+    {
+        // async init code.
+    }
+}
+```
+
 UniTaskTracker
 ---
 useful for check(leak) UniTasks. You can open tracker window in `Window -> UniTask Tracker`.
