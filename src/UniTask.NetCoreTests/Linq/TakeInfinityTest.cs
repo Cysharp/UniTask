@@ -43,7 +43,7 @@ namespace NetCoreTests.Linq
         }
 
         [Fact]
-        public async Task TakeUntil()
+        public async Task TakeUntilCanceled()
         {
             var cts = new CancellationTokenSource();
 
@@ -72,7 +72,7 @@ namespace NetCoreTests.Linq
         }
 
         [Fact]
-        public async Task SkipUntil()
+        public async Task SkipUntilCanceled()
         {
             var cts = new CancellationTokenSource();
 
@@ -85,7 +85,7 @@ namespace NetCoreTests.Linq
             await c;
             var foo = await xs;
 
-            foo.Should().BeEquivalentTo(new[] { 30, 40 });
+            foo.Should().BeEquivalentTo(new[] { 20, 30, 40 });
 
             async Task CancelAsync()
             {
@@ -102,5 +102,64 @@ namespace NetCoreTests.Linq
             }
         }
 
+        [Fact]
+        public async Task TakeUntil()
+        {
+            var cts = new AsyncReactiveProperty<int>(0);
+
+            var rp = new AsyncReactiveProperty<int>(1);
+
+            var xs = rp.TakeUntil(cts.WaitAsync()).ToArrayAsync();
+
+            var c = CancelAsync();
+
+            await c;
+            var foo = await xs;
+
+            foo.Should().BeEquivalentTo(new[] { 1, 10, 20 });
+
+            async Task CancelAsync()
+            {
+                rp.Value = 10;
+                await Task.Yield();
+                rp.Value = 20;
+                await Task.Yield();
+                cts.Value = 9999;
+                rp.Value = 30;
+                await Task.Yield();
+                rp.Value = 40;
+            }
+        }
+
+        [Fact]
+        public async Task SkipUntil()
+        {
+            var cts = new AsyncReactiveProperty<int>(0);
+
+            var rp = new AsyncReactiveProperty<int>(1);
+
+            var xs = rp.SkipUntil(cts.WaitAsync()).ToArrayAsync();
+
+            var c = CancelAsync();
+
+            await c;
+            var foo = await xs;
+
+            foo.Should().BeEquivalentTo(new[] { 20, 30, 40 });
+
+            async Task CancelAsync()
+            {
+                rp.Value = 10;
+                await Task.Yield();
+                rp.Value = 20;
+                await Task.Yield();
+                cts.Value = 9999;
+                rp.Value = 30;
+                await Task.Yield();
+                rp.Value = 40;
+
+                rp.Dispose(); // complete.
+            }
+        }
     }
 }

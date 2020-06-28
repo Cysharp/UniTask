@@ -119,7 +119,7 @@ public class AsyncMessageBroker<T> : IDisposable
 
 public class SandboxMain : MonoBehaviour
 {
-    public Camera camera;
+    public Camera mycamera;
 
     public Button okButton;
     public Button cancelButton;
@@ -998,11 +998,11 @@ public class SandboxMain : MonoBehaviour
         var height = 240;
         var depth = 24;
 
-        camera.targetTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
+        mycamera.targetTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
         {
             antiAliasing = 8
         };
-        camera.enabled = true;
+        mycamera.enabled = true;
 
         //myRenderTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
         //{
@@ -1014,7 +1014,7 @@ public class SandboxMain : MonoBehaviour
 
     async UniTask ShootAsync()
     {
-        var rt = camera.targetTexture;
+        var rt = mycamera.targetTexture;
 
 
 
