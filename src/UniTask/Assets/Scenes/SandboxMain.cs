@@ -15,6 +15,8 @@ using UnityEngine.LowLevel;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using System.IO;
 
 
 // using DG.Tweening;
@@ -117,6 +119,8 @@ public class AsyncMessageBroker<T> : IDisposable
 
 public class SandboxMain : MonoBehaviour
 {
+    public Camera camera;
+
     public Button okButton;
     public Button cancelButton;
 
@@ -161,6 +165,9 @@ public class SandboxMain : MonoBehaviour
 
 
 
+
+
+
             //setHp = Hp.GetSetter();
         }
 
@@ -178,10 +185,6 @@ public class SandboxMain : MonoBehaviour
     public Button button;
 
 
-    void Start2()
-    {
-
-    }
 
 
 
@@ -437,29 +440,37 @@ public class SandboxMain : MonoBehaviour
 
 
 
+    async void Nanika()
+    {
+        await UniTask.Yield();
+        Debug.Log("Here");
+        throw new Exception();
+    }
+
+
+
+
+
+
+
+    private void Awake()
+    {
+        PlayerLoopInfo.Inject();
+        PrepareCamera();
+    }
+
+
     async UniTaskVoid Start()
     {
-        //_ = Foo(); // unhandled.
-        //Go();
-        var cts = new CancellationTokenSource();
-
         okButton.onClick.AddListener(() =>
         {
-            cts.Cancel();
+            ShootAsync().Forget();
         });
 
-
-        UnityEngine.Debug.Log("Start:" + PlayerLoopInfo.CurrentLoopType);
-
-        var token = UniTask.Delay(TimeSpan.FromSeconds(3), DelayType.Realtime).ToCancellationToken(cts.Token);
-        while (!token.IsCancellationRequested)
-        {
-            UnityEngine.Debug.Log("in loop");
-            await UniTask.Yield();
-        }
-        UnityEngine.Debug.Log("end");
+        // Nanika();
 
 
+        await UniTask.Yield();
         // this.GetCancellationTokenOnDestroy()
 
         //PlayerLoopInfo.Inject();
@@ -974,6 +985,62 @@ public class SandboxMain : MonoBehaviour
         // e.SetObserved();
         // or other custom write code.
         UnityEngine.Debug.LogError("Unobserved:" + e.Exception.ToString());
+    }
+
+
+    // GPU Screenshot Sample
+
+    void PrepareCamera()
+    {
+        Debug.Log("Support AsyncGPUReadback:" + SystemInfo.supportsAsyncGPUReadback);
+
+        var width = 480;
+        var height = 240;
+        var depth = 24;
+
+        camera.targetTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
+        {
+            antiAliasing = 8
+        };
+        camera.enabled = true;
+
+        //myRenderTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
+        //{
+        //    antiAliasing = 8
+        //};
+    }
+
+    RenderTexture myRenderTexture;
+
+    async UniTask ShootAsync()
+    {
+        var rt = camera.targetTexture;
+
+
+
+        var req = await AsyncGPUReadback.Request(rt, 0);
+
+        Debug.Log("GPU Readback done?:" + req.done);
+
+        var rawByteArray = req.GetData<byte>().ToArray();
+        var graphicsFormat = rt.graphicsFormat;
+        var width = (uint)rt.width;
+        var height = (uint)rt.height;
+
+        Debug.Log("BytesSize:" + rawByteArray.Length);
+
+
+        var imageBytes = ImageConversion.EncodeArrayToPNG(rawByteArray, graphicsFormat, width, height);
+
+
+        File.WriteAllBytes("my_screenshot.png", imageBytes); // test
+
+
+
+
+
+
+
     }
 }
 
