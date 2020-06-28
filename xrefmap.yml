@@ -6821,6 +6821,31 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipLast(Of TSource)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), System.Int32)
   nameWithType: UniTaskAsyncEnumerable.SkipLast<TSource>(IUniTaskAsyncEnumerable<TSource>, Int32)
   nameWithType.vb: UniTaskAsyncEnumerable.SkipLast(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), Int32)
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil*
+  name: SkipUntil
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil_
+  commentId: Overload:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil
+  nameWithType: UniTaskAsyncEnumerable.SkipUntil
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.UniTask)
+  name: SkipUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, UniTask)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_UniTask_
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.UniTask)
+  name.vb: SkipUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), UniTask)
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil<TSource>(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<TSource>, Cysharp.Threading.Tasks.UniTask)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil(Of TSource)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), Cysharp.Threading.Tasks.UniTask)
+  nameWithType: UniTaskAsyncEnumerable.SkipUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, UniTask)
+  nameWithType.vb: UniTaskAsyncEnumerable.SkipUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), UniTask)
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask})
+  name: SkipUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, Func<CancellationToken, UniTask>)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTask__
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask})
+  name.vb: SkipUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), Func(Of CancellationToken, UniTask))
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil<TSource>(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<TSource>, System.Func<CancellationToken, Cysharp.Threading.Tasks.UniTask>)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil(Of TSource)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), System.Func(Of CancellationToken, Cysharp.Threading.Tasks.UniTask))
+  nameWithType: UniTaskAsyncEnumerable.SkipUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, Func<CancellationToken, UniTask>)
+  nameWithType.vb: UniTaskAsyncEnumerable.SkipUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), Func(Of CancellationToken, UniTask))
 - uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntilCanceled*
   name: SkipUntilCanceled
   href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntilCanceled_
@@ -7476,6 +7501,31 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeLast(Of TSource)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), System.Int32)
   nameWithType: UniTaskAsyncEnumerable.TakeLast<TSource>(IUniTaskAsyncEnumerable<TSource>, Int32)
   nameWithType.vb: UniTaskAsyncEnumerable.TakeLast(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), Int32)
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil*
+  name: TakeUntil
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil_
+  commentId: Overload:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil
+  nameWithType: UniTaskAsyncEnumerable.TakeUntil
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.UniTask)
+  name: TakeUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, UniTask)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_UniTask_
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.UniTask)
+  name.vb: TakeUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), UniTask)
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil<TSource>(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<TSource>, Cysharp.Threading.Tasks.UniTask)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil(Of TSource)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), Cysharp.Threading.Tasks.UniTask)
+  nameWithType: UniTaskAsyncEnumerable.TakeUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, UniTask)
+  nameWithType.vb: UniTaskAsyncEnumerable.TakeUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), UniTask)
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask})
+  name: TakeUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, Func<CancellationToken, UniTask>)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTask__
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask})
+  name.vb: TakeUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), Func(Of CancellationToken, UniTask))
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil<TSource>(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<TSource>, System.Func<CancellationToken, Cysharp.Threading.Tasks.UniTask>)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil(Of TSource)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), System.Func(Of CancellationToken, Cysharp.Threading.Tasks.UniTask))
+  nameWithType: UniTaskAsyncEnumerable.TakeUntil<TSource>(IUniTaskAsyncEnumerable<TSource>, Func<CancellationToken, UniTask>)
+  nameWithType.vb: UniTaskAsyncEnumerable.TakeUntil(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), Func(Of CancellationToken, UniTask))
 - uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntilCanceled*
   name: TakeUntilCanceled
   href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntilCanceled_
@@ -8786,12 +8836,12 @@ references:
   commentId: T:Cysharp.Threading.Tasks.ReturnToSynchronizationContext
   fullName: Cysharp.Threading.Tasks.ReturnToSynchronizationContext
   nameWithType: ReturnToSynchronizationContext
-- uid: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.#ctor(SynchronizationContext,System.Boolean)
-  name: ReturnToSynchronizationContext(SynchronizationContext, Boolean)
-  href: api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.html#Cysharp_Threading_Tasks_ReturnToSynchronizationContext__ctor_SynchronizationContext_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.ReturnToSynchronizationContext.#ctor(SynchronizationContext,System.Boolean)
-  fullName: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.ReturnToSynchronizationContext(SynchronizationContext, System.Boolean)
-  nameWithType: ReturnToSynchronizationContext.ReturnToSynchronizationContext(SynchronizationContext, Boolean)
+- uid: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.#ctor(SynchronizationContext,System.Boolean,CancellationToken)
+  name: ReturnToSynchronizationContext(SynchronizationContext, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.html#Cysharp_Threading_Tasks_ReturnToSynchronizationContext__ctor_SynchronizationContext_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.ReturnToSynchronizationContext.#ctor(SynchronizationContext,System.Boolean,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.ReturnToSynchronizationContext(SynchronizationContext, System.Boolean, CancellationToken)
+  nameWithType: ReturnToSynchronizationContext.ReturnToSynchronizationContext(SynchronizationContext, Boolean, CancellationToken)
 - uid: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.#ctor*
   name: ReturnToSynchronizationContext
   href: api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.html#Cysharp_Threading_Tasks_ReturnToSynchronizationContext__ctor_
@@ -8805,12 +8855,12 @@ references:
   commentId: T:Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter
   fullName: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter
   nameWithType: ReturnToSynchronizationContext.Awaiter
-- uid: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.#ctor(SynchronizationContext,System.Boolean)
-  name: Awaiter(SynchronizationContext, Boolean)
-  href: api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.html#Cysharp_Threading_Tasks_ReturnToSynchronizationContext_Awaiter__ctor_SynchronizationContext_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.#ctor(SynchronizationContext,System.Boolean)
-  fullName: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.Awaiter(SynchronizationContext, System.Boolean)
-  nameWithType: ReturnToSynchronizationContext.Awaiter.Awaiter(SynchronizationContext, Boolean)
+- uid: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.#ctor(SynchronizationContext,System.Boolean,CancellationToken)
+  name: Awaiter(SynchronizationContext, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.html#Cysharp_Threading_Tasks_ReturnToSynchronizationContext_Awaiter__ctor_SynchronizationContext_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.#ctor(SynchronizationContext,System.Boolean,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.Awaiter(SynchronizationContext, System.Boolean, CancellationToken)
+  nameWithType: ReturnToSynchronizationContext.Awaiter.Awaiter(SynchronizationContext, Boolean, CancellationToken)
 - uid: Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.#ctor*
   name: Awaiter
   href: api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.html#Cysharp_Threading_Tasks_ReturnToSynchronizationContext_Awaiter__ctor_
@@ -8933,12 +8983,12 @@ references:
   commentId: T:Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable
   fullName: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable
   nameWithType: SwitchToSynchronizationContextAwaitable
-- uid: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.#ctor(SynchronizationContext)
-  name: SwitchToSynchronizationContextAwaitable(SynchronizationContext)
-  href: api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable__ctor_SynchronizationContext_
-  commentId: M:Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.#ctor(SynchronizationContext)
-  fullName: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.SwitchToSynchronizationContextAwaitable(SynchronizationContext)
-  nameWithType: SwitchToSynchronizationContextAwaitable.SwitchToSynchronizationContextAwaitable(SynchronizationContext)
+- uid: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.#ctor(SynchronizationContext,CancellationToken)
+  name: SwitchToSynchronizationContextAwaitable(SynchronizationContext, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable__ctor_SynchronizationContext_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.#ctor(SynchronizationContext,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.SwitchToSynchronizationContextAwaitable(SynchronizationContext, CancellationToken)
+  nameWithType: SwitchToSynchronizationContextAwaitable.SwitchToSynchronizationContextAwaitable(SynchronizationContext, CancellationToken)
 - uid: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.#ctor*
   name: SwitchToSynchronizationContextAwaitable
   href: api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable__ctor_
@@ -8952,12 +9002,12 @@ references:
   commentId: T:Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter
   fullName: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter
   nameWithType: SwitchToSynchronizationContextAwaitable.Awaiter
-- uid: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor(SynchronizationContext)
-  name: Awaiter(SynchronizationContext)
-  href: api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_SynchronizationContext_
-  commentId: M:Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor(SynchronizationContext)
-  fullName: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.Awaiter(SynchronizationContext)
-  nameWithType: SwitchToSynchronizationContextAwaitable.Awaiter.Awaiter(SynchronizationContext)
+- uid: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor(SynchronizationContext,CancellationToken)
+  name: Awaiter(SynchronizationContext, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_SynchronizationContext_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor(SynchronizationContext,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.Awaiter(SynchronizationContext, CancellationToken)
+  nameWithType: SwitchToSynchronizationContextAwaitable.Awaiter.Awaiter(SynchronizationContext, CancellationToken)
 - uid: Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor*
   name: Awaiter
   href: api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_
@@ -17758,12 +17808,12 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.Preserve
   nameWithType: UniTask.Preserve
-- uid: Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext(System.Boolean)
-  name: ReturnToCurrentSynchronizationContext(Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToCurrentSynchronizationContext_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext(System.Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext(System.Boolean)
-  nameWithType: UniTask.ReturnToCurrentSynchronizationContext(Boolean)
+- uid: Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext(System.Boolean,CancellationToken)
+  name: ReturnToCurrentSynchronizationContext(Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToCurrentSynchronizationContext_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext(System.Boolean,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext(System.Boolean, CancellationToken)
+  nameWithType: UniTask.ReturnToCurrentSynchronizationContext(Boolean, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext*
   name: ReturnToCurrentSynchronizationContext
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToCurrentSynchronizationContext_
@@ -17771,12 +17821,12 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.ReturnToCurrentSynchronizationContext
   nameWithType: UniTask.ReturnToCurrentSynchronizationContext
-- uid: Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext(SynchronizationContext)
-  name: ReturnToSynchronizationContext(SynchronizationContext)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToSynchronizationContext_SynchronizationContext_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext(SynchronizationContext)
-  fullName: Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext(SynchronizationContext)
-  nameWithType: UniTask.ReturnToSynchronizationContext(SynchronizationContext)
+- uid: Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext(SynchronizationContext,CancellationToken)
+  name: ReturnToSynchronizationContext(SynchronizationContext, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToSynchronizationContext_SynchronizationContext_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext(SynchronizationContext,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext(SynchronizationContext, CancellationToken)
+  nameWithType: UniTask.ReturnToSynchronizationContext(SynchronizationContext, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext*
   name: ReturnToSynchronizationContext
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_ReturnToSynchronizationContext_
@@ -17886,12 +17936,12 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.SuppressCancellationThrow
   nameWithType: UniTask.SuppressCancellationThrow
-- uid: Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(SynchronizationContext)
-  name: SwitchToSynchronizationContext(SynchronizationContext)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_SynchronizationContext_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(SynchronizationContext)
-  fullName: Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(SynchronizationContext)
-  nameWithType: UniTask.SwitchToSynchronizationContext(SynchronizationContext)
+- uid: Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(SynchronizationContext,CancellationToken)
+  name: SwitchToSynchronizationContext(SynchronizationContext, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_SynchronizationContext_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(SynchronizationContext,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext(SynchronizationContext, CancellationToken)
+  nameWithType: UniTask.SwitchToSynchronizationContext(SynchronizationContext, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.SwitchToSynchronizationContext*
   name: SwitchToSynchronizationContext
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_SwitchToSynchronizationContext_

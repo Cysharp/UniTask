@@ -645,7 +645,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html",
-          "hash": "aRZ1ARwMG4ZGBqFRmRCSyw=="
+          "hash": "E4g1C+GNiC8Bm5VvckzuBg=="
         }
       },
       "is_incremental": false,
@@ -729,7 +729,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.html",
-          "hash": "H9tWYVQx2eU2yP2N4QNKSw=="
+          "hash": "9vwCiIa7uNuEigNURW7YZg=="
         }
       },
       "is_incremental": false,
@@ -741,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.html",
-          "hash": "eikCqRmRuBCy88Yd9/8pTg=="
+          "hash": "ODELeJ70FL8cjhFoQWLsKw=="
         }
       },
       "is_incremental": false,
@@ -765,7 +765,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html",
-          "hash": "xYOjONc1t/hbRue2aBATsA=="
+          "hash": "mFKdUlN9HL++ytSQ6ObnXw=="
         }
       },
       "is_incremental": false,
@@ -777,7 +777,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.html",
-          "hash": "bEh/2a8rCktGSQ1pUlSxKg=="
+          "hash": "1BrO0TVyYPsrwgaOYzns3w=="
         }
       },
       "is_incremental": false,
@@ -2769,7 +2769,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UniTask.html",
-          "hash": "Cerb3Z3CH5t6Ej9azIoDlg=="
+          "hash": "quiGguMCdQ4P1UD0IGtcSw=="
         }
       },
       "is_incremental": false,

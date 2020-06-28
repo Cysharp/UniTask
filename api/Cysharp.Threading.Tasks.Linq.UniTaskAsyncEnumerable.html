@@ -2032,6 +2032,18 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_UniTask_">SkipUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, UniTask)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTask__">SkipUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;CancellationToken, UniTask&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntilCanceled__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__CancellationToken_">SkipUntilCanceled&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -2417,6 +2429,18 @@
       <tr>
         <td>
           <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeLast__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__System_Int32_">TakeLast&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Int32)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_UniTask_">TakeUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, UniTask)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTask__">TakeUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;CancellationToken, UniTask&gt;)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -18561,6 +18585,98 @@ public static UniTask ForEachAsync&lt;T&gt;(this IUniTaskAsyncEnumerable&lt;T&gt
   
   </section>
   <section>
+  <a id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_UniTask_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.UniTask)">SkipUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, UniTask)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IUniTaskAsyncEnumerable&lt;TSource&gt; SkipUntil&lt;TSource&gt;(this IUniTaskAsyncEnumerable&lt;TSource&gt; source, UniTask other)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>other</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>TSource</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTask__" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask})">SkipUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;CancellationToken, UniTask&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IUniTaskAsyncEnumerable&lt;TSource&gt; SkipUntil&lt;TSource&gt;(this IUniTaskAsyncEnumerable&lt;TSource&gt; source, Func&lt;CancellationToken, UniTask&gt; other)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>other</code></span> <span class="xref">System.Func</span>&lt;<span class="xref">CancellationToken</span>, <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>TSource</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
   <a id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntilCanceled_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntilCanceled*"></a>
   <h4 id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_SkipUntilCanceled__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__CancellationToken_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.SkipUntilCanceled``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},CancellationToken)">SkipUntilCanceled&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
@@ -21486,6 +21602,98 @@ public static UniTask ForEachAsync&lt;T&gt;(this IUniTaskAsyncEnumerable&lt;T&gt
     <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><span class="parametername"><code>count</code></span> <span class="xref">System.Int32</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>TSource</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_UniTask_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.UniTask)">TakeUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, UniTask)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IUniTaskAsyncEnumerable&lt;TSource&gt; TakeUntil&lt;TSource&gt;(this IUniTaskAsyncEnumerable&lt;TSource&gt; source, UniTask other)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>other</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>TSource</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil_" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil*"></a>
+  <h4 id="Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_TakeUntil__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTask__" data-uid="Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.TakeUntil``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask})">TakeUntil&lt;TSource&gt;(IUniTaskAsyncEnumerable&lt;TSource&gt;, Func&lt;CancellationToken, UniTask&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IUniTaskAsyncEnumerable&lt;TSource&gt; TakeUntil&lt;TSource&gt;(this IUniTaskAsyncEnumerable&lt;TSource&gt; source, Func&lt;CancellationToken, UniTask&gt; other)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>source</code></span> <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>other</code></span> <span class="xref">System.Func</span>&lt;<span class="xref">CancellationToken</span>, <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a>&gt;</dt>
     <dd></dd>
   </dl>
   </section>
