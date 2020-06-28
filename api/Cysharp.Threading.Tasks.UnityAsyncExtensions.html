@@ -230,6 +230,12 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AsyncGPUReadbackRequest_">GetAwaiter(AsyncGPUReadbackRequest)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AsyncOperation_">GetAwaiter(AsyncOperation)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -476,6 +482,12 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncOperation_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">ToUniTask(AsyncOperation, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -495,6 +507,12 @@
       <tr>
         <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AssetBundleRequest_CancellationToken_">WithCancellation(AssetBundleRequest, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncGPUReadbackRequest_CancellationToken_">WithCancellation(AsyncGPUReadbackRequest, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -1267,6 +1285,43 @@
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
     <dt><a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html">UnityAsyncExtensions.AssetBundleRequestAwaiter</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AsyncGPUReadbackRequest_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AsyncGPUReadbackRequest)">GetAwaiter(AsyncGPUReadbackRequest)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;AsyncGPUReadbackRequest&gt;.Awaiter GetAwaiter(this AsyncGPUReadbackRequest asyncOperation)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncOperation</code></span> <span class="xref">AsyncGPUReadbackRequest</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.Awaiter.html">UniTask.Awaiter</a>&lt;&gt;</dt>
     <dd></dd>
   </dl>
   </section>
@@ -2869,6 +2924,47 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;AsyncGPUReadbackRequest&gt; ToUniTask(this AsyncGPUReadbackRequest asyncOperation, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncOperation</code></span> <span class="xref">AsyncGPUReadbackRequest</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">AsyncGPUReadbackRequest</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask*"></a>
   <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncOperation_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncOperation,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">ToUniTask(AsyncOperation, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
@@ -3016,6 +3112,45 @@
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
     <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">UnityEngine.Object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncGPUReadbackRequest_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncGPUReadbackRequest,CancellationToken)">WithCancellation(AsyncGPUReadbackRequest, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;AsyncGPUReadbackRequest&gt; WithCancellation(this AsyncGPUReadbackRequest asyncOperation, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncOperation</code></span> <span class="xref">AsyncGPUReadbackRequest</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">AsyncGPUReadbackRequest</span>&gt;</dt>
     <dd></dd>
   </dl>
   </section>

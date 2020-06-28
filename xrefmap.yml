@@ -20556,6 +20556,12 @@ references:
   commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleRequest)
   fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleRequest)
   nameWithType: UnityAsyncExtensions.GetAwaiter(AssetBundleRequest)
+- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AsyncGPUReadbackRequest)
+  name: GetAwaiter(AsyncGPUReadbackRequest)
+  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AsyncGPUReadbackRequest_
+  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AsyncGPUReadbackRequest)
+  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AsyncGPUReadbackRequest)
+  nameWithType: UnityAsyncExtensions.GetAwaiter(AsyncGPUReadbackRequest)
 - uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AsyncOperation)
   name: GetAwaiter(AsyncOperation)
   href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AsyncOperation_
@@ -20958,6 +20964,12 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleRequest, System.IProgress(Of System.Single), Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
   nameWithType: UnityAsyncExtensions.ToUniTask(AssetBundleRequest, IProgress<Single>, PlayerLoopTiming, CancellationToken)
   nameWithType.vb: UnityAsyncExtensions.ToUniTask(AssetBundleRequest, IProgress(Of Single), PlayerLoopTiming, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  name: ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken)
+  nameWithType: UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncOperation,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   name: ToUniTask(AsyncOperation, IProgress<Single>, PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncOperation_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_
@@ -20995,6 +21007,12 @@ references:
   commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleRequest,CancellationToken)
   fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleRequest, CancellationToken)
   nameWithType: UnityAsyncExtensions.WithCancellation(AssetBundleRequest, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncGPUReadbackRequest,CancellationToken)
+  name: WithCancellation(AsyncGPUReadbackRequest, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncGPUReadbackRequest_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncGPUReadbackRequest,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncGPUReadbackRequest, CancellationToken)
+  nameWithType: UnityAsyncExtensions.WithCancellation(AsyncGPUReadbackRequest, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncOperation,CancellationToken)
   name: WithCancellation(AsyncOperation, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncOperation_CancellationToken_
