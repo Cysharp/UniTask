@@ -1,4 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿#pragma warning disable CS1998
+
+using Cysharp.Threading.Tasks;
 
 using System.Linq;
 using System;
@@ -56,6 +58,24 @@ namespace NetCoreSandbox
 
     }
 
+    class Foo
+    {
+        public async UniTask MethodFooAsync()
+        {
+            await MethodBarAsync();
+        }
+
+        private async UniTask MethodBarAsync()
+
+        {
+            Throw();
+        }
+
+        private void Throw()
+        {
+            throw new Exception();
+        }
+    }
 
     public struct TestAwaiter : ICriticalNotifyCompletion
     {
@@ -276,6 +296,24 @@ namespace NetCoreSandbox
             return;
 #endif
             // await new AllocationCheck().ViaUniTaskVoid();
+
+            var buttonTest = new AsyncReactiveProperty<AsyncUnit>(AsyncUnit.Default);
+
+            buttonTest
+            .Subscribe(async _ =>
+            {
+                try
+                {
+                    await new Foo().MethodFooAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
+            });
+
+            buttonTest.Value = AsyncUnit.Default;
+
 
             // AsyncTest().Forge
 
