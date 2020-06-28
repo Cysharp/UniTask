@@ -3,6 +3,7 @@
 using Cysharp.Threading.Tasks.Internal;
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks
@@ -176,16 +177,16 @@ namespace Cysharp.Threading.Tasks
 
         sealed class ExceptionResultSource : IUniTaskSource
         {
-            readonly Exception exception;
+            readonly ExceptionDispatchInfo exception;
 
             public ExceptionResultSource(Exception exception)
             {
-                this.exception = exception;
+                this.exception = ExceptionDispatchInfo.Capture(exception);
             }
 
             public void GetResult(short token)
             {
-                throw exception;
+                exception.Throw();
             }
 
             public UniTaskStatus GetStatus(short token)
@@ -206,21 +207,22 @@ namespace Cysharp.Threading.Tasks
 
         sealed class ExceptionResultSource<T> : IUniTaskSource<T>
         {
-            readonly Exception exception;
+            readonly ExceptionDispatchInfo exception;
 
             public ExceptionResultSource(Exception exception)
             {
-                this.exception = exception;
+                this.exception = ExceptionDispatchInfo.Capture(exception);
             }
 
             public T GetResult(short token)
             {
-                throw exception;
+                exception.Throw();
+                return default;
             }
 
             void IUniTaskSource.GetResult(short token)
             {
-                throw exception;
+                exception.Throw();
             }
 
             public UniTaskStatus GetStatus(short token)
