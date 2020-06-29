@@ -17763,6 +17763,28 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTask.Lazy(Of T)(System.Func(Of Cysharp.Threading.Tasks.UniTask(Of T)))
   nameWithType: UniTask.Lazy<T>(Func<UniTask<T>>)
   nameWithType.vb: UniTask.Lazy(Of T)(Func(Of UniTask(Of T)))
+- uid: Cysharp.Threading.Tasks.UniTask.Never(CancellationToken)
+  name: Never(CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Never_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Never(CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Never(CancellationToken)
+  nameWithType: UniTask.Never(CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Never*
+  name: Never
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Never_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTask.Never
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTask.Never
+  nameWithType: UniTask.Never
+- uid: Cysharp.Threading.Tasks.UniTask.Never``1(CancellationToken)
+  name: Never<T>(CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Never__1_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Never``1(CancellationToken)
+  name.vb: Never(Of T)(CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Never<T>(CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Never(Of T)(CancellationToken)
+  nameWithType: UniTask.Never<T>(CancellationToken)
+  nameWithType.vb: UniTask.Never(Of T)(CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.NextFrame(Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)
   name: NextFrame(PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_

@@ -285,6 +285,20 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Never_CancellationToken_">Never(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Never complete.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Never__1_CancellationToken_">Never&lt;T&gt;(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Never complete.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">NextFrame(PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
@@ -1613,6 +1627,89 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
     <dt><a class="xref" href="Cysharp.Threading.Tasks.AsyncLazy-1.html">AsyncLazy</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Never_" data-uid="Cysharp.Threading.Tasks.UniTask.Never*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Never_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Never(CancellationToken)">Never(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Never complete.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask Never(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Never_" data-uid="Cysharp.Threading.Tasks.UniTask.Never*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Never__1_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Never``1(CancellationToken)">Never&lt;T&gt;(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Never complete.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; Never&lt;T&gt;(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
     <dd></dd>
   </dl>
   </section>
