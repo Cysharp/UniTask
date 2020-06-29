@@ -175,6 +175,22 @@ namespace Cysharp.Threading.Tasks
             return new UniTask<T>(new DeferPromise<T>(factory), 0);
         }
 
+        /// <summary>
+        /// Never complete.
+        /// </summary>
+        public static UniTask Never(CancellationToken cancellationToken)
+        {
+            return new UniTask<AsyncUnit>(new NeverPromise<AsyncUnit>(cancellationToken), 0);
+        }
+
+        /// <summary>
+        /// Never complete.
+        /// </summary>
+        public static UniTask<T> Never<T>(CancellationToken cancellationToken)
+        {
+            return new UniTask<T>(new NeverPromise<T>(cancellationToken), 0);
+        }
+
         sealed class ExceptionResultSource : IUniTaskSource
         {
             readonly ExceptionDispatchInfo exception;
@@ -382,6 +398,54 @@ namespace Cysharp.Threading.Tasks
             public UniTaskStatus UnsafeGetStatus()
             {
                 return task.Status;
+            }
+        }
+
+        sealed class NeverPromise<T> : IUniTaskSource<T>
+        {
+            static readonly Action<object> cancellationCallback = CancellationCallback;
+
+            CancellationToken cancellationToken;
+            UniTaskCompletionSourceCore<T> core;
+
+            public NeverPromise(CancellationToken cancellationToken)
+            {
+                this.cancellationToken = cancellationToken;
+                if (this.cancellationToken.CanBeCanceled)
+                {
+                    this.cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
+                }
+            }
+
+            static void CancellationCallback(object state)
+            {
+                var self = (NeverPromise<T>)state;
+                self.core.TrySetCanceled(self.cancellationToken);
+            }
+
+            public T GetResult(short token)
+            {
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                core.GetResult(token);
             }
         }
     }
