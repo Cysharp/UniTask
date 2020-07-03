@@ -532,6 +532,38 @@ SelectAwaitWithCancellation(Func<T, CancellationToken, UniTask<TR>> selector)
 
 If you want to use the `async` method inside the func, use the `***Await` or `***AwaitWithCancellation`.
 
+How to create async iterator, C# 8.0 supports async iterator(`async yield return`) but it only allows `IAsyncEnumerable<T>` and of course requires C# 8.0. UniTask supports `UniTaskAsyncEnumerable.Create` method to create custom async iterator.
+
+```csharp
+// IAsyncEnumerable, C# 8.0 version of async iterator. ( do not use this style, IAsyncEnumerable is not controled in UniTask).
+public async IAsyncEnumerable<int> MyEveryUpdate([EnumeratorCancellation]CancellationToken cancelationToken)
+{
+    var frameCount = 0;
+    await UniTask.Yield();
+    while (!token.IsCancellationRequested)
+    {
+        yield return frameCount++;
+        await UniTask.Yield();
+    }
+}
+
+// UniTaskAsyncEnumerable.Create and use `await writer.YieldAsync` instead of `yield return`.
+public IUniTaskAsyncEnumerable<int> MyEveryUpdate()
+{
+    // writer(IAsyncWriter<T>) has `YieldAsync(value)` method.
+    return UniTaskAsyncEnumerable.Create<int>(async (writer, token) =>
+    {
+        var frameCount = 0;
+        await UniTask.Yield();
+        while (!token.IsCancellationRequested)
+        {
+            await writer.YieldAsync(frameCount++); // instead of `yield return`
+            await UniTask.Yield();
+        }
+    });
+}
+```
+
 Awaitable Events
 ---
 All uGUI component implements `***AsAsyncEnumerable` to convert asynchronous streams of events.
@@ -812,7 +844,7 @@ After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of gi
 
 or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"` to `Packages/manifest.json`.
 
-If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.0.23`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.0.23`.
+If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.0.24`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.0.24`.
 
 ### Install via OpenUPM
 
