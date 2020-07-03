@@ -641,11 +641,23 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.Linq.IAsyncWriter-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.Linq.IAsyncWriter-1.html",
+          "hash": "SCkYbr7RZUd8pxSnCTPDsw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.yml",
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html",
-          "hash": "E4g1C+GNiC8Bm5VvckzuBg=="
+          "hash": "XBo+ndi5BxLYD4epo93vVw=="
         }
       },
       "is_incremental": false,
@@ -657,7 +669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.Linq.html",
-          "hash": "zy/h5owyuSd2h8pwWQt0ng=="
+          "hash": "mS8iPehrdXKoHKelcjIgGw=="
         }
       },
       "is_incremental": false,
@@ -3417,7 +3429,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "Od+X2WkDUQMrGbS2YeZovA=="
+          "hash": "FCkx7Iz5R04sgzw66ksJLQ=="
         }
       },
       "is_incremental": false,
@@ -3471,7 +3483,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 284,
+          "total_file_count": 285,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {

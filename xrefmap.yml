@@ -3226,6 +3226,32 @@ references:
   commentId: N:Cysharp.Threading.Tasks.Linq
   fullName: Cysharp.Threading.Tasks.Linq
   nameWithType: Cysharp.Threading.Tasks.Linq
+- uid: Cysharp.Threading.Tasks.Linq.IAsyncWriter`1
+  name: IAsyncWriter<T>
+  href: api/Cysharp.Threading.Tasks.Linq.IAsyncWriter-1.html
+  commentId: T:Cysharp.Threading.Tasks.Linq.IAsyncWriter`1
+  name.vb: IAsyncWriter(Of T)
+  fullName: Cysharp.Threading.Tasks.Linq.IAsyncWriter<T>
+  fullName.vb: Cysharp.Threading.Tasks.Linq.IAsyncWriter(Of T)
+  nameWithType: IAsyncWriter<T>
+  nameWithType.vb: IAsyncWriter(Of T)
+- uid: Cysharp.Threading.Tasks.Linq.IAsyncWriter`1.YieldAsync(`0)
+  name: YieldAsync(T)
+  href: api/Cysharp.Threading.Tasks.Linq.IAsyncWriter-1.html#Cysharp_Threading_Tasks_Linq_IAsyncWriter_1_YieldAsync__0_
+  commentId: M:Cysharp.Threading.Tasks.Linq.IAsyncWriter`1.YieldAsync(`0)
+  fullName: Cysharp.Threading.Tasks.Linq.IAsyncWriter<T>.YieldAsync(T)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.IAsyncWriter(Of T).YieldAsync(T)
+  nameWithType: IAsyncWriter<T>.YieldAsync(T)
+  nameWithType.vb: IAsyncWriter(Of T).YieldAsync(T)
+- uid: Cysharp.Threading.Tasks.Linq.IAsyncWriter`1.YieldAsync*
+  name: YieldAsync
+  href: api/Cysharp.Threading.Tasks.Linq.IAsyncWriter-1.html#Cysharp_Threading_Tasks_Linq_IAsyncWriter_1_YieldAsync_
+  commentId: Overload:Cysharp.Threading.Tasks.Linq.IAsyncWriter`1.YieldAsync
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.Linq.IAsyncWriter<T>.YieldAsync
+  fullName.vb: Cysharp.Threading.Tasks.Linq.IAsyncWriter(Of T).YieldAsync
+  nameWithType: IAsyncWriter<T>.YieldAsync
+  nameWithType.vb: IAsyncWriter(Of T).YieldAsync
 - uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable
   name: UniTaskAsyncEnumerable
   href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html
@@ -4124,6 +4150,22 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.CountAwaitWithCancellationAsync(Of TSource)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), System.Func(Of TSource, CancellationToken, Cysharp.Threading.Tasks.UniTask(Of System.Boolean)), CancellationToken)
   nameWithType: UniTaskAsyncEnumerable.CountAwaitWithCancellationAsync<TSource>(IUniTaskAsyncEnumerable<TSource>, Func<TSource, CancellationToken, UniTask<Boolean>>, CancellationToken)
   nameWithType.vb: UniTaskAsyncEnumerable.CountAwaitWithCancellationAsync(Of TSource)(IUniTaskAsyncEnumerable(Of TSource), Func(Of TSource, CancellationToken, UniTask(Of Boolean)), CancellationToken)
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Create*
+  name: Create
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Create_
+  commentId: Overload:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Create
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Create
+  nameWithType: UniTaskAsyncEnumerable.Create
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Create``1(System.Func{Cysharp.Threading.Tasks.Linq.IAsyncWriter{``0},CancellationToken,Cysharp.Threading.Tasks.UniTask})
+  name: Create<T>(Func<IAsyncWriter<T>, CancellationToken, UniTask>)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Create__1_System_Func_Cysharp_Threading_Tasks_Linq_IAsyncWriter___0__CancellationToken_Cysharp_Threading_Tasks_UniTask__
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Create``1(System.Func{Cysharp.Threading.Tasks.Linq.IAsyncWriter{``0},CancellationToken,Cysharp.Threading.Tasks.UniTask})
+  name.vb: Create(Of T)(Func(Of IAsyncWriter(Of T), CancellationToken, UniTask))
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Create<T>(System.Func<Cysharp.Threading.Tasks.Linq.IAsyncWriter<T>, CancellationToken, Cysharp.Threading.Tasks.UniTask>)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Create(Of T)(System.Func(Of Cysharp.Threading.Tasks.Linq.IAsyncWriter(Of T), CancellationToken, Cysharp.Threading.Tasks.UniTask))
+  nameWithType: UniTaskAsyncEnumerable.Create<T>(Func<IAsyncWriter<T>, CancellationToken, UniTask>)
+  nameWithType.vb: UniTaskAsyncEnumerable.Create(Of T)(Func(Of IAsyncWriter(Of T), CancellationToken, UniTask))
 - uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.DefaultIfEmpty*
   name: DefaultIfEmpty
   href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_DefaultIfEmpty_
