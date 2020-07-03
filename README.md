@@ -536,7 +536,7 @@ How to create async iterator, C# 8.0 supports async iterator(`async yield return
 
 ```csharp
 // IAsyncEnumerable, C# 8.0 version of async iterator. ( do not use this style, IAsyncEnumerable is not controled in UniTask).
-public async IAsyncEnumerable<int> MyEveryUpdate([EnumeratorCancellation]CancellationToken cancelationToken)
+public async IAsyncEnumerable<int> MyEveryUpdate([EnumeratorCancellation]CancellationToken cancelationToken = default)
 {
     var frameCount = 0;
     await UniTask.Yield();
