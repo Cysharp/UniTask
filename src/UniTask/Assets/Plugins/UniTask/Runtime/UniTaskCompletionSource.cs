@@ -229,7 +229,7 @@ namespace Cysharp.Threading.Tasks
             ValidateToken(token);
             if (completedCount == 0)
             {
-                throw new InvalidOperationException("not yet completed.");
+                throw new InvalidOperationException("Not yet completed, UniTask only allow to use await.");
             }
 
             if (error != null)
@@ -288,7 +288,7 @@ namespace Cysharp.Threading.Tasks
                 // It will cause call OnCompleted multiple time, invalid.
                 if (!ReferenceEquals(oldContinuation, UniTaskCompletionSourceCoreShared.s_sentinel))
                 {
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Already continuation registered, can not await twice or get Status after await.");
                 }
 
                 continuation(state);
