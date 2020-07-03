@@ -88,6 +88,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector = selector;
                 this.cancellationToken = cancellationToken;
                 this.moveNextAction = MoveNext;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -156,6 +157,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 return enumerator.DisposeAsync();
             }
         }
@@ -195,6 +197,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector = selector;
                 this.cancellationToken = cancellationToken;
                 this.moveNextAction = MoveNext;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -263,6 +266,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 return enumerator.DisposeAsync();
             }
         }
@@ -302,6 +306,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector = selector;
                 this.cancellationToken = cancellationToken;
                 this.moveNextAction = MoveNext;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -382,6 +387,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 return enumerator.DisposeAsync();
             }
         }
@@ -422,6 +428,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector = selector;
                 this.cancellationToken = cancellationToken;
                 this.moveNextAction = MoveNext;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -502,6 +509,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 return enumerator.DisposeAsync();
             }
         }
@@ -541,6 +549,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector = selector;
                 this.cancellationToken = cancellationToken;
                 this.moveNextAction = MoveNext;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -621,6 +630,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 return enumerator.DisposeAsync();
             }
         }
@@ -661,6 +671,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.selector = selector;
                 this.cancellationToken = cancellationToken;
                 this.moveNextAction = MoveNext;
+                TaskTracker.TrackActiveTask(this, 3);
             }
 
             public TResult Current { get; private set; }
@@ -741,6 +752,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
+                TaskTracker.RemoveTracking(this);
                 return enumerator.DisposeAsync();
             }
         }
