@@ -295,71 +295,25 @@ namespace NetCoreSandbox
             //await new ComparisonBenchmarks().ViaUniTaskT();
             return;
 #endif
-            // await new AllocationCheck().ViaUniTaskVoid();
 
-            var buttonTest = new AsyncReactiveProperty<AsyncUnit>(AsyncUnit.Default);
-
-            buttonTest
-            .Subscribe(async _ =>
+            var e = UniTaskAsyncEnumerable.Create<int>(async (writer, token) =>
             {
-                try
+                for (int i = 0; i < 5; i++)
                 {
-                    await new Foo().MethodFooAsync();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.StackTrace);
+                    Console.WriteLine($"Start {i}");
+                    await writer.YieldAsync(i);
+                    Console.WriteLine($"End {i}");
                 }
             });
 
-            buttonTest.Value = AsyncUnit.Default;
-
-
-            // AsyncTest().Forge
-
-            Console.WriteLine("A?");
-            var a = await new ZeroAllocAsyncAwaitInDotNetCore().NanikaAsync(1, 2);
-            Console.WriteLine("RET:" + a);
-            await WhereSelect();
-
-            SynchronizationContext.SetSynchronizationContext(new MySyncContext());
-
-            await Aaa();
-
-
-
-
-            //AsyncTest().Forget();
-
-            // AsyncTest().Forget();
-
-            ThreadPool.SetMinThreads(100, 100);
-
-            //List<UniTask<int>> list = new List<UniTask<int>>();
-            for (int i = 0; i < short.MaxValue; i++)
+            var ee = e.GetAsyncEnumerator();
+            while (await ee.MoveNextAsync())
             {
-                ////    list.Add(AsyncTest());
-                await YieldCore();
+                Console.WriteLine("ForEach " + ee.Current);
             }
-            //await UniTask.WhenAll(list);
-
-            //Console.WriteLine("TOGO");
-
-            //var a = await AsyncTest();
-            //var b = AsyncTest();
-            //var c = AsyncTest();
-            await YieldCore();
-
-            //await b;
-            //await c;
 
 
-            //foreach (var item in Cysharp.Threading.Tasks.Internal.TaskPool.GetCacheSizeInfo())
-            //{
-            //    Console.WriteLine(item);
-            //}
 
-            Console.ReadLine();
         }
 
         static async UniTask YieldCore()

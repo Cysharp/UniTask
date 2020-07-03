@@ -1,46 +1,52 @@
-﻿using System;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Linq;
+﻿using Cysharp.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
+/*UNniTastWhenAnyTester*/
+
+[ExecuteInEditMode]
 public class ExceptionExamples : MonoBehaviour
 {
-    public Button ButtonTest;
+    public bool apply = false;
 
-    void Start()
+    private async UniTaskVoid Update()
     {
-        ButtonTest.OnClickAsAsyncEnumerable()
-            .Subscribe(async _ =>
+        if (apply)
+        {
+            apply = false;
+            await LaunchTasksAndDetectWhenAnyDone(5);
+        }
+    }
+
+    private async UniTask LaunchTasksAndDetectWhenAnyDone(int nbTasks)
+    {
+        List<UniTask<int>> sleeptasks = new List<UniTask<int>>();
+        for (int i = 0; i < nbTasks; i++)
+        {
+            sleeptasks.Add(SleepAndReturnTrue(i).ToAsyncLazy().Task);
+        }
+        while (sleeptasks.Count > 0)
+        {
+            Debug.Log(DateTime.Now.ToString() + " waiting for " + sleeptasks.Count + " tasks...");
+            try
             {
-                try
-                {
-                    await new Foo().MethodFooAsync();
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(e.StackTrace);
-                }
-            }, this.GetCancellationTokenOnDestroy());
-    }
-}
-
-class Foo
-{
-    public async UniTask MethodFooAsync()
-    {
-        await MethodBarAsync();
+                (int index, int taskID) = await UniTask.WhenAny(sleeptasks);
+                Debug.Log(DateTime.Now.ToString() + " Sleep task " + taskID + " done");
+                sleeptasks.RemoveAt(index);
+            }
+            catch
+            {
+                throw;
+                //Debug.Log("Error: " + e.Message);
+                //return;
+            }
+        }
     }
 
-    private async UniTask MethodBarAsync()
+    private async UniTask<int> SleepAndReturnTrue(int taskIndex)
     {
-        Throw();
-    }
-
-    private void Throw()
-    {
-        throw new Exception();
+        await UniTask.Delay(100);
+        return taskIndex;
     }
 }

@@ -459,18 +459,41 @@ public class SandboxMain : MonoBehaviour
         PrepareCamera();
     }
 
+    public IUniTaskAsyncEnumerable<int> MyEveryUpdate()
+    {
+        return UniTaskAsyncEnumerable.Create<int>(async (writer, token) =>
+        {
+            var frameCount = 0;
+            await UniTask.Yield();
+            while (!token.IsCancellationRequested)
+            {
+                await writer.YieldAsync(frameCount++); // instead of `yield return`
+                await UniTask.Yield();
+            }
+        });
+    }
+
 
     async UniTaskVoid Start()
     {
+        var cts = new CancellationTokenSource();
         okButton.onClick.AddListener(() =>
         {
-            ShootAsync().Forget();
+            cts.Cancel();
         });
 
-        // Nanika();
+        //// Nanika();
 
 
-        await UniTask.Yield();
+        //await UniTask.Yield();
+
+
+        await MyEveryUpdate().Select(x => x).Where(x => x % 2 == 0).ForEachAsync(x =>
+                {
+                    UnityEngine.Debug.Log(x + ":" + Time.frameCount);
+                }, cts.Token);
+
+
         // this.GetCancellationTokenOnDestroy()
 
         //PlayerLoopInfo.Inject();
@@ -992,17 +1015,17 @@ public class SandboxMain : MonoBehaviour
 
     void PrepareCamera()
     {
-        Debug.Log("Support AsyncGPUReadback:" + SystemInfo.supportsAsyncGPUReadback);
+        //Debug.Log("Support AsyncGPUReadback:" + SystemInfo.supportsAsyncGPUReadback);
 
-        var width = 480;
-        var height = 240;
-        var depth = 24;
+        //var width = 480;
+        //var height = 240;
+        //var depth = 24;
 
-        mycamera.targetTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
-        {
-            antiAliasing = 8
-        };
-        mycamera.enabled = true;
+        //mycamera.targetTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
+        //{
+        //    antiAliasing = 8
+        //};
+        //mycamera.enabled = true;
 
         //myRenderTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
         //{
