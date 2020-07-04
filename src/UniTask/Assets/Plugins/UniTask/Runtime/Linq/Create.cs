@@ -120,24 +120,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 completionSource.TrySetResult(false);
             }
 
-            public bool TrySetCanceled(CancellationToken cancellationToken)
-            {
-                state = -2;
-                return completionSource.TrySetCanceled(cancellationToken);
-            }
-
-            public bool TrySetComplete()
-            {
-                state = -2;
-                return completionSource.TrySetResult(false);
-            }
-
-            public bool TrySetException(Exception error)
-            {
-                state = -2;
-                return completionSource.TrySetException(error);
-            }
-
             public void SetResult(T value)
             {
                 Current = value;
