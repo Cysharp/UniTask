@@ -32,6 +32,10 @@ namespace Cysharp.Threading.Tasks
             this.Error = unityWebRequest.error;
             this.ResponseCode = unityWebRequest.responseCode;
             this.Text = unityWebRequest.downloadHandler.text;
+            if (UnityWebRequest.downloadHandler != null)
+            {
+                this.Text = unityWebRequest.downloadHandler.text;
+            }
         }
 
         public override string Message
@@ -40,7 +44,14 @@ namespace Cysharp.Threading.Tasks
             {
                 if (msg == null)
                 {
-                    msg = Error + Environment.NewLine + Text;
+                    if (Text != null)
+                    {
+                        msg = Error + Environment.NewLine + Text;
+                    }
+                    else
+                    {
+                        msg = Error;
+                    }
                 }
                 return msg;
             }

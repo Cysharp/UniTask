@@ -476,25 +476,9 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Start()
     {
-        var cts = new CancellationTokenSource();
-        okButton.onClick.AddListener(() =>
-        {
-            cts.Cancel();
-        });
-
-        //// Nanika();
-
-
-        //await UniTask.Yield();
-
-
-        await MyEveryUpdate().Select(x => x).Where(x => x % 2 == 0).ForEachAsync(x =>
-                {
-                    UnityEngine.Debug.Log(x + ":" + Time.frameCount);
-                }, cts.Token);
-
-
-        // this.GetCancellationTokenOnDestroy()
+        var url =  "http://fooooooooooooooooooooooooooooooooooo.com";
+        var webRequestAsyncOperation = UnityWebRequest.Head(url).SendWebRequest();
+        await webRequestAsyncOperation.ToUniTask();
 
         //PlayerLoopInfo.Inject();
 
