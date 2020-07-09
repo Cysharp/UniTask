@@ -31,7 +31,6 @@ namespace Cysharp.Threading.Tasks
 #endif
             this.Error = unityWebRequest.error;
             this.ResponseCode = unityWebRequest.responseCode;
-            this.Text = unityWebRequest.downloadHandler.text;
             if (UnityWebRequest.downloadHandler != null)
             {
                 this.Text = unityWebRequest.downloadHandler.text;
