@@ -476,8 +476,8 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Start()
     {
-        var url =  "http://fooooooooooooooooooooooooooooooooooo.com";
-        var webRequestAsyncOperation = UnityWebRequest.Head(url).SendWebRequest();
+        var url =  "http://google.com/404";
+        var webRequestAsyncOperation = UnityWebRequest.Get(url).SendWebRequest();
         await webRequestAsyncOperation.ToUniTask();
 
         //PlayerLoopInfo.Inject();

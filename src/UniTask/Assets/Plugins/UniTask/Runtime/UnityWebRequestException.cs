@@ -33,7 +33,10 @@ namespace Cysharp.Threading.Tasks
             this.ResponseCode = unityWebRequest.responseCode;
             if (UnityWebRequest.downloadHandler != null)
             {
-                this.Text = unityWebRequest.downloadHandler.text;
+                if (unityWebRequest.downloadHandler is DownloadHandlerBuffer dhb)
+                {
+                    this.Text = dhb.text;
+                }
             }
         }
 
