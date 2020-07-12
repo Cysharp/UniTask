@@ -205,3 +205,11 @@ src/UniTask/UnityEngine.Monetization.csproj
 src/UniTask/UnityEngine.TestRunner.csproj
 
 src/UniTask/UnityEngine.UI.csproj
+
+src/UniTask/TempAsm.csproj
+
+src/UniTask/UniTask.Addressables.csproj
+
+src/UniTask/UniTask.DOTween.csproj
+
+src/UniTask/UniTask.TextMeshPro.csproj
