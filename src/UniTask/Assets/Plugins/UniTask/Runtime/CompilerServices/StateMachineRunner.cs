@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591
 
 using Cysharp.Threading.Tasks.Internal;
 using System;
@@ -8,6 +8,10 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Threading.Tasks.CompilerServices
 {
+    // #ENABLE_IL2CPP in this file is to avoid bug of IL2CPP VM.
+    // Issue is tracked on https://issuetracker.unity3d.com/issues/il2cpp-incorrect-results-when-calling-a-method-from-outside-class-in-a-struct
+    // but currently it is labeled `Won't Fix`.
+
     internal interface IStateMachineRunner
     {
         Action MoveNext { get; }
