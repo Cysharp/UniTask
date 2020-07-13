@@ -1189,14 +1189,28 @@ namespace Cysharp.Threading.Tasks
         public static UniTask<UnityWebRequest> WithCancellation(this UnityWebRequestAsyncOperation asyncOperation, CancellationToken cancellationToken)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-            if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.webRequest);
+            if (asyncOperation.isDone)
+            {
+                if (asyncOperation.webRequest.IsError())
+                {
+                    return UniTask.FromException<UnityWebRequest>(new UnityWebRequestException(asyncOperation.webRequest));
+                }
+                return UniTask.FromResult(asyncOperation.webRequest);
+            }
             return new UniTask<UnityWebRequest>(UnityWebRequestAsyncOperationWithCancellationSource.Create(asyncOperation, cancellationToken, out var token), token);
         }
 
         public static UniTask<UnityWebRequest> ToUniTask(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-            if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.webRequest);
+            if (asyncOperation.isDone)
+            {
+                if (asyncOperation.webRequest.IsError())
+                {
+                    return UniTask.FromException<UnityWebRequest>(new UnityWebRequestException(asyncOperation.webRequest));
+                }
+                return UniTask.FromResult(asyncOperation.webRequest);
+            }
             return new UniTask<UnityWebRequest>(UnityWebRequestAsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
         }
 

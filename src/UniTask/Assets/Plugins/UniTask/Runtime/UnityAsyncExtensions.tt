@@ -16,6 +16,7 @@
 
     Func<string, string> ToUniTaskReturnType = x => (x == "void") ? "UniTask" : $"UniTask<{x}>";
     Func<string, string> ToIUniTaskSourceReturnType = x => (x == "void") ? "IUniTaskSource" : $"IUniTaskSource<{x}>";
+    Func<(string typeName, string returnType, string returnField), bool> IsUnityWebRequest = x => x.returnType == "UnityWebRequest";
     Func<(string typeName, string returnType, string returnField), bool> IsVoid = x => x.returnType == "void";
 #>
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -34,7 +35,7 @@ namespace Cysharp.Threading.Tasks
     public static partial class UnityAsyncExtensions
     {
 <# foreach(var t in types) { #>
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
 #if ENABLE_UNITYWEBREQUEST
 <# } #>
         #region <#= t.typeName #>
@@ -48,14 +49,36 @@ namespace Cysharp.Threading.Tasks
         public static <#= ToUniTaskReturnType(t.returnType) #> WithCancellation(this <#= t.typeName #> asyncOperation, CancellationToken cancellationToken)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+<# if(IsUnityWebRequest(t)) { #>
+            if (asyncOperation.isDone)
+            {
+                if (asyncOperation.webRequest.IsError())
+                {
+                    return UniTask.FromException<UnityWebRequest>(new UnityWebRequestException(asyncOperation.webRequest));
+                }
+                return UniTask.FromResult(asyncOperation.webRequest);
+            }
+<# } else { #>
             if (asyncOperation.isDone) return <#= IsVoid(t) ? "UniTask.CompletedTask" : $"UniTask.FromResult(asyncOperation.{t.returnField})" #>;
+<# } #>
             return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>WithCancellationSource.Create(asyncOperation, cancellationToken, out var token), token);
         }
 
         public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+<# if(IsUnityWebRequest(t)) { #>
+            if (asyncOperation.isDone)
+            {
+                if (asyncOperation.webRequest.IsError())
+                {
+                    return UniTask.FromException<UnityWebRequest>(new UnityWebRequestException(asyncOperation.webRequest));
+                }
+                return UniTask.FromResult(asyncOperation.webRequest);
+            }
+<# } else { #>
             if (asyncOperation.isDone) return <#= IsVoid(t) ? "UniTask.CompletedTask" : $"UniTask.FromResult(asyncOperation.{t.returnField})" #>;
+<# } #>
             return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
         }
 
@@ -81,7 +104,7 @@ namespace Cysharp.Threading.Tasks
 <# if (!IsVoid(t)) { #>
                     var result = <#= $"asyncOperation.{t.returnField}" #>;
                     asyncOperation = null;
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
                     if (result.IsError())
                     {
                         throw new UnityWebRequestException(result);
@@ -97,7 +120,7 @@ namespace Cysharp.Threading.Tasks
 <# if (!IsVoid(t)) { #>
                     var result = <#= $"asyncOperation.{t.returnField}" #>;
                     asyncOperation = null;
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
                     if (result.IsError())
                     {
                         throw new UnityWebRequestException(result);
@@ -182,7 +205,7 @@ namespace Cysharp.Threading.Tasks
                 else
                 {
                     completed = true;
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
                     var result = asyncOperation.webRequest;
                     if (result.IsError())
                     {
@@ -240,7 +263,7 @@ namespace Cysharp.Threading.Tasks
                 if (cancellationToken.IsCancellationRequested)
                 {
                     completed = true;
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
                     asyncOperation.webRequest.Abort();
 <# } #>
                     core.TrySetCanceled(cancellationToken);
@@ -347,7 +370,7 @@ namespace Cysharp.Threading.Tasks
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
                     asyncOperation.webRequest.Abort();
 <# } #>
                     core.TrySetCanceled(cancellationToken);
@@ -361,7 +384,7 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
                     if (asyncOperation.webRequest.IsError())
                     {
                         core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
@@ -391,7 +414,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         #endregion
-<# if(t.returnType == "UnityWebRequest") { #>
+<# if(IsUnityWebRequest(t)) { #>
 #endif
 <# } #>
 

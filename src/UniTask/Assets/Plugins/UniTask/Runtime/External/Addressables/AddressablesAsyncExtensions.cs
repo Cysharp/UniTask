@@ -22,13 +22,29 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask WithCancellation(this AsyncOperationHandle handle, CancellationToken cancellationToken)
         {
-            if (handle.IsDone) return UniTask.CompletedTask;
+            if (handle.IsDone)
+            {
+                if (handle.Status == AsyncOperationStatus.Failed)
+                {
+                    return UniTask.FromException(handle.OperationException);
+                }
+                return UniTask.CompletedTask;
+            }
+
             return new UniTask(AsyncOperationHandleWithCancellationSource.Create(handle, cancellationToken, out var token), token);
         }
 
         public static UniTask ToUniTask(this AsyncOperationHandle handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (handle.IsDone) return UniTask.CompletedTask;
+            if (handle.IsDone)
+            {
+                if (handle.Status == AsyncOperationStatus.Failed)
+                {
+                    return UniTask.FromException(handle.OperationException);
+                }
+                return UniTask.CompletedTask;
+            }
+
             return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, timing, progress, cancellationToken, out var token), token);
         }
 
@@ -319,13 +335,28 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask<T> WithCancellation<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken)
         {
-            if (handle.IsDone) return UniTask.FromResult(handle.Result);
+            if (handle.IsDone)
+            {
+                if (handle.Status == AsyncOperationStatus.Failed)
+                {
+                    return UniTask.FromException<T>(handle.OperationException);
+                }
+                return UniTask.FromResult(handle.Result);
+            }
             return new UniTask<T>(AsyncOperationHandleWithCancellationSource<T>.Create(handle, cancellationToken, out var token), token);
         }
 
         public static UniTask<T> ToUniTask<T>(this AsyncOperationHandle<T> handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (handle.IsDone) return UniTask.FromResult(handle.Result);
+            if (handle.IsDone)
+            {
+                if (handle.Status == AsyncOperationStatus.Failed)
+                {
+                    return UniTask.FromException<T>(handle.OperationException);
+                }
+                return UniTask.FromResult(handle.Result);
+            }
+
             return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, timing, progress, cancellationToken, out var token), token);
         }
 
