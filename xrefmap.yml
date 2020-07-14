@@ -17898,39 +17898,39 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.ReturnToSynchronizationContext
   nameWithType: UniTask.ReturnToSynchronizationContext
-- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Action,System.Boolean)
-  name: Run(Action, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Action_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Action,System.Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Action, System.Boolean)
-  nameWithType: UniTask.Run(Action, Boolean)
-- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Action{System.Object},System.Object,System.Boolean)
-  name: Run(Action<Object>, Object, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Action_System_Object__System_Object_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Action{System.Object},System.Object,System.Boolean)
-  name.vb: Run(Action(Of Object), Object, Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Action<System.Object>, System.Object, System.Boolean)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(System.Action(Of System.Object), System.Object, System.Boolean)
-  nameWithType: UniTask.Run(Action<Object>, Object, Boolean)
-  nameWithType.vb: UniTask.Run(Action(Of Object), Object, Boolean)
-- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Func{Cysharp.Threading.Tasks.UniTask},System.Boolean)
-  name: Run(Func<UniTask>, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Func_Cysharp_Threading_Tasks_UniTask__System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Func{Cysharp.Threading.Tasks.UniTask},System.Boolean)
-  name.vb: Run(Func(Of UniTask), Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Func<Cysharp.Threading.Tasks.UniTask>, System.Boolean)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(System.Func(Of Cysharp.Threading.Tasks.UniTask), System.Boolean)
-  nameWithType: UniTask.Run(Func<UniTask>, Boolean)
-  nameWithType.vb: UniTask.Run(Func(Of UniTask), Boolean)
-- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask},System.Object,System.Boolean)
-  name: Run(Func<Object, UniTask>, Object, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Func_System_Object_Cysharp_Threading_Tasks_UniTask__System_Object_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask},System.Object,System.Boolean)
-  name.vb: Run(Func(Of Object, UniTask), Object, Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Func<System.Object, Cysharp.Threading.Tasks.UniTask>, System.Object, System.Boolean)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(System.Func(Of System.Object, Cysharp.Threading.Tasks.UniTask), System.Object, System.Boolean)
-  nameWithType: UniTask.Run(Func<Object, UniTask>, Object, Boolean)
-  nameWithType.vb: UniTask.Run(Func(Of Object, UniTask), Object, Boolean)
+- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Action,System.Boolean,CancellationToken)
+  name: Run(Action, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Action_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Action,System.Boolean,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Action, System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run(Action, Boolean, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Action{System.Object},System.Object,System.Boolean,CancellationToken)
+  name: Run(Action<Object>, Object, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Action_System_Object__System_Object_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Action{System.Object},System.Object,System.Boolean,CancellationToken)
+  name.vb: Run(Action(Of Object), Object, Boolean, CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Action<System.Object>, System.Object, System.Boolean, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(System.Action(Of System.Object), System.Object, System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run(Action<Object>, Object, Boolean, CancellationToken)
+  nameWithType.vb: UniTask.Run(Action(Of Object), Object, Boolean, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Func{Cysharp.Threading.Tasks.UniTask},System.Boolean,CancellationToken)
+  name: Run(Func<UniTask>, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Func_Cysharp_Threading_Tasks_UniTask__System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Func{Cysharp.Threading.Tasks.UniTask},System.Boolean,CancellationToken)
+  name.vb: Run(Func(Of UniTask), Boolean, CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Func<Cysharp.Threading.Tasks.UniTask>, System.Boolean, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(System.Func(Of Cysharp.Threading.Tasks.UniTask), System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run(Func<UniTask>, Boolean, CancellationToken)
+  nameWithType.vb: UniTask.Run(Func(Of UniTask), Boolean, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Run(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask},System.Object,System.Boolean,CancellationToken)
+  name: Run(Func<Object, UniTask>, Object, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_System_Func_System_Object_Cysharp_Threading_Tasks_UniTask__System_Object_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask},System.Object,System.Boolean,CancellationToken)
+  name.vb: Run(Func(Of Object, UniTask), Object, Boolean, CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run(System.Func<System.Object, Cysharp.Threading.Tasks.UniTask>, System.Object, System.Boolean, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(System.Func(Of System.Object, Cysharp.Threading.Tasks.UniTask), System.Object, System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run(Func<Object, UniTask>, Object, Boolean, CancellationToken)
+  nameWithType.vb: UniTask.Run(Func(Of Object, UniTask), Object, Boolean, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.Run*
   name: Run
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run_
@@ -17938,42 +17938,42 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.Run
   nameWithType: UniTask.Run
-- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{``0},System.Boolean)
-  name: Run<T>(Func<T>, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func___0__System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{``0},System.Boolean)
-  name.vb: Run(Of T)(Func(Of T), Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<T>, System.Boolean)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of T), System.Boolean)
-  nameWithType: UniTask.Run<T>(Func<T>, Boolean)
-  nameWithType.vb: UniTask.Run(Of T)(Func(Of T), Boolean)
-- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{Cysharp.Threading.Tasks.UniTask{``0}},System.Boolean)
-  name: Run<T>(Func<UniTask<T>>, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func_Cysharp_Threading_Tasks_UniTask___0___System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{Cysharp.Threading.Tasks.UniTask{``0}},System.Boolean)
-  name.vb: Run(Of T)(Func(Of UniTask(Of T)), Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<Cysharp.Threading.Tasks.UniTask<T>>, System.Boolean)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of Cysharp.Threading.Tasks.UniTask(Of T)), System.Boolean)
-  nameWithType: UniTask.Run<T>(Func<UniTask<T>>, Boolean)
-  nameWithType.vb: UniTask.Run(Of T)(Func(Of UniTask(Of T)), Boolean)
-- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,``0},System.Object,System.Boolean)
-  name: Run<T>(Func<Object, T>, Object, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func_System_Object___0__System_Object_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,``0},System.Object,System.Boolean)
-  name.vb: Run(Of T)(Func(Of Object, T), Object, Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<System.Object, T>, System.Object, System.Boolean)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of System.Object, T), System.Object, System.Boolean)
-  nameWithType: UniTask.Run<T>(Func<Object, T>, Object, Boolean)
-  nameWithType.vb: UniTask.Run(Of T)(Func(Of Object, T), Object, Boolean)
-- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask{``0}},System.Object,System.Boolean)
-  name: Run<T>(Func<Object, UniTask<T>>, Object, Boolean)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func_System_Object_Cysharp_Threading_Tasks_UniTask___0___System_Object_System_Boolean_
-  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask{``0}},System.Object,System.Boolean)
-  name.vb: Run(Of T)(Func(Of Object, UniTask(Of T)), Object, Boolean)
-  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<System.Object, Cysharp.Threading.Tasks.UniTask<T>>, System.Object, System.Boolean)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of System.Object, Cysharp.Threading.Tasks.UniTask(Of T)), System.Object, System.Boolean)
-  nameWithType: UniTask.Run<T>(Func<Object, UniTask<T>>, Object, Boolean)
-  nameWithType.vb: UniTask.Run(Of T)(Func(Of Object, UniTask(Of T)), Object, Boolean)
+- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{``0},System.Boolean,CancellationToken)
+  name: Run<T>(Func<T>, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func___0__System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{``0},System.Boolean,CancellationToken)
+  name.vb: Run(Of T)(Func(Of T), Boolean, CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<T>, System.Boolean, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of T), System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run<T>(Func<T>, Boolean, CancellationToken)
+  nameWithType.vb: UniTask.Run(Of T)(Func(Of T), Boolean, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{Cysharp.Threading.Tasks.UniTask{``0}},System.Boolean,CancellationToken)
+  name: Run<T>(Func<UniTask<T>>, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func_Cysharp_Threading_Tasks_UniTask___0___System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{Cysharp.Threading.Tasks.UniTask{``0}},System.Boolean,CancellationToken)
+  name.vb: Run(Of T)(Func(Of UniTask(Of T)), Boolean, CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<Cysharp.Threading.Tasks.UniTask<T>>, System.Boolean, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of Cysharp.Threading.Tasks.UniTask(Of T)), System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run<T>(Func<UniTask<T>>, Boolean, CancellationToken)
+  nameWithType.vb: UniTask.Run(Of T)(Func(Of UniTask(Of T)), Boolean, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,``0},System.Object,System.Boolean,CancellationToken)
+  name: Run<T>(Func<Object, T>, Object, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func_System_Object___0__System_Object_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,``0},System.Object,System.Boolean,CancellationToken)
+  name.vb: Run(Of T)(Func(Of Object, T), Object, Boolean, CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<System.Object, T>, System.Object, System.Boolean, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of System.Object, T), System.Object, System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run<T>(Func<Object, T>, Object, Boolean, CancellationToken)
+  nameWithType.vb: UniTask.Run(Of T)(Func(Of Object, T), Object, Boolean, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask{``0}},System.Object,System.Boolean,CancellationToken)
+  name: Run<T>(Func<Object, UniTask<T>>, Object, Boolean, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Run__1_System_Func_System_Object_Cysharp_Threading_Tasks_UniTask___0___System_Object_System_Boolean_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Run``1(System.Func{System.Object,Cysharp.Threading.Tasks.UniTask{``0}},System.Object,System.Boolean,CancellationToken)
+  name.vb: Run(Of T)(Func(Of Object, UniTask(Of T)), Object, Boolean, CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Run<T>(System.Func<System.Object, Cysharp.Threading.Tasks.UniTask<T>>, System.Object, System.Boolean, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Run(Of T)(System.Func(Of System.Object, Cysharp.Threading.Tasks.UniTask(Of T)), System.Object, System.Boolean, CancellationToken)
+  nameWithType: UniTask.Run<T>(Func<Object, UniTask<T>>, Object, Boolean, CancellationToken)
+  nameWithType.vb: UniTask.Run(Of T)(Func(Of Object, UniTask(Of T)), Object, Boolean, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.Status
   name: Status
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Status
