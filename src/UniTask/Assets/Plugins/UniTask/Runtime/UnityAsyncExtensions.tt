@@ -205,6 +205,12 @@ namespace Cysharp.Threading.Tasks
                 else
                 {
                     completed = true;
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        core.TrySetCanceled(cancellationToken);
+                        return;
+                    }
+
 <# if(IsUnityWebRequest(t)) { #>
                     var result = asyncOperation.webRequest;
                     if (result.IsError())
