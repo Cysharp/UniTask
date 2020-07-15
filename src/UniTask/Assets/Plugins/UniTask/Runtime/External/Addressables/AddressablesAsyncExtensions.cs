@@ -152,7 +152,11 @@ namespace Cysharp.Threading.Tasks
                 else
                 {
                     completed = true;
-                    if (handle.Status == AsyncOperationStatus.Failed)
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        core.TrySetCanceled(cancellationToken);
+                    }
+                    else if (handle.Status == AsyncOperationStatus.Failed)
                     {
                         core.TrySetException(handle.OperationException);
                     }
@@ -465,7 +469,11 @@ namespace Cysharp.Threading.Tasks
                 else
                 {
                     completed = true;
-                    if (handle.Status == AsyncOperationStatus.Failed)
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        core.TrySetCanceled(cancellationToken);
+                    }
+                    else if (handle.Status == AsyncOperationStatus.Failed)
                     {
                         core.TrySetException(handle.OperationException);
                     }
