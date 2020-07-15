@@ -49,6 +49,7 @@ namespace Cysharp.Threading.Tasks
         public static <#= ToUniTaskReturnType(t.returnType) #> WithCancellation(this <#= t.typeName #> asyncOperation, CancellationToken cancellationToken)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<#= IsVoid(t) ? "" : "<" + t.returnType + ">" #>(cancellationToken);
 <# if(IsUnityWebRequest(t)) { #>
             if (asyncOperation.isDone)
             {
@@ -67,6 +68,7 @@ namespace Cysharp.Threading.Tasks
         public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<#= IsVoid(t) ? "" : "<" + t.returnType + ">" #>(cancellationToken);
 <# if(IsUnityWebRequest(t)) { #>
             if (asyncOperation.isDone)
             {

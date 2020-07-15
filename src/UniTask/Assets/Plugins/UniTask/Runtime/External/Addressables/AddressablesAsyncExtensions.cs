@@ -22,6 +22,7 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask WithCancellation(this AsyncOperationHandle handle, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled(cancellationToken);
             if (handle.IsDone)
             {
                 if (handle.Status == AsyncOperationStatus.Failed)
@@ -36,6 +37,7 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask ToUniTask(this AsyncOperationHandle handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled(cancellationToken);
             if (handle.IsDone)
             {
                 if (handle.Status == AsyncOperationStatus.Failed)
@@ -339,6 +341,7 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask<T> WithCancellation<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<T>(cancellationToken);
             if (handle.IsDone)
             {
                 if (handle.Status == AsyncOperationStatus.Failed)
@@ -352,6 +355,7 @@ namespace Cysharp.Threading.Tasks
 
         public static UniTask<T> ToUniTask<T>(this AsyncOperationHandle<T> handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<T>(cancellationToken);
             if (handle.IsDone)
             {
                 if (handle.Status == AsyncOperationStatus.Failed)
