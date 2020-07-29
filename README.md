@@ -384,6 +384,16 @@ var playerLoop = ScriptBehaviourUpdateOrder.CurrentPlayerLoop;
 PlayerLoopHelper.Initialize(ref playerLoop);
 ```
 
+You can diagnostic UniTask's player loop is ready by `PlayerLoopHelper.IsInjectedUniTaskPlayerLoop()`. And also `PlayerLoopHelper.DumpCurrentPlayerLoop` shows current all playerloop to console.
+
+```csharp
+void Start()
+{
+    UnityEngine.Debug.Log("UniTaskPlayerLoop ready? " + PlayerLoopHelper.IsInjectedUniTaskPlayerLoop());
+    PlayerLoopHelper.DumpCurrentPlayerLoop();
+}
+```
+
 async void vs async UniTaskVoid
 ---
 `async void` is a standard C# task system so does not run on UniTask systems. It is better not to use. `async UniTaskVoid` is a lightweight version of `async UniTask` because it does not have awaitable completion and report error immediately to `UniTaskScheduler.UnobservedTaskException`. If you don't require to await it(fire and forget), use `UniTaskVoid` is better. Unfortunately to dismiss warning, require to using with `Forget()`.
@@ -825,6 +835,23 @@ foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
 ```
 
 > In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build.
+
+UniTaskSynchronizationContext
+---
+Unity's default SynchronizationContext(`UnitySynchronizationContext`) is poor implementation for performance. UniTask itself is bypass `SynchronizationContext`(and `ExecutionContext`) so does not use it but if exists in `async Task`, still used it. `UniTaskSynchronizationContext` is replacement of `UnitySynchronizationContext`, it is better for performance.
+
+```csharp
+public class SyncContextInjecter
+{
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    public static void Inject()
+    {
+        SynchronizationContext.SetSynchronizationContext(new UniTaskSynchronizationContext());
+    }
+}
+```
+
+This is an optional choice and is not always recommended; `UniTaskSynchronizationContext` is less performance than `async UniTask` and is not a complete UniTask replacement. It also does not guarantee full behavioral compatibility with the `UnitySynchronizationContext`.
 
 API References
 ---
