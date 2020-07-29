@@ -192,7 +192,7 @@ public class SandboxMain : MonoBehaviour
     async UniTask RunStandardDelayAsync()
     {
 
-        
+
 
         UnityEngine.Debug.Log("DEB");
 
@@ -223,9 +223,9 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Update2()
     {
-        
 
-        
+
+
 
 
 
@@ -464,7 +464,7 @@ public class SandboxMain : MonoBehaviour
 
     private void Awake()
     {
-        PlayerLoopInfo.Inject();
+        // PlayerLoopInfo.Inject();
         PrepareCamera();
     }
 
@@ -482,12 +482,24 @@ public class SandboxMain : MonoBehaviour
         });
     }
 
+    async void RunStandardTaskAsync()
+    {
+        Debug.Log("Wait 3 seconds");
+        await Task.Delay(TimeSpan.FromSeconds(3));
+
+        Debug.Log("Current SyncContext:" + SynchronizationContext.Current.GetType().FullName);
+    }
+
 
     async UniTaskVoid Start()
     {
-        var url =  "http://google.com/404";
-        var webRequestAsyncOperation = UnityWebRequest.Get(url).SendWebRequest();
-        await webRequestAsyncOperation.ToUniTask();
+        RunStandardTaskAsync();
+
+        UnityEngine.Debug.Log("UniTaskPlayerLoop ready? " + PlayerLoopHelper.IsInjectedUniTaskPlayerLoop());
+
+        //var url =  "http://google.com/404";
+        //var webRequestAsyncOperation = UnityWebRequest.Get(url).SendWebRequest();
+        //await webRequestAsyncOperation.ToUniTask();
 
         //PlayerLoopInfo.Inject();
 
@@ -694,7 +706,9 @@ public class SandboxMain : MonoBehaviour
 
         //StartCoroutine(Coroutine());
 
-        //await UniTask.Delay(TimeSpan.FromSeconds(1));
+        // PlayerLoopInfo.Inject();
+        await UniTask.Delay(TimeSpan.FromSeconds(1));
+        PlayerLoopInfo.DumpPlayerLoop("current", PlayerLoop.GetCurrentPlayerLoop());
 
 
         // _ = ReturnToMainThreadTest();
@@ -1060,6 +1074,17 @@ public class SandboxMain : MonoBehaviour
     }
 }
 
+
+public class SyncContextInjecter
+{
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    public static void Inject()
+    {
+        SynchronizationContext.SetSynchronizationContext(new UniTaskSynchronizationContext());
+    }
+}
+
+
 public class PlayerLoopInfo
 {
     // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -1094,7 +1119,7 @@ public class PlayerLoopInfo
 
     public static Type CurrentLoopType { get; private set; }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     public static void Inject()
     {
         var system = PlayerLoop.GetCurrentPlayerLoop();
