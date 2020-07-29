@@ -189,6 +189,174 @@ namespace Cysharp.Threading.Tasks
             return new AsyncLazy<T>(task);
         }
 
+        /// <summary>
+        /// Ignore task result when cancel raised first.
+        /// </summary>
+        public static UniTask WithCancellation(this UniTask task, CancellationToken cancellationToken)
+        {
+            if (!cancellationToken.CanBeCanceled)
+            {
+                return task;
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return UniTask.FromCanceled(cancellationToken);
+            }
+
+            if (task.Status.IsCompleted())
+            {
+                return task;
+            }
+
+            return new UniTask(new WithCancellationSource(task, cancellationToken), 0);
+        }
+
+        /// <summary>
+        /// Ignore task result when cancel raised first.
+        /// </summary>
+        public static UniTask<T> WithCancellation<T>(this UniTask<T> task, CancellationToken cancellationToken)
+        {
+            if (!cancellationToken.CanBeCanceled)
+            {
+                return task;
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return UniTask.FromCanceled<T>(cancellationToken);
+            }
+
+            if (task.Status.IsCompleted())
+            {
+                return task;
+            }
+
+            return new UniTask<T>(new WithCancellationSource<T>(task, cancellationToken), 0);
+        }
+
+        sealed class WithCancellationSource : IUniTaskSource
+        {
+            static readonly Action<object> cancellationCallbackDelegate = CancellationCallback;
+
+            CancellationToken cancellationToken;
+            CancellationTokenRegistration tokenRegistration;
+            UniTaskCompletionSourceCore<AsyncUnit> core;
+
+            public WithCancellationSource(UniTask task, CancellationToken cancellationToken)
+            {
+                this.cancellationToken = cancellationToken;
+                this.tokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallbackDelegate, this);
+                RunTask(task).Forget();
+            }
+
+            async UniTaskVoid RunTask(UniTask task)
+            {
+                try
+                {
+                    await task;
+                    core.TrySetResult(AsyncUnit.Default);
+                }
+                catch (Exception ex)
+                {
+                    core.TrySetException(ex);
+                }
+                finally
+                {
+                    tokenRegistration.Dispose();
+                }
+            }
+
+            static void CancellationCallback(object state)
+            {
+                var self = (WithCancellationSource)state;
+                self.core.TrySetCanceled(self.cancellationToken);
+            }
+
+            public void GetResult(short token)
+            {
+                core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+        }
+
+        sealed class WithCancellationSource<T> : IUniTaskSource<T>
+        {
+            static readonly Action<object> cancellationCallbackDelegate = CancellationCallback;
+
+            CancellationToken cancellationToken;
+            CancellationTokenRegistration tokenRegistration;
+            UniTaskCompletionSourceCore<T> core;
+
+            public WithCancellationSource(UniTask<T> task, CancellationToken cancellationToken)
+            {
+                this.cancellationToken = cancellationToken;
+                this.tokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallbackDelegate, this);
+                RunTask(task).Forget();
+            }
+
+            async UniTaskVoid RunTask(UniTask<T> task)
+            {
+                try
+                {
+                    core.TrySetResult(await task);
+                }
+                catch (Exception ex)
+                {
+                    core.TrySetException(ex);
+                }
+                finally
+                {
+                    tokenRegistration.Dispose();
+                }
+            }
+
+            static void CancellationCallback(object state)
+            {
+                var self = (WithCancellationSource<T>)state;
+                self.core.TrySetCanceled(self.cancellationToken);
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                core.GetResult(token);
+            }
+
+            public T GetResult(short token)
+            {
+                return core.GetResult(token);
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+        }
+
 #if UNITY_2018_3_OR_NEWER
 
         public static IEnumerator ToCoroutine<T>(this UniTask<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
