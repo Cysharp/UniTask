@@ -133,6 +133,7 @@ public class SandboxMain : MonoBehaviour
     UniTaskCompletionSource ucs;
     async UniTask<int> FooAsync()
     {
+
         // use F10, will crash.
         var loop = int.Parse("9");
         await UniTask.DelayFrame(loop);
@@ -190,6 +191,9 @@ public class SandboxMain : MonoBehaviour
 
     async UniTask RunStandardDelayAsync()
     {
+
+        
+
         UnityEngine.Debug.Log("DEB");
 
         await UniTask.DelayFrame(30);
@@ -219,6 +223,11 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Update2()
     {
+        
+
+        
+
+
 
         UnityEngine.Debug.Log("async linq!");
 
