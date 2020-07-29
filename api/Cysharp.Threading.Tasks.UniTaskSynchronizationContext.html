@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>AsyncCancelTrigger Class
+    <title>UniTaskSynchronizationContext Class
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="AsyncCancelTrigger Class
+    <meta name="title" content="UniTaskSynchronizationContext Class
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,32 +71,27 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext">
   
-  <h1 id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger" class="text-break">AsyncCancelTrigger Class
+  <h1 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext" class="text-break">UniTaskSynchronizationContext Class
   </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.Triggers.html">Cysharp.Threading.Tasks.Triggers</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
   
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class AsyncCancelTrigger : AsyncTriggerBase&lt;BaseEventData&gt;, IUniTaskAsyncEnumerable&lt;BaseEventData&gt;, ICancelHandler</code></pre>
+    <pre><code class="lang-csharp hljs">public class UniTaskSynchronizationContext : SynchronizationContext</code></pre>
   </div>
 
   <div class="inheritance">
     <h5>Inheritance</h5>
     <span><span class="xref">System.Object</span></span> → 
-    <span><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html">AsyncTriggerBase</a>&lt;<span class="xref">BaseEventData</span>&gt;</span> → 
-    <span class="xref">AsyncCancelTrigger</span>
+    <span><span class="xref">System.Threading.SynchronizationContext</span></span> → 
+    <span class="xref">UniTaskSynchronizationContext</span>
   </div>
   
-  <div classs="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;<span class="xref">BaseEventData</span>&gt;</div>
-    <div><span class="xref">ICancelHandler</span></div>
-  </div>
   
   
   
@@ -116,25 +111,31 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_GetOnCancelAsyncHandler">GetOnCancelAsyncHandler()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_CreateCopy">CreateCopy()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_GetOnCancelAsyncHandler_System_Threading_CancellationToken_">GetOnCancelAsyncHandler(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_OperationCompleted">OperationCompleted()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_OnCancelAsync">OnCancelAsync()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_OperationStarted">OperationStarted()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_OnCancelAsync_System_Threading_CancellationToken_">OnCancelAsync(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_System_Threading_SendOrPostCallback_System_Object_">Post(SendOrPostCallback, Object)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_System_Threading_SendOrPostCallback_System_Object_">Send(SendOrPostCallback, Object)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -144,20 +145,20 @@
   <h3 id="methods">Methods
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_GetOnCancelAsyncHandler_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.GetOnCancelAsyncHandler*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_GetOnCancelAsyncHandler" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.GetOnCancelAsyncHandler">GetOnCancelAsyncHandler()</h4>
+  <a id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_CreateCopy_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.CreateCopy*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_CreateCopy" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.CreateCopy">CreateCopy()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IAsyncOnCancelHandler GetOnCancelAsyncHandler()</code></pre>
+    <pre><code class="lang-csharp hljs">public override SynchronizationContext CreateCopy()</code></pre>
   </div>
 
   
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnCancelHandler.html">IAsyncOnCancelHandler</a></dt>
+    <dt><span class="xref">System.Threading.SynchronizationContext</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -167,6 +168,8 @@
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.CreateCopy()</span></div>
   
   
   
@@ -174,66 +177,24 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_GetOnCancelAsyncHandler_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.GetOnCancelAsyncHandler*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_GetOnCancelAsyncHandler_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.GetOnCancelAsyncHandler(System.Threading.CancellationToken)">GetOnCancelAsyncHandler(CancellationToken)</h4>
+  <a id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_OperationCompleted_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.OperationCompleted*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_OperationCompleted" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.OperationCompleted">OperationCompleted()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IAsyncOnCancelHandler GetOnCancelAsyncHandler(CancellationToken cancellationToken)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnCancelHandler.html">IAsyncOnCancelHandler</a></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_OnCancelAsync_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.OnCancelAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_OnCancelAsync" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.OnCancelAsync">OnCancelAsync()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;BaseEventData&gt; OnCancelAsync()</code></pre>
+    <pre><code class="lang-csharp hljs">public override void OperationCompleted()</code></pre>
   </div>
 
   
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">BaseEventData</span>&gt;</dt>
-    <dd></dd>
-  </dl>
-  </section>
   
   
   
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.OperationCompleted()</span></div>
   
   
   
@@ -241,27 +202,80 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_OnCancelAsync_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.OnCancelAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncCancelTrigger_OnCancelAsync_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncCancelTrigger.OnCancelAsync(System.Threading.CancellationToken)">OnCancelAsync(CancellationToken)</h4>
+  <a id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_OperationStarted_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.OperationStarted*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_OperationStarted" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.OperationStarted">OperationStarted()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;BaseEventData&gt; OnCancelAsync(CancellationToken cancellationToken)</code></pre>
+    <pre><code class="lang-csharp hljs">public override void OperationStarted()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.OperationStarted()</span></div>
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Post*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_System_Threading_SendOrPostCallback_System_Object_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">Post(SendOrPostCallback, Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Post(SendOrPostCallback d, object state)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>d</code></span> <span class="xref">System.Threading.SendOrPostCallback</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
     <dd></dd>
   </dl>
   </section>
   
+  
+  
+  
+  
+  
+  
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback, System.Object)</span></div>
+  
+  
+  
+  
+  
+  </section>
   <section>
-  <h5 class="returns">Returns</h5>
+  <a id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Send*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_System_Threading_SendOrPostCallback_System_Object_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">Send(SendOrPostCallback, Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Send(SendOrPostCallback d, object state)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">BaseEventData</span>&gt;</dt>
+    <dt><span class="parametername"><code>d</code></span> <span class="xref">System.Threading.SendOrPostCallback</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -272,19 +286,15 @@
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback, System.Object)</span></div>
+  
   
   
   
   
   </section>
   
-  <h3 id="implements">Implements</h3>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable&lt;T&gt;</a>
-  </div>
-  <div>
-      <span class="xref">ICancelHandler</span>
-  </div>
   
   
 </article>
