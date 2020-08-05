@@ -154,22 +154,19 @@ UniTask provides three pattern of extension methods.
 The type of `UniTask` can use utility like `UniTask.WhenAll`, `UniTask.WhenAny`. It is like Task.WhenAll/WhenAny but return type is more useful, returns value tuple so can deconsrtuct each result and pass multiple type.
 
 ```csharp
-public class SceneAssets
+public async UniTaskVoid LoadManyAsync()
 {
-    public SceneAssets()
-    {
-        // parallel load.
-        var (a, b, c) = await UniTask.WhenAll(
-            LoadAsSprite("foo"),
-            LoadAsSprite("bar"),
-            LoadAsSprite("baz"));
-    }
+    // parallel load.
+    var (a, b, c) = await UniTask.WhenAll(
+        LoadAsSprite("foo"),
+        LoadAsSprite("bar"),
+        LoadAsSprite("baz"));
+}
 
-    async UniTask<Sprite> LoadAsSprite(string path)
-    {
-        var resource = await Resources.LoadAsync<Sprite>(path);
-        return (resource as Sprite);
-    }
+async UniTask<Sprite> LoadAsSprite(string path)
+{
+    var resource = await Resources.LoadAsync<Sprite>(path);
+    return (resource as Sprite);
 }
 ```
 
