@@ -160,6 +160,8 @@ src/UniTask/UniTask.*.unitypackage
 
 src/UniTask/UniTask.Linq.csproj
 
+src/UniTask/UniTask.Modules.AssetBundle.csproj
+
 src/UniTask/DOTween.Modules.csproj
 
 src/UniTask/Unity.Addressables.csproj

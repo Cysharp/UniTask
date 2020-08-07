@@ -1,7 +1,6 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-#if UNITY_2018_4 || UNITY_2019_4_OR_NEWER
-
+#if (UNITY_2018_4 || UNITY_2019_4_OR_NEWER) && UNITASK_MODULES_ASSETBUNDLE
 using Cysharp.Threading.Tasks.Internal;
 using System;
 using System.Runtime.CompilerServices;
@@ -10,7 +9,7 @@ using UnityEngine;
 
 namespace Cysharp.Threading.Tasks
 {
-    public static partial class UnityAsyncExtensions
+    public static partial class AssetBundleAsyncExtensions
     {
         public static AssetBundleRequestAllAssetsAwaiter AwaitForAllAssets(this AssetBundleRequest asyncOperation)
         {
@@ -309,7 +308,7 @@ namespace Cysharp.Threading.Tasks
                 return pool.TryPush(this);
             }
         }
+
     }
 }
-
 #endif
