@@ -152,6 +152,8 @@ UniTask provides three pattern of extension methods.
 
 > Note: WithCancellation is returned from native timing of PlayerLoop but ToUniTask is returned from specified PlayerLoopTiming. Details of timing, see: [PlayerLoop](#playerloop) section.
 
+> Note: AssetBundleRequest has `asset` and `allAssets`, in default await returns `asset`. If you want to get `allAssets`, you can use `AwaitForAllAssets()` method.
+
 The type of `UniTask` can use utility like `UniTask.WhenAll`, `UniTask.WhenAny`. It is like Task.WhenAll/WhenAny but return type is more useful, returns value tuple so can deconsrtuct each result and pass multiple type.
 
 ```csharp
