@@ -832,7 +832,15 @@ foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
 }
 ```
 
-> In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build.
+Allocation on Profiler
+---
+In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build.
+
+After Unity 2020.1 supports Code Optimization option on UnityEditor(right, footer).
+
+![](https://user-images.githubusercontent.com/46207/89967342-2f944600-dc8c-11ea-99fc-0b74527a16f6.png)
+
+You can change C# compiler optimization to release, it removes AsyncStateMachine allocation. Andalso optimization option can set via `Compilation.CompilationPipeline-codeOptimization`, and `Compilation.CodeOptimization`.
 
 UniTaskSynchronizationContext
 ---
