@@ -34,6 +34,7 @@ Techinical details, see blog post: [UniTask v2 — Zero Allocation async/await f
 - [For Unit Testing](#for-unit-testing)
 - [Compare with Standard Task API](#compare-with-standard-task-api)
 - [Pooling Configuration](#pooling-configuration)
+- [Allocation on Profiler](#allocation-on-profiler)
 - [UniTaskSynchronizationContext](#unitasksynchronizationcontext)
 - [API References](#api-references)
 - [UPM Package](#upm-package)
