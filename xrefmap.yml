@@ -20399,148 +20399,6 @@ references:
   commentId: T:Cysharp.Threading.Tasks.UnityAsyncExtensions
   fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions
   nameWithType: UnityAsyncExtensions
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter
-  name: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html
-  commentId: T:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.#ctor(AssetBundleCreateRequest)
-  name: AssetBundleCreateRequestAwaiter(AssetBundleCreateRequest)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter__ctor_AssetBundleCreateRequest_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.#ctor(AssetBundleCreateRequest)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.AssetBundleCreateRequestAwaiter(AssetBundleCreateRequest)
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.AssetBundleCreateRequestAwaiter(AssetBundleCreateRequest)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.#ctor*
-  name: AssetBundleCreateRequestAwaiter
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter__ctor_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.#ctor
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.AssetBundleCreateRequestAwaiter
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.AssetBundleCreateRequestAwaiter
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult
-  name: GetResult()
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_GetResult
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult()
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult()
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult*
-  name: GetResult
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_GetResult_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.GetResult
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted
-  name: IsCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_IsCompleted
-  commentId: P:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted*
-  name: IsCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_IsCompleted_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.IsCompleted
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted(System.Action)
-  name: OnCompleted(Action)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_OnCompleted_System_Action_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted(System.Action)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted(System.Action)
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted(Action)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted*
-  name: OnCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_OnCompleted_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.OnCompleted
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted(System.Action)
-  name: UnsafeOnCompleted(Action)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_UnsafeOnCompleted_System_Action_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted(System.Action)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted(System.Action)
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted(Action)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted*
-  name: UnsafeOnCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleCreateRequestAwaiter_UnsafeOnCompleted_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleCreateRequestAwaiter.UnsafeOnCompleted
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter
-  name: UnityAsyncExtensions.AssetBundleRequestAwaiter
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html
-  commentId: T:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.#ctor(AssetBundleRequest)
-  name: AssetBundleRequestAwaiter(AssetBundleRequest)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter__ctor_AssetBundleRequest_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.#ctor(AssetBundleRequest)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.AssetBundleRequestAwaiter(AssetBundleRequest)
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.AssetBundleRequestAwaiter(AssetBundleRequest)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.#ctor*
-  name: AssetBundleRequestAwaiter
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter__ctor_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.#ctor
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.AssetBundleRequestAwaiter
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.AssetBundleRequestAwaiter
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult
-  name: GetResult()
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_GetResult
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult()
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult()
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult*
-  name: GetResult
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_GetResult_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.GetResult
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted
-  name: IsCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_IsCompleted
-  commentId: P:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted*
-  name: IsCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_IsCompleted_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.IsCompleted
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted(System.Action)
-  name: OnCompleted(Action)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_OnCompleted_System_Action_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted(System.Action)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted(System.Action)
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted(Action)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted*
-  name: OnCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_OnCompleted_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.OnCompleted
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted(System.Action)
-  name: UnsafeOnCompleted(Action)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_UnsafeOnCompleted_System_Action_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted(System.Action)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted(System.Action)
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted(Action)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted*
-  name: UnsafeOnCompleted
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_AssetBundleRequestAwaiter_UnsafeOnCompleted_
-  commentId: Overload:Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted
-  nameWithType: UnityAsyncExtensions.AssetBundleRequestAwaiter.UnsafeOnCompleted
 - uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.AsyncOperationAwaiter
   name: UnityAsyncExtensions.AsyncOperationAwaiter
   href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AsyncOperationAwaiter.html
@@ -20751,18 +20609,6 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAsyncValueChangedEventHandler
   nameWithType: UnityAsyncExtensions.GetAsyncValueChangedEventHandler
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleCreateRequest)
-  name: GetAwaiter(AssetBundleCreateRequest)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AssetBundleCreateRequest_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleCreateRequest)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleCreateRequest)
-  nameWithType: UnityAsyncExtensions.GetAwaiter(AssetBundleCreateRequest)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleRequest)
-  name: GetAwaiter(AssetBundleRequest)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AssetBundleRequest_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleRequest)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AssetBundleRequest)
-  nameWithType: UnityAsyncExtensions.GetAwaiter(AssetBundleRequest)
 - uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.GetAwaiter(AsyncGPUReadbackRequest)
   name: GetAwaiter(AsyncGPUReadbackRequest)
   href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_GetAwaiter_AsyncGPUReadbackRequest_
@@ -21153,24 +20999,6 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.StartAsyncCoroutine
   nameWithType: UnityAsyncExtensions.StartAsyncCoroutine
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleCreateRequest,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)
-  name: ToUniTask(AssetBundleCreateRequest, IProgress<Single>, PlayerLoopTiming, CancellationToken)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AssetBundleCreateRequest_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleCreateRequest,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)
-  name.vb: ToUniTask(AssetBundleCreateRequest, IProgress(Of Single), PlayerLoopTiming, CancellationToken)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleCreateRequest, System.IProgress<System.Single>, Cysharp.Threading.Tasks.PlayerLoopTiming, System.Threading.CancellationToken)
-  fullName.vb: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleCreateRequest, System.IProgress(Of System.Single), Cysharp.Threading.Tasks.PlayerLoopTiming, System.Threading.CancellationToken)
-  nameWithType: UnityAsyncExtensions.ToUniTask(AssetBundleCreateRequest, IProgress<Single>, PlayerLoopTiming, CancellationToken)
-  nameWithType.vb: UnityAsyncExtensions.ToUniTask(AssetBundleCreateRequest, IProgress(Of Single), PlayerLoopTiming, CancellationToken)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleRequest,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)
-  name: ToUniTask(AssetBundleRequest, IProgress<Single>, PlayerLoopTiming, CancellationToken)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AssetBundleRequest_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleRequest,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)
-  name.vb: ToUniTask(AssetBundleRequest, IProgress(Of Single), PlayerLoopTiming, CancellationToken)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleRequest, System.IProgress<System.Single>, Cysharp.Threading.Tasks.PlayerLoopTiming, System.Threading.CancellationToken)
-  fullName.vb: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AssetBundleRequest, System.IProgress(Of System.Single), Cysharp.Threading.Tasks.PlayerLoopTiming, System.Threading.CancellationToken)
-  nameWithType: UnityAsyncExtensions.ToUniTask(AssetBundleRequest, IProgress<Single>, PlayerLoopTiming, CancellationToken)
-  nameWithType.vb: UnityAsyncExtensions.ToUniTask(AssetBundleRequest, IProgress(Of Single), PlayerLoopTiming, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)
   name: ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_
@@ -21202,18 +21030,6 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask
   nameWithType: UnityAsyncExtensions.ToUniTask
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleCreateRequest,System.Threading.CancellationToken)
-  name: WithCancellation(AssetBundleCreateRequest, CancellationToken)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AssetBundleCreateRequest_System_Threading_CancellationToken_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleCreateRequest,System.Threading.CancellationToken)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleCreateRequest, System.Threading.CancellationToken)
-  nameWithType: UnityAsyncExtensions.WithCancellation(AssetBundleCreateRequest, CancellationToken)
-- uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleRequest,System.Threading.CancellationToken)
-  name: WithCancellation(AssetBundleRequest, CancellationToken)
-  href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AssetBundleRequest_System_Threading_CancellationToken_
-  commentId: M:Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleRequest,System.Threading.CancellationToken)
-  fullName: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AssetBundleRequest, System.Threading.CancellationToken)
-  nameWithType: UnityAsyncExtensions.WithCancellation(AssetBundleRequest, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncGPUReadbackRequest,System.Threading.CancellationToken)
   name: WithCancellation(AsyncGPUReadbackRequest, CancellationToken)
   href: api/Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncGPUReadbackRequest_System_Threading_CancellationToken_
