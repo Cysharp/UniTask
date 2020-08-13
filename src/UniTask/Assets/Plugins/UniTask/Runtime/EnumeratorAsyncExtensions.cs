@@ -44,6 +44,7 @@ namespace Cysharp.Threading.Tasks
 
             IEnumerator innerEnumerator;
             CancellationToken cancellationToken;
+            int initialFrame;
 
             UniTaskCompletionSourceCore<object> core;
 
@@ -66,10 +67,13 @@ namespace Cysharp.Threading.Tasks
 
                 result.innerEnumerator = ConsumeEnumerator(innerEnumerator);
                 result.cancellationToken = cancellationToken;
+                result.initialFrame = -1;
 
                 PlayerLoopHelper.AddAction(timing, result);
 
                 token = result.core.Version;
+
+                result.MoveNext(); // run immediately.
                 return result;
             }
 
@@ -106,6 +110,19 @@ namespace Cysharp.Threading.Tasks
                 {
                     core.TrySetCanceled(cancellationToken);
                     return false;
+                }
+
+                if (initialFrame == -1)
+                {
+                    // Time can not touch in threadpool.
+                    if (PlayerLoopHelper.IsMainThread)
+                    {
+                        initialFrame = Time.frameCount;
+                    }
+                }
+                else if (initialFrame == Time.frameCount)
+                {
+                    return true; // already executed in first frame, skip.
                 }
 
                 try
