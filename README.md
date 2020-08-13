@@ -34,6 +34,7 @@ Techinical details, see blog post: [UniTask v2 — Zero Allocation async/await f
 - [For Unit Testing](#for-unit-testing)
 - [Compare with Standard Task API](#compare-with-standard-task-api)
 - [Pooling Configuration](#pooling-configuration)
+- [Allocation on Profiler](#allocation-on-profiler)
 - [UniTaskSynchronizationContext](#unitasksynchronizationcontext)
 - [API References](#api-references)
 - [UPM Package](#upm-package)
@@ -151,25 +152,24 @@ UniTask provides three pattern of extension methods.
 
 > Note: WithCancellation is returned from native timing of PlayerLoop but ToUniTask is returned from specified PlayerLoopTiming. Details of timing, see: [PlayerLoop](#playerloop) section.
 
+> Note: AssetBundleRequest has `asset` and `allAssets`, in default await returns `asset`. If you want to get `allAssets`, you can use `AwaitForAllAssets()` method.
+
 The type of `UniTask` can use utility like `UniTask.WhenAll`, `UniTask.WhenAny`. It is like Task.WhenAll/WhenAny but return type is more useful, returns value tuple so can deconsrtuct each result and pass multiple type.
 
 ```csharp
-public class SceneAssets
+public async UniTaskVoid LoadManyAsync()
 {
-    public SceneAssets()
-    {
-        // parallel load.
-        var (a, b, c) = await UniTask.WhenAll(
-            LoadAsSprite("foo"),
-            LoadAsSprite("bar"),
-            LoadAsSprite("baz"));
-    }
+    // parallel load.
+    var (a, b, c) = await UniTask.WhenAll(
+        LoadAsSprite("foo"),
+        LoadAsSprite("bar"),
+        LoadAsSprite("baz"));
+}
 
-    async UniTask<Sprite> LoadAsSprite(string path)
-    {
-        var resource = await Resources.LoadAsync<Sprite>(path);
-        return (resource as Sprite);
-    }
+async UniTask<Sprite> LoadAsSprite(string path)
+{
+    var resource = await Resources.LoadAsync<Sprite>(path);
+    return (resource as Sprite);
 }
 ```
 
@@ -835,7 +835,15 @@ foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
 }
 ```
 
-> In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build.
+Allocation on Profiler
+---
+In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build.
+
+After Unity 2020.1 supports Code Optimization option on UnityEditor(right, footer).
+
+![](https://user-images.githubusercontent.com/46207/89967342-2f944600-dc8c-11ea-99fc-0b74527a16f6.png)
+
+You can change C# compiler optimization to release, it removes AsyncStateMachine allocation. Andalso optimization option can set via `Compilation.CompilationPipeline-codeOptimization`, and `Compilation.CodeOptimization`.
 
 UniTaskSynchronizationContext
 ---

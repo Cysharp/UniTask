@@ -42,13 +42,6 @@ jobs:
     steps:
       - run: apt update && apt install git -y
       - uses: actions/checkout@v2
-      # create unity activation file and store to artifacts.
-      - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -createManualActivationFile || exit 0
-      - uses: actions/upload-artifact@v1
-        with:
-          name: Unity_v${{ matrix.unity }}.alf
-          path: ./Unity_v${{ matrix.unity }}.alf
-      # activate Unity from manual license file(ulf)
       - run: echo -n "$UNITY_LICENSE" >> .Unity.ulf
         env:
           UNITY_LICENSE: ${{ secrets[matrix.license] }}
