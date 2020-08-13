@@ -17,6 +17,7 @@
     Func<string, string> ToUniTaskReturnType = x => (x == "void") ? "UniTask" : $"UniTask<{x}>";
     Func<string, string> ToIUniTaskSourceReturnType = x => (x == "void") ? "IUniTaskSource" : $"IUniTaskSource<{x}>";
     Func<(string typeName, string returnType, string returnField), bool> IsUnityWebRequest = x => x.returnType == "UnityWebRequest";
+    Func<(string typeName, string returnType, string returnField), bool> IsAssetBundleModule = x => x.typeName == "AssetBundleRequest" || x.typeName == "AssetBundleCreateRequest";
     Func<(string typeName, string returnType, string returnField), bool> IsVoid = x => x.returnType == "void";
 #>
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -37,6 +38,8 @@ namespace Cysharp.Threading.Tasks
 <# foreach(var t in types) { #>
 <# if(IsUnityWebRequest(t)) { #>
 #if ENABLE_UNITYWEBREQUEST
+<# } else if(IsAssetBundleModule(t)) { #>
+#if UNITASK_ASSETBUNDLE_SUPPORT
 <# } #>
         #region <#= t.typeName #>
 
@@ -422,7 +425,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         #endregion
-<# if(IsUnityWebRequest(t)) { #>
+<# if(IsUnityWebRequest(t) || IsAssetBundleModule(t)) { #>
 #endif
 <# } #>
 

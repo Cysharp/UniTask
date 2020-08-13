@@ -605,6 +605,7 @@ namespace Cysharp.Threading.Tasks
 
         #endregion
 
+#if UNITASK_ASSETBUNDLE_SUPPORT
         #region AssetBundleRequest
 
         public static AssetBundleRequestAwaiter GetAwaiter(this AssetBundleRequest asyncOperation)
@@ -906,7 +907,9 @@ namespace Cysharp.Threading.Tasks
         }
 
         #endregion
+#endif
 
+#if UNITASK_ASSETBUNDLE_SUPPORT
         #region AssetBundleCreateRequest
 
         public static AssetBundleCreateRequestAwaiter GetAwaiter(this AssetBundleCreateRequest asyncOperation)
@@ -1208,6 +1211,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         #endregion
+#endif
 
 #if ENABLE_UNITYWEBREQUEST
         #region UnityWebRequestAsyncOperation
