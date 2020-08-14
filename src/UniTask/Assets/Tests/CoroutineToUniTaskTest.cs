@@ -96,6 +96,33 @@ namespace Cysharp.Threading.TasksTests
         //    l[1].Item2.Should().NotBe(currentFrame);
         //}
 
+        [UnityTest]
+        public IEnumerator WaitForSecondsTest() => UniTask.ToCoroutine(async () =>
+        {
+            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+
+            Time.timeScale = 0.5f;
+            try
+            {
+                var now = DateTimeOffset.UtcNow;
+
+                await WaitFor();
+
+                var elapsed = DateTimeOffset.UtcNow - now;
+
+                (5.8f <= elapsed.TotalSeconds && elapsed.TotalSeconds <= 6.2f).Should().BeTrue();
+            }
+            finally
+            {
+                Time.timeScale = 1.0f;
+            }
+        });
+
+        IEnumerator WaitFor()
+        {
+            yield return new WaitForSeconds(3.0f);
+        }
+
         IEnumerator Worker(List<(int, int)> l)
         {
             l.Add((0, Time.frameCount));

@@ -225,12 +225,12 @@ namespace Cysharp.Threading.Tasks
             static IEnumerator UnwrapWaitForSeconds(WaitForSeconds waitForSeconds)
             {
                 var second = (float)waitForSeconds_Seconds.GetValue(waitForSeconds);
-                var startTime = DateTimeOffset.UtcNow;
+                var elapsed = 0.0f;
                 while (true)
                 {
                     yield return null;
 
-                    var elapsed = (DateTimeOffset.UtcNow - startTime).TotalSeconds;
+                    elapsed += Time.deltaTime;
                     if (elapsed >= second)
                     {
                         break;
