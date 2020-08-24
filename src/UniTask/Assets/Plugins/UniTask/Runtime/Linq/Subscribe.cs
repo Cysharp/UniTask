@@ -195,7 +195,14 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 while (await e.MoveNextAsync())
                 {
-                    onNext(e.Current);
+                    try
+                    {
+                        onNext(e.Current);
+                    }
+                    catch (Exception ex)
+                    {
+                        UniTaskScheduler.PublishUnobservedTaskException(ex);
+                    }
                 }
                 onCompleted();
             }
@@ -227,7 +234,14 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 while (await e.MoveNextAsync())
                 {
-                    onNext(e.Current).Forget();
+                    try
+                    {
+                        onNext(e.Current).Forget();
+                    }
+                    catch (Exception ex)
+                    {
+                        UniTaskScheduler.PublishUnobservedTaskException(ex);
+                    }
                 }
                 onCompleted();
             }
@@ -259,7 +273,14 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 while (await e.MoveNextAsync())
                 {
-                    onNext(e.Current, cancellationToken).Forget();
+                    try
+                    {
+                        onNext(e.Current, cancellationToken).Forget();
+                    }
+                    catch (Exception ex)
+                    {
+                        UniTaskScheduler.PublishUnobservedTaskException(ex);
+                    }
                 }
                 onCompleted();
             }
@@ -291,7 +312,14 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 while (await e.MoveNextAsync())
                 {
-                    observer.OnNext(e.Current);
+                    try
+                    {
+                        observer.OnNext(e.Current);
+                    }
+                    catch (Exception ex)
+                    {
+                        UniTaskScheduler.PublishUnobservedTaskException(ex);
+                    }
                 }
                 observer.OnCompleted();
             }
