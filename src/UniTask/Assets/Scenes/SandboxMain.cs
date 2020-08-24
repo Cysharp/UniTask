@@ -17,6 +17,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using System.IO;
+using System.Linq.Expressions;
+using Cysharp.Threading.Tasks.Sample;
 
 
 // using DG.Tweening;
@@ -493,9 +495,11 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Start()
     {
-        RunStandardTaskAsync();
+        //Expression.Lambda<Func<int>>(null).Compile(true);
 
-        UnityEngine.Debug.Log("UniTaskPlayerLoop ready? " + PlayerLoopHelper.IsInjectedUniTaskPlayerLoop());
+        //RunStandardTaskAsync();
+
+        //UnityEngine.Debug.Log("UniTaskPlayerLoop ready? " + PlayerLoopHelper.IsInjectedUniTaskPlayerLoop());
 
         //var url =  "http://google.com/404";
         //var webRequestAsyncOperation = UnityWebRequest.Get(url).SendWebRequest();
@@ -524,8 +528,23 @@ public class SandboxMain : MonoBehaviour
         //UniTask.Delay(TimeSpan.FromSeconds(3)).
 
 
-        //okButton.onClick.AddListener(UniTask.UnityAction(async () =>
-        //{
+
+
+        okButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        {
+
+            var client = new NetworkClient("http://localhost:5000", TimeSpan.FromSeconds(2),
+                new QueueRequestDecorator(),
+                new LoggingDecorator());
+            //new AppendTokenDecorator(),
+            //new SetupHeaderDecorator());
+
+
+            await client.PostAsync("", new { Id = 100 });
+
+
+        }));
+
         //    _ = ExecuteAsync();
 
         //    await UniTask.Yield();
