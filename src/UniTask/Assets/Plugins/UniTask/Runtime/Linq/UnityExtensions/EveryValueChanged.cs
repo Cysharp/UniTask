@@ -208,7 +208,6 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public bool MoveNext()
             {
-                UnityEngine.Debug.Log("TRY_RESULT:" + target.TryGetTarget(out var _));
                 if (disposed || cancellationToken.IsCancellationRequested || !target.TryGetTarget(out var t))
                 {
                     completionSource.TrySetResult(false);
