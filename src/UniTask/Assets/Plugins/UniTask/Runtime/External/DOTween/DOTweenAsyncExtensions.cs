@@ -11,7 +11,6 @@ using System.Threading;
 
 namespace Cysharp.Threading.Tasks
 {
-    // The idea of TweenCancelBehaviour is borrowed from https://www.shibuya24.info/entry/dotween_async_await
     public enum TweenCancelBehaviour
     {
         Kill,
@@ -29,6 +28,16 @@ namespace Cysharp.Threading.Tasks
 
     public static class DOTweenAsyncExtensions
     {
+        enum CallbackType
+        {
+            Kill,
+            Complete,
+            Pause,
+            Play,
+            Rewind,
+            StepComplete
+        }
+
         public static TweenAwaiter GetAwaiter(this Tween tween)
         {
             return new TweenAwaiter(tween);
@@ -39,7 +48,7 @@ namespace Cysharp.Threading.Tasks
             Error.ThrowArgumentNullException(tween, nameof(tween));
 
             if (!tween.IsActive()) return UniTask.CompletedTask;
-            return new UniTask(TweenConfiguredSource.Create(tween, TweenCancelBehaviour.Kill, cancellationToken, out var token), token);
+            return new UniTask(TweenConfiguredSource.Create(tween, TweenCancelBehaviour.Kill, cancellationToken, CallbackType.Kill, out var token), token);
         }
 
         public static UniTask ToUniTask(this Tween tween, TweenCancelBehaviour tweenCancelBehaviour = TweenCancelBehaviour.Kill, CancellationToken cancellationToken = default)
@@ -47,7 +56,47 @@ namespace Cysharp.Threading.Tasks
             Error.ThrowArgumentNullException(tween, nameof(tween));
 
             if (!tween.IsActive()) return UniTask.CompletedTask;
-            return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, out var token), token);
+            return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, CallbackType.Kill, out var token), token);
+        }
+
+        public static UniTask AwaitForComplete(this Tween tween, TweenCancelBehaviour tweenCancelBehaviour = TweenCancelBehaviour.Kill, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(tween, nameof(tween));
+
+            if (!tween.IsActive()) return UniTask.CompletedTask;
+            return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, CallbackType.Complete, out var token), token);
+        }
+
+        public static UniTask AwaitForPause(this Tween tween, TweenCancelBehaviour tweenCancelBehaviour = TweenCancelBehaviour.Kill, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(tween, nameof(tween));
+
+            if (!tween.IsActive()) return UniTask.CompletedTask;
+            return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, CallbackType.Pause, out var token), token);
+        }
+
+        public static UniTask AwaitForPlay(this Tween tween, TweenCancelBehaviour tweenCancelBehaviour = TweenCancelBehaviour.Kill, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(tween, nameof(tween));
+
+            if (!tween.IsActive()) return UniTask.CompletedTask;
+            return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, CallbackType.Play, out var token), token);
+        }
+
+        public static UniTask AwaitForRewind(this Tween tween, TweenCancelBehaviour tweenCancelBehaviour = TweenCancelBehaviour.Kill, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(tween, nameof(tween));
+
+            if (!tween.IsActive()) return UniTask.CompletedTask;
+            return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, CallbackType.Rewind, out var token), token);
+        }
+
+        public static UniTask AwaitForStepComplete(this Tween tween, TweenCancelBehaviour tweenCancelBehaviour = TweenCancelBehaviour.Kill, CancellationToken cancellationToken = default)
+        {
+            Error.ThrowArgumentNullException(tween, nameof(tween));
+
+            if (!tween.IsActive()) return UniTask.CompletedTask;
+            return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, CallbackType.StepComplete, out var token), token);
         }
 
         public struct TweenAwaiter : ICriticalNotifyCompletion
@@ -95,12 +144,13 @@ namespace Cysharp.Threading.Tasks
 
             static readonly TweenCallback EmptyTweenCallback = () => { };
 
-            readonly TweenCallback onKillDelegate;
+            readonly TweenCallback onCompleteCallbackDelegate;
             readonly TweenCallback onUpdateDelegate;
 
             Tween tween;
             TweenCancelBehaviour cancelBehaviour;
             CancellationToken cancellationToken;
+            CallbackType callbackType;
             bool canceled;
 
             TweenCallback originalUpdateAction;
@@ -108,11 +158,11 @@ namespace Cysharp.Threading.Tasks
 
             TweenConfiguredSource()
             {
-                onKillDelegate = OnKill;
+                onCompleteCallbackDelegate = OnCompleteCallbackDelegate;
                 onUpdateDelegate = OnUpdate;
             }
 
-            public static IUniTaskSource Create(Tween tween, TweenCancelBehaviour cancelBehaviour, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource Create(Tween tween, TweenCancelBehaviour cancelBehaviour, CancellationToken cancellationToken, CallbackType callbackType, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -128,6 +178,7 @@ namespace Cysharp.Threading.Tasks
                 result.tween = tween;
                 result.cancelBehaviour = cancelBehaviour;
                 result.cancellationToken = cancellationToken;
+                result.callbackType = callbackType;
 
                 result.originalUpdateAction = tween.onUpdate;
                 result.canceled = false;
@@ -138,7 +189,30 @@ namespace Cysharp.Threading.Tasks
                 }
 
                 tween.onUpdate = result.onUpdateDelegate;
-                tween.onKill = result.onKillDelegate;
+
+                switch (callbackType)
+                {
+                    case CallbackType.Kill:
+                        tween.onKill = result.onCompleteCallbackDelegate;
+                        break;
+                    case CallbackType.Complete:
+                        tween.onComplete = result.onCompleteCallbackDelegate;
+                        break;
+                    case CallbackType.Pause:
+                        tween.onPause = result.onCompleteCallbackDelegate;
+                        break;
+                    case CallbackType.Play:
+                        tween.onPlay = result.onCompleteCallbackDelegate;
+                        break;
+                    case CallbackType.Rewind:
+                        tween.onRewind = result.onCompleteCallbackDelegate;
+                        break;
+                    case CallbackType.StepComplete:
+                        tween.onStepComplete = result.onCompleteCallbackDelegate;
+                        break;
+                    default:
+                        break;
+                }
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -146,7 +220,7 @@ namespace Cysharp.Threading.Tasks
                 return result;
             }
 
-            void OnKill()
+            void OnCompleteCallbackDelegate()
             {
                 if (canceled)
                 {
@@ -199,7 +273,31 @@ namespace Cysharp.Threading.Tasks
                         this.tween.Complete(true);
                         break;
                     case TweenCancelBehaviour.CancelAwait:
-                        this.tween.onKill = EmptyTweenCallback; // replace to empty(avoid callback after Canceled(instance is returned to pool.)
+                        // replace to empty(avoid callback after Canceled(instance is returned to pool.)
+                        switch (callbackType)
+                        {
+                            case CallbackType.Kill:
+                                tween.onKill = EmptyTweenCallback;
+                                break;
+                            case CallbackType.Complete:
+                                tween.onComplete = EmptyTweenCallback;
+                                break;
+                            case CallbackType.Pause:
+                                tween.onPause = EmptyTweenCallback;
+                                break;
+                            case CallbackType.Play:
+                                tween.onPlay = EmptyTweenCallback;
+                                break;
+                            case CallbackType.Rewind:
+                                tween.onRewind = EmptyTweenCallback;
+                                break;
+                            case CallbackType.StepComplete:
+                                tween.onStepComplete = EmptyTweenCallback;
+                                break;
+                            default:
+                                break;
+                        }
+
                         this.core.TrySetCanceled(this.cancellationToken);
                         break;
                 }
@@ -272,7 +370,31 @@ namespace Cysharp.Threading.Tasks
                 TaskTracker.RemoveTracking(this);
                 core.Reset();
                 tween.onUpdate = originalUpdateAction;
-                tween.onKill = null;
+
+                switch (callbackType)
+                {
+                    case CallbackType.Kill:
+                        tween.onKill = null;
+                        break;
+                    case CallbackType.Complete:
+                        tween.onComplete = null;
+                        break;
+                    case CallbackType.Pause:
+                        tween.onPause = null;
+                        break;
+                    case CallbackType.Play:
+                        tween.onPlay = null;
+                        break;
+                    case CallbackType.Rewind:
+                        tween.onRewind = null;
+                        break;
+                    case CallbackType.StepComplete:
+                        tween.onStepComplete = null;
+                        break;
+                    default:
+                        break;
+                }
+
                 tween = default;
                 cancellationToken = default;
                 originalUpdateAction = default;

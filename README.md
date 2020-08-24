@@ -489,6 +489,8 @@ await UniTask.WhenAll(
     transform.DOScale(10, 3).WithCancellation(ct));
 ```
 
+DOTween support's default behaviour(`await`, `WithCancellation`, `ToUniTask`) awaits tween is killed. It works both Complete(true/false) and Kill(true/false). But if you want to tween reuse(`SetAutoKill(false)`), it does not work you expected. Or, if you want to await for another timing, the following extension methods exist in Tween, `AwaitForComplete`, `AwaitForPause`, `AwaitForPlay`, `AwaitForRewind`, `AwaitForStepComplete`.
+
 AsyncEnumerable and Async LINQ
 ---
 Unity 2020.2.0a12 supports C# 8.0 so you can use `await foreach`. This is the new Update notation in async era.
