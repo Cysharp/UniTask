@@ -736,6 +736,26 @@ namespace Cysharp.Threading.Tasks
         {
             await await task;
         }
+        
+        public static async UniTask<T> Unwrap<T>(this Task<UniTask<T>> task)
+        {
+            return await await task;
+        }
+
+        public static async UniTask Unwrap<T>(this Task<UniTask> task)
+        {
+            await await task;
+        }
+        
+        public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task)
+        {
+            return await await task;
+        }
+
+        public static async UniTask Unwrap<T>(this UniTask<Task> task)
+        {
+            await await task;
+        }
 
 #if UNITY_2018_3_OR_NEWER
 
