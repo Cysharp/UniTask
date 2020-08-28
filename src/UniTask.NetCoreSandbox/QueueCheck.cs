@@ -10,11 +10,14 @@ public class QueueCheck
 {
     Node node1 = new Node();
     Node node2 = new Node();
+    RefNode refNode1 = new RefNode();
+    RefNode refNode2 = new RefNode();
     Queue<Node> q1 = new Queue<Node>();
     Stack<Node> s1 = new Stack<Node>();
     ConcurrentQueue<Node> cq = new ConcurrentQueue<Node>();
     ConcurrentStack<Node> cs = new ConcurrentStack<Node>();
     static TaskPool<Node> pool;
+    static TaskPoolRefNode<RefNode> poolRefNode;
     static TaskPoolEqualNull<Node> poolEqualNull;
     static TaskPoolClass<Node> poolClass = new TaskPoolClass<Node>();
     static TaskPoolWithoutSize<Node> poolWithoutSize;
@@ -82,6 +85,14 @@ public class QueueCheck
         pool.TryPop(out _);
         pool.TryPop(out _);
     }
+    [Benchmark]
+    public void TaskPoolRefNode()
+    {
+        poolRefNode.TryPush(refNode1);
+        poolRefNode.TryPush(refNode2);
+        poolRefNode.TryPop(out _);
+        poolRefNode.TryPop(out _);
+    }
 
     [Benchmark]
     public void TaskPoolEqualNull()
@@ -129,6 +140,18 @@ public interface ITaskPoolNode<T>
 {
     T NextNode { get; set; }
 }
+
+public sealed class RefNode :ITaskPoolRefNode<RefNode>
+{
+    RefNode nextNode;
+    public ref RefNode NextNode => ref nextNode;
+}
+
+public interface ITaskPoolRefNode<T>
+{
+    ref T NextNode { get; }
+}
+
 
 // mutable struct, don't mark readonly.
 [StructLayout(LayoutKind.Auto)]
@@ -204,6 +227,60 @@ public struct TaskPool<T>
             {
                 root = v.NextNode;
                 v.NextNode = null;
+                size--;
+                result = v;
+                Volatile.Write(ref gate, 0);
+                return true;
+            }
+
+            Volatile.Write(ref gate, 0);
+        }
+        result = default;
+        return false;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryPush(T item)
+    {
+        if (Interlocked.CompareExchange(ref gate, 1, 0) == 0)
+        {
+            //if (size < TaskPool.MaxPoolSize)
+            {
+                item.NextNode = root;
+                root = item;
+                size++;
+                Volatile.Write(ref gate, 0);
+                return true;
+            }
+            //else
+            {
+                //  Volatile.Write(ref gate, 0);
+            }
+        }
+        return false;
+    }
+}
+[StructLayout(LayoutKind.Auto)]
+public struct TaskPoolRefNode<T>
+    where T : class, ITaskPoolRefNode<T>
+{
+    int gate;
+    int size;
+    T root;
+
+    public int Size => size;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryPop(out T result)
+    {
+        if (Interlocked.CompareExchange(ref gate, 1, 0) == 0)
+        {
+            var v = root;
+            if (!(v is null))
+            {
+                ref var nextNode = ref v.NextNode;
+                root = nextNode;
+                nextNode = null;
                 size--;
                 result = v;
                 Volatile.Write(ref gate, 0);
