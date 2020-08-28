@@ -82,7 +82,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AssetBundleRequestAllAssetsWithCancellationSource : IUniTaskSource<UnityEngine.Object[]>, IPlayerLoopItem, ITaskPoolNode<AssetBundleRequestAllAssetsWithCancellationSource>
         {
             static TaskPool<AssetBundleRequestAllAssetsWithCancellationSource> pool;
-            public AssetBundleRequestAllAssetsWithCancellationSource NextNode { get; set; }
+            AssetBundleRequestAllAssetsWithCancellationSource nextNode;
+            public ref AssetBundleRequestAllAssetsWithCancellationSource NextNode => ref nextNode;
 
             static AssetBundleRequestAllAssetsWithCancellationSource()
             {
@@ -204,7 +205,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AssetBundleRequestAllAssetsConfiguredSource : IUniTaskSource<UnityEngine.Object[]>, IPlayerLoopItem, ITaskPoolNode<AssetBundleRequestAllAssetsConfiguredSource>
         {
             static TaskPool<AssetBundleRequestAllAssetsConfiguredSource> pool;
-            public AssetBundleRequestAllAssetsConfiguredSource NextNode { get; set; }
+            AssetBundleRequestAllAssetsConfiguredSource nextNode;
+            public ref AssetBundleRequestAllAssetsConfiguredSource NextNode => ref nextNode;
 
             static AssetBundleRequestAllAssetsConfiguredSource()
             {

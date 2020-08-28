@@ -80,7 +80,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AsyncOperationWithCancellationSource : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<AsyncOperationWithCancellationSource>
         {
             static TaskPool<AsyncOperationWithCancellationSource> pool;
-            public AsyncOperationWithCancellationSource NextNode { get; set; }
+            AsyncOperationWithCancellationSource nextNode;
+            public ref AsyncOperationWithCancellationSource NextNode => ref nextNode;
 
             static AsyncOperationWithCancellationSource()
             {
@@ -198,7 +199,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AsyncOperationConfiguredSource : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<AsyncOperationConfiguredSource>
         {
             static TaskPool<AsyncOperationConfiguredSource> pool;
-            public AsyncOperationConfiguredSource NextNode { get; set; }
+            AsyncOperationConfiguredSource nextNode;
+            public ref AsyncOperationConfiguredSource NextNode => ref nextNode;
 
             static AsyncOperationConfiguredSource()
             {
@@ -374,7 +376,8 @@ namespace Cysharp.Threading.Tasks
         sealed class ResourceRequestWithCancellationSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<ResourceRequestWithCancellationSource>
         {
             static TaskPool<ResourceRequestWithCancellationSource> pool;
-            public ResourceRequestWithCancellationSource NextNode { get; set; }
+            ResourceRequestWithCancellationSource nextNode;
+            public ref ResourceRequestWithCancellationSource NextNode => ref nextNode;
 
             static ResourceRequestWithCancellationSource()
             {
@@ -496,7 +499,8 @@ namespace Cysharp.Threading.Tasks
         sealed class ResourceRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<ResourceRequestConfiguredSource>
         {
             static TaskPool<ResourceRequestConfiguredSource> pool;
-            public ResourceRequestConfiguredSource NextNode { get; set; }
+            ResourceRequestConfiguredSource nextNode;
+            public ref ResourceRequestConfiguredSource NextNode => ref nextNode;
 
             static ResourceRequestConfiguredSource()
             {
@@ -677,7 +681,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AssetBundleRequestWithCancellationSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<AssetBundleRequestWithCancellationSource>
         {
             static TaskPool<AssetBundleRequestWithCancellationSource> pool;
-            public AssetBundleRequestWithCancellationSource NextNode { get; set; }
+            AssetBundleRequestWithCancellationSource nextNode;
+            public ref AssetBundleRequestWithCancellationSource NextNode => ref nextNode;
 
             static AssetBundleRequestWithCancellationSource()
             {
@@ -799,7 +804,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AssetBundleRequestConfiguredSource : IUniTaskSource<UnityEngine.Object>, IPlayerLoopItem, ITaskPoolNode<AssetBundleRequestConfiguredSource>
         {
             static TaskPool<AssetBundleRequestConfiguredSource> pool;
-            public AssetBundleRequestConfiguredSource NextNode { get; set; }
+            AssetBundleRequestConfiguredSource nextNode;
+            public ref AssetBundleRequestConfiguredSource NextNode => ref nextNode;
 
             static AssetBundleRequestConfiguredSource()
             {
@@ -981,7 +987,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AssetBundleCreateRequestWithCancellationSource : IUniTaskSource<AssetBundle>, IPlayerLoopItem, ITaskPoolNode<AssetBundleCreateRequestWithCancellationSource>
         {
             static TaskPool<AssetBundleCreateRequestWithCancellationSource> pool;
-            public AssetBundleCreateRequestWithCancellationSource NextNode { get; set; }
+            AssetBundleCreateRequestWithCancellationSource nextNode;
+            public ref AssetBundleCreateRequestWithCancellationSource NextNode => ref nextNode;
 
             static AssetBundleCreateRequestWithCancellationSource()
             {
@@ -1103,7 +1110,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AssetBundleCreateRequestConfiguredSource : IUniTaskSource<AssetBundle>, IPlayerLoopItem, ITaskPoolNode<AssetBundleCreateRequestConfiguredSource>
         {
             static TaskPool<AssetBundleCreateRequestConfiguredSource> pool;
-            public AssetBundleCreateRequestConfiguredSource NextNode { get; set; }
+            AssetBundleCreateRequestConfiguredSource nextNode;
+            public ref AssetBundleCreateRequestConfiguredSource NextNode => ref nextNode;
 
             static AssetBundleCreateRequestConfiguredSource()
             {
@@ -1307,7 +1315,8 @@ namespace Cysharp.Threading.Tasks
         sealed class UnityWebRequestAsyncOperationWithCancellationSource : IUniTaskSource<UnityWebRequest>, IPlayerLoopItem, ITaskPoolNode<UnityWebRequestAsyncOperationWithCancellationSource>
         {
             static TaskPool<UnityWebRequestAsyncOperationWithCancellationSource> pool;
-            public UnityWebRequestAsyncOperationWithCancellationSource NextNode { get; set; }
+            UnityWebRequestAsyncOperationWithCancellationSource nextNode;
+            public ref UnityWebRequestAsyncOperationWithCancellationSource NextNode => ref nextNode;
 
             static UnityWebRequestAsyncOperationWithCancellationSource()
             {
@@ -1438,7 +1447,8 @@ namespace Cysharp.Threading.Tasks
         sealed class UnityWebRequestAsyncOperationConfiguredSource : IUniTaskSource<UnityWebRequest>, IPlayerLoopItem, ITaskPoolNode<UnityWebRequestAsyncOperationConfiguredSource>
         {
             static TaskPool<UnityWebRequestAsyncOperationConfiguredSource> pool;
-            public UnityWebRequestAsyncOperationConfiguredSource NextNode { get; set; }
+            UnityWebRequestAsyncOperationConfiguredSource nextNode;
+            public ref UnityWebRequestAsyncOperationConfiguredSource NextNode => ref nextNode;
 
             static UnityWebRequestAsyncOperationConfiguredSource()
             {

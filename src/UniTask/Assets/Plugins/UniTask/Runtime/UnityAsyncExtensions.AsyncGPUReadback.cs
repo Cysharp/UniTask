@@ -29,7 +29,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AsyncGPUReadbackRequestAwaiterConfiguredSource : IUniTaskSource<AsyncGPUReadbackRequest>, IPlayerLoopItem, ITaskPoolNode<AsyncGPUReadbackRequestAwaiterConfiguredSource>
         {
             static TaskPool<AsyncGPUReadbackRequestAwaiterConfiguredSource> pool;
-            public AsyncGPUReadbackRequestAwaiterConfiguredSource NextNode { get; set; }
+            AsyncGPUReadbackRequestAwaiterConfiguredSource nextNode;
+            public ref AsyncGPUReadbackRequestAwaiterConfiguredSource NextNode => ref nextNode;
 
             static AsyncGPUReadbackRequestAwaiterConfiguredSource()
             {

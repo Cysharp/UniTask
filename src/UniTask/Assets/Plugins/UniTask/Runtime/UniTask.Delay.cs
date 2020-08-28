@@ -127,7 +127,8 @@ namespace Cysharp.Threading.Tasks
         sealed class YieldPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<YieldPromise>
         {
             static TaskPool<YieldPromise> pool;
-            public YieldPromise NextNode { get; set; }
+            YieldPromise nextNode;
+            public ref YieldPromise NextNode => ref nextNode;
 
             static YieldPromise()
             {
@@ -215,7 +216,8 @@ namespace Cysharp.Threading.Tasks
         sealed class NextFramePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<NextFramePromise>
         {
             static TaskPool<NextFramePromise> pool;
-            public NextFramePromise NextNode { get; set; }
+            NextFramePromise nextNode;
+            public ref NextFramePromise NextNode => ref nextNode;
 
             static NextFramePromise()
             {
@@ -309,7 +311,8 @@ namespace Cysharp.Threading.Tasks
         sealed class DelayFramePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayFramePromise>
         {
             static TaskPool<DelayFramePromise> pool;
-            public DelayFramePromise NextNode { get; set; }
+            DelayFramePromise nextNode;
+            public ref DelayFramePromise NextNode => ref nextNode;
 
             static DelayFramePromise()
             {
@@ -424,7 +427,8 @@ namespace Cysharp.Threading.Tasks
         sealed class DelayPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayPromise>
         {
             static TaskPool<DelayPromise> pool;
-            public DelayPromise NextNode { get; set; }
+            DelayPromise nextNode;
+            public ref DelayPromise NextNode => ref nextNode;
 
             static DelayPromise()
             {
@@ -534,7 +538,8 @@ namespace Cysharp.Threading.Tasks
         sealed class DelayIgnoreTimeScalePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayIgnoreTimeScalePromise>
         {
             static TaskPool<DelayIgnoreTimeScalePromise> pool;
-            public DelayIgnoreTimeScalePromise NextNode { get; set; }
+            DelayIgnoreTimeScalePromise nextNode;
+            public ref DelayIgnoreTimeScalePromise NextNode => ref nextNode;
 
             static DelayIgnoreTimeScalePromise()
             {
@@ -644,7 +649,8 @@ namespace Cysharp.Threading.Tasks
         sealed class DelayRealtimePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<DelayRealtimePromise>
         {
             static TaskPool<DelayRealtimePromise> pool;
-            public DelayRealtimePromise NextNode { get; set; }
+            DelayRealtimePromise nextNode;
+            public ref DelayRealtimePromise NextNode => ref nextNode;
 
             static DelayRealtimePromise()
             {

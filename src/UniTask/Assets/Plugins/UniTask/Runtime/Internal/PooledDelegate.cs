@@ -7,7 +7,8 @@ namespace Cysharp.Threading.Tasks.Internal
     {
         static TaskPool<PooledDelegate<T>> pool;
 
-        public PooledDelegate<T> NextNode { get; set; }
+        PooledDelegate<T> nextNode;
+        public ref PooledDelegate<T> NextNode => ref nextNode;
 
         static PooledDelegate()
         {
