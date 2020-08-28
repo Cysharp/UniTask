@@ -170,8 +170,8 @@ namespace Cysharp.Threading.Tasks.Internal
 
             for (int i = 0; i < actionListCount; i++)
             {
-                var action = actionList[i];
-                actionList[i] = null;
+
+                ref var action = ref actionList[i];//Reduce array bounds check
 
                 try
                 {
@@ -181,6 +181,7 @@ namespace Cysharp.Threading.Tasks.Internal
                 {
                     UnityEngine.Debug.LogException(ex);
                 }
+                action = null;
             }
 
             {
