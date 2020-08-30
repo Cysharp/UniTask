@@ -13,7 +13,7 @@ namespace Cysharp.Threading.Tasks
 {
     public static class AddressablesAsyncExtensions
     {
-        #region AsyncOperationHandle
+#region AsyncOperationHandle
 
         public static UniTask.Awaiter GetAwaiter(this AsyncOperationHandle handle)
         {
@@ -94,7 +94,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AsyncOperationHandleConfiguredSource : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<AsyncOperationHandleConfiguredSource>
         {
             static TaskPool<AsyncOperationHandleConfiguredSource> pool;
-            public AsyncOperationHandleConfiguredSource NextNode { get; set; }
+            AsyncOperationHandleConfiguredSource nextNode;
+            public ref AsyncOperationHandleConfiguredSource NextNode => ref nextNode;
 
             static AsyncOperationHandleConfiguredSource()
             {
@@ -221,9 +222,9 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        #endregion
+#endregion
 
-        #region AsyncOperationHandle_T
+#region AsyncOperationHandle_T
 
         public static UniTask<T>.Awaiter GetAwaiter<T>(this AsyncOperationHandle<T> handle)
         {
@@ -259,7 +260,8 @@ namespace Cysharp.Threading.Tasks
         sealed class AsyncOperationHandleConfiguredSource<T> : IUniTaskSource<T>, IPlayerLoopItem, ITaskPoolNode<AsyncOperationHandleConfiguredSource<T>>
         {
             static TaskPool<AsyncOperationHandleConfiguredSource<T>> pool;
-            public AsyncOperationHandleConfiguredSource<T> NextNode { get; set; }
+            AsyncOperationHandleConfiguredSource<T> nextNode;
+            public ref AsyncOperationHandleConfiguredSource<T> NextNode => ref nextNode;
 
             static AsyncOperationHandleConfiguredSource()
             {
@@ -391,7 +393,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        #endregion
+#endregion
     }
 }
 

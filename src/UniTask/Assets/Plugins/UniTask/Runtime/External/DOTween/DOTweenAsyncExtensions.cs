@@ -135,7 +135,8 @@ namespace Cysharp.Threading.Tasks
         sealed class TweenConfiguredSource : IUniTaskSource, ITaskPoolNode<TweenConfiguredSource>
         {
             static TaskPool<TweenConfiguredSource> pool;
-            public TweenConfiguredSource NextNode { get; set; }
+            TweenConfiguredSource nextNode;
+            public ref TweenConfiguredSource NextNode => ref nextNode;
 
             static TweenConfiguredSource()
             {

@@ -154,7 +154,8 @@ namespace Cysharp.Threading.Tasks
         sealed class <#= t.typeName #>WithCancellationSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, IPlayerLoopItem, ITaskPoolNode<<#= t.typeName #>WithCancellationSource>
         {
             static TaskPool<<#= t.typeName #>WithCancellationSource> pool;
-            public <#= t.typeName #>WithCancellationSource NextNode { get; set; }
+            <#= t.typeName #>WithCancellationSource nextNode;
+            public ref <#= t.typeName #>WithCancellationSource NextNode => ref nextNode;
 
             static <#= t.typeName #>WithCancellationSource()
             {
@@ -297,7 +298,8 @@ namespace Cysharp.Threading.Tasks
         sealed class <#= t.typeName #>ConfiguredSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, IPlayerLoopItem, ITaskPoolNode<<#= t.typeName #>ConfiguredSource>
         {
             static TaskPool<<#= t.typeName #>ConfiguredSource> pool;
-            public <#= t.typeName #>ConfiguredSource NextNode { get; set; }
+            <#= t.typeName #>ConfiguredSource nextNode;
+            public ref <#= t.typeName #>ConfiguredSource NextNode => ref nextNode;
 
             static <#= t.typeName #>ConfiguredSource()
             {
