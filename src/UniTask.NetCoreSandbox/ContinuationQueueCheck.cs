@@ -1,43 +1,49 @@
 ﻿using BenchmarkDotNet.Attributes;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.WebSockets;
-using System.Text;
+using System.Runtime.InteropServices;
 
 namespace NetCoreSandbox
 {
+    [StructLayout(LayoutKind.Auto)]
     struct WrapedAction
     {
-        Action action;
+        public Action action;
 
         public WrapedAction(Action action)
         {
             this.action = action;
         }
-
-        public void Invoke() => action.Invoke();
     }
 
-    [Config(typeof(BenchmarkConfig))]
+    //[Config(typeof(BenchmarkConfig))]
     [CategoriesColumn]
     public class ContinuationQueueCheck
     {
-        const int actionListLength = 16;
+        const int actionListLength = 1<<24;
         Action[] actionList;
-        int actionListCount = actionListLength;
+        int actionListCount;
         WrapedAction[] wrapedActionList;
-        int wrapedActionListCount = actionListLength;
+        int wrapedActionListCount;
         [GlobalSetup]
-
-        public void Setup()
+        public void GlobalSetup()
         {
             actionList = new Action[actionListLength];
+            actionListCount = actionListLength;
+            wrapedActionList = new WrapedAction[actionListLength];
+            wrapedActionListCount = actionListLength;
+        }
+
+        [IterationSetup]
+
+        public void IterationSetup()
+        {
+            var actionList = this.actionList;
             for (int i = 0; i < actionList.Length; i++)
             {
                 actionList[i] = () => { };
             }
-            wrapedActionList = new WrapedAction[actionListLength];
+            var wrapedActionList = this.wrapedActionList;
             for (int i = 0; i < wrapedActionList.Length; i++)
             {
                 wrapedActionList[i] = new WrapedAction(() => { });
@@ -45,6 +51,7 @@ namespace NetCoreSandbox
         }
 
         [Benchmark]
+        [BenchmarkCategory("WithoutRef","RawAction")]
         public void WithoutRef()
         {
             for (int i = 0; i < actionListCount; i++)
@@ -63,6 +70,7 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithoutRef", "RawAction")]
         public void WithoutRefNoBoundsCheck()
         {
             var actionList = this.actionList;
@@ -82,10 +90,11 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithoutRef", "RawAction")]
         public void WithoutRefLocalListCount()
         {
             var actionList = this.actionList;
-            var count = Math.Min(actionList.Length, actionListCount);
+            var count = actionListCount;
             for (int i = 0; i < count; i++)
             {
                 var action = actionList[i];
@@ -102,13 +111,13 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithRef", "RawAction")]
         public void WithRef()
         {
             for (int i = 0; i < actionListCount; i++)
             {
                 ref var action = ref actionList[i];
-
-
+                
                 try
                 {
                     action.Invoke();
@@ -121,6 +130,7 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithRef", "RawAction")]
         public void WithRefNoBoundsCheck()
         {
             var actionList = this.actionList;
@@ -141,10 +151,11 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithRef", "RawAction")]
         public void WithRefLocalListCount()
         {
             var actionList = this.actionList;
-            var count = Math.Min(actionList.Length, actionListCount);
+            var count = actionListCount;
             for (int i = 0; i < count; i++)
             {
                 ref var action = ref actionList[i];
@@ -162,6 +173,7 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithoutRef", "StructWrapedAction")]
         public void WithoutRefWraped()
         {
             for (int i = 0; i < wrapedActionListCount; i++)
@@ -171,7 +183,7 @@ namespace NetCoreSandbox
 
                 try
                 {
-                    wrapedAction.Invoke();
+                    wrapedAction.action.Invoke();
                 }
                 catch (Exception ex)
                 {
@@ -180,6 +192,7 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithoutRef", "StructWrapedAction")]
         public void WithoutRefNoBoundsCheckWraped()
         {
             var wrapedActionList = this.wrapedActionList;
@@ -190,7 +203,7 @@ namespace NetCoreSandbox
 
                 try
                 {
-                    wrapedAction.Invoke();
+                    wrapedAction.action.Invoke();
                 }
                 catch (Exception ex)
                 {
@@ -199,10 +212,11 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithoutRef", "StructWrapedAction")]
         public void WithoutRefLocalListCountWraped()
         {
             var wrapedActionList = this.wrapedActionList;
-            var count = Math.Min(wrapedActionList.Length, wrapedActionListCount);
+            var count = wrapedActionListCount;
             for (int i = 0; i < count; i++)
             {
                 var wrapedAction = wrapedActionList[i];
@@ -210,7 +224,7 @@ namespace NetCoreSandbox
 
                 try
                 {
-                    wrapedAction.Invoke();
+                    wrapedAction.action.Invoke();
                 }
                 catch (Exception ex)
                 {
@@ -219,12 +233,13 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithRef", "StructWrapedAction")]
         public void WithRefWraped()
         {
             for (int i = 0; i < wrapedActionListCount; i++)
             {
-                ref var wrapedAction = ref wrapedActionList[i];
-
+                ref var wrapedAction = ref wrapedActionList[i].action;
+                
 
                 try
                 {
@@ -238,12 +253,13 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithRef", "StructWrapedAction")]
         public void WithRefNoBoundsCheckWraped()
         {
             var wrapedActionList = this.wrapedActionList;
             for (int i = 0; i < wrapedActionList.Length; i++)
             {
-                ref var wrapedAction = ref wrapedActionList[i];
+                ref var wrapedAction = ref wrapedActionList[i].action;
 
 
                 try
@@ -258,13 +274,14 @@ namespace NetCoreSandbox
             }
         }
         [Benchmark]
+        [BenchmarkCategory("WithRef", "StructWrapedAction")]
         public void WithRefLocalListCountWraped()
         {
             var wrapedActionList = this.wrapedActionList;
-            var count = Math.Min(wrapedActionList.Length, wrapedActionListCount);
+            var count = wrapedActionListCount;
             for (int i = 0; i < count; i++)
             {
-                ref var wrapedAction = ref wrapedActionList[i];
+                ref var wrapedAction = ref wrapedActionList[i].action;
 
 
                 try
