@@ -288,7 +288,7 @@ namespace Cysharp.Threading.Tasks
             // Initialization
             copyList[0].subSystemList = InsertRunner(copyList[0], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldInitialization), yielders[0] = new ContinuationQueue(PlayerLoopTiming.Initialization),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldInitialization), yielders[1] = new ContinuationQueue(PlayerLoopTiming.LastInitialization),
-                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerInitialization), runners[1] = new PlayerLoopRunner(PlayerLoopTiming.Initialization),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerInitialization), runners[0] = new PlayerLoopRunner(PlayerLoopTiming.Initialization),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastInitialization), runners[1] = new PlayerLoopRunner(PlayerLoopTiming.LastInitialization));
             // EarlyUpdate
             copyList[1].subSystemList = InsertRunner(copyList[1], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldEarlyUpdate), yielders[2] = new ContinuationQueue(PlayerLoopTiming.EarlyUpdate),
