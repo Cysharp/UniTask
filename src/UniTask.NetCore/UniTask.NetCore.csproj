@@ -37,7 +37,8 @@
 ..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\PlayerLoopRunner.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\ContinuationQueue.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\UnityWebRequestExtensions.cs;
-  
+..\UniTask\Assets\Plugins\UniTask\Runtime\Internal\UniTaskPlayerLoopSubSystem.cs;
+
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTaskSynchronizationContext.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\CancellationTokenSourceExtensions.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\EnumeratorAsyncExtensions.cs;
@@ -48,6 +49,7 @@
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.WaitUntil.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.*;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UnityBindingExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\SyncParams.cs;
 " />
     </ItemGroup>
 
