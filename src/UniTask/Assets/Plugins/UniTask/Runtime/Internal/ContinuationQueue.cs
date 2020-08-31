@@ -154,6 +154,7 @@ namespace Cysharp.Threading.Tasks.Internal
         [System.Diagnostics.DebuggerHidden]
         void RunCore()
         {
+            PlayerLoopHelper.SetCurrentPlayerLoopTiming(timing);
             {
                 bool lockTaken = false;
                 try

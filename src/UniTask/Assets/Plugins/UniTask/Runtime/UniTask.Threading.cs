@@ -28,6 +28,12 @@ namespace Cysharp.Threading.Tasks
             return new SwitchToMainThreadAwaitable(timing, cancellationToken);
         }
 
+
+        public static SwitchToSyncParamsAwaitable SwitchToSyncParams(SyncParams syncParams,CancellationToken cancellationToken = default)
+        {
+            return new SwitchToSyncParamsAwaitable(syncParams, cancellationToken);
+        }
+
         /// <summary>
         /// Return to mainthread(same as await SwitchToMainThread) after using scope is closed.
         /// </summary>
@@ -136,6 +142,67 @@ namespace Cysharp.Threading.Tasks
             public void UnsafeOnCompleted(Action continuation)
             {
                 PlayerLoopHelper.AddContinuation(playerLoopTiming, continuation);
+            }
+        }
+    }
+
+    public struct SwitchToSyncParamsAwaitable
+    {
+        readonly SyncParams syncParams;
+        readonly CancellationToken cancellationToken;
+
+        internal SwitchToSyncParamsAwaitable(SyncParams syncParams, CancellationToken cancellationToken)
+        {
+            this.syncParams = syncParams;
+            this.cancellationToken = cancellationToken;
+        }
+
+        public Awaiter GetAwaiter() => new Awaiter(syncParams, cancellationToken);
+
+        public struct Awaiter : ICriticalNotifyCompletion
+        {
+            readonly SyncParams syncParams;
+            readonly CancellationToken cancellationToken;
+
+            internal Awaiter(SyncParams syncParams, CancellationToken cancellationToken)
+            {
+                this.syncParams = syncParams;
+                this.cancellationToken = cancellationToken;
+            }
+
+            public bool IsCompleted
+            {
+                get
+                {
+                    if(PlayerLoopHelper.TryGetCurrentPlayerLoopTiming() is PlayerLoopTiming timing)
+                    {
+                        foreach (var syncTiming in syncParams.EnumeratePlayerLoopTimings())
+                        {
+                            if (syncTiming == timing)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (syncParams == SyncParams.ThreadPool)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+
+            public void GetResult() { cancellationToken.ThrowIfCancellationRequested(); }
+
+            public void OnCompleted(Action continuation)
+            {
+                PlayerLoopHelper.AddContinuation(syncParams, continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                PlayerLoopHelper.AddContinuation(syncParams, continuation);
             }
         }
     }

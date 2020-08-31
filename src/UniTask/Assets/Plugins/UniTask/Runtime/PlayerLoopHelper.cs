@@ -8,6 +8,7 @@ using System.Threading;
 
 #if UNITY_2019_3_OR_NEWER
 using UnityEngine.LowLevel;
+using System.Collections.Generic;
 #else
 using UnityEngine.Experimental.LowLevel;
 #endif
@@ -97,10 +98,33 @@ namespace Cysharp.Threading.Tasks
         public static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == mainThreadId;
 
         static int mainThreadId;
+
+        [ThreadStatic]
+        static int syncState;
+        /// <summary>
+        /// In main thread,(<see cref="PlayerLoopTiming"/>)(<see cref="SyncState"/> - 1) is current <see cref="PlayerLoopTiming"/>.Otherwise, it is 0.
+        /// </summary>
+        internal static int SyncState => syncState;
+
+        internal static void SetCurrentPlayerLoopTiming(PlayerLoopTiming timing) => syncState = (int)timing + 1;
+
+        /// <summary>
+        /// If we are in main thread,returns current <see cref="PlayerLoopTiming"/>. Otherwise,returns <see langword="null"/>.
+        /// </summary>
+        /// <returns></returns>
+        public static PlayerLoopTiming? TryGetCurrentPlayerLoopTiming()
+        {
+            var value = SyncState - 1;
+            return value == -1 ? (PlayerLoopTiming?)null : (PlayerLoopTiming)value;
+        }
+
         static string applicationDataPath;
         static SynchronizationContext unitySynchronizationContetext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
+
+        static readonly Dictionary<SyncParams, UniTaskPlayerLoopSubSystem> subSystems = new Dictionary<SyncParams, UniTaskPlayerLoopSubSystem>();//TODO:Replace this with much faster dictionary.
+        static SpinLock subSystemsLock;
 
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
             Type loopRunnerYieldType, ContinuationQueue cq, Type lastLoopRunnerYieldType, ContinuationQueue lastCq,
@@ -229,8 +253,9 @@ namespace Cysharp.Threading.Tasks
 #else
                 PlayerLoop.GetDefaultPlayerLoop();
 #endif
-
+            
             Initialize(ref playerLoop);
+            SetCurrentPlayerLoopTiming(PlayerLoopTiming.Initialization);
         }
 
 
@@ -277,6 +302,32 @@ namespace Cysharp.Threading.Tasks
         }
 
 #endif
+
+        
+
+        internal static UniTaskPlayerLoopSubSystem GetOrCreateSubSystem(SyncParams syncParams)
+        {
+            var lockTaken = false;
+            try
+            {
+                subSystemsLock.Enter(ref lockTaken);
+                if (!subSystems.TryGetValue(syncParams, out var subSystem))
+                {
+                    subSystem = new UniTaskPlayerLoopSubSystem();
+                    foreach (var timing in syncParams.EnumeratePlayerLoopTimings())
+                    {
+                        AddAction(timing, subSystem);
+                    }
+                    subSystems.Add(syncParams, subSystem);
+                }
+                return subSystem;
+            }
+            finally
+            {
+                if (lockTaken) subSystemsLock.Exit(false);
+            }
+        }
+
 
         public static void Initialize(ref PlayerLoopSystem playerLoop)
         {
@@ -333,9 +384,31 @@ namespace Cysharp.Threading.Tasks
             runners[(int)timing].AddAction(action);
         }
 
+        internal static void AddAction(SyncParams syncParams, IPlayerLoopItem action)
+        {
+            if(syncParams== SyncParams.ThreadPool)
+            {
+                throw new ArgumentException();
+            }
+            else
+            {
+                GetOrCreateSubSystem(syncParams).AddAction(action);
+            }
+
+        }
+
         public static void AddContinuation(PlayerLoopTiming timing, Action continuation)
         {
             yielders[(int)timing].Enqueue(continuation);
+        }
+
+        internal static void AddContinuation(SyncParams syncParams, Action continuation)
+        {
+            if(syncParams== SyncParams.ThreadPool)
+            {
+                new SwitchToThreadPoolAwaitable.Awaiter().OnCompleted(continuation);//TODO:Should we use UnsafeOnCompleted at here? 
+            }
+            GetOrCreateSubSystem(syncParams).Enqueue(continuation);
         }
 
         // Diagnostics helper

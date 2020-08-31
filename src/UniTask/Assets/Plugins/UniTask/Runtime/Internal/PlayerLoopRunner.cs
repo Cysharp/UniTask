@@ -134,6 +134,7 @@ namespace Cysharp.Threading.Tasks.Internal
         [System.Diagnostics.DebuggerHidden]
         void RunCore()
         {
+            PlayerLoopHelper.SetCurrentPlayerLoopTiming(timing);
             lock (runningAndQueueLock)
             {
                 running = true;
