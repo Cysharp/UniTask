@@ -123,7 +123,7 @@ namespace Cysharp.Threading.Tasks
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
 
-        static readonly Dictionary<SyncParams, UniTaskPlayerLoopSubSystem> subSystems = new Dictionary<SyncParams, UniTaskPlayerLoopSubSystem>();//TODO:Replace this with much faster dictionary.
+        static Dictionary<SyncParams, UniTaskPlayerLoopSubSystem> subSystems;//TODO:Replace this with much faster dictionary.
         static SpinLock subSystemsLock;
 
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
@@ -333,7 +333,7 @@ namespace Cysharp.Threading.Tasks
         {
             yielders = new ContinuationQueue[14];
             runners = new PlayerLoopRunner[14];
-
+            subSystems = new Dictionary<SyncParams, UniTaskPlayerLoopSubSystem>();
             var copyList = playerLoop.subSystemList.ToArray();
 
             // Initialization
