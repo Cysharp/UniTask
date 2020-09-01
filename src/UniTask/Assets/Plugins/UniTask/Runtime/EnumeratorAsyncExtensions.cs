@@ -162,11 +162,10 @@ namespace Cysharp.Threading.Tasks
                     {
                         yield return null;
                     }
-                    else if (current is CustomYieldInstruction)
+                    else if (current is CustomYieldInstruction cyi)
                     {
                         // WWW, WaitForSecondsRealtime
-                        var e2 = UnwrapWaitCustomYieldInstruction((CustomYieldInstruction)current);
-                        while (e2.MoveNext())
+                        while (cyi.keepWaiting)//https://github.com/Unity-Technologies/UnityCsReference/blob/4fc5eb0fb2c7f5fb09f990fc99f162c8d06d9570/Runtime/Export/Scripting/CustomYieldInstruction.cs
                         {
                             yield return null;
                         }
@@ -208,15 +207,6 @@ namespace Cysharp.Threading.Tasks
                         // WaitForEndOfFrame, WaitForFixedUpdate, others.
                         yield return null;
                     }
-                }
-            }
-
-            // WWW and others as CustomYieldInstruction.
-            static IEnumerator UnwrapWaitCustomYieldInstruction(CustomYieldInstruction yieldInstruction)
-            {
-                while (yieldInstruction.keepWaiting)
-                {
-                    yield return null;
                 }
             }
 
