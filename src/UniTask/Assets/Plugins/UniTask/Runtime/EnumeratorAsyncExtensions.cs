@@ -164,9 +164,8 @@ namespace Cysharp.Threading.Tasks
                     }
                     else if (current is CustomYieldInstruction cyi)
                     {
-                        //https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Scripting/CustomYieldInstruction.cs
                         // WWW, WaitForSecondsRealtime
-                        while (cyi.keepWaiting)//Use keepWaiting instead of MoveNext to avoid virtual call
+                        while (cyi.keepWaiting)
                         {
                             yield return null;
                         }
