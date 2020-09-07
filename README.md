@@ -780,6 +780,26 @@ public IEnumerator DelayIgnore() => UniTask.ToCoroutine(async () =>
 
 UniTask itself's unit test is written by Unity Test Runner and [Cysharp/RuntimeUnitTestToolkit](https://github.com/Cysharp/RuntimeUnitTestToolkit) to check on CI and IL2CPP working.
 
+ThreadPool limitation
+---
+Most UniTask methods run in a single thread (PlayerLoop), but only `UniTask.Run` and `UniTask.SwitchToThreadPool` run on a thread pool. If you use a thread pool, it won't work with WebGL and so on.
+
+`UniTask.Run` will be deprecated in the future (marked with an Obsolete) and only `RunOnThreadPool` will be used. Also, if you use `UniTask.Run`, consider whether you can use `UniTask.Create` or `UniTask.Void`.
+
+IEnumerator.ToUniTask limitation
+---
+You can convert coroutine(IEnumerator) to UniTask(or await directly) but has some limitations.
+
+* `WaitForEndOfFrame`/`WaitForFixedUpdate` is not supported, used `yield return null` instead.
+* Consuming loop timing is not same as StartCoroutine, it is used specified PlayerLoopTiming, and default's `PlayerLoopTiming.Update` is run before MonoBehaviour's Update and StartCoroutine's loop.
+
+For UnityEditor
+---
+UniTask can run on Unity Edtitor like Editor Coroutine. However, there are some limitations.
+
+* Delay, DelayFrame is not work correctly because can not get deltaTime in editor. Return the result of the await immediately; you can use `DelayType.Realtime` to wait for the right time.
+* All PlayerLoopTiming run on timing, `EditorApplication.update`.
+
 Compare with Standard Task API
 ---
 UniTask has many standard Task-like APIs. This table shows what is the alternative apis.
