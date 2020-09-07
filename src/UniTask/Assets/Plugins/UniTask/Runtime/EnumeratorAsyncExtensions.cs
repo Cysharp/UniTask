@@ -163,11 +163,10 @@ namespace Cysharp.Threading.Tasks
                     {
                         yield return null;
                     }
-                    else if (current is CustomYieldInstruction)
+                    else if (current is CustomYieldInstruction cyi)
                     {
                         // WWW, WaitForSecondsRealtime
-                        var e2 = UnwrapWaitCustomYieldInstruction((CustomYieldInstruction)current);
-                        while (e2.MoveNext())
+                        while (cyi.keepWaiting)
                         {
                             yield return null;
                         }
@@ -209,15 +208,6 @@ namespace Cysharp.Threading.Tasks
                         // WaitForEndOfFrame, WaitForFixedUpdate, others.
                         yield return null;
                     }
-                }
-            }
-
-            // WWW and others as CustomYieldInstruction.
-            static IEnumerator UnwrapWaitCustomYieldInstruction(CustomYieldInstruction yieldInstruction)
-            {
-                while (yieldInstruction.keepWaiting)
-                {
-                    yield return null;
                 }
             }
 
