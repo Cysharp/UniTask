@@ -143,6 +143,7 @@ namespace Cysharp.Threading.Tasks.Internal
             {
                 var j = tail - 1;
 
+                var loopItems = this.loopItems;
                 // eliminate array-bound check for i
                 for (int i = 0; i < loopItems.Length; i++)
                 {

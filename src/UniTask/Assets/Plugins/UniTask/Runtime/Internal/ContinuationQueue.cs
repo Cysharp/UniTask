@@ -170,9 +170,9 @@ namespace Cysharp.Threading.Tasks.Internal
 
             for (int i = 0; i < actionListCount; i++)
             {
+
                 var action = actionList[i];
                 actionList[i] = null;
-
                 try
                 {
                     action();
