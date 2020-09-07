@@ -224,7 +224,8 @@ namespace Cysharp.Threading.Tasks
         sealed class ThreadPoolWorkItem : IThreadPoolWorkItem, ITaskPoolNode<ThreadPoolWorkItem>
         {
             static TaskPool<ThreadPoolWorkItem> pool;
-            public ThreadPoolWorkItem NextNode { get; set; }
+            ThreadPoolWorkItem nextNode;
+            public ref ThreadPoolWorkItem NextNode => ref nextNode;
 
             static ThreadPoolWorkItem()
             {

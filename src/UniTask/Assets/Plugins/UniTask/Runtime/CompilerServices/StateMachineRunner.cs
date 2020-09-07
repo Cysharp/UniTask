@@ -87,7 +87,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             TaskPool.RegisterSizeGetter(typeof(AsyncUniTaskVoid<TStateMachine>), () => pool.Size);
         }
 
-        public AsyncUniTaskVoid<TStateMachine> NextNode { get; set; }
+        AsyncUniTaskVoid<TStateMachine> nextNode;
+        public ref AsyncUniTaskVoid<TStateMachine> NextNode => ref nextNode;
 
         public void Return()
         {
@@ -157,7 +158,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
-        public AsyncUniTask<TStateMachine> NextNode { get; set; }
+        AsyncUniTask<TStateMachine> nextNode;
+        public ref AsyncUniTask<TStateMachine> NextNode => ref nextNode;
 
         static AsyncUniTask()
         {
@@ -279,7 +281,8 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
-        public AsyncUniTask<TStateMachine, T> NextNode { get; set; }
+        AsyncUniTask<TStateMachine, T> nextNode;
+        public ref AsyncUniTask<TStateMachine, T> NextNode => ref nextNode;
 
         static AsyncUniTask()
         {

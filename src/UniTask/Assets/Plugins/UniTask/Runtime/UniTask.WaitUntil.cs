@@ -38,7 +38,8 @@ namespace Cysharp.Threading.Tasks
         sealed class WaitUntilPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitUntilPromise>
         {
             static TaskPool<WaitUntilPromise> pool;
-            public WaitUntilPromise NextNode { get; set; }
+            WaitUntilPromise nextNode;
+            public ref WaitUntilPromise NextNode => ref nextNode;
 
             static WaitUntilPromise()
             {
@@ -142,7 +143,8 @@ namespace Cysharp.Threading.Tasks
         sealed class WaitWhilePromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitWhilePromise>
         {
             static TaskPool<WaitWhilePromise> pool;
-            public WaitWhilePromise NextNode { get; set; }
+            WaitWhilePromise nextNode;
+            public ref WaitWhilePromise NextNode => ref nextNode;
 
             static WaitWhilePromise()
             {
@@ -246,7 +248,8 @@ namespace Cysharp.Threading.Tasks
         sealed class WaitUntilCanceledPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitUntilCanceledPromise>
         {
             static TaskPool<WaitUntilCanceledPromise> pool;
-            public WaitUntilCanceledPromise NextNode { get; set; }
+            WaitUntilCanceledPromise nextNode;
+            public ref WaitUntilCanceledPromise NextNode => ref nextNode;
 
             static WaitUntilCanceledPromise()
             {
@@ -334,7 +337,8 @@ namespace Cysharp.Threading.Tasks
         sealed class WaitUntilValueChangedUnityObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, ITaskPoolNode<WaitUntilValueChangedUnityObjectPromise<T, U>>
         {
             static TaskPool<WaitUntilValueChangedUnityObjectPromise<T, U>> pool;
-            public WaitUntilValueChangedUnityObjectPromise<T, U> NextNode { get; set; }
+            WaitUntilValueChangedUnityObjectPromise<T, U> nextNode;
+            public ref WaitUntilValueChangedUnityObjectPromise<T, U> NextNode => ref nextNode;
 
             static WaitUntilValueChangedUnityObjectPromise()
             {
@@ -457,7 +461,8 @@ namespace Cysharp.Threading.Tasks
             where T : class
         {
             static TaskPool<WaitUntilValueChangedStandardObjectPromise<T, U>> pool;
-            public WaitUntilValueChangedStandardObjectPromise<T, U> NextNode { get; set; }
+            WaitUntilValueChangedStandardObjectPromise<T, U> nextNode;
+            public ref WaitUntilValueChangedStandardObjectPromise<T, U> NextNode => ref nextNode;
 
             static WaitUntilValueChangedStandardObjectPromise()
             {

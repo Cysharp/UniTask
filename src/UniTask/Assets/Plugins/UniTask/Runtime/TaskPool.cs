@@ -55,7 +55,7 @@ namespace Cysharp.Threading.Tasks
 
     public interface ITaskPoolNode<T>
     {
-        T NextNode { get; set; }
+        ref T NextNode { get; }
     }
 
     // mutable struct, don't mark readonly.
@@ -77,8 +77,9 @@ namespace Cysharp.Threading.Tasks
                 var v = root;
                 if (!(v is null))
                 {
-                    root = v.NextNode;
-                    v.NextNode = null;
+                    ref var nextNode = ref v.NextNode;
+                    root = nextNode;
+                    nextNode = null;
                     size--;
                     result = v;
                     Volatile.Write(ref gate, 0);

@@ -35,7 +35,8 @@ namespace Cysharp.Threading.Tasks
         sealed class EnumeratorPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<EnumeratorPromise>
         {
             static TaskPool<EnumeratorPromise> pool;
-            public EnumeratorPromise NextNode { get; set; }
+            EnumeratorPromise nextNode;
+            public ref EnumeratorPromise NextNode => ref nextNode;
 
             static EnumeratorPromise()
             {

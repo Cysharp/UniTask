@@ -319,7 +319,8 @@ namespace Cysharp.Threading.Tasks
     public class AutoResetUniTaskCompletionSource : IUniTaskSource, ITaskPoolNode<AutoResetUniTaskCompletionSource>, IPromise
     {
         static TaskPool<AutoResetUniTaskCompletionSource> pool;
-        public AutoResetUniTaskCompletionSource NextNode { get; set; }
+        AutoResetUniTaskCompletionSource nextNode;
+        public ref AutoResetUniTaskCompletionSource NextNode => ref nextNode;
 
         static AutoResetUniTaskCompletionSource()
         {
@@ -441,7 +442,8 @@ namespace Cysharp.Threading.Tasks
     public class AutoResetUniTaskCompletionSource<T> : IUniTaskSource<T>, ITaskPoolNode<AutoResetUniTaskCompletionSource<T>>, IPromise<T>
     {
         static TaskPool<AutoResetUniTaskCompletionSource<T>> pool;
-        public AutoResetUniTaskCompletionSource<T> NextNode { get; set; }
+        AutoResetUniTaskCompletionSource<T> nextNode;
+        public ref AutoResetUniTaskCompletionSource<T> NextNode => ref nextNode;
 
         static AutoResetUniTaskCompletionSource()
         {

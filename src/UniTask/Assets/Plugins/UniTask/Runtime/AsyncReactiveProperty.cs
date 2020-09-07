@@ -87,7 +87,8 @@ namespace Cysharp.Threading.Tasks
             static Action<object> cancellationCallback = CancellationCallback;
 
             static TaskPool<WaitAsyncSource> pool;
-            WaitAsyncSource ITaskPoolNode<WaitAsyncSource>.NextNode { get; set; }
+            WaitAsyncSource nextNode;
+            ref WaitAsyncSource ITaskPoolNode<WaitAsyncSource>.NextNode => ref nextNode;
 
             static WaitAsyncSource()
             {
@@ -404,7 +405,8 @@ namespace Cysharp.Threading.Tasks
             static Action<object> cancellationCallback = CancellationCallback;
 
             static TaskPool<WaitAsyncSource> pool;
-            WaitAsyncSource ITaskPoolNode<WaitAsyncSource>.NextNode { get; set; }
+            WaitAsyncSource nextNode;
+            ref WaitAsyncSource ITaskPoolNode<WaitAsyncSource>.NextNode => ref nextNode;
 
             static WaitAsyncSource()
             {
