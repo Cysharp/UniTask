@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource-1.html",
-          "hash": "JDh37fnxrdpWu/nNSznSXw=="
+          "hash": "BgBtd2MyxRWD/Snz+sk5IQ=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.AutoResetUniTaskCompletionSource.html",
-          "hash": "TSrZv3r00DmDqNidD5Firg=="
+          "hash": "nVqZwBo2yY9XrIxT8aVwOw=="
         }
       },
       "is_incremental": false,
@@ -549,7 +549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.ITaskPoolNode-1.html",
-          "hash": "skDdw/2tvenSDDTxz2xGJA=="
+          "hash": "V8Nd+liFc3K72RDmYag+EA=="
         }
       },
       "is_incremental": false,
