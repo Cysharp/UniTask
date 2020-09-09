@@ -741,20 +741,40 @@ namespace Cysharp.Threading.Tasks
         {
             return await await task;
         }
+        
+        public static async UniTask<T> Unwrap<T>(this Task<UniTask<T>> task, bool continueOnCapturedContext)
+        {
+            return await await task.ConfigureAwait(continueOnCapturedContext);
+        }
 
         public static async UniTask Unwrap(this Task<UniTask> task)
         {
             await await task;
+        }
+
+        public static async UniTask Unwrap(this Task<UniTask> task, bool continueOnCapturedContext)
+        {
+            await await task.ConfigureAwait(continueOnCapturedContext);
         }
         
         public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task)
         {
             return await await task;
         }
+        
+        public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task, bool continueOnCapturedContext)
+        {
+            return await (await task).ConfigureAwait(continueOnCapturedContext);
+        }
 
         public static async UniTask Unwrap(this UniTask<Task> task)
         {
             await await task;
+        }
+
+        public static async UniTask Unwrap(this UniTask<Task> task, bool continueOnCapturedContext)
+        {
+            await (await task).ConfigureAwait(continueOnCapturedContext);
         }
 
 #if UNITY_2018_3_OR_NEWER
