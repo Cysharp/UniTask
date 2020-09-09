@@ -732,7 +732,7 @@ namespace Cysharp.Threading.Tasks
             return await await task;
         }
 
-        public static async UniTask Unwrap<T>(this UniTask<UniTask> task)
+        public static async UniTask Unwrap(this UniTask<UniTask> task)
         {
             await await task;
         }
@@ -742,7 +742,7 @@ namespace Cysharp.Threading.Tasks
             return await await task;
         }
 
-        public static async UniTask Unwrap<T>(this Task<UniTask> task)
+        public static async UniTask Unwrap(this Task<UniTask> task)
         {
             await await task;
         }
@@ -752,7 +752,7 @@ namespace Cysharp.Threading.Tasks
             return await await task;
         }
 
-        public static async UniTask Unwrap<T>(this UniTask<Task> task)
+        public static async UniTask Unwrap(this UniTask<Task> task)
         {
             await await task;
         }
