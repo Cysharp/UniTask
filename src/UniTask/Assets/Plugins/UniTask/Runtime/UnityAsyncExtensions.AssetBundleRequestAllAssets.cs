@@ -46,6 +46,11 @@ namespace Cysharp.Threading.Tasks
                 this.continuationAction = null;
             }
 
+            public AssetBundleRequestAllAssetsAwaiter GetAwaiter()
+            {
+                return this;
+            }
+
             public bool IsCompleted => asyncOperation.isDone;
 
             public UnityEngine.Object[] GetResult()
