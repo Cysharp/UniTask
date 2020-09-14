@@ -97,6 +97,45 @@ namespace Cysharp.Threading.TasksTests
         //}
 
         [UnityTest]
+        public IEnumerator ImmediateRunTest() => UniTask.ToCoroutine(async () =>
+        {
+            var l = new List<int>();
+            var x1 = Immediate(l);
+            var x2 = Immediate(l);
+            var x3 = DelayOne(l);
+
+            var t1 = x1.ToUniTask();
+            CollectionAssert.AreEqual(l, new[] { 1, 2, 3 });
+            await t1;
+
+            var t2 = x2.ToUniTask();
+            CollectionAssert.AreEqual(l, new[] { 1, 2, 3, 1, 2, 3 });
+
+            var t3 = x3.ToUniTask();
+            CollectionAssert.AreEqual(l, new[] { 1, 2, 3, 1, 2, 3, 10 });
+
+            await UniTask.WhenAll(t2, t3);
+            CollectionAssert.AreEqual(l, new[] { 1, 2, 3, 1, 2, 3, 10, 20, 30 });
+
+        });
+
+        IEnumerator Immediate(List<int> l)
+        {
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            yield break;
+        }
+
+        IEnumerator DelayOne(List<int> l)
+        {
+            l.Add(10);
+            yield return null;
+            l.Add(20);
+            l.Add(30);
+        }
+
+        [UnityTest]
         public IEnumerator WaitForSecondsTest() => UniTask.ToCoroutine(async () =>
         {
             await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);

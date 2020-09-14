@@ -46,6 +46,8 @@ namespace Cysharp.Threading.Tasks
             IEnumerator innerEnumerator;
             CancellationToken cancellationToken;
             int initialFrame;
+            bool loopRunning;
+            bool calledGetResult;
 
             UniTaskCompletionSourceCore<object> core;
 
@@ -68,6 +70,8 @@ namespace Cysharp.Threading.Tasks
 
                 result.innerEnumerator = ConsumeEnumerator(innerEnumerator);
                 result.cancellationToken = cancellationToken;
+                result.loopRunning = true;
+                result.calledGetResult = false;
                 result.initialFrame = -1;
 
                 PlayerLoopHelper.AddAction(timing, result);
@@ -82,11 +86,15 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
+                    calledGetResult = true;
                     core.GetResult(token);
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!loopRunning)
+                    {
+                        TryReturn();
+                    }
                 }
             }
 
@@ -107,8 +115,21 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
+                if (calledGetResult)
+                {
+                    loopRunning = false;
+                    TryReturn();
+                    return false;
+                }
+
+                if (innerEnumerator == null) // invalid status, returned but loop running?
+                {
+                    return false;
+                }
+
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    loopRunning = false;
                     core.TrySetCanceled(cancellationToken);
                     return false;
                 }
@@ -135,10 +156,12 @@ namespace Cysharp.Threading.Tasks
                 }
                 catch (Exception ex)
                 {
+                    loopRunning = false;
                     core.TrySetException(ex);
                     return false;
                 }
 
+                loopRunning = false;
                 core.TrySetResult(null);
                 return false;
             }
