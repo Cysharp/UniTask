@@ -31,7 +31,8 @@ namespace Cysharp.Threading.Tasks
 
             if (!handle.IsValid())
             {
-                throw new Exception("Attempting to use an invalid operation handle");
+                // autoReleaseHandle:true handle is invalid(immediately internal handle == null) so return completed.
+                return UniTask.CompletedTask;
             }
 
             if (handle.IsDone)

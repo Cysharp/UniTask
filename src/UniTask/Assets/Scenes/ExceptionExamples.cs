@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 /*UNniTastWhenAnyTester*/
 
@@ -49,4 +50,9 @@ public class ExceptionExamples : MonoBehaviour
         await UniTask.Delay(100);
         return taskIndex;
     }
+
+    //void AddressablesTest()
+    //{
+    //    Addressables.ClearDependencyCacheAsync("key", true);
+    //}
 }
