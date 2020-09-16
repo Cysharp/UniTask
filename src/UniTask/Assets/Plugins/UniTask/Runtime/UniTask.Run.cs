@@ -207,7 +207,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        /// <summary>Run action on the threadPool and return to main thread if configureAwait = true.</summary>
+        /// <summary>[Obsolete]recommend to use RunOnThreadPool(or UniTask.Void(async void), UniTask.Create(async UniTask)).</summary>
         public static async UniTask<T> Run<T>(Func<object, UniTask<T>> func, object state, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
