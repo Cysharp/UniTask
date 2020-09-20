@@ -234,6 +234,16 @@ namespace Cysharp.Threading.Tasks
 
             return new UniTask<T>(new WithCancellationSource<T>(task, cancellationToken), 0);
         }
+        
+        /// <summary>
+        /// Cancels last running instance to ensure there are not 2 or more instances of this UniTask running and regenerates the token source
+        /// </summary>
+        public static UniTask WithLastInstanceCancellation(this UniTask task, ref CancellationTokenSource cancellationTokenSource)
+        {
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource = new CancellationTokenSource();
+            return task.WithCancellation(cancellationTokenSource.Token);
+        }
 
         sealed class WithCancellationSource : IUniTaskSource
         {
