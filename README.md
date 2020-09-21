@@ -351,6 +351,8 @@ It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.
 
 `PlayerLoopTiming.Update` is similar as `yield return null` in coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`). `PlayerLoopTiming.FixedUpdate` is similar as `WaitForFixedUpdate`, `PlayerLoopTiming.LastPostLateUpdate` is similar as `WaitForEndOfFrame` in coroutine.
 
+> `await UniTask.WaitForEndOfFrame()` is not equilavelnt to coroutine's `yield return new WaitForEndOfFrame()`. Coroutine's WaitForEndOfFrame seems to run after the PlayerLoop is done. Some methods that require coroutine's end of frame(`ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, etc) does not work correctly when replace to async/await. In that case, use a coroutine.
+
 `yield return null` and `UniTask.Yield` is similar but different. `yield return null` always return next frame but `UniTask.Yield` return next called, that is, call `UniTask.Yield(PlayerLoopTiming.Update)` on `PreUpdate`, it returns same frame. `UniTask.NextFrame()` gurantees return next frame, this would be expected to behave exactly the same as `yield return null`.
 
 > UniTask.Yield(without CancellationToken) is a special type, returns `YieldAwaitable` and run on YieldRunner. It is most lightweight and faster.
@@ -906,7 +908,7 @@ After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of gi
 
 or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"` to `Packages/manifest.json`.
 
-If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.0.34`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.0.34`.
+If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.0.35`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.0.35`.
 
 ### Install via OpenUPM
 
