@@ -200,5 +200,16 @@ namespace Cysharp.Threading.TasksTests
             okay1.Should().Be(true);
             okay2.Should().Be(true);
         });
+
+
+        [UnityTest]
+        public IEnumerator LoopTest() => UniTask.ToCoroutine(async () =>
+        {
+            for (int i = 0; i < 20; ++i)
+            {
+                UniTask.DelayFrame(100).Forget();
+                await UniTask.DelayFrame(1);
+            }
+        });
     }
 }
