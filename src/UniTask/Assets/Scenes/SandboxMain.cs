@@ -492,8 +492,33 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("Current SyncContext:" + SynchronizationContext.Current.GetType().FullName);
     }
 
+
+    async UniTask QuitCheck()
+    {
+        try
+        {
+            await UniTask.Delay(TimeSpan.FromMinutes(1), cancellationToken: quitSource.Token);
+        }
+        finally
+        {
+            Debug.Log("End QuitCheck async");
+        }
+    }
+
+    CancellationTokenSource quitSource = new CancellationTokenSource();
+
     async UniTaskVoid Start()
     {
+        Debug.Log("App Start");
+
+        Application.quitting += () =>
+        {
+            Debug.Log("called quitting");
+            quitSource.Cancel();
+        };
+
+        QuitCheck().Forget();
+
         //Expression.Lambda<Func<int>>(null).Compile(true);
 
         //RunStandardTaskAsync();

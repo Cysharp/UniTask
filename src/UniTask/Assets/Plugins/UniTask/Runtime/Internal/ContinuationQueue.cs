@@ -70,13 +70,17 @@ namespace Cysharp.Threading.Tasks.Internal
             }
         }
 
-        public void Clear()
+        public int Clear()
         {
+            var rest = actionListCount + waitingListCount;
+
             actionListCount = 0;
             actionList = new Action[InitialSize];
 
             waitingListCount = 0;
             waitingList = new Action[InitialSize];
+
+            return rest;
         }
 
         // delegate entrypoint.

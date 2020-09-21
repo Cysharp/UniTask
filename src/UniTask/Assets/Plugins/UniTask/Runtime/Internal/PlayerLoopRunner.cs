@@ -48,14 +48,24 @@ namespace Cysharp.Threading.Tasks.Internal
             }
         }
 
-        public void Clear()
+        public int Clear()
         {
             lock (arrayLock)
             {
+                var rest = 0;
+
                 for (var index = 0; index < loopItems.Length; index++)
                 {
+                    if (loopItems[index] != null)
+                    {
+                        rest++;
+                    }
+
                     loopItems[index] = null;
                 }
+
+                tail = 0;
+                return rest;
             }
         }
 

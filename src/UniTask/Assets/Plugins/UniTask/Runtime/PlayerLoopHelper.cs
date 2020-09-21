@@ -110,27 +110,30 @@ namespace Cysharp.Threading.Tasks
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += (state) =>
             {
-                if (state == PlayModeStateChange.EnteredEditMode || state == PlayModeStateChange.EnteredPlayMode)
+                if (state == PlayModeStateChange.EnteredEditMode || state == PlayModeStateChange.ExitingEditMode)
                 {
-                    return;
-                }
+                    // run rest action before clear.
+                    if (runner != null)
+                    {
+                        runner.Run();
+                        runner.Clear();
+                    }
+                    if (lastRunner != null)
+                    {
+                        lastRunner.Run();
+                        lastRunner.Clear();
+                    }
 
-                if (runner != null)
-                {
-                    runner.Clear();
-                }
-                if (lastRunner != null)
-                {
-                    lastRunner.Clear();
-                }
-
-                if (cq != null)
-                {
-                    cq.Clear();
-                }
-                if (lastCq != null)
-                {
-                    lastCq.Clear();
+                    if (cq != null)
+                    {
+                        cq.Run();
+                        cq.Clear();
+                    }
+                    if (lastCq != null)
+                    {
+                        lastCq.Run();
+                        lastCq.Clear();
+                    }
                 }
             };
 #endif
