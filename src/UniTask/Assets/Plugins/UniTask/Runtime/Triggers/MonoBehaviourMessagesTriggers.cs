@@ -1541,6 +1541,7 @@ namespace Cysharp.Threading.Tasks.Triggers
 #endregion
 
 #region MouseDown
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
     public interface IAsyncOnMouseDownHandler
     {
@@ -1597,9 +1598,11 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((IAsyncOnMouseDownHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnMouseDownAsync();
         }
     }
+#endif
 #endregion
 
 #region MouseDrag
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
     public interface IAsyncOnMouseDragHandler
     {
@@ -1656,9 +1659,11 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((IAsyncOnMouseDragHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnMouseDragAsync();
         }
     }
+#endif
 #endregion
 
 #region MouseEnter
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
     public interface IAsyncOnMouseEnterHandler
     {
@@ -1715,9 +1720,11 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((IAsyncOnMouseEnterHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnMouseEnterAsync();
         }
     }
+#endif
 #endregion
 
 #region MouseExit
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
     public interface IAsyncOnMouseExitHandler
     {
@@ -1774,9 +1781,11 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((IAsyncOnMouseExitHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnMouseExitAsync();
         }
     }
+#endif
 #endregion
 
 #region MouseOver
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
     public interface IAsyncOnMouseOverHandler
     {
@@ -1833,9 +1842,11 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((IAsyncOnMouseOverHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnMouseOverAsync();
         }
     }
+#endif
 #endregion
 
 #region MouseUp
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
     public interface IAsyncOnMouseUpHandler
     {
@@ -1892,9 +1903,11 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((IAsyncOnMouseUpHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnMouseUpAsync();
         }
     }
+#endif
 #endregion
 
 #region MouseUpAsButton
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
     public interface IAsyncOnMouseUpAsButtonHandler
     {
@@ -1951,6 +1964,7 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((IAsyncOnMouseUpAsButtonHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnMouseUpAsButtonAsync();
         }
     }
+#endif
 #endregion
 
 #region ParticleCollision

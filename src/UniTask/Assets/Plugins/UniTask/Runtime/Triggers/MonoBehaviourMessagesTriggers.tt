@@ -25,13 +25,7 @@
         ("Update", "Update", "AsyncUnit", null, empty),
         ("FixedUpdate", "FixedUpdate", "AsyncUnit", null, empty),
         ("LateUpdate", "LateUpdate", "AsyncUnit", null, empty),
-        ("MouseDown", "OnMouseDown", "AsyncUnit", null, empty),
-        ("MouseDrag", "OnMouseDrag", "AsyncUnit", null, empty),
-        ("MouseEnter", "OnMouseEnter", "AsyncUnit", null, empty),
-        ("MouseExit", "OnMouseExit", "AsyncUnit", null, empty),
-        ("MouseOver", "OnMouseOver", "AsyncUnit", null, empty),
-        ("MouseUp", "OnMouseUp", "AsyncUnit", null, empty),
-        ("MouseUpAsButton", "OnMouseUpAsButton", "AsyncUnit", null, empty),
+        
         ("ParticleCollision", "OnParticleCollision", "GameObject", null, new []{ ("GameObject", "other") }),
         ("RectTransformDimensionsChange", "OnRectTransformDimensionsChange", "AsyncUnit", null, empty),
         ("RectTransformRemoved", "OnRectTransformRemoved", "AsyncUnit", null, empty),
@@ -47,6 +41,15 @@
         ("BecameInvisible", "OnBecameInvisible", "AsyncUnit", null, empty),
         ("BecameVisible", "OnBecameVisible", "AsyncUnit", null, empty),
         
+        // Mouse... #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
+        ("MouseDown", "OnMouseDown", "AsyncUnit", null, empty),
+        ("MouseDrag", "OnMouseDrag", "AsyncUnit", null, empty),
+        ("MouseEnter", "OnMouseEnter", "AsyncUnit", null, empty),
+        ("MouseExit", "OnMouseExit", "AsyncUnit", null, empty),
+        ("MouseOver", "OnMouseOver", "AsyncUnit", null, empty),
+        ("MouseUp", "OnMouseUp", "AsyncUnit", null, empty),
+        ("MouseUpAsButton", "OnMouseUpAsButton", "AsyncUnit", null, empty),
+
         // new in v2
         ("ApplicationFocus", "OnApplicationFocus", "bool", null, new []{("bool", "hasFocus") }),
         ("ApplicationPause", "OnApplicationPause", "bool", null, new []{("bool", "pauseStatus") }),
@@ -104,6 +107,7 @@
     Func<(string argType, string argName)[], string> BuildResultParameter = x => x.Length == 0 ? "AsyncUnit.Default" : "(" + string.Join(", ", x.Select(y => y.argName)) + ")";
 
     Func<string, bool> Is2019_3 = x => x == "ParticleUpdateJobScheduled";
+    Func<string, bool> IsMouseTrigger = x => x.StartsWith("Mouse");
 #>
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
@@ -117,6 +121,9 @@ namespace Cysharp.Threading.Tasks.Triggers
 #region <#= t.triggerName #>
 <# if(Is2019_3(t.triggerName)) { #>
 #if UNITY_2019_3_OR_NEWER
+<# } #>
+<# if(IsMouseTrigger(t.triggerName)) { #>
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 <# } #>
 
     public interface <#= ToInterfaceName(t.methodName) #>
@@ -174,7 +181,7 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(this, cancellationToken, true)).<#= t.methodName #>Async();
         }
     }
-<# if(Is2019_3(t.triggerName)) { #>
+<# if(Is2019_3(t.triggerName) || IsMouseTrigger(t.triggerName)) { #>
 #endif
 <# } #>
 #endregion
