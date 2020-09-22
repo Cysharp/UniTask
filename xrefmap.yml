@@ -2250,6 +2250,12 @@ references:
   commentId: M:Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.ToUniTask(IEnumerator,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)
   fullName: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.ToUniTask(IEnumerator, Cysharp.Threading.Tasks.PlayerLoopTiming, System.Threading.CancellationToken)
   nameWithType: EnumeratorAsyncExtensions.ToUniTask(IEnumerator, PlayerLoopTiming, CancellationToken)
+- uid: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.ToUniTask(IEnumerator,MonoBehaviour)
+  name: ToUniTask(IEnumerator, MonoBehaviour)
+  href: api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html#Cysharp_Threading_Tasks_EnumeratorAsyncExtensions_ToUniTask_IEnumerator_MonoBehaviour_
+  commentId: M:Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.ToUniTask(IEnumerator,MonoBehaviour)
+  fullName: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.ToUniTask(IEnumerator, MonoBehaviour)
+  nameWithType: EnumeratorAsyncExtensions.ToUniTask(IEnumerator, MonoBehaviour)
 - uid: Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.ToUniTask*
   name: ToUniTask
   href: api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html#Cysharp_Threading_Tasks_EnumeratorAsyncExtensions_ToUniTask_
