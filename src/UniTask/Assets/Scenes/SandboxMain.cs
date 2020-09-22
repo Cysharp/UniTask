@@ -507,8 +507,19 @@ public class SandboxMain : MonoBehaviour
 
     CancellationTokenSource quitSource = new CancellationTokenSource();
 
+
+    IEnumerator TestCor()
+    {
+        Debug.Log("start cor");
+        yield return null;
+        yield return new WaitForEndOfFrame();
+        Debug.Log("end cor");
+    }
+
     async UniTaskVoid Start()
     {
+        await TestCor().ToUniTask(this);
+
         Debug.Log("App Start");
 
         Application.quitting += () =>

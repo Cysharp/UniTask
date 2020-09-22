@@ -32,6 +32,19 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(EnumeratorPromise.Create(enumerator, timing, cancellationToken, out var token), token);
         }
 
+        public static UniTask ToUniTask(this IEnumerator enumerator, MonoBehaviour coroutineRunner)
+        {
+            var source = AutoResetUniTaskCompletionSource.Create();
+            coroutineRunner.StartCoroutine(Core(enumerator, coroutineRunner, source));
+            return source.Task;
+        }
+
+        static IEnumerator Core(IEnumerator inner, MonoBehaviour coroutineRunner, AutoResetUniTaskCompletionSource source)
+        {
+            yield return coroutineRunner.StartCoroutine(inner);
+            source.TrySetResult();
+        }
+
         sealed class EnumeratorPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<EnumeratorPromise>
         {
             static TaskPool<EnumeratorPromise> pool;
@@ -215,7 +228,7 @@ namespace Cysharp.Threading.Tasks
                         }
                         else
                         {
-                            yield return null;
+                            goto WARN;
                         }
                     }
                     else if (current is IEnumerator e3)
@@ -228,9 +241,15 @@ namespace Cysharp.Threading.Tasks
                     }
                     else
                     {
-                        // WaitForEndOfFrame, WaitForFixedUpdate, others.
-                        yield return null;
+                        goto WARN;
                     }
+                    
+                    continue;
+
+                    WARN:
+                    // WaitForEndOfFrame, WaitForFixedUpdate, others.
+                    UnityEngine.Debug.LogWarning($"yield {current.GetType().Name} is not supported on await IEnumerator or IEnumerator.ToUniTask(), please use ToUniTask(MonoBehaviour coroutineRunner) instead.");
+                    yield return null;
                 }
             }
 
@@ -262,4 +281,3 @@ namespace Cysharp.Threading.Tasks
         }
     }
 }
-
