@@ -561,21 +561,23 @@ namespace Cysharp.Threading.Tasks
                     UniTaskScheduler.PublishUnobservedTaskException(ex);
                 }
             }
-
-            awaiter.SourceOnCompleted(state =>
+            else
             {
-                using (var t = (StateTuple<UniTask.Awaiter>)state)
+                awaiter.SourceOnCompleted(state =>
                 {
-                    try
+                    using (var t = (StateTuple<UniTask.Awaiter>)state)
                     {
-                        t.Item1.GetResult();
+                        try
+                        {
+                            t.Item1.GetResult();
+                        }
+                        catch (Exception ex)
+                        {
+                            UniTaskScheduler.PublishUnobservedTaskException(ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        UniTaskScheduler.PublishUnobservedTaskException(ex);
-                    }
-                }
-            }, StateTuple.Create(awaiter));
+                }, StateTuple.Create(awaiter));
+            }
         }
 
         public static void Forget(this UniTask task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread = true)
@@ -629,21 +631,23 @@ namespace Cysharp.Threading.Tasks
                     UniTaskScheduler.PublishUnobservedTaskException(ex);
                 }
             }
-
-            awaiter.SourceOnCompleted(state =>
+            else
             {
-                using (var t = (StateTuple<UniTask<T>.Awaiter>)state)
+                awaiter.SourceOnCompleted(state =>
                 {
-                    try
+                    using (var t = (StateTuple<UniTask<T>.Awaiter>)state)
                     {
-                        t.Item1.GetResult();
+                        try
+                        {
+                            t.Item1.GetResult();
+                        }
+                        catch (Exception ex)
+                        {
+                            UniTaskScheduler.PublishUnobservedTaskException(ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        UniTaskScheduler.PublishUnobservedTaskException(ex);
-                    }
-                }
-            }, StateTuple.Create(awaiter));
+                }, StateTuple.Create(awaiter));
+            }
         }
 
         public static void Forget<T>(this UniTask<T> task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread = true)
@@ -736,12 +740,12 @@ namespace Cysharp.Threading.Tasks
         {
             await await task;
         }
-        
+
         public static async UniTask<T> Unwrap<T>(this Task<UniTask<T>> task)
         {
             return await await task;
         }
-        
+
         public static async UniTask<T> Unwrap<T>(this Task<UniTask<T>> task, bool continueOnCapturedContext)
         {
             return await await task.ConfigureAwait(continueOnCapturedContext);
@@ -756,12 +760,12 @@ namespace Cysharp.Threading.Tasks
         {
             await await task.ConfigureAwait(continueOnCapturedContext);
         }
-        
+
         public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task)
         {
             return await await task;
         }
-        
+
         public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task, bool continueOnCapturedContext)
         {
             return await (await task).ConfigureAwait(continueOnCapturedContext);
