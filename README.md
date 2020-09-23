@@ -796,8 +796,10 @@ IEnumerator.ToUniTask limitation
 ---
 You can convert coroutine(IEnumerator) to UniTask(or await directly) but has some limitations.
 
-* `WaitForEndOfFrame`/`WaitForFixedUpdate` is not supported, used `yield return null` instead.
+* `WaitForEndOfFrame`/`WaitForFixedUpdate`/`Coroutine` is not supported.
 * Consuming loop timing is not same as StartCoroutine, it is used specified PlayerLoopTiming, and default's `PlayerLoopTiming.Update` is run before MonoBehaviour's Update and StartCoroutine's loop.
+
+If you want to convert fully compatible from coroutine to async, use `IEnumerator.ToUniTask(MonoBehaviour coroutineRunner)` overload. It executes StartCoroutine on an instance of the argument MonoBehaviour and waits for it to complete in UniTask.
 
 For UnityEditor
 ---
