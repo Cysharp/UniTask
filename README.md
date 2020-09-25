@@ -858,7 +858,7 @@ Use UniTask type.
 
 Pooling Configuration
 ---
-UniTask is aggressively caching async promise object to achive zero allocation. In default, cache all promises but you can configure `TaskPool.SetMaxPoolSize` to your value, the value indicates cache size per type. `TaskPool.GetCacheSizeInfo` returns current cached object in pool.
+UniTask is aggressively caching async promise object to achive zero allocation(technical details, see blog post [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)). In default, cache all promises but you can configure `TaskPool.SetMaxPoolSize` to your value, the value indicates cache size per type. `TaskPool.GetCacheSizeInfo` returns current cached object in pool.
 
 ```csharp
 foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
