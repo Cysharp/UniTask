@@ -135,6 +135,8 @@ namespace Cysharp.Threading.TasksTests
             l.Add(30);
         }
 
+#if !UNITY_WEBGL
+
         [UnityTest]
         public IEnumerator WaitForSecondsTest() => UniTask.ToCoroutine(async () =>
         {
@@ -161,6 +163,8 @@ namespace Cysharp.Threading.TasksTests
         {
             yield return new WaitForSeconds(3.0f);
         }
+
+#endif
 
         IEnumerator Worker(List<(int, int)> l)
         {

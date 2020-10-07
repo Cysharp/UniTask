@@ -37,6 +37,7 @@ namespace Cysharp.Threading.TasksTests
     {
 #if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 #if !UNITY_WSA
+#if !UNITY_WEBGL
 
         //[UnityTest]
         //public IEnumerator RunThread() => UniTask.ToCoroutine(async () =>
@@ -88,7 +89,7 @@ namespace Cysharp.Threading.TasksTests
             }
         });
 
-
+#endif
 #endif
 #endif
     }

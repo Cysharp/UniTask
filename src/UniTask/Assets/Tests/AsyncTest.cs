@@ -55,6 +55,8 @@ namespace Cysharp.Threading.TasksTests
             }
         }
 
+#if !UNITY_WEBGL
+
         [UnityTest]
         public IEnumerator DelayAnd() => UniTask.ToCoroutine(async () =>
         {
@@ -75,6 +77,8 @@ namespace Cysharp.Threading.TasksTests
                 Time.timeScale = 1.0f;
             }
         });
+
+#endif
 
         [UnityTest]
         public IEnumerator DelayIgnore() => UniTask.ToCoroutine(async () =>
@@ -183,6 +187,8 @@ namespace Cysharp.Threading.TasksTests
             diff.Should().Be(11);
         });
 
+#if !UNITY_WEBGL
+
         [UnityTest]
         public IEnumerator SwitchTo() => UniTask.ToCoroutine(async () =>
         {
@@ -214,6 +220,8 @@ namespace Cysharp.Threading.TasksTests
 
             currentThreadId.Should().Be(switchedThreadId2);
         });
+
+#endif
 
         //[UnityTest]
         //public IEnumerator ObservableConversion() => UniTask.ToCoroutine(async () =>
