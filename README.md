@@ -2,20 +2,20 @@ UniTask
 ===
 [![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
 
-Provides an efficient allocation free async/await integration to Unity.
+UniTask provides memory-efficient `async`/`await` integration for Unity that closely mimics C#'s standard [Task-based asynchronous pattern (TAP)](https://docs.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap). Features include:
 
-* Struct based `UniTask<T>` and custom AsyncMethodBuilder to achive zero allocation
-* All Unity AsyncOperations and Coroutine to awaitable
-* PlayerLoop based task(`UniTask.Yield`, `UniTask.Delay`, `UniTask.DelayFrame`, etc..) that enable to replace all coroutine operation
-* MonoBehaviour Message Events and uGUI Events as awaitable/async-enumerable
-* Completely run on Unity's PlayerLoop so don't use thread and run on WebGL, wasm, etc.
-* Asynchronous LINQ, with Channel and AsyncReactiveProperty
-* TaskTracker window to prevent memory leak
-* Highly compatible behaviour with Task/ValueTask/IValueTaskSource
+* Minimal memory allocations, thanks to a `struct`-based [`UniTask<T>`](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTask-1.html) and a custom variant of [`AsyncTaskMethodBuilder`](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.asynctaskmethodbuilder).
+* All Unity-provided [`AsyncOperation`s](https://docs.unity3d.com/ScriptReference/AsyncOperation.html) and [coroutines](https://docs.unity3d.com/Manual/Coroutines.html) can be `await`ed, plus a few other operations.
+* Common [`PlayerLoop`](https://docs.unity3d.com/Documentation/ScriptReference/LowLevel.PlayerLoop.html)-based `UniTask`s are provided to replace equivalent coroutine operations (e.g. [`UniTask.Delay`](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_) instead of [`WaitForSeconds`](https://docs.unity3d.com/ScriptReference/WaitForSeconds.html)).
+* [`MonoBehaviour`](https://docs.unity3d.com/Manual/class-MonoBehaviour.html) messages and [Unity UI events](https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/EventSystem.html) can be `await`ed as [asynchronous enumerables](#asyncenumerable-and-async-linq).
+* Completely runs on Unity's [`PlayerLoop`](https://docs.unity3d.com/Documentation/ScriptReference/LowLevel.PlayerLoop.html), which means it works on WebGL.
+* Asynchronous LINQ-like operations that can be used with [`AsyncReactiveProperty`s](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html) or an optimized [`Channel`](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.Channel.html) implementation.
+* An in-editor `TaskTracker` window to help you track UniTask's memory use.
+* Highly compatible behaviour with standard TAP types including [`Task`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task), [`ValueTask`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask), and [`IValueTaskSource`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.sources.ivaluetasksource) (and their generic equivalents).
 
-Techinical details, see blog post: [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ
+For technical details, see this blog post: [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ
 ](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)  
-Advanced tips, see blog post: [Extends UnityWebRequest via async decorator pattern — Advanced Techniques of UniTask](https://medium.com/@neuecc/extends-unitywebrequest-via-async-decorator-pattern-advanced-techniques-of-unitask-ceff9c5ee846)
+For advanced tips, see this other blog post: [Extends UnityWebRequest via async decorator pattern — Advanced Techniques of UniTask](https://medium.com/@neuecc/extends-unitywebrequest-via-async-decorator-pattern-advanced-techniques-of-unitask-ceff9c5ee846)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
