@@ -51,67 +51,71 @@ For advanced tips, see this other blog post: [Extends UnityWebRequest via async 
 
 Getting started
 ---
-Install via [UPM package](#upm-package) or asset package(`UniTask.*.*.*.unitypackage`) available in [UniTask/releases](https://github.com/Cysharp/UniTask/releases) page.
+Install UniTask with either [the UPM package](#upm-package) or the traditional asset package (`UniTask.*.*.*.unitypackage`) available [on the releases page](https://github.com/Cysharp/UniTask/releases).
+
+Here's a brief overview of some of UniTask's features and their usage:
 
 ```csharp
-// extension awaiter/methods can be used by this namespace
+// This namespace provides a wide variety of awaiters, extension methods, and core types.
 using Cysharp.Threading.Tasks;
 
-// You can return type as struct UniTask<T>(or UniTask), it is unity specialized lightweight alternative of Task<T>
-// zero allocation and fast excution for zero overhead async/await integrate with Unity
+// You'll generally want async methods to return a UniTask<T> (or a non-generic UniTask).
+// It's a Unity-optimized variant of the standard Task<T> class that allocates no heap memory.
 async UniTask<string> DemoAsync()
 {
-    // You can await Unity's AsyncObject
+    // Extension methods let you await Unity's standard AsyncOperations (including its subclasses)
     var asset = await Resources.LoadAsync<TextAsset>("foo");
     var txt = (await UnityWebRequest.Get("https://...").SendWebRequest()).downloadHandler.text;
     await SceneManager.LoadSceneAsync("scene2");
 
-    // .WithCancellation enables Cancel, GetCancellationTokenOnDestroy synchornizes with lifetime of GameObject
+    // WithCancellation lets you cancel any UniTask. GetCancellationTokenOnDestroy is an extension
+    // method that provides a CancellationToken that's triggered when the GameObject is destroyed
     var asset2 = await Resources.LoadAsync<TextAsset>("bar").WithCancellation(this.GetCancellationTokenOnDestroy());
 
-    // .ToUniTask accepts progress callback(and all options), Progress.Create is a lightweight alternative of IProgress<T>
+    // .ToUniTask accepts a progress callback (and all options)
+    // Progress.Create returns a lightweight implementation of System.IProgress<T>
     var asset3 = await Resources.LoadAsync<TextAsset>("baz").ToUniTask(Progress.Create<float>(x => Debug.Log(x)));
 
-    // await frame-based operation like coroutine
+    // You can wait a specific number of frames.
     await UniTask.DelayFrame(100); 
 
-    // replacement of yield return new WaitForSeconds/WaitForSecondsRealtime
+    // Use UniTask.Delay instead of WaitForSeconds or WaitForSecondsRealtime.
     await UniTask.Delay(TimeSpan.FromSeconds(10), ignoreTimeScale: false);
     
-    // yield any playerloop timing(PreUpdate, Update, LateUpdate, etc...)
+    // Suspend the current method and resume it in some other stage of the player loop (PreUpdate, Update, LateUpdate, etc...)
     await UniTask.Yield(PlayerLoopTiming.PreLateUpdate);
 
-    // replacement of yield return null
+    // Use these instead of `yield return null` (but there's a subtle difference, see below).
     await UniTask.Yield();
     await UniTask.NextFrame();
 
-    // replacement of WaitForEndOfFrame(same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate))
+    // UniTask provides WaitForEndOfFrame, equivalent to UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate)
     await UniTask.WaitForEndOfFrame();
 
-    // replacement of yield return new WaitForFixedUpdate(same as UniTask.Yield(PlayerLoopTiming.FixedUpdate))
+    // UniTask provides WaitForFixedUpdate, equivalent to UniTask.Yield(PlayerLoopTiming.FixedUpdate)
     await UniTask.WaitForFixedUpdate();
     
-    // replacement of yield return WaitUntil
+    // Use UniTask.WaitUntil instead of UnityEngine.WaitUntil.
     await UniTask.WaitUntil(() => isActive == false);
 
-    // special helper of WaitUntil
+    // There's a variant for the common case of waiting for a value to change, too.
     await UniTask.WaitUntilValueChanged(this, x => x.isActive);
 
-    // You can await IEnumerator coroutine
+    // You can await standard IEnumerator-based coroutines.
     await FooCoroutineEnumerator();
 
-    // You can await standard task
+    // Standard Task objects are fully supported.
     await Task.Run(() => 100);
 
-    // Multithreading, run on ThreadPool under this code
+    // Suspend this method and resume it on another thread with UniTask.SwitchToThreadPool().
     await UniTask.SwitchToThreadPool();
 
-    /* work on ThreadPool */
+    // Any code here will run on a separate thread. Multithreading is opt-in.
 
-    // return to MainThread(same as `ObserveOnMainThread` in UniRx)
+    // Now we return to the main thread (just like UniRx's `ObserveOnMainThread`)
     await UniTask.SwitchToMainThread();
 
-    // get async webrequest
+    // Let's define this local async function.
     async UniTask<string> GetTextAsync(UnityWebRequest req)
     {
         var op = await req.SendWebRequest();
@@ -122,16 +126,16 @@ async UniTask<string> DemoAsync()
     var task2 = GetTextAsync(UnityWebRequest.Get("http://bing.com"));
     var task3 = GetTextAsync(UnityWebRequest.Get("http://yahoo.com"));
 
-    // concurrent async-wait and get result easily by tuple syntax
+    // You can await multiple concurrent UniTasks.
     var (google, bing, yahoo) = await UniTask.WhenAll(task1, task2, task3);
 
-    // shorthand of WhenAll, tuple can await directly
+    // You can await a tuple of UniTasks as shorthand for UniTask.WhenAll.
     var (google2, bing2, yahoo2) = await (task1, task2, task3);
     
-    // You can handle timeout easily
+    // UniTasks can easily be given timeouts.
     await GetTextAsync(UnityWebRequest.Get("http://unity.com")).Timeout(TimeSpan.FromMilliseconds(300));
 
-    // return async-value.(or you can use `UniTask`(no result), `UniTaskVoid`(fire and forget)).
+    // You can return a value asynchronously, or use `UniTask` or `UniTaskVoid` when you don't need to.
     return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
 }
 ```
