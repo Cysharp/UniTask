@@ -223,6 +223,17 @@ namespace Cysharp.Threading.Tasks
 
             void OnCompleteCallbackDelegate()
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    if (this.cancelBehaviour == TweenCancelBehaviour.KillAndCancelAwait
+                        || this.cancelBehaviour == TweenCancelBehaviour.KillWithCompleteCallbackAndCancelAwait
+                        || this.cancelBehaviour == TweenCancelBehaviour.CompleteAndCancelAwait
+                        || this.cancelBehaviour == TweenCancelBehaviour.CompleteWithSeqeunceCallbackAndCancelAwait
+                        || this.cancelBehaviour == TweenCancelBehaviour.CancelAwait)
+                    {
+                        canceled = true;
+                    }
+                }
                 if (canceled)
                 {
                     core.TrySetCanceled(cancellationToken);
