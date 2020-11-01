@@ -142,32 +142,44 @@ async UniTask<string> DemoAsync()
 
 Basics of UniTask and AsyncOperation
 ---
-UniTask feature rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so required Unity version is after `Unity 2018.3`, officialy lower support version is `Unity 2018.4.13f1`.
+UniTask relies on features introduced in C# 7.0 such as [task-like custom async method builders](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md), so it requires a minimum of Unity 2018.3 to run. The minimum supported version is Unity 2018.4.13f1.
 
-Why UniTask(custom task-like object) is required? Because Task is too heavy, not matched to Unity threading(single-thread). UniTask does not use thread and SynchronizationContext/ExecutionContext because almost Unity's asynchronous object is automaticaly dispatched by Unity's engine layer. It acquires more fast and more less allocation, completely integrated with Unity.
+Since Unity supports standard TAP classes, why do we need UniTask? It turns out that [`Task`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) and its cohorts are too memory-intensive and don't play well with Unity's single-threaded game loop. UniTask doesn't use threading (by default) or the standard [`SynchronizationContext`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.synchronizationcontext) or [`ExecutionContext`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.executioncontext) because almost every asynchronous task within Unity is scheduled by the core engine. UniTask's efficiency is thanks to its reliance on Unity's existing infrastructure.
 
-You can await `AsyncOperation`, `ResourceRequest`, `AssetBundleRequest`, `AssetBundleCreateRequest`, `UnityWebRequestAsyncOperation`, `AsyncGPUReadbackRequest`, `IEnumerator` and others when `using Cysharp.Threading.Tasks;`.
+Besides UniTask's optimizations, it also provides `await` support for a wide variety of Unity operations, such as:
 
-UniTask provides three pattern of extension methods.
+- [`AsyncGPUReadbackRequest`](https://docs.unity3d.com/ScriptReference/Rendering.AsyncGPUReadbackRequest)
+- [`AsyncOperation`](https://docs.unity3d.com/ScriptReference/AsyncOperation) and its subclasses, including (but not limited to):
+  - [`AssetBundleCreateRequest`](https://docs.unity3d.com/ScriptReference/AssetBundleCreateRequest)
+  - [`AssetBundleRecompressOperation`](https://docs.unity3d.com/ScriptReference/AssetBundleRecompressOperation)
+  - [`AssetBundleRequest`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest)
+  - [`ResourceRequest`](https://docs.unity3d.com/ScriptReference/ResourceRequest)
+  - [`UnityWebRequestAsyncOperation`](https://docs.unity3d.com/ScriptReference/Networking.UnityWebRequestAsyncOperation)
+- `IEnumerator` (i.e. any coroutine)
+- [`JobHandle`](https://docs.unity3d.com/ScriptReference/Unity.Jobs.JobHandle)
+- Virtually every `MonoBehavior` message and Unity UI event.
+- Operations for several popular Unity packages. See [External Assets](#external-assets) for details.
+
+UniTask's extension methods for the above operations generally fall into one of three patterns:
 
 ```csharp
-* await asyncOperation;
-* .WithCancellation(CancellationToken);
-* .ToUniTask(IProgress, PlayerLoopTiming, CancellationToken);
+await asyncOperation;
+await unityAsyncOperation.WithCancellation(CancellationToken);
+await unityAsyncOperation.ToUniTask(IProgress, PlayerLoopTiming, CancellationToken);
 ```
 
-`WithCancellation` is a simple version of `ToUniTask`, both returns `UniTask`. Details of cancellation, see: [Cancellation and Exception handling](#cancellation-and-exception-handling) section.
+`WithCancellation` is an alias of `ToUniTask` that provides some common defaults; both return a `UniTask`. For more information about cancellation, see the [Cancellation and Exception handling](#cancellation-and-exception-handling) section.
 
-> Note: WithCancellation is returned from native timing of PlayerLoop but ToUniTask is returned from specified PlayerLoopTiming. Details of timing, see: [PlayerLoop](#playerloop) section.
+> **Note:** `WithCancellation` continues in the current `PlayerLoop` stage, but `ToUniTask` is returned from specified PlayerLoopTiming. For more information about timing within Unity's game loop, see the [PlayerLoop](#playerloop) section.
 
-> Note: AssetBundleRequest has `asset` and `allAssets`, in default await returns `asset`. If you want to get `allAssets`, you can use `AwaitForAllAssets()` method.
+> **Note:** [`AssetBundleRequest`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest) offers the [`asset`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest-asset) and [`allAssets`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest-allAssets) properties; `await`ing it will return `asset` by default. If you want to `await` on `allAssets`, use the `AwaitForAllAssets()` extension method on `AssetBundleRequest` (i.e. `await theAssetBundleRequest.AwaitForAllAssets()`).
 
 The type of `UniTask` can use utility like `UniTask.WhenAll`, `UniTask.WhenAny`. It is like Task.WhenAll/WhenAny but return type is more useful, returns value tuple so can deconsrtuct each result and pass multiple type.
 
 ```csharp
 public async UniTaskVoid LoadManyAsync()
 {
-    // parallel load.
+    // Parallel resource loading.
     var (a, b, c) = await UniTask.WhenAll(
         LoadAsSprite("foo"),
         LoadAsSprite("bar"),
@@ -200,13 +212,13 @@ You can convert Task -> UniTask: `AsUniTask`, `UniTask` -> `UniTask<AsyncUnit>`:
 
 If you want to convert async to coroutine, you can use `.ToCoroutine()`, this is useful to use only allow coroutine system.
 
-UniTask can not await twice. This is a similar constraint to the [ValueTask/IValueTaskSource](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1) introduced in .NET Standard 2.1.
+The same `UniTask` (or `UniTask<T>`) object cannot be `await`ed more than once. This is a similar constraint to the [`ValueTask`/`IValueTaskSource`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1) introduced in .NET Standard 2.1. Here's an excerpt from the documentation:
 
-> The following operations should never be performed on a ValueTask<TResult> instance:
+> The following operations should never be performed on a `ValueTask<TResult>` instance:
 >
 > * Awaiting the instance multiple times.
-> * Calling AsTask multiple times.
-> * Using .Result or .GetAwaiter().GetResult() when the operation hasn't yet completed, or using them multiple times.
+> * Calling `AsTask` multiple times.
+> * Using `.Result` or `.GetAwaiter().GetResult()` when the operation hasn't yet completed, or using them multiple times.
 > * Using more than one of these techniques to consume the instance.
 >
 > If you do any of the above, the results are undefined.
@@ -214,7 +226,7 @@ UniTask can not await twice. This is a similar constraint to the [ValueTask/IVal
 ```csharp
 var task = UniTask.DelayFrame(10);
 await task;
-await task; // NG, throws Exception
+await task; // No good, throws an exception
 ```
 
 Store to the class field, you can use `UniTask.Lazy` that gurantee call multipletimes. `.Preserve()` allows for multiple calls (internally cached results). This is useful when multiple calls in a function scope.
