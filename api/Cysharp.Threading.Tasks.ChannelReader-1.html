@@ -135,13 +135,13 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_System_Threading_CancellationToken_">ReadAllAsync(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_CancellationToken_">ReadAllAsync(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_System_Threading_CancellationToken_">ReadAsync(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_CancellationToken_">ReadAsync(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -153,7 +153,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_System_Threading_CancellationToken_">WaitToReadAsync(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.ChannelReader-1.html#Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_CancellationToken_">WaitToReadAsync(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -196,18 +196,18 @@
   </h3>
   <section>
   <a id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAllAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAllAsync(System.Threading.CancellationToken)">ReadAllAsync(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAllAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAllAsync(CancellationToken)">ReadAllAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract IUniTaskAsyncEnumerable&lt;T&gt; ReadAllAsync(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract IUniTaskAsyncEnumerable&lt;T&gt; ReadAllAsync(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -233,18 +233,18 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAsync(System.Threading.CancellationToken)">ReadAsync(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_ReadAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.ReadAsync(CancellationToken)">ReadAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public virtual UniTask&lt;T&gt; ReadAsync(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public virtual UniTask&lt;T&gt; ReadAsync(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -307,18 +307,18 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.WaitToReadAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.WaitToReadAsync(System.Threading.CancellationToken)">WaitToReadAsync(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_ChannelReader_1_WaitToReadAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.ChannelReader`1.WaitToReadAsync(CancellationToken)">WaitToReadAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract UniTask&lt;bool&gt; WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract UniTask&lt;bool&gt; WaitToReadAsync(CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
