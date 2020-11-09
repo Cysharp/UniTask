@@ -174,7 +174,7 @@ await unityAsyncOperation.ToUniTask(IProgress, PlayerLoopTiming, CancellationTok
 
 > **Note:** [`AssetBundleRequest`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest) offers the [`asset`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest-asset) and [`allAssets`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest-allAssets) properties; `await`ing it will return `asset` by default. If you want to `await` on `allAssets`, use the `AwaitForAllAssets()` extension method on `AssetBundleRequest` (i.e. `await theAssetBundleRequest.AwaitForAllAssets()`).
 
-The type of `UniTask` can use utility like `UniTask.WhenAll`, `UniTask.WhenAny`. It is like Task.WhenAll/WhenAny but return type is more useful, returns value tuple so can deconsrtuct each result and pass multiple type.
+`UniTask` features `static` utility methods such as `UniTask.WhenAll` and `UniTask.WhenAny`. Many of these methods have equivalents in `Task` or `ValueTask`, but with the ability to `await` the returned tuples.
 
 ```csharp
 public async UniTaskVoid LoadManyAsync()
@@ -193,20 +193,22 @@ async UniTask<Sprite> LoadAsSprite(string path)
 }
 ```
 
-If you want to convert callback to UniTask, you can use `UniTaskCompletionSource<T>` that is the lightweight edition of `TaskCompletionSource<T>`. 
+To convert a callback-styled operation to a `UniTask`, you can use [`UniTaskCompletionSource<T>`](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html) or [its non-generic companion](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTaskCompletionSource.html). It's a lightweight variant of the standard [`TaskCompletionSource<T>`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcompletionsource-1).
 
 ```csharp
 public UniTask<int> WrapByUniTaskCompletionSource()
 {
     var utcs = new UniTaskCompletionSource<int>();
 
-    // when complete, call utcs.TrySetResult();
-    // when failed, call utcs.TrySetException();
-    // when cancel, call utcs.TrySetCanceled();
+    // If your operation finishes successfully, call utcs.TrySetResult();
+    // If your operation fails with an exception, call utcs.TrySetException();
+    // If your operation is canceled externally, call utcs.TrySetCanceled();
 
-    return utcs.Task; //return UniTask<int>
+    return utcs.Task; // returns a UniTask<int> that resolves to whatever utcs's final status is.
 }
 ```
+
+This is the simplest way to wrap other asynchronous APIs in a `UniTask`. You can also write a custom `await`er as described in [this .NET Parallel Programming blog post](https://devblogs.microsoft.com/pfxteam/await-anything). This is how UniTask's support for Unity's various asynchronous operations is implemented.
 
 You can convert Task -> UniTask: `AsUniTask`, `UniTask` -> `UniTask<AsyncUnit>`: `AsAsyncUnitUniTask`, `UniTask<T>` -> `UniTask`: `AsUniTask`. `UniTask<T>` -> `UniTask`'s conversion cost is free.
 
