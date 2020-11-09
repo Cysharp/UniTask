@@ -12,7 +12,9 @@ namespace Cysharp.Threading.Tasks
     public static class TaskPool
     {
         internal static int MaxPoolSize;
-        static ConcurrentDictionary<Type, Func<int>> sizes = new ConcurrentDictionary<Type, Func<int>>();
+
+        // avoid to use ConcurrentDictionary for safety of WebGL build.
+        static Dictionary<Type, Func<int>> sizes = new Dictionary<Type, Func<int>>();
 
         static TaskPool()
         {
@@ -40,18 +42,23 @@ namespace Cysharp.Threading.Tasks
 
         public static IEnumerable<(Type, int)> GetCacheSizeInfo()
         {
-            foreach (var item in sizes)
+            lock (sizes)
             {
-                yield return (item.Key, item.Value());
+                foreach (var item in sizes)
+                {
+                    yield return (item.Key, item.Value());
+                }
             }
         }
 
         public static void RegisterSizeGetter(Type type, Func<int> getSize)
         {
-            sizes[type] = getSize;
+            lock (sizes)
+            {
+                sizes[type] = getSize;
+            }
         }
     }
-
 
     public interface ITaskPoolNode<T>
     {
