@@ -170,7 +170,7 @@ await unityAsyncOperation.ToUniTask(IProgress, PlayerLoopTiming, CancellationTok
 
 `WithCancellation` is an alias of `ToUniTask` that provides some common defaults; both return a `UniTask`. For more information about cancellation, see the [Cancellation and Exception handling](#cancellation-and-exception-handling) section.
 
-> **Note:** `WithCancellation` continues in the current `PlayerLoop` stage, but `ToUniTask` is returned from specified PlayerLoopTiming. For more information about timing within Unity's game loop, see the [PlayerLoop](#playerloop) section.
+> **Note:** `await`ing the `UniTask` returned by `WithCancellation` will continue execution in the current `PlayerLoop` stage. `await`ing the result of `ToUniTask` will continue execution in whichever `PlayerLoop` stage is provided, depending on the [`PlayerLoopTiming`](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.PlayerLoopTiming.html) provided. For more information about timing within Unity's game loop, see the [PlayerLoop](#playerloop) section.
 
 > **Note:** [`AssetBundleRequest`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest) offers the [`asset`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest-asset) and [`allAssets`](https://docs.unity3d.com/ScriptReference/AssetBundleRequest-allAssets) properties; `await`ing it will return `asset` by default. If you want to `await` on `allAssets`, use the `AwaitForAllAssets()` extension method on `AssetBundleRequest` (i.e. `await theAssetBundleRequest.AwaitForAllAssets()`).
 
