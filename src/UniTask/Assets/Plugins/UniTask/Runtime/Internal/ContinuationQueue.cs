@@ -12,7 +12,7 @@ namespace Cysharp.Threading.Tasks.Internal
 
         readonly PlayerLoopTiming timing;
 
-        SpinLock gate = new SpinLock();
+        SpinLock gate = new SpinLock(false);
         bool dequing = false;
 
         int actionListCount = 0;
