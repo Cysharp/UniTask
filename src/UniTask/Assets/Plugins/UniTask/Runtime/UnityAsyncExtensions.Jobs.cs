@@ -4,6 +4,7 @@
 using System;
 using System.Threading;
 using Unity.Jobs;
+using UnityEngine;
 
 namespace Cysharp.Threading.Tasks
 {
@@ -85,7 +86,7 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                if (jobHandle.IsCompleted)
+                if (jobHandle.IsCompleted | PlayerLoopHelper.IsEditorApplicationQuitting)
                 {
                     jobHandle.Complete();
                     core.TrySetResult(AsyncUnit.Default);
