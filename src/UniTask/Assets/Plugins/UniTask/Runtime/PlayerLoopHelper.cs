@@ -101,7 +101,7 @@ namespace Cysharp.Threading.Tasks
         static SynchronizationContext unitySynchronizationContetext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
-
+        internal static bool IsEditorApplicationQuitting { get; private set; }
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
             Type loopRunnerYieldType, ContinuationQueue cq, Type lastLoopRunnerYieldType, ContinuationQueue lastCq,
             Type loopRunnerType, PlayerLoopRunner runner, Type lastLoopRunnerType, PlayerLoopRunner lastRunner)
@@ -112,6 +112,7 @@ namespace Cysharp.Threading.Tasks
             {
                 if (state == PlayModeStateChange.EnteredEditMode || state == PlayModeStateChange.ExitingEditMode)
                 {
+                    IsEditorApplicationQuitting = true;
                     // run rest action before clear.
                     if (runner != null)
                     {
@@ -134,6 +135,7 @@ namespace Cysharp.Threading.Tasks
                         lastCq.Run();
                         lastCq.Clear();
                     }
+                    IsEditorApplicationQuitting = false;
                 }
             };
 #endif
