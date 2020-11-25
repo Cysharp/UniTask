@@ -2,6 +2,7 @@
     --color-text-base: #151515;
     --color-link-base: #0065b3;
     --color-background-base: #fff;
+    --line-height: 1.6;
     --font-size-base: 10px;
     --font-size-body: 1.6rem;
     --font-family-base: 'Segoe UI', 'Helvetica Neue', 'Helvetica', 'Tahoma', 'Arial', sans-serif;
@@ -16,6 +17,7 @@ body {
     color: var(--color-text-base);
     font-size: var(--font-size-body);
     font-family: var(--font-family-base);
+    line-height: var(--line-height);
 }
 a {
     color: var(--color-link-base);
@@ -25,6 +27,9 @@ h1, h2, h2, h3, h4, h5, h6 {
 }
 table {
     font-size: 1.4rem;
+}
+blockquote {
+    font-size: var(--font-size-body);
 }
 
 /* nabvar */
@@ -131,11 +136,22 @@ article section h4.propertyValue,
 article section h4.returns {
     margin-top: 2em;
 }
-
-pre {
+article section h5,
+article section .h5 {
+    font-size: var(--font-size-body);
+    margin-top: 0.5em;
+}
+article :not(a):not(pre)>code {
+    color: #000;
+    font-size: 85%;
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+}
+article pre {
     padding: 4px;
     border-radius: 0;
 }
+
 .inheritance h5, .inheritedMembers h5 {
     border: none;
 }
@@ -162,6 +178,9 @@ pre {
     color: #ccc;
     font-weight: normal;
 }
+.cysharpdocfx-valuedefinition {
+    font-size: 85%;
+}
 .cysharpdocfx-valuedefinition dt {
     font-weight: normal;
 }
@@ -172,6 +191,10 @@ pre {
     font-weight: bold;
     font-style: normal;
 }
+.cysharpdocfx-valuedefinition .parametername + * {
+    margin-left: 1.2em;
+}
+
 
 /* Right side */
 .sideaffix {
