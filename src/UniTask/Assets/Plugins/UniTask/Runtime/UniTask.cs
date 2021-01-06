@@ -115,7 +115,12 @@ namespace Cysharp.Threading.Tasks
             var status = this.source.GetStatus(this.token);
             if (status.IsCompletedSuccessfully())
             {
+                this.source.GetResult(this.token);
                 return CompletedTasks.AsyncUnit;
+            }
+            else if(this.source is IUniTaskSource<AsyncUnit> asyncUnitSource)
+            {
+                return new UniTask<AsyncUnit>(asyncUnitSource, this.token);
             }
 
             return new UniTask<AsyncUnit>(new AsyncUnitSource(this.source), this.token);
@@ -422,6 +427,7 @@ namespace Cysharp.Threading.Tasks
             var status = this.source.GetStatus(this.token);
             if (status.IsCompletedSuccessfully())
             {
+                this.source.GetResult(this.token);
                 return UniTask.CompletedTask;
             }
 
