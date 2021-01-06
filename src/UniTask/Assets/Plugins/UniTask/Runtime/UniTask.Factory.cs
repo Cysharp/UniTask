@@ -341,10 +341,12 @@ namespace Cysharp.Threading.Tasks
             public UniTaskStatus GetStatus(short token)
             {
                 var f = Interlocked.Exchange(ref factory, null);
-                if (f == null) throw new InvalidOperationException("Can't call twice.");
+                if (f != null)
+                {
+                    task = f();
+                    awaiter = task.GetAwaiter();
+                }
 
-                task = f();
-                awaiter = task.GetAwaiter();
                 return task.Status;
             }
 
@@ -383,10 +385,12 @@ namespace Cysharp.Threading.Tasks
             public UniTaskStatus GetStatus(short token)
             {
                 var f = Interlocked.Exchange(ref factory, null);
-                if (f == null) throw new InvalidOperationException("Can't call twice.");
+                if (f != null)
+                {
+                    task = f();
+                    awaiter = task.GetAwaiter();
+                }
 
-                task = f();
-                awaiter = task.GetAwaiter();
                 return task.Status;
             }
 
