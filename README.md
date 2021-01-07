@@ -346,6 +346,11 @@ public enum PlayerLoopTiming
 
     PostLateUpdate = 12,
     LastPostLateUpdate = 13
+    
+#if UNITY_2020_2_OR_NEWER
+    TimeUpdate = 14,
+    LastTimeUpdate = 15,
+#endif
 }
 ```
 

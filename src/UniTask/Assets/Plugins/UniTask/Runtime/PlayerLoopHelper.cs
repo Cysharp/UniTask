@@ -57,6 +57,13 @@ namespace Cysharp.Threading.Tasks
         public struct UniTaskLoopRunnerLastYieldUpdate { };
         public struct UniTaskLoopRunnerLastYieldPreLateUpdate { };
         public struct UniTaskLoopRunnerLastYieldPostLateUpdate { };
+
+#if UNITY_2020_2_OR_NEWER
+        public struct UniTaskLoopRunnerTimeUpdate { };
+        public struct UniTaskLoopRunnerLastTimeUpdate { };
+        public struct UniTaskLoopRunnerYieldTimeUpdate { };
+        public struct UniTaskLoopRunnerLastYieldTimeUpdate { };
+#endif
     }
 
     public enum PlayerLoopTiming
@@ -80,7 +87,13 @@ namespace Cysharp.Threading.Tasks
         LastPreLateUpdate = 11,
 
         PostLateUpdate = 12,
-        LastPostLateUpdate = 13
+        LastPostLateUpdate = 13,
+
+#if UNITY_2020_2_OR_NEWER
+        // Unity 2020.2 added TimeUpdate https://docs.unity3d.com/2020.2/Documentation/ScriptReference/PlayerLoop.TimeUpdate.html
+        TimeUpdate = 14,
+        LastTimeUpdate = 15,
+#endif
     }
 
     public interface IPlayerLoopItem
@@ -298,8 +311,13 @@ namespace Cysharp.Threading.Tasks
 
         public static void Initialize(ref PlayerLoopSystem playerLoop)
         {
+#if UNITY_2020_2_OR_NEWER
+            yielders = new ContinuationQueue[16];
+            runners = new PlayerLoopRunner[16];
+#else
             yielders = new ContinuationQueue[14];
             runners = new PlayerLoopRunner[14];
+#endif
 
             var copyList = playerLoop.subSystemList.ToArray();
 
@@ -345,6 +363,14 @@ namespace Cysharp.Threading.Tasks
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPostLateUpdate), yielders[13] = new ContinuationQueue(PlayerLoopTiming.LastPostLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerPostLateUpdate), runners[12] = new PlayerLoopRunner(PlayerLoopTiming.PostLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastPostLateUpdate), runners[13] = new PlayerLoopRunner(PlayerLoopTiming.LastPostLateUpdate));
+#if UNITY_2020_2_OR_NEWER
+            // TimeUpdate
+            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.TimeUpdate));
+            copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldTimeUpdate), yielders[14] = new ContinuationQueue(PlayerLoopTiming.TimeUpdate),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldTimeUpdate), yielders[15] = new ContinuationQueue(PlayerLoopTiming.LastTimeUpdate),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerTimeUpdate), runners[14] = new PlayerLoopRunner(PlayerLoopTiming.TimeUpdate),
+                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastTimeUpdate), runners[15] = new PlayerLoopRunner(PlayerLoopTiming.LastTimeUpdate));
+#endif
 
             // Insert UniTaskSynchronizationContext to Update loop
             i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.Update));

@@ -516,6 +516,13 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("end cor");
     }
 
+    IEnumerator LastYieldCore()
+    {
+        Debug.Log("YieldBegin:" + Time.frameCount);
+        yield return new WaitForEndOfFrame();
+        Debug.Log("YieldEnd:" + Time.frameCount);
+    }
+
     async UniTaskVoid Start()
     {
         await TestCor().ToUniTask(this);
@@ -567,18 +574,13 @@ public class SandboxMain : MonoBehaviour
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
+            StartCoroutine(LastYieldCore());
 
-            var client = new NetworkClient("http://localhost:5000", TimeSpan.FromSeconds(2),
-                new QueueRequestDecorator()
-                /*,  new LoggingDecorator()*/
-                 );
-            //new AppendTokenDecorator(),
-            //new SetupHeaderDecorator());
+            Debug.Log("BEFORE:" + Time.frameCount);
 
+            await UniTask.Yield(PlayerLoopTiming.LastTimeUpdate);
 
-            await client.PostAsync("", new { Id = 100 });
-
-
+            Debug.Log("AFTER:" + Time.frameCount);
         }));
 
         //    _ = ExecuteAsync();

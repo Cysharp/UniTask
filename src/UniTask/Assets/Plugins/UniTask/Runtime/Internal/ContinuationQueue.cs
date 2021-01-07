@@ -132,6 +132,14 @@ namespace Cysharp.Threading.Tasks.Internal
                 case PlayerLoopTiming.LastPostLateUpdate:
                     LastPostLateUpdate();
                     break;
+#if UNITY_2020_2_OR_NEWER
+                case PlayerLoopTiming.TimeUpdate:
+                    TimeUpdate();
+                    break;
+                case PlayerLoopTiming.LastTimeUpdate:
+                    LastTimeUpdate();
+                    break;
+#endif
                 default:
                     break;
             }
@@ -154,6 +162,10 @@ namespace Cysharp.Threading.Tasks.Internal
         void LastPreLateUpdate() => RunCore();
         void PostLateUpdate() => RunCore();
         void LastPostLateUpdate() => RunCore();
+#if UNITY_2020_2_OR_NEWER
+        void TimeUpdate() => RunCore();
+        void LastTimeUpdate() => RunCore();
+#endif
 
         [System.Diagnostics.DebuggerHidden]
         void RunCore()
