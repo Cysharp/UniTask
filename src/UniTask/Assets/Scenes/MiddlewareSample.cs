@@ -145,50 +145,50 @@ namespace Cysharp.Threading.Tasks.Sample
         }
     }
 
-    public class LoggingDecorator : IAsyncDecorator
-    {
-        public async UniTask<ResponseContext> SendAsync(RequestContext context, CancellationToken cancellationToken, Func<RequestContext, CancellationToken, UniTask<ResponseContext>> next)
-        {
-            var sw = Stopwatch.StartNew();
-            try
-            {
-                UnityEngine.Debug.Log("Start Network Request:" + context.Path);
+    //public class LoggingDecorator : IAsyncDecorator
+    //{
+    //    public async UniTask<ResponseContext> SendAsync(RequestContext context, CancellationToken cancellationToken, Func<RequestContext, CancellationToken, UniTask<ResponseContext>> next)
+    //    {
+    //        var sw = Stopwatch.StartNew();
+    //        try
+    //        {
+    //            UnityEngine.Debug.Log("Start Network Request:" + context.Path);
 
-                var response = await next(context, cancellationToken);
+    //            var response = await next(context, cancellationToken);
 
-                UnityEngine.Debug.Log($"Complete Network Request: {context.Path} , Elapsed: {sw.Elapsed}, Size: {response.GetRawData().Length}");
+    //            UnityEngine.Debug.Log($"Complete Network Request: {context.Path} , Elapsed: {sw.Elapsed}, Size: {response.GetRawData().Length}");
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                if (ex is OperationCanceledException)
-                {
-                    UnityEngine.Debug.Log("Request Canceled:" + context.Path);
-                }
-                else if (ex is TimeoutException)
-                {
-                    UnityEngine.Debug.Log("Request Timeout:" + context.Path);
-                }
-                else if (ex is UnityWebRequestException webex)
-                {
-                    if (webex.IsHttpError)
-                    {
-                        UnityEngine.Debug.Log($"Request HttpError: {context.Path} Code:{webex.ResponseCode} Message:{webex.Message}");
-                    }
-                    else if (webex.IsNetworkError)
-                    {
-                        UnityEngine.Debug.Log($"Request NetworkError: {context.Path} Code:{webex.ResponseCode} Message:{webex.Message}");
-                    }
-                }
-                throw;
-            }
-            finally
-            {
-                /* log other */
-            }
-        }
-    }
+    //            return response;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            if (ex is OperationCanceledException)
+    //            {
+    //                UnityEngine.Debug.Log("Request Canceled:" + context.Path);
+    //            }
+    //            else if (ex is TimeoutException)
+    //            {
+    //                UnityEngine.Debug.Log("Request Timeout:" + context.Path);
+    //            }
+    //            else if (ex is UnityWebRequestException webex)
+    //            {
+    //                if (webex.IsHttpError)
+    //                {
+    //                    UnityEngine.Debug.Log($"Request HttpError: {context.Path} Code:{webex.ResponseCode} Message:{webex.Message}");
+    //                }
+    //                else if (webex.IsNetworkError)
+    //                {
+    //                    UnityEngine.Debug.Log($"Request NetworkError: {context.Path} Code:{webex.ResponseCode} Message:{webex.Message}");
+    //                }
+    //            }
+    //            throw;
+    //        }
+    //        finally
+    //        {
+    //            /* log other */
+    //        }
+    //    }
+    //}
 
     public class SetupHeaderDecorator : IAsyncDecorator
     {

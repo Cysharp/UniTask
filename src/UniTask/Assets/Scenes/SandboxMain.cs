@@ -428,15 +428,15 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("after");
     }
 
-    private async UniTaskVoid ExecuteAsync()
-    {
-        var req = UnityWebRequest.Get("https://google.com/");
+    //private async UniTaskVoid ExecuteAsync()
+    //{
+    //    var req = UnityWebRequest.Get("https://google.com/");
 
-        var v = await req.SendWebRequest().ToUniTask();
-        // req.Dispose();
-        Debug.Log($"{v.isDone} {v.isHttpError} {v.isNetworkError}");
-        Debug.Log(v.downloadHandler.text);
-    }
+    //    var v = await req.SendWebRequest().ToUniTask();
+    //    // req.Dispose();
+    //    Debug.Log($"{v.isDone} {v.isHttpError} {v.isNetworkError}");
+    //    Debug.Log(v.downloadHandler.text);
+    //}
     private async void Go()
     {
         await UniTask.DelayFrame(0);
@@ -569,8 +569,9 @@ public class SandboxMain : MonoBehaviour
         {
 
             var client = new NetworkClient("http://localhost:5000", TimeSpan.FromSeconds(2),
-                new QueueRequestDecorator(),
-                new LoggingDecorator());
+                new QueueRequestDecorator()
+                /*,  new LoggingDecorator()*/
+                 );
             //new AppendTokenDecorator(),
             //new SetupHeaderDecorator());
 

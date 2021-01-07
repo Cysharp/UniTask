@@ -255,3 +255,5 @@ src/UniTask/DOTween.Modules.Player.csproj
 src/UniTask/Assembly-CSharp.Player.csproj
 
 src/UniTask/Unity.EditorCoroutines.Editor.csproj
+
+src/UniTask/.vsconfig
