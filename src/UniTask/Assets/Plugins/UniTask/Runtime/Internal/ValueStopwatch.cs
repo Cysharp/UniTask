@@ -18,6 +18,8 @@ namespace Cysharp.Threading.Tasks.Internal
 
         public TimeSpan Elapsed => TimeSpan.FromTicks(this.ElapsedTicks);
 
+        public bool IsInvalid => startTimestamp == 0;
+
         public long ElapsedTicks
         {
             get

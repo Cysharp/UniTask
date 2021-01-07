@@ -726,6 +726,12 @@ namespace Cysharp.Threading.Tasks
                     return false;
                 }
 
+                if (stopwatch.IsInvalid)
+                {
+                    core.TrySetResult(AsyncUnit.Default);
+                    return false;
+                }
+
                 if (stopwatch.ElapsedTicks >= delayTimeSpanTicks)
                 {
                     core.TrySetResult(AsyncUnit.Default);
