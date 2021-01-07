@@ -577,8 +577,8 @@ public class SandboxMain : MonoBehaviour
             StartCoroutine(LastYieldCore());
 
             Debug.Log("BEFORE:" + Time.frameCount);
-
-            await UniTask.Yield(PlayerLoopTiming.LastTimeUpdate);
+            
+            // await UniTask.Yield(PlayerLoopTiming.LastTimeUpdate);
 
             Debug.Log("AFTER:" + Time.frameCount);
         }));
