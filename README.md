@@ -506,10 +506,10 @@ DOTween support's default behaviour(`await`, `WithCancellation`, `ToUniTask`) aw
 
 AsyncEnumerable and Async LINQ
 ---
-Unity 2020.2.0a12 supports C# 8.0 so you can use `await foreach`. This is the new Update notation in async era.
+Unity 2020.2 supports C# 8.0 so you can use `await foreach`. This is the new Update notation in async era.
 
 ```csharp
-// Unity 2020.2.0a12, C# 8.0
+// Unity 2020.2, C# 8.0
 await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(token))
 {
     Debug.Log("Update() " + Time.frameCount);
@@ -917,7 +917,7 @@ After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of gi
 
 or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"` to `Packages/manifest.json`.
 
-If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.0.36`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.0.36`.
+If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.1.0`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
 
 ### Install via OpenUPM
 
