@@ -16,6 +16,12 @@ using UnityEngine.Experimental.LowLevel;
 using UnityEditor;
 #endif
 
+#if UNITY_2019_4_OR_NEWER
+using PlayerLoopType = UnityEngine.PlayerLoop;
+#else
+using PlayerLoopType = UnityEngine.Experimental.PlayerLoop;
+#endif
+
 namespace Cysharp.Threading.Tasks
 {
     public static class UniTaskLoopRunners
@@ -321,59 +327,58 @@ namespace Cysharp.Threading.Tasks
 
             var copyList = playerLoop.subSystemList.ToArray();
 
-            // Initialization
-            var i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.Initialization));
+            var i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.Initialization));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldInitialization), yielders[0] = new ContinuationQueue(PlayerLoopTiming.Initialization),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldInitialization), yielders[1] = new ContinuationQueue(PlayerLoopTiming.LastInitialization),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerInitialization), runners[0] = new PlayerLoopRunner(PlayerLoopTiming.Initialization),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastInitialization), runners[1] = new PlayerLoopRunner(PlayerLoopTiming.LastInitialization));
             // EarlyUpdate
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.EarlyUpdate));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.EarlyUpdate));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldEarlyUpdate), yielders[2] = new ContinuationQueue(PlayerLoopTiming.EarlyUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldEarlyUpdate), yielders[3] = new ContinuationQueue(PlayerLoopTiming.LastEarlyUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerEarlyUpdate), runners[2] = new PlayerLoopRunner(PlayerLoopTiming.EarlyUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastEarlyUpdate), runners[3] = new PlayerLoopRunner(PlayerLoopTiming.LastEarlyUpdate));
             // FixedUpdate
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.FixedUpdate));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.FixedUpdate));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldFixedUpdate), yielders[4] = new ContinuationQueue(PlayerLoopTiming.FixedUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldFixedUpdate), yielders[5] = new ContinuationQueue(PlayerLoopTiming.LastFixedUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerFixedUpdate), runners[4] = new PlayerLoopRunner(PlayerLoopTiming.FixedUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastFixedUpdate), runners[5] = new PlayerLoopRunner(PlayerLoopTiming.LastFixedUpdate));
             // PreUpdate
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.PreUpdate));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.PreUpdate));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPreUpdate), yielders[6] = new ContinuationQueue(PlayerLoopTiming.PreUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreUpdate), yielders[7] = new ContinuationQueue(PlayerLoopTiming.LastPreUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerPreUpdate), runners[6] = new PlayerLoopRunner(PlayerLoopTiming.PreUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastPreUpdate), runners[7] = new PlayerLoopRunner(PlayerLoopTiming.LastPreUpdate));
             // Update
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.Update));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.Update));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldUpdate), yielders[8] = new ContinuationQueue(PlayerLoopTiming.Update),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldUpdate), yielders[9] = new ContinuationQueue(PlayerLoopTiming.LastUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerUpdate), runners[8] = new PlayerLoopRunner(PlayerLoopTiming.Update),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastUpdate), runners[9] = new PlayerLoopRunner(PlayerLoopTiming.LastUpdate));
             // PreLateUpdate
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.PreLateUpdate));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.PreLateUpdate));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPreLateUpdate), yielders[10] = new ContinuationQueue(PlayerLoopTiming.PreLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPreLateUpdate), yielders[11] = new ContinuationQueue(PlayerLoopTiming.LastPreLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerPreLateUpdate), runners[10] = new PlayerLoopRunner(PlayerLoopTiming.PreLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastPreLateUpdate), runners[11] = new PlayerLoopRunner(PlayerLoopTiming.LastPreLateUpdate));
             // PostLateUpdate
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.PostLateUpdate));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.PostLateUpdate));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPostLateUpdate), yielders[12] = new ContinuationQueue(PlayerLoopTiming.PostLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldPostLateUpdate), yielders[13] = new ContinuationQueue(PlayerLoopTiming.LastPostLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerPostLateUpdate), runners[12] = new PlayerLoopRunner(PlayerLoopTiming.PostLateUpdate),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastPostLateUpdate), runners[13] = new PlayerLoopRunner(PlayerLoopTiming.LastPostLateUpdate));
 #if UNITY_2020_2_OR_NEWER
             // TimeUpdate
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.TimeUpdate));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.TimeUpdate));
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldTimeUpdate), yielders[14] = new ContinuationQueue(PlayerLoopTiming.TimeUpdate),
-                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldTimeUpdate), yielders[15] = new ContinuationQueue(PlayerLoopTiming.LastTimeUpdate),
-                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerTimeUpdate), runners[14] = new PlayerLoopRunner(PlayerLoopTiming.TimeUpdate),
-                                                                  typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastTimeUpdate), runners[15] = new PlayerLoopRunner(PlayerLoopTiming.LastTimeUpdate));
+                                                                    typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldTimeUpdate), yielders[15] = new ContinuationQueue(PlayerLoopTiming.LastTimeUpdate),
+                                                                    typeof(UniTaskLoopRunners.UniTaskLoopRunnerTimeUpdate), runners[14] = new PlayerLoopRunner(PlayerLoopTiming.TimeUpdate),
+                                                                    typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastTimeUpdate), runners[15] = new PlayerLoopRunner(PlayerLoopTiming.LastTimeUpdate));
 #endif
 
             // Insert UniTaskSynchronizationContext to Update loop
-            i = FindLoopSystemIndex(copyList, typeof(UnityEngine.PlayerLoop.Update));
+            i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.Update));
             copyList[i].subSystemList = InsertUniTaskSynchronizationContext(copyList[i]);
 
             playerLoop.subSystemList = copyList;
