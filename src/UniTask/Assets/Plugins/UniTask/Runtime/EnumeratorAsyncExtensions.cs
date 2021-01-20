@@ -87,11 +87,14 @@ namespace Cysharp.Threading.Tasks
                 result.calledGetResult = false;
                 result.initialFrame = -1;
 
-                PlayerLoopHelper.AddAction(timing, result);
-
                 token = result.core.Version;
 
-                result.MoveNext(); // run immediately.
+                // run immediately.
+                if (result.MoveNext())
+                {
+                    PlayerLoopHelper.AddAction(timing, result);
+                }
+                
                 return result;
             }
 
@@ -185,6 +188,7 @@ namespace Cysharp.Threading.Tasks
                 core.Reset();
                 innerEnumerator = default;
                 cancellationToken = default;
+
                 return pool.TryPush(this);
             }
 
@@ -243,7 +247,7 @@ namespace Cysharp.Threading.Tasks
                     {
                         goto WARN;
                     }
-                    
+
                     continue;
 
                     WARN:
