@@ -138,7 +138,7 @@ async UniTask<string> DemoAsync()
 
 Basics of UniTask and AsyncOperation
 ---
-UniTask features rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so the required Unity version is after `Unity 2018.3`, the official oldest version supported is `Unity 2018.4.13f1`.
+UniTask features rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so the required Unity version is after `Unity 2018.3`, the official lowest version supported is `Unity 2018.4.13f1`.
 
 Why is UniTask(custom task-like object) required? Because Task is too heavy and not matched to Unity threading (single-thread). UniTask does not use threads and SynchronizationContext/ExecutionContext because Unity's asynchronous object is automaticaly dispatched by Unity's engine layer. It achieves faster and lower allocation, and is completely integrated with Unity.
 
@@ -213,7 +213,7 @@ await task;
 await task; // NG, throws Exception
 ```
 
-Store to the class field, you can use `UniTask.Lazy` that guarantees calling multiple times. `.Preserve()` allows for multiple calls (internally cached results). This is useful when there are multiple calls in a function scope.
+Store to the class field, you can use `UniTask.Lazy` that supports calling multiple times. `.Preserve()` allows for multiple calls (internally cached results). This is useful when there are multiple calls in a function scope.
 
 Also `UniTaskCompletionSource` can await multiple times and await from many callers.
 
