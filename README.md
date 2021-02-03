@@ -2,20 +2,20 @@ UniTask
 ===
 [![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases)
 
-Provides an efficient allocation free async/await integration to Unity.
+Provides an efficient allocation free async/await integration for Unity.
 
-* Struct based `UniTask<T>` and custom AsyncMethodBuilder to achive zero allocation
-* All Unity AsyncOperations and Coroutine to awaitable
-* PlayerLoop based task(`UniTask.Yield`, `UniTask.Delay`, `UniTask.DelayFrame`, etc..) that enable to replace all coroutine operation
+* Struct based `UniTask<T>` and custom AsyncMethodBuilder to achieve zero allocation
+* Makes all Unity AsyncOperations and Coroutines awaitable
+* PlayerLoop based task(`UniTask.Yield`, `UniTask.Delay`, `UniTask.DelayFrame`, etc..) that enable replacing all coroutine operations
 * MonoBehaviour Message Events and uGUI Events as awaitable/async-enumerable
-* Completely run on Unity's PlayerLoop so don't use thread and run on WebGL, wasm, etc.
+* Runs completely on Unity's PlayerLoop so doesn't use threads and runs on WebGL, wasm, etc.
 * Asynchronous LINQ, with Channel and AsyncReactiveProperty
-* TaskTracker window to prevent memory leak
+* TaskTracker window to prevent memory leaks
 * Highly compatible behaviour with Task/ValueTask/IValueTaskSource
 
-Techinical details, see blog post: [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ
+For technical details, see blog post: [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ
 ](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)  
-Advanced tips, see blog post: [Extends UnityWebRequest via async decorator pattern — Advanced Techniques of UniTask](https://medium.com/@neuecc/extends-unitywebrequest-via-async-decorator-pattern-advanced-techniques-of-unitask-ceff9c5ee846)
+For advanced tips, see blog post: [Extends UnityWebRequest via async decorator pattern — Advanced Techniques of UniTask](https://medium.com/@neuecc/extends-unitywebrequest-via-async-decorator-pattern-advanced-techniques-of-unitask-ceff9c5ee846)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -72,7 +72,7 @@ async UniTask<string> DemoAsync()
     // .ToUniTask accepts progress callback(and all options), Progress.Create is a lightweight alternative of IProgress<T>
     var asset3 = await Resources.LoadAsync<TextAsset>("baz").ToUniTask(Progress.Create<float>(x => Debug.Log(x)));
 
-    // await frame-based operation like coroutine
+    // await frame-based operation like a coroutine
     await UniTask.DelayFrame(100); 
 
     // replacement of yield return new WaitForSeconds/WaitForSecondsRealtime
@@ -97,10 +97,10 @@ async UniTask<string> DemoAsync()
     // special helper of WaitUntil
     await UniTask.WaitUntilValueChanged(this, x => x.isActive);
 
-    // You can await IEnumerator coroutine
+    // You can await IEnumerator coroutines
     await FooCoroutineEnumerator();
 
-    // You can await standard task
+    // You can await a standard task
     await Task.Run(() => 100);
 
     // Multithreading, run on ThreadPool under this code
@@ -122,13 +122,13 @@ async UniTask<string> DemoAsync()
     var task2 = GetTextAsync(UnityWebRequest.Get("http://bing.com"));
     var task3 = GetTextAsync(UnityWebRequest.Get("http://yahoo.com"));
 
-    // concurrent async-wait and get result easily by tuple syntax
+    // concurrent async-wait and get results easily by tuple syntax
     var (google, bing, yahoo) = await UniTask.WhenAll(task1, task2, task3);
 
     // shorthand of WhenAll, tuple can await directly
     var (google2, bing2, yahoo2) = await (task1, task2, task3);
     
-    // You can handle timeout easily
+    // You can handle timeouts easily
     await GetTextAsync(UnityWebRequest.Get("http://unity.com")).Timeout(TimeSpan.FromMilliseconds(300));
 
     // return async-value.(or you can use `UniTask`(no result), `UniTaskVoid`(fire and forget)).
@@ -138,9 +138,9 @@ async UniTask<string> DemoAsync()
 
 Basics of UniTask and AsyncOperation
 ---
-UniTask feature rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so required Unity version is after `Unity 2018.3`, officialy lower support version is `Unity 2018.4.13f1`.
+UniTask features rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so the required Unity version is after `Unity 2018.3`, the official oldest version supported is `Unity 2018.4.13f1`.
 
-Why UniTask(custom task-like object) is required? Because Task is too heavy, not matched to Unity threading(single-thread). UniTask does not use thread and SynchronizationContext/ExecutionContext because almost Unity's asynchronous object is automaticaly dispatched by Unity's engine layer. It acquires more fast and more less allocation, completely integrated with Unity.
+Why is UniTask(custom task-like object) required? Because Task is too heavy and not matched to Unity threading (single-thread). UniTask does not use threads and SynchronizationContext/ExecutionContext because Unity's asynchronous object is automaticaly dispatched by Unity's engine layer. It achieves faster and lower allocation, and is completely integrated with Unity.
 
 You can await `AsyncOperation`, `ResourceRequest`, `AssetBundleRequest`, `AssetBundleCreateRequest`, `UnityWebRequestAsyncOperation`, `AsyncGPUReadbackRequest`, `IEnumerator` and others when `using Cysharp.Threading.Tasks;`.
 
@@ -152,13 +152,13 @@ UniTask provides three pattern of extension methods.
 * .ToUniTask(IProgress, PlayerLoopTiming, CancellationToken);
 ```
 
-`WithCancellation` is a simple version of `ToUniTask`, both returns `UniTask`. Details of cancellation, see: [Cancellation and Exception handling](#cancellation-and-exception-handling) section.
+`WithCancellation` is a simple version of `ToUniTask`, both return `UniTask`. For details of cancellation, see: [Cancellation and Exception handling](#cancellation-and-exception-handling) section.
 
-> Note: WithCancellation is returned from native timing of PlayerLoop but ToUniTask is returned from specified PlayerLoopTiming. Details of timing, see: [PlayerLoop](#playerloop) section.
+> Note: WithCancellation is returned from native timing of PlayerLoop but ToUniTask is returned from specified PlayerLoopTiming. For details of timing, see: [PlayerLoop](#playerloop) section.
 
-> Note: AssetBundleRequest has `asset` and `allAssets`, in default await returns `asset`. If you want to get `allAssets`, you can use `AwaitForAllAssets()` method.
+> Note: AssetBundleRequest has `asset` and `allAssets`, default await returns `asset`. If you want to get `allAssets`, you can use `AwaitForAllAssets()` method.
 
-The type of `UniTask` can use utility like `UniTask.WhenAll`, `UniTask.WhenAny`. It is like Task.WhenAll/WhenAny but return type is more useful, returns value tuple so can deconsrtuct each result and pass multiple type.
+The type of `UniTask` can use utilities like `UniTask.WhenAll`, `UniTask.WhenAny`. They are like `Task.WhenAll`/`Task.WhenAny` but the return type is more useful. They return value tuples so you can deconstruct each result and pass multiple types.
 
 ```csharp
 public async UniTaskVoid LoadManyAsync()
@@ -177,7 +177,7 @@ async UniTask<Sprite> LoadAsSprite(string path)
 }
 ```
 
-If you want to convert callback to UniTask, you can use `UniTaskCompletionSource<T>` that is the lightweight edition of `TaskCompletionSource<T>`. 
+If you want to convert a callback to UniTask, you can use `UniTaskCompletionSource<T>` which is a lightweight edition of `TaskCompletionSource<T>`. 
 
 ```csharp
 public UniTask<int> WrapByUniTaskCompletionSource()
@@ -194,7 +194,7 @@ public UniTask<int> WrapByUniTaskCompletionSource()
 
 You can convert Task -> UniTask: `AsUniTask`, `UniTask` -> `UniTask<AsyncUnit>`: `AsAsyncUnitUniTask`, `UniTask<T>` -> `UniTask`: `AsUniTask`. `UniTask<T>` -> `UniTask`'s conversion cost is free.
 
-If you want to convert async to coroutine, you can use `.ToCoroutine()`, this is useful to use only allow coroutine system.
+If you want to convert async to coroutine, you can use `.ToCoroutine()`, this is useful if you want to only allow using the coroutine system.
 
 UniTask can not await twice. This is a similar constraint to the [ValueTask/IValueTaskSource](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1) introduced in .NET Standard 2.1.
 
@@ -213,13 +213,13 @@ await task;
 await task; // NG, throws Exception
 ```
 
-Store to the class field, you can use `UniTask.Lazy` that gurantee call multipletimes. `.Preserve()` allows for multiple calls (internally cached results). This is useful when multiple calls in a function scope.
+Store to the class field, you can use `UniTask.Lazy` that guarantees calling multiple times. `.Preserve()` allows for multiple calls (internally cached results). This is useful when there are multiple calls in a function scope.
 
-Also `UniTaskCompletionSource` can await multipletimes and await from many caller.
+Also `UniTaskCompletionSource` can await multiple times and await from many callers.
 
 Cancellation and Exception handling
 ---
-Some UniTask factory methods have `CancellationToken cancellationToken = default` parameter. Andalso some async operation for unity have `WithCancellation(CancellationToken)` and `ToUniTask(..., CancellationToken cancellation = default)` extension methods. 
+Some UniTask factory methods have a `CancellationToken cancellationToken = default` parameter. Also some async operations for Unity have `WithCancellation(CancellationToken)` and `ToUniTask(..., CancellationToken cancellation = default)` extension methods. 
 
 You can pass `CancellationToken` to parameter by standard [`CancellationTokenSource`](https://docs.microsoft.com/en-us/dotnet/api/system.threading.cancellationtokensource).
 
@@ -236,18 +236,18 @@ await UnityWebRequest.Get("http://google.co.jp").SendWebRequest().WithCancellati
 await UniTask.DelayFrame(1000, cancellationToken: cts.Token);
 ```
 
-CancellationToken can create by `CancellationTokenSource` or MonoBehaviour's extension method `GetCancellationTokenOnDestroy`.
+CancellationToken can be created by `CancellationTokenSource` or MonoBehaviour's extension method `GetCancellationTokenOnDestroy`.
 
 ```csharp
 // this CancellationToken lifecycle is same as GameObject.
 await UniTask.DelayFrame(1000, cancellationToken: this.GetCancellationTokenOnDestroy());
 ```
 
-When detect cancellation, all methods throws `OperationCanceledException` and propagate to upstream. `OperationCanceledException` is special exception, if not handled this exception, finally it is propagated to `UniTaskScheduler.UnobservedTaskException`.
+When cancellation is detected, all methods throw `OperationCanceledException` and propagate upstream. `OperationCanceledException` is a special exception, if this exception is not handled, it is propagated finally to `UniTaskScheduler.UnobservedTaskException`.
 
-Default behaviour of received unhandled exception is write log as exception. Log level can change by `UniTaskScheduler.UnobservedExceptionWriteLogType`. If you want to change custom beavhiour, set action to `UniTaskScheduler.UnobservedTaskException.`
+The default behaviour of received unhandled exception is to write log as exception. Log level can be changed using `UniTaskScheduler.UnobservedExceptionWriteLogType`. If you want to use custom behaviour, set an action to `UniTaskScheduler.UnobservedTaskException.`
 
-If you want to cancel behaviour in async UniTask method, throws `OperationCanceledException` manually.
+If you want to cancel behaviour in an async UniTask method, throw `OperationCanceledException` manually.
 
 ```csharp
 public async UniTask<int> FooAsync()
@@ -257,7 +257,7 @@ public async UniTask<int> FooAsync()
 }
 ```
 
-If you handle exception but want to ignore(propagete to global cancellation handling), use exception filter.
+If you handle an exception but want to ignore(propagate to global cancellation handling), use an exception filter.
 
 ```csharp
 public async UniTask<int> BarAsync()
@@ -274,7 +274,7 @@ public async UniTask<int> BarAsync()
 }
 ```
 
-throws/catch `OperationCanceledException` is slightly heavy, if you want to care performance, use `UniTask.SuppressCancellationThrow` to avoid OperationCanceledException throw. It returns `(bool IsCanceled, T Result)` instead of throw.
+throws/catch `OperationCanceledException` is slightly heavy, so if performance is a concern, use `UniTask.SuppressCancellationThrow` to avoid OperationCanceledException throw. It returns `(bool IsCanceled, T Result)` instead of throwing.
 
 ```csharp
 var (isCanceled, _) = await UniTask.DelayFrame(10, cancellationToken: cts.Token).SuppressCancellationThrow();
@@ -284,11 +284,11 @@ if (isCanceled)
 }
 ```
 
-Note: Only suppress throws if you call it directly into the most source method. Otherwise, the return value will be converted, but the entire pipeline will not be suppressed throws.
+Note: Only suppress throws if you call directly into the most source method. Otherwise, the return value will be converted, but the entire pipeline will not suppress throws.
 
 Progress
 ---
-Some async operation for unity have `ToUniTask(IProgress<float> progress = null, ...)` extension methods. 
+Some async operations for unity have `ToUniTask(IProgress<float> progress = null, ...)` extension methods. 
 
 ```csharp
 var progress = Progress.Create<float>(x => Debug.Log(x));
@@ -298,9 +298,9 @@ var request = await UnityWebRequest.Get("http://google.co.jp")
     .ToUniTask(progress: progress);
 ```
 
-You should not use standard `new System.Progress<T>`, because it causes allocation every times. Use `Cysharp.Threading.Tasks.Progress` instead. This progress factory has two methods, `Create` and `CreateOnlyValueChanged`. `CreateOnlyValueChanged` calls only when progress value changed.
+You should not use standard `new System.Progress<T>`, because it causes allocation every time. Use `Cysharp.Threading.Tasks.Progress` instead. This progress factory has two methods, `Create` and `CreateOnlyValueChanged`. `CreateOnlyValueChanged` calls only when the progress value has changed.
 
-Implements IProgress interface to caller is more better, there is no allocation of lambda.
+Implementing IProgress interface to caller is better as there is no lambda allocation.
 
 ```csharp
 public class Foo : MonoBehaviour, IProgress<float>
@@ -321,7 +321,7 @@ public class Foo : MonoBehaviour, IProgress<float>
 
 PlayerLoop
 ---
-UniTask is run on custom [PlayerLoop](https://docs.unity3d.com/ScriptReference/LowLevel.PlayerLoop.html). UniTask's playerloop based method(such as `Delay`, `DelayFrame`, `asyncOperation.ToUniTask`, etc...) accepts this `PlayerLoopTiming`.
+UniTask is run on a custom [PlayerLoop](https://docs.unity3d.com/ScriptReference/LowLevel.PlayerLoop.html). UniTask's playerloop based methods (such as `Delay`, `DelayFrame`, `asyncOperation.ToUniTask`, etc...) accept this `PlayerLoopTiming`.
 
 ```csharp
 public enum PlayerLoopTiming
@@ -356,25 +356,25 @@ public enum PlayerLoopTiming
 
 It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.com/neuecc/bc3a1cfd4d74501ad057e49efcd7bdae) to Unity's default playerloop and injected UniTask's custom loop.
 
-`PlayerLoopTiming.Update` is similar as `yield return null` in coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`). `PlayerLoopTiming.FixedUpdate` is similar as `WaitForFixedUpdate`, `PlayerLoopTiming.LastPostLateUpdate` is similar as `WaitForEndOfFrame` in coroutine.
+`PlayerLoopTiming.Update` is similar to `yield return null` in a coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`). `PlayerLoopTiming.FixedUpdate` is similar to `WaitForFixedUpdate`, `PlayerLoopTiming.LastPostLateUpdate` is similar to `WaitForEndOfFrame` in coroutine.
 
-> `await UniTask.WaitForEndOfFrame()` is not equilavelnt to coroutine's `yield return new WaitForEndOfFrame()`. Coroutine's WaitForEndOfFrame seems to run after the PlayerLoop is done. Some methods that require coroutine's end of frame(`ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, etc) does not work correctly when replace to async/await. In that case, use a coroutine.
+> `await UniTask.WaitForEndOfFrame()` is not equivalent to coroutine's `yield return new WaitForEndOfFrame()`. Coroutine's WaitForEndOfFrame seems to run after the PlayerLoop is done. Some methods that require coroutine's end of frame(`ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, etc) do not work correctly when replaced with async/await. In these cases, use a coroutine instead.
 
-`yield return null` and `UniTask.Yield` is similar but different. `yield return null` always return next frame but `UniTask.Yield` return next called, that is, call `UniTask.Yield(PlayerLoopTiming.Update)` on `PreUpdate`, it returns same frame. `UniTask.NextFrame()` gurantees return next frame, this would be expected to behave exactly the same as `yield return null`.
+`yield return null` and `UniTask.Yield` are similar but different. `yield return null` always returns next frame but `UniTask.Yield` returns next called. That is, call `UniTask.Yield(PlayerLoopTiming.Update)` on `PreUpdate`, it returns same frame. `UniTask.NextFrame()` guarantees return next frame, you can expect this to behave exactly the same as `yield return null`.
 
-> UniTask.Yield(without CancellationToken) is a special type, returns `YieldAwaitable` and run on YieldRunner. It is most lightweight and faster.
+> UniTask.Yield(without CancellationToken) is a special type, returns `YieldAwaitable` and run on YieldRunner. It is most lightweight and fastest.
 
-AsyncOperation is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after called, loaded scene's `Start` called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
+`AsyncOperation` is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after being called, the loaded scene's `Start` is called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
 
-In UniTask, await directly and `WithCancellation` use native timing, `ToUniTask` use specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, causes different order of Start and continuation after await. so recommend not to use `LoadSceneAsync.ToUniTask`.
+In UniTask, await directly and `WithCancellation` use native timing, `ToUniTask` uses specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, it causes a different order of Start and continuation after await. So it is recommended not to use `LoadSceneAsync.ToUniTask`.
 
-In stacktrace, you can check where is running in playerloop.
+In the stacktrace, you can check where it is running in playerloop.
 
 ![image](https://user-images.githubusercontent.com/46207/83735571-83caea80-a68b-11ea-8d22-5e22864f0d24.png)
 
-In default, UniTask's PlayerLoop is initialized at `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`.
+By default, UniTask's PlayerLoop is initialized at `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`.
 
-The order in which methods are called in BeforeSceneLoad is indeterminate, so if you want to use UniTask in other BeforeSceneLoad methods, you should try to initialize it before this.
+The order in which methods are called in BeforeSceneLoad is nondeterministic, so if you want to use UniTask in other BeforeSceneLoad methods, you should try to initialize it before this.
 
 ```csharp
 // AfterAssembliesLoaded is called before BeforeSceneLoad
@@ -386,9 +386,9 @@ public static void InitUniTaskLoop()
 }
 ```
 
-If you import Unity's `Entities` package, that reset custom player loop to default at `BeforeSceneLoad` and inject ECS's loop. When Unity call ECS's inject method after UniTask's initialize method, UniTask will no longer work.
+If you import Unity's `Entities` package, that resets the custom player loop to default at `BeforeSceneLoad` and injects ECS's loop. When Unity calls ECS's inject method after UniTask's initialize method, UniTask will no longer work.
 
-To solve this issue, you can re-initialize UniTask PlayerLoop after ECS initialized.
+To solve this issue, you can re-initialize the UniTask PlayerLoop after ECS is initialized.
 
 ```csharp
 // Get ECS Loop.
@@ -398,7 +398,7 @@ var playerLoop = ScriptBehaviourUpdateOrder.CurrentPlayerLoop;
 PlayerLoopHelper.Initialize(ref playerLoop);
 ```
 
-You can diagnostic UniTask's player loop is ready by `PlayerLoopHelper.IsInjectedUniTaskPlayerLoop()`. And also `PlayerLoopHelper.DumpCurrentPlayerLoop` shows current all playerloop to console.
+You can diagnose whether UniTask's player loop is ready by calling `PlayerLoopHelper.IsInjectedUniTaskPlayerLoop()`. And also `PlayerLoopHelper.DumpCurrentPlayerLoop` logs all current playerloops to console.
 
 ```csharp
 void Start()
@@ -410,7 +410,7 @@ void Start()
 
 async void vs async UniTaskVoid
 ---
-`async void` is a standard C# task system so does not run on UniTask systems. It is better not to use. `async UniTaskVoid` is a lightweight version of `async UniTask` because it does not have awaitable completion and report error immediately to `UniTaskScheduler.UnobservedTaskException`. If you don't require to await it(fire and forget), use `UniTaskVoid` is better. Unfortunately to dismiss warning, require to using with `Forget()`.
+`async void` is a standard C# task system so it does not run on UniTask systems. It is better not to use it. `async UniTaskVoid` is a lightweight version of `async UniTask` because it does not have awaitable completion and reports errors immediately to `UniTaskScheduler.UnobservedTaskException`. If you don't require awaiting (fire and forget), using `UniTaskVoid` is better. Unfortunately to dismiss warning, you're required to call `Forget()`.
 
 ```csharp
 public async UniTaskVoid FireAndForgetMethod()
@@ -425,7 +425,7 @@ public void Caller()
 }
 ```
 
-Also UniTask have `Forget` method, it is similar with UniTaskVoid and same effects with it. However still UniTaskVoid is more efficient if completely do not use await。
+Also UniTask has the `Forget` method, it is similar to `UniTaskVoid` and has the same effects. However `UniTaskVoid` is more efficient if you completely don't use `await`。
 
 ```csharp
 public async UniTask DoAsync()
@@ -440,7 +440,7 @@ public void Caller()
 }
 ```
 
-Using async lambda in register event, it is used `async void`. To avoid it, you can use `UniTask.Action` or `UniTask.UnityAction` that creates delegate via `async UniTaskVoid` lambda.
+To use an async lambda registered to an event, don't use `async void`. Instead you can use `UniTask.Action` or `UniTask.UnityAction`, both of which create a delegate via `async UniTaskVoid` lambda.
 
 ```csharp
 Action actEvent;
@@ -455,7 +455,7 @@ actEvent += UniTask.Action(async () => { await UniTask.Yield(); });
 unityEvent += UniTask.UnityAction(async () => { await UniTask.Yield(); });
 ```
 
-`UniTaskVoid` can also use in MonoBehaviour's `Start` method.
+`UniTaskVoid` can also be used in MonoBehaviour's `Start` method.
 
 ```csharp
 class Sample : MonoBehaviour
@@ -469,7 +469,7 @@ class Sample : MonoBehaviour
 
 UniTaskTracker
 ---
-useful for check(leak) UniTasks. You can open tracker window in `Window -> UniTask Tracker`.
+useful for checking (leaked) UniTasks. You can open tracker window in `Window -> UniTask Tracker`.
 
 ![image](https://user-images.githubusercontent.com/46207/83527073-4434bf00-a522-11ea-86e9-3b3975b26266.png)
 
@@ -479,15 +479,15 @@ useful for check(leak) UniTasks. You can open tracker window in `Window -> UniTa
 * Enable Tracking(Toggle) - Start to track async/await UniTask. Performance impact: low.
 * Enable StackTrace(Toggle) - Capture StackTrace when task is started. Performance impact: high.
 
-For debug use, enable tracking and capture stacktrace is useful but it it decline performance. Recommended usage is enable both to find task leak, and when done, finally disable both.
+UniTaskTracker is intended for debugging use only as enabling tracking and capturing stacktraces is useful but has a heavy performance impact. Recommended usage is to enable both tracking and stacktraces to find task leaks and to disable them both when done.
 
 External Assets
 ---
-In default, UniTask supports TextMeshPro(`BindTo(TMP_Text)` and `TMP_InputField` event extensions like standard uGUI `InputField`), DOTween(`Tween` as awaitable) and Addressables(`AsyncOperationHandle` and `AsyncOpereationHandle<T>` as awaitable).
+By default, UniTask supports TextMeshPro(`BindTo(TMP_Text)` and `TMP_InputField` event extensions like standard uGUI `InputField`), DOTween(`Tween` as awaitable) and Addressables(`AsyncOperationHandle` and `AsyncOpereationHandle<T>` as awaitable).
 
-There are defined in separated asmdef like `UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
+There are defined in separated asmdefs like `UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
 
-TextMeshPro and Addressables support are automatically enabled when import there package from package manager. However DOTween support, require to `com.demigiant.dotween` import from [OpenUPM](https://openupm.com/packages/com.demigiant.dotween/) or define `UNITASK_DOTWEEN_SUPPORT` to enable it.
+TextMeshPro and Addressables support are automatically enabled when importing their packages from package manager. However for DOTween support, it is required to import `com.demigiant.dotween` from [OpenUPM](https://openupm.com/packages/com.demigiant.dotween/) or to define `UNITASK_DOTWEEN_SUPPORT` to enable it.
 
 ```csharp
 // sequential
@@ -502,11 +502,11 @@ await UniTask.WhenAll(
     transform.DOScale(10, 3).WithCancellation(ct));
 ```
 
-DOTween support's default behaviour(`await`, `WithCancellation`, `ToUniTask`) awaits tween is killed. It works both Complete(true/false) and Kill(true/false). But if you want to tween reuse(`SetAutoKill(false)`), it does not work you expected. Or, if you want to await for another timing, the following extension methods exist in Tween, `AwaitForComplete`, `AwaitForPause`, `AwaitForPlay`, `AwaitForRewind`, `AwaitForStepComplete`.
+DOTween support's default behaviour(`await`, `WithCancellation`, `ToUniTask`) awaits tween is killed. It works on both Complete(true/false) and Kill(true/false). But if you want to reuse tweens (`SetAutoKill(false)`), it does not work as expected. If you want to await for another timing, the following extension methods exist in Tween, `AwaitForComplete`, `AwaitForPause`, `AwaitForPlay`, `AwaitForRewind`, `AwaitForStepComplete`.
 
 AsyncEnumerable and Async LINQ
 ---
-Unity 2020.2 supports C# 8.0 so you can use `await foreach`. This is the new Update notation in async era.
+Unity 2020.2 supports C# 8.0 so you can use `await foreach`. This is the new Update notation in the async era.
 
 ```csharp
 // Unity 2020.2, C# 8.0
@@ -534,7 +534,7 @@ await okButton.OnClickAsAsyncEnumerable().Where((x, i) => i % 2 == 0).ForEachAsy
 });
 ```
 
-Fire and Forget style(for example, event handling), also you can use `Subscribe`.
+Fire and Forget style(for example, event handling), you can also use `Subscribe`.
 
 ```csharp
 okButton.OnClickAsAsyncEnumerable().Where((x, i) => i % 2 == 0).Subscribe(_ =>
@@ -558,7 +558,7 @@ SelectAwaitWithCancellation(Func<T, CancellationToken, UniTask<TR>> selector)
 
 If you want to use the `async` method inside the func, use the `***Await` or `***AwaitWithCancellation`.
 
-How to create async iterator, C# 8.0 supports async iterator(`async yield return`) but it only allows `IAsyncEnumerable<T>` and of course requires C# 8.0. UniTask supports `UniTaskAsyncEnumerable.Create` method to create custom async iterator.
+How to create an async iterator: C# 8.0 supports async iterator(`async yield return`) but it only allows `IAsyncEnumerable<T>` and of course requires C# 8.0. UniTask supports `UniTaskAsyncEnumerable.Create` method to create custom async iterator.
 
 ```csharp
 // IAsyncEnumerable, C# 8.0 version of async iterator. ( do not use this style, IAsyncEnumerable is not controled in UniTask).
@@ -634,7 +634,7 @@ async UniTask TripleClick(CancellationToken token)
 }
 ```
 
-All MonoBehaviour message events can convert async-streams by `AsyncTriggers` that can enable by `using Cysharp.Threading.Tasks.Triggers;`.
+All MonoBehaviour message events can convert async-streams by `AsyncTriggers` that can be enabled by `using Cysharp.Threading.Tasks.Triggers;`.
 
 ```csharp
 using Cysharp.Threading.Tasks.Triggers;
@@ -650,7 +650,7 @@ async UniTaskVoid MonitorCollision()
 }
 ```
 
-Similar as uGUI event, AsyncTrigger can get by `GetAsync***Trigger` and trigger it self is UniTaskAsyncEnumerable.
+Similar to uGUI event, AsyncTrigger can be created using `GetAsync***Trigger` and triggers itself as UniTaskAsyncEnumerable.
 
 ```csharp
 // use await multiple times, get AsyncTriggerHandler is more efficient.
@@ -667,7 +667,7 @@ await this.GetAsyncMoveTrigger().ForEachAsync(axisEventData =>
 });
 ```
 
-`AsyncReactiveProperty`, `AsyncReadOnlyReactiveProperty` is UniTask version of UniTask's ReactiveProperty. `BindTo` extension method of `IUniTaskAsyncEnumerable<T>` for binding asynchronous stream values to Unity components(Text/Selectable/TMP/Text).
+`AsyncReactiveProperty`, `AsyncReadOnlyReactiveProperty` is UniTask's version of ReactiveProperty. `BindTo` extension method of `IUniTaskAsyncEnumerable<T>` for binding asynchronous stream values to Unity components(Text/Selectable/TMP/Text).
 
 ```csharp
 var rp = new AsyncReactiveProperty<int>(99);
@@ -702,9 +702,9 @@ await button.OnClickAsAsyncEnumerable().ForEachAwaitAsync(async x =>
 });
 ```
 
-It is useful(prevent double-click) but not useful in sometimes.
+It is useful (prevent double-click) but not useful sometimes.
 
-Using `Queue()` method, which will also queue events during asynchronous processing.
+Using the `Queue()` method will also queue events during asynchronous processing.
 
 ```csharp
 // queued message in asynchronous processing
@@ -725,13 +725,13 @@ button.OnClickAsAsyncEnumerable().Subscribe(async x =>
 
 Channel
 ---
-`Channel` is same as [System.Threading.Tasks.Channels](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.channels?view=netcore-3.1) that is similar as GoLang Channel.
+`Channel` is the same as [System.Threading.Tasks.Channels](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.channels?view=netcore-3.1) which is similar to a GoLang Channel.
 
-Currently only supports multiple-producer, single-consumer unbounded channel. It can create by `Channel.CreateSingleConsumerUnbounded<T>()`.
+Currently it only supports multiple-producer, single-consumer unbounded channels. It can create by `Channel.CreateSingleConsumerUnbounded<T>()`.
 
-For producer(`.Writer`), `TryWrite` to push value and `TryComplete` to complete channel. For consumer(`.Reader`), `TryRead`, `WaitToReadAsync`, `ReadAsync`, `Completion` and `ReadAllAsync` to read queued messages.
+For producer(`.Writer`), use `TryWrite` to push value and `TryComplete` to complete channel. For consumer(`.Reader`), use `TryRead`, `WaitToReadAsync`, `ReadAsync`, `Completion` and `ReadAllAsync` to read queued messages.
 
-`ReadAllAsync` returns `IUniTaskAsyncEnumerable<T>` so query LINQ operators. Reader only allows single-consumer but use `.Publish()` query operator to enable multicast message. For example, make pub/sub utility.
+`ReadAllAsync` returns `IUniTaskAsyncEnumerable<T>` so query LINQ operators. Reader only allows single-consumer but uses `.Publish()` query operator to enable multicast message. For example, make pub/sub utility.
 
 ```csharp
 public class AsyncMessageBroker<T> : IDisposable
@@ -768,7 +768,7 @@ public class AsyncMessageBroker<T> : IDisposable
 
 For Unit Testing
 ---
-Unity's `[UnityTest]` attribute can test coroutine(IEnumerator) but can not test async. `UniTask.ToCoroutine` bridges async/await to coroutine so you can test async method.
+Unity's `[UnityTest]` attribute can test coroutine(IEnumerator) but can not test async. `UniTask.ToCoroutine` bridges async/await to coroutine so you can test async methods.
 
 ```csharp
 [UnityTest]
@@ -791,33 +791,33 @@ public IEnumerator DelayIgnore() => UniTask.ToCoroutine(async () =>
 });
 ```
 
-UniTask itself's unit test is written by Unity Test Runner and [Cysharp/RuntimeUnitTestToolkit](https://github.com/Cysharp/RuntimeUnitTestToolkit) to check on CI and IL2CPP working.
+UniTask's own unit tests are written using Unity Test Runner and [Cysharp/RuntimeUnitTestToolkit](https://github.com/Cysharp/RuntimeUnitTestToolkit) to integrate with CI and check if IL2CPP is working.
 
 ThreadPool limitation
 ---
-Most UniTask methods run in a single thread (PlayerLoop), but only `UniTask.Run` and `UniTask.SwitchToThreadPool` run on a thread pool. If you use a thread pool, it won't work with WebGL and so on.
+Most UniTask methods run on a single thread (PlayerLoop), with only `UniTask.Run` and `UniTask.SwitchToThreadPool` running on a thread pool. If you use a thread pool, it won't work with WebGL and so on.
 
-`UniTask.Run` will be deprecated in the future (marked with an Obsolete) and only `RunOnThreadPool` will be used. Also, if you use `UniTask.Run`, consider whether you can use `UniTask.Create` or `UniTask.Void`.
+`UniTask.Run` will be deprecated in the future (marked with an Obsolete) and only `RunOnThreadPool` will be used. If you use `UniTask.Run`, consider whether you can use `UniTask.Create` or `UniTask.Void`.
 
 IEnumerator.ToUniTask limitation
 ---
-You can convert coroutine(IEnumerator) to UniTask(or await directly) but has some limitations.
+You can convert coroutine(IEnumerator) to UniTask(or await directly) but it has some limitations.
 
 * `WaitForEndOfFrame`/`WaitForFixedUpdate`/`Coroutine` is not supported.
-* Consuming loop timing is not same as StartCoroutine, it is used specified PlayerLoopTiming, and default's `PlayerLoopTiming.Update` is run before MonoBehaviour's Update and StartCoroutine's loop.
+* Consuming loop timing is not the same as `StartCoroutine`, it uses the specified `PlayerLoopTiming` and the default `PlayerLoopTiming.Update` is run before MonoBehaviour's `Update` and `StartCoroutine`'s loop.
 
-If you want to convert fully compatible from coroutine to async, use `IEnumerator.ToUniTask(MonoBehaviour coroutineRunner)` overload. It executes StartCoroutine on an instance of the argument MonoBehaviour and waits for it to complete in UniTask.
+If you want fully compatible conversion from coroutine to async, use the `IEnumerator.ToUniTask(MonoBehaviour coroutineRunner)` overload. It executes StartCoroutine on an instance of the argument MonoBehaviour and waits for it to complete in UniTask.
 
 For UnityEditor
 ---
-UniTask can run on Unity Edtitor like Editor Coroutine. However, there are some limitations.
+UniTask can run on Unity Editor like an Editor Coroutine. However, there are some limitations.
 
-* Delay, DelayFrame is not work correctly because can not get deltaTime in editor. Return the result of the await immediately; you can use `DelayType.Realtime` to wait for the right time.
-* All PlayerLoopTiming run on timing, `EditorApplication.update`.
+* Delay, DelayFrame do not work correctly because they can not get deltaTime in editor. Return the result of the await immediately; you can use `DelayType.Realtime` to wait for the right time.
+* All PlayerLoopTiming run on the timing `EditorApplication.update`.
 
 Compare with Standard Task API
 ---
-UniTask has many standard Task-like APIs. This table shows what is the alternative apis.
+UniTask has many standard Task-like APIs. This table shows what the alternative apis are.
 
 Use standard type.
 
@@ -863,7 +863,7 @@ Use UniTask type.
 
 Pooling Configuration
 ---
-UniTask is aggressively caching async promise object to achive zero allocation(technical details, see blog post [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)). In default, cache all promises but you can configure `TaskPool.SetMaxPoolSize` to your value, the value indicates cache size per type. `TaskPool.GetCacheSizeInfo` returns current cached object in pool.
+UniTask aggressively caches async promise objects to achieve zero allocation (for technical details, see blog post [UniTask v2 — Zero Allocation async/await for Unity, with Asynchronous LINQ](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)). By default, it caches all promises but you can configure `TaskPool.SetMaxPoolSize` to your value, the value indicates cache size per type. `TaskPool.GetCacheSizeInfo` returns currently cached objects in pool.
 
 ```csharp
 foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
@@ -874,17 +874,17 @@ foreach (var (type, size) in TaskPool.GetCacheSizeInfo())
 
 Allocation on Profiler
 ---
-In UnityEditor profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generate AsyncStateMachine as class on Debug build and as struct on Release build.
+In UnityEditor the profiler shows allocation of compiler generated AsyncStateMachine but it only occurs in debug(development) build. C# Compiler generates AsyncStateMachine as class on Debug build and as struct on Release build.
 
-After Unity 2020.1 supports Code Optimization option on UnityEditor(right, footer).
+Unity supports Code Optimization option starting in 2020.1 (right, footer).
 
 ![](https://user-images.githubusercontent.com/46207/89967342-2f944600-dc8c-11ea-99fc-0b74527a16f6.png)
 
-You can change C# compiler optimization to release, it removes AsyncStateMachine allocation. Andalso optimization option can set via `Compilation.CompilationPipeline-codeOptimization`, and `Compilation.CodeOptimization`.
+You can change C# compiler optimization to release to remove AsyncStateMachine allocation in development builds. This optimization option can also be set via `Compilation.CompilationPipeline-codeOptimization`, and `Compilation.CodeOptimization`.
 
 UniTaskSynchronizationContext
 ---
-Unity's default SynchronizationContext(`UnitySynchronizationContext`) is poor implementation for performance. UniTask itself is bypass `SynchronizationContext`(and `ExecutionContext`) so does not use it but if exists in `async Task`, still used it. `UniTaskSynchronizationContext` is replacement of `UnitySynchronizationContext`, it is better for performance.
+Unity's default SynchronizationContext(`UnitySynchronizationContext`) is a poor implementation for performance. UniTask bypasses `SynchronizationContext`(and `ExecutionContext`) so it does not use it but if exists in `async Task`, still used it. `UniTaskSynchronizationContext` is a replacement of `UnitySynchronizationContext` which is better for performance.
 
 ```csharp
 public class SyncContextInjecter
@@ -897,19 +897,19 @@ public class SyncContextInjecter
 }
 ```
 
-This is an optional choice and is not always recommended; `UniTaskSynchronizationContext` is less performance than `async UniTask` and is not a complete UniTask replacement. It also does not guarantee full behavioral compatibility with the `UnitySynchronizationContext`.
+This is an optional choice and is not always recommended; `UniTaskSynchronizationContext` is less performant than `async UniTask` and is not a complete UniTask replacement. It also does not guarantee full behavioral compatibility with the `UnitySynchronizationContext`.
 
 API References
 ---
-UniTask's API References is hosted at [cysharp.github.io/UniTask](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.html) by [DocFX](https://dotnet.github.io/docfx/) and [Cysharp/DocfXTemplate](https://github.com/Cysharp/DocfxTemplate).
+UniTask's API References are hosted at [cysharp.github.io/UniTask](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.html) by [DocFX](https://dotnet.github.io/docfx/) and [Cysharp/DocfXTemplate](https://github.com/Cysharp/DocfxTemplate).
 
-For example, UniTask's factory methods can see at [UniTask#methods](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTask.html#methods-1). UniTaskAsyncEnumerable's factory/extension methods can see at [UniTaskAsyncEnumerable#methods](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#methods-1).
+For example, UniTask's factory methods can be seen at [UniTask#methods](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTask.html#methods-1). UniTaskAsyncEnumerable's factory/extension methods can be seen at [UniTaskAsyncEnumerable#methods](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#methods-1).
 
 UPM Package
 ---
 ### Install via git URL
 
-After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of git package. You can add `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask` to Package Manager
+Requires a version of unity that supports path query parameter for git packages (Unity >= 2019.3.4f1, Unity >= 2020.1a21). You can add `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask` to Package Manager
 
 ![image](https://user-images.githubusercontent.com/46207/79450714-3aadd100-8020-11ea-8aae-b8d87fc4d7be.png)
 
@@ -917,7 +917,7 @@ After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of gi
 
 or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"` to `Packages/manifest.json`.
 
-If you want to set a target version, UniTask is using `*.*.*` release tag so you can specify a version like `#2.1.0`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
+If you want to set a target version, UniTask uses the `*.*.*` release tag so you can specify a version like `#2.1.0`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
 
 ### Install via OpenUPM
 
@@ -933,11 +933,11 @@ For .NET Core, use NuGet.
 
 > PM> Install-Package [UniTask](https://www.nuget.org/packages/UniTask)
 
-UniTask of .NET Core version is a subset of Unity UniTask, removed PlayerLoop dependent methods.
+UniTask of .NET Core version is a subset of Unity UniTask with PlayerLoop dependent methods removed.
 
 It runs at higher performance than the standard Task/ValueTask, but you should be careful to ignore the ExecutionContext/SynchronizationContext when using it. `AysncLocal` also does not work because it ignores ExecutionContext.
 
-If you use UniTask internally, but provide ValueTask as an external API, you can write like the following(Inspired by [PooledAwait](https://github.com/mgravell/PooledAwait)).
+If you use UniTask internally, but provide ValueTask as an external API, you can write it like the following(Inspired by [PooledAwait](https://github.com/mgravell/PooledAwait)).
 
 ```csharp
 public class ZeroAllocAsyncAwaitInDotNetCore
@@ -970,7 +970,7 @@ public ValueTask TestAsync()
 
 .NET Core version is intended to allow users to use UniTask as an interface when sharing code with Unity (such as [Cysharp/MagicOnion](https://github.com/Cysharp/MagicOnion/)). .NET Core version of UniTask enables smooth code sharing.
 
-Utility methods such as WhenAll which is equivalent to UniTask are provided as [Cysharp/ValueTaskSupplement](https://github.com/Cysharp/ValueTaskSupplement).
+Utility methods such as WhenAll which are equivalent to UniTask are provided as [Cysharp/ValueTaskSupplement](https://github.com/Cysharp/ValueTaskSupplement).
 
 License
 ---
