@@ -1,7 +1,7 @@
 {
     "name": "UniTask",
-    "references": [
-    ],
+    "rootNamespace": "",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -13,7 +13,7 @@
         {
             "name": "com.unity.modules.assetbundle",
             "expression": "",
-            "define": "NITASK_ASSETBUNDLE_SUPPORT"
+            "define": "UNITASK_ASSETBUNDLE_SUPPORT"
         },
         {
             "name": "com.unity.modules.physics",
@@ -34,6 +34,11 @@
             "name": "com.unity.ugui",
             "expression": "",
             "define": "UNITASK_UGUI_SUPPORT"
+        },
+        {
+            "name": "com.unity.modules.unitywebrequestwww",
+            "expression": "",
+            "define": "UNITASK_WEBREQUEST_SUPPORT"
         }
     ],
     "noEngineReferences": false

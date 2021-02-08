@@ -14,14 +14,14 @@ public class FooMonoBehaviour : MonoBehaviour
 
     private async UniTask Download(UnityWebRequest req, string filePath)
     {
-        var foo = req.SendWebRequest();
+        _ = req.SendWebRequest();
 
 
-        
 
-        var aaa = await foo;
-        Debug.Log(aaa);
 
+        // var aaa = await foo;
+        // Debug.Log(aaa);
+        await UniTask.Yield();
         //File.WriteAllText(filePath, req.downloadHandler.text ?? string.Empty);
     }
 }
