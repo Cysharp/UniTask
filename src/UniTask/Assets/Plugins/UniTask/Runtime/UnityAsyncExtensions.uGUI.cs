@@ -364,6 +364,7 @@ namespace Cysharp.Threading.Tasks
 
         public AsyncUnityEventHandler(UnityEvent unityEvent, CancellationToken cancellationToken, bool callOnce)
         {
+            this.cancellationToken = cancellationToken;
             if (cancellationToken.IsCancellationRequested)
             {
                 isDisposed = true;
@@ -372,7 +373,6 @@ namespace Cysharp.Threading.Tasks
 
             this.action = Invoke;
             this.unityEvent = unityEvent;
-            this.cancellationToken = cancellationToken;
             this.callOnce = callOnce;
 
             unityEvent.AddListener(action);
@@ -388,6 +388,10 @@ namespace Cysharp.Threading.Tasks
         public UniTask OnInvokeAsync()
         {
             core.Reset();
+            if (isDisposed)
+            {
+                core.TrySetCanceled(this.cancellationToken);
+            }
             return new UniTask(this, core.Version);
         }
 
@@ -470,6 +474,7 @@ namespace Cysharp.Threading.Tasks
 
         public AsyncUnityEventHandler(UnityEvent<T> unityEvent, CancellationToken cancellationToken, bool callOnce)
         {
+            this.cancellationToken = cancellationToken;
             if (cancellationToken.IsCancellationRequested)
             {
                 isDisposed = true;
@@ -478,7 +483,6 @@ namespace Cysharp.Threading.Tasks
 
             this.action = Invoke;
             this.unityEvent = unityEvent;
-            this.cancellationToken = cancellationToken;
             this.callOnce = callOnce;
 
             unityEvent.AddListener(action);
@@ -494,6 +498,10 @@ namespace Cysharp.Threading.Tasks
         public UniTask<T> OnInvokeAsync()
         {
             core.Reset();
+            if (isDisposed)
+            {
+                core.TrySetCanceled(this.cancellationToken);
+            }
             return new UniTask<T>(this, core.Version);
         }
 
