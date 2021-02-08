@@ -18,7 +18,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using System.IO;
 using System.Linq.Expressions;
-using Cysharp.Threading.Tasks.Sample;
 
 
 // using DG.Tweening;
@@ -269,32 +268,33 @@ public class SandboxMain : MonoBehaviour
 
     async Task Test1()
     {
-        var r = await TcsAsync("https://bing.com/");
+        // var r = await TcsAsync("https://bing.com/");
+        await Task.Yield();
         Debug.Log("TASKASYNC");
     }
 
-    async UniTaskVoid Test2()
-    {
-        try
-        {
-            //var cts = new CancellationTokenSource();
-            //var r = UniAsync("https://bing.com/", cts.Token);
-            //cts.Cancel();
-            //await r;
-            Debug.Log("SendWebRequestDone:" + PlayerLoopInfo.CurrentLoopType);
+    //async UniTaskVoid Test2()
+    //{
+    //    try
+    //    {
+    //        //var cts = new CancellationTokenSource();
+    //        //var r = UniAsync("https://bing.com/", cts.Token);
+    //        //cts.Cancel();
+    //        //await r;
+    //        Debug.Log("SendWebRequestDone:" + PlayerLoopInfo.CurrentLoopType);
 
 
-            //        var foo = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
-            //          foo.downloadHandler.text;
-            //
-            _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest().WithCancellation(CancellationToken.None);
-            Debug.Log("SendWebRequestWithCancellationDone:" + PlayerLoopInfo.CurrentLoopType);
-        }
-        catch
-        {
-            Debug.Log("Canceled");
-        }
-    }
+    //        //        var foo = await UnityWebRequest.Get("https://bing.com/").SendWebRequest();
+    //        //          foo.downloadHandler.text;
+    //        //
+    //        _ = await UnityWebRequest.Get("https://bing.com/").SendWebRequest().WithCancellation(CancellationToken.None);
+    //        Debug.Log("SendWebRequestWithCancellationDone:" + PlayerLoopInfo.CurrentLoopType);
+    //    }
+    //    catch
+    //    {
+    //        Debug.Log("Canceled");
+    //    }
+    //}
 
     IEnumerator Test3(string url)
     {
@@ -303,17 +303,17 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("COROUTINE");
     }
 
-    static async Task<UnityWebRequest> TcsAsync(string url)
-    {
-        var req = await UnityWebRequest.Get(url).SendWebRequest();
-        return req;
-    }
+    //static async Task<UnityWebRequest> TcsAsync(string url)
+    //{
+    //    var req = await UnityWebRequest.Get(url).SendWebRequest();
+    //    return req;
+    //}
 
-    static async UniTask<UnityWebRequest> UniAsync(string url, CancellationToken cancellationToken)
-    {
-        var req = await UnityWebRequest.Get(url).SendWebRequest().WithCancellation(cancellationToken);
-        return req;
-    }
+    //static async UniTask<UnityWebRequest> UniAsync(string url, CancellationToken cancellationToken)
+    //{
+    //    var req = await UnityWebRequest.Get(url).SendWebRequest().WithCancellation(cancellationToken);
+    //    return req;
+    //}
 
     async Task<int> Test()
     {

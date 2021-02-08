@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
+#if !UNITY_2019_1_OR_NEWER || UNITASK_UGUI_SUPPORT
 using System;
 using System.Threading;
 using UnityEngine;
@@ -822,3 +822,5 @@ namespace Cysharp.Threading.Tasks
         }
     }
 }
+
+#endif
