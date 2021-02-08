@@ -37,8 +37,8 @@ jobs:
             license: UNITY_2020_1
     runs-on: ubuntu-latest
     container:
-      # with linux-il2cpp. image from https://hub.docker.com/r/gableroux/unity3d/tags
-      image: gableroux/unity3d:${{ matrix.unity }}-linux-il2cpp
+      # with linux-il2cpp. image from https://hub.docker.com/r/unityci/editor/tags
+      image: unityci/editor:${{ matrix.unity }}-linux-il2cpp-0
     steps:
       # Ubuntu 18.04 git is too old, use ppa latest git.
       - run: |
