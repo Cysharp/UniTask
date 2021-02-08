@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v2
       # Execute scripts: RuntimeUnitTestToolkit
       - name: Build UnitTest(Linux64, mono)
-        uses: webbertakken/unity-builder@v2.0-alpha-6
+        uses: game-ci/unity-builder@v2.0-alpha-6
         env:
           UNITY_LICENSE: ${{ secrets[matrix.license] }}
         with:
@@ -57,7 +57,7 @@ jobs:
 
       # Execute scripts: Export Package
       - name: Export unitypackage
-        uses: webbertakken/unity-builder@v2.0-alpha-6
+        uses: game-ci/unity-builder@v2.0-alpha-6
         env:
           UNITY_LICENSE: ${{ secrets[matrix.license] }}
         with:
