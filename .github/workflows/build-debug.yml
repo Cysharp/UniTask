@@ -29,39 +29,43 @@ jobs:
     if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]')) && ((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:'))"
     strategy:
       matrix:
-        unity: ["2019.3.9f1", "2020.1.0b5"]
+        unity: ["2019.3.9f1", "2019.4.13f1", "2020.1.12f1"]
         include:
           - unity: 2019.3.9f1
-            license: UNITY_2019_3
-          - unity: 2020.1.0b5
-            license: UNITY_2020_1
+            license: UNITY_LICENSE_2019
+          - unity: 2019.4.13f1
+            license: UNITY_LICENSE_2019
+          - unity: 2020.1.12f1
+            license: UNITY_LICENSE_2020
     runs-on: ubuntu-latest
-    container:
-      # with linux-il2cpp. image from https://hub.docker.com/r/gableroux/unity3d/tags
-      image: gableroux/unity3d:${{ matrix.unity }}-linux-il2cpp
     steps:
-      # Ubuntu 18.04 git is too old, use ppa latest git.
-      - run: |
-          apt-get update && apt-get install --no-install-recommends -y software-properties-common && add-apt-repository -y ppa:git-core/ppa
-          apt-get update && apt-get install --no-install-recommends -y git
       - uses: actions/checkout@v2
-      - run: echo -n "$UNITY_LICENSE" >> .Unity.ulf
-        env:
-          UNITY_LICENSE: ${{ secrets[matrix.license] }}
-      - name: Activate Unity, always returns a success. But if a subsequent run fails, the activation may have failed(if succeeded, shows `Next license update check is after` and not shows other message(like GUID != GUID). If fails not). In that case, upload the artifact's .alf file to https://license.unity3d.com/manual to get the .ulf file and set it to secrets.
-        run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile .Unity.ulf || exit 0
-
       # Execute scripts: RuntimeUnitTestToolkit
       - name: Build UnitTest(Linux64, mono)
-        run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend mono /BuildTarget StandaloneLinux64
-        working-directory: src/UniTask
+        uses: game-ci/unity-builder@v2.0-alpha-6
+        env:
+          UNITY_LICENSE: ${{ secrets[matrix.license] }}
+        with:
+          projectPath: src/UniTask
+          unityVersion: ${{ matrix.unity }}
+          targetPlatform: StandaloneLinux64
+          buildMethod: UnitTestBuilder.BuildUnitTest
+          customParameters: /headless /ScriptBackend mono
+          versioning: None
       - name: Execute UnitTest
         run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_Mono2x/test
 
       # Execute scripts: Export Package
       - name: Export unitypackage
-        run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
-        working-directory: src/UniTask
+        uses: game-ci/unity-builder@v2.0-alpha-6
+        env:
+          UNITY_LICENSE: ${{ secrets[matrix.license] }}
+        with:
+          projectPath: src/UniTask
+          unityVersion: ${{ matrix.unity }}
+          targetPlatform: StandaloneLinux64
+          buildMethod: PackageExporter.Export
+          versioning: None
 
       - name: check all .meta is commited
         run: |
@@ -76,5 +80,5 @@ jobs:
       # Store artifacts.
       - uses: actions/upload-artifact@v2
         with:
-          name: UniTask.unitypackage.zip
+          name: UniTask.unitypackage-${{ matrix.unity }}.zip
           path: ./src/UniTask/*.unitypackage
