@@ -7,6 +7,8 @@ using UnityEngine.Networking;
 
 namespace Cysharp.Threading.Tasks.Internal
 {
+#if ENABLE_UNITYWEBREQUEST && UNITASK_WEBREQUEST_SUPPORT 
+    
     internal static class UnityWebRequestResultExtensions
     {
         public static bool IsError(this UnityWebRequest unityWebRequest)
@@ -21,4 +23,6 @@ namespace Cysharp.Threading.Tasks.Internal
 #endif
         }
     }
+
+#endif
 }

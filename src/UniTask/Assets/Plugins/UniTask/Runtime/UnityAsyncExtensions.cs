@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks.Internal;
-#if ENABLE_UNITYWEBREQUEST
+#if !UNITY_2019_1_OR_NEWER && (ENABLE_UNITYWEBREQUEST && UNITASK_WEBREQUEST_SUPPORT)
 using UnityEngine.Networking;
 #endif
 
@@ -1221,7 +1221,7 @@ namespace Cysharp.Threading.Tasks
         #endregion
 #endif
 
-#if ENABLE_UNITYWEBREQUEST
+#if ENABLE_UNITYWEBREQUEST && UNITASK_WEBREQUEST_SUPPORT 
         #region UnityWebRequestAsyncOperation
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)

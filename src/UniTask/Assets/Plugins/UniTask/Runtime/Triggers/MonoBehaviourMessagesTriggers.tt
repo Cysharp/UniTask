@@ -106,24 +106,36 @@
     Func<(string argType, string argName)[], string> BuildMethodArgument = x => string.Join(", ", x.Select(y => y.argType + " " + y.argName));
     Func<(string argType, string argName)[], string> BuildResultParameter = x => x.Length == 0 ? "AsyncUnit.Default" : "(" + string.Join(", ", x.Select(y => y.argName)) + ")";
 
-    Func<string, bool> Is2019_3 = x => x == "ParticleUpdateJobScheduled";
+    Func<string, bool> IsParticleSystem = x => x == "ParticleUpdateJobScheduled";
     Func<string, bool> IsMouseTrigger = x => x.StartsWith("Mouse");
+    Func<string, string> RequirePhysicsModule = x => (x.StartsWith("Collision") || x.StartsWith("Collider") || x.StartsWith("ControllerCollider") || x.StartsWith("Joint") || x.StartsWith("Trigger"))
+        ? (x.Contains("2D") ? "UNITASK_PHYSICS2D_SUPPORT" : "UNITASK_PHYSICS_SUPPORT") 
+        : null;
+    Func<string, bool> IsUguiSystem = x => x != null;
 #>
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System.Threading;
 using UnityEngine;
+#if !UNITY_2019_1_OR_NEWER || UNITASK_UGUI_SUPPORT
 using UnityEngine.EventSystems;
+#endif
 
 namespace Cysharp.Threading.Tasks.Triggers
 {
 <# foreach(var t in triggers) { #>
 #region <#= t.triggerName #>
-<# if(Is2019_3(t.triggerName)) { #>
-#if UNITY_2019_3_OR_NEWER
+<# if(IsUguiSystem(t.handlerInterface)) { #>
+#if !UNITY_2019_1_OR_NEWER || UNITASK_UGUI_SUPPORT
+<# } #>
+<# if(IsParticleSystem(t.triggerName)) { #>
+#if UNITY_2019_3_OR_NEWER && (!UNITY_2019_1_OR_NEWER || UNITASK_PARTICLESYSTEM_SUPPORT)
 <# } #>
 <# if(IsMouseTrigger(t.triggerName)) { #>
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
+<# } #>
+<# if(RequirePhysicsModule(t.triggerName) != null) { #>
+#if !UNITY_2019_1_OR_NEWER || <#= RequirePhysicsModule(t.triggerName) #>
 <# } #>
 
     public interface <#= ToInterfaceName(t.methodName) #>
@@ -181,7 +193,13 @@ namespace Cysharp.Threading.Tasks.Triggers
             return ((<#= ToInterfaceName(t.methodName) #>)new AsyncTriggerHandler<<#= t.returnType #>>(this, cancellationToken, true)).<#= t.methodName #>Async();
         }
     }
-<# if(Is2019_3(t.triggerName) || IsMouseTrigger(t.triggerName)) { #>
+<# if(IsUguiSystem(t.handlerInterface)) { #>
+#endif
+<# } #>
+<# if(RequirePhysicsModule(t.triggerName) != null) { #>
+#endif
+<# } #>
+<# if(IsParticleSystem(t.triggerName) || IsMouseTrigger(t.triggerName)) { #>
 #endif
 <# } #>
 #endregion
