@@ -98,7 +98,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - run: echo ${{ needs.update-packagejson.outputs.sha }}
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.update-packagejson.outputs.sha }}
       # Execute scripts: Export Package
       # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
       - name: Export unitypackage
