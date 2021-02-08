@@ -100,6 +100,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # Execute scripts: Export Package
+      # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
       - name: Export unitypackage
         uses: game-ci/unity-builder@v2.0-alpha-6
         env:

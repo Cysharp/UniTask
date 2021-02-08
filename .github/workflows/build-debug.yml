@@ -41,6 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # Execute scripts: RuntimeUnitTestToolkit
+      # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend mono /BuildTarget StandaloneLinux64
       - name: Build UnitTest(Linux64, mono)
         uses: game-ci/unity-builder@v2.0-alpha-6
         env:
@@ -56,6 +57,7 @@ jobs:
         run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_Mono2x/test
 
       # Execute scripts: Export Package
+      #  /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
       - name: Export unitypackage
         uses: game-ci/unity-builder@v2.0-alpha-6
         env:
