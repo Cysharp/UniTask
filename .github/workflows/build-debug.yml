@@ -7,12 +7,12 @@ on:
     tags:
       - "!*" # not a tag push
   pull_request:
-    types:
-      - opened
-      - synchronize
+    branches:
+      - "master"
 
 jobs:
   build-dotnet:
+    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]'))"
     runs-on: ubuntu-latest
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -26,7 +26,7 @@ jobs:
       - run: dotnet test -c Debug ./src/UniTask.NetCoreTests/UniTask.NetCoreTests.csproj
 
   build-unity:
-    if: "(github.event == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:')"
+    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]')) && ((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:'))"
     strategy:
       matrix:
         unity: ["2019.3.9f1", "2020.1.0b5"]
@@ -40,7 +40,10 @@ jobs:
       # with linux-il2cpp. image from https://hub.docker.com/r/gableroux/unity3d/tags
       image: gableroux/unity3d:${{ matrix.unity }}-linux-il2cpp
     steps:
-      - run: apt update && apt install git -y
+      # Ubuntu 18.04 git is too old, use ppa latest git.
+      - run: |
+          apt-get update && apt-get install --no-install-recommends -y software-properties-common && add-apt-repository -y ppa:git-core/ppa
+          apt-get update && apt-get install --no-install-recommends -y git
       - uses: actions/checkout@v2
       - run: echo -n "$UNITY_LICENSE" >> .Unity.ulf
         env:
@@ -58,6 +61,16 @@ jobs:
       # Execute scripts: Export Package
       - name: Export unitypackage
         run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
+        working-directory: src/UniTask
+
+      - name: check all .meta is commited
+        run: |
+          if git ls-files --others --exclude-standard -t | grep --regexp='[.]meta$'; then
+            echo "Detected .meta file generated. Do you forgot commit a .meta file?"
+            exit 1
+          else
+            echo "Great, all .meta files are commited."
+          fi
         working-directory: src/UniTask
 
       # Store artifacts.
