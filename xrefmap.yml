@@ -1840,11 +1840,11 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetResult
   nameWithType: AsyncUniTaskMethodBuilder.SetResult
-- uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetStateMachine(IAsyncStateMachine)
+- uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
   name: SetStateMachine(IAsyncStateMachine)
-  href: api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.html#Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_SetStateMachine_IAsyncStateMachine_
-  commentId: M:Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetStateMachine(IAsyncStateMachine)
-  fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetStateMachine(IAsyncStateMachine)
+  href: api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.html#Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_SetStateMachine_System_Runtime_CompilerServices_IAsyncStateMachine_
+  commentId: M:Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
+  fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
   nameWithType: AsyncUniTaskMethodBuilder.SetStateMachine(IAsyncStateMachine)
 - uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetStateMachine*
   name: SetStateMachine
@@ -1978,12 +1978,12 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder(Of T).SetResult
   nameWithType: AsyncUniTaskMethodBuilder<T>.SetResult
   nameWithType.vb: AsyncUniTaskMethodBuilder(Of T).SetResult
-- uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1.SetStateMachine(IAsyncStateMachine)
+- uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
   name: SetStateMachine(IAsyncStateMachine)
-  href: api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder-1.html#Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_1_SetStateMachine_IAsyncStateMachine_
-  commentId: M:Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1.SetStateMachine(IAsyncStateMachine)
-  fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<T>.SetStateMachine(IAsyncStateMachine)
-  fullName.vb: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder(Of T).SetStateMachine(IAsyncStateMachine)
+  href: api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder-1.html#Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_1_SetStateMachine_System_Runtime_CompilerServices_IAsyncStateMachine_
+  commentId: M:Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
+  fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<T>.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
+  fullName.vb: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder(Of T).SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
   nameWithType: AsyncUniTaskMethodBuilder<T>.SetStateMachine(IAsyncStateMachine)
   nameWithType.vb: AsyncUniTaskMethodBuilder(Of T).SetStateMachine(IAsyncStateMachine)
 - uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1.SetStateMachine*
@@ -2107,11 +2107,11 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetResult
   nameWithType: AsyncUniTaskVoidMethodBuilder.SetResult
-- uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetStateMachine(IAsyncStateMachine)
+- uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
   name: SetStateMachine(IAsyncStateMachine)
-  href: api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.html#Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskVoidMethodBuilder_SetStateMachine_IAsyncStateMachine_
-  commentId: M:Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetStateMachine(IAsyncStateMachine)
-  fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetStateMachine(IAsyncStateMachine)
+  href: api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.html#Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskVoidMethodBuilder_SetStateMachine_System_Runtime_CompilerServices_IAsyncStateMachine_
+  commentId: M:Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
+  fullName: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
   nameWithType: AsyncUniTaskVoidMethodBuilder.SetStateMachine(IAsyncStateMachine)
 - uid: Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.SetStateMachine*
   name: SetStateMachine
