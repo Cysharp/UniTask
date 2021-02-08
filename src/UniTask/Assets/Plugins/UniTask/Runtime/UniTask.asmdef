@@ -36,7 +36,7 @@
             "define": "UNITASK_UGUI_SUPPORT"
         },
         {
-            "name": "com.unity.modules.unitywebrequestwww",
+            "name": "com.unity.modules.unitywebrequest",
             "expression": "",
             "define": "UNITASK_WEBREQUEST_SUPPORT"
         }
