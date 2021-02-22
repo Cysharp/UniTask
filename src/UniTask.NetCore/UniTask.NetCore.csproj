@@ -46,6 +46,7 @@
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Run.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Bridge.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.WaitUntil.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\UniTaskWithToken.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UnityAsyncExtensions.*;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UnityBindingExtensions.cs;
 " />
