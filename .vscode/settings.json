@@ -1,5 +1,0 @@
-{
-    "conventionalCommits.scopes": [
-        "src/UniTask.NetCore/UniTask.NetCore.csproj"
-    ]
-}
