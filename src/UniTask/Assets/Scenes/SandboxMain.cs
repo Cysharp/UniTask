@@ -549,17 +549,49 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Start()
     {
+        var defaultLoop = PlayerLoop.GetDefaultPlayerLoop();
+        PlayerLoopHelper.Initialize(ref defaultLoop, InjectPlayerLoopTimings.All);
+
         var cts = new CancellationTokenSource();
 
-        TestAsync(cts.Token).Forget();
+        // TestAsync(cts.Token).Forget();
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
-            cts.Cancel();
+            PlayerLoopHelper.DumpCurrentPlayerLoop();
             await UniTask.Yield();
         }));
 
+        cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        {
+            await UniTask.Yield(PlayerLoopTiming.Initialization);
+
+            RunCheck(PlayerLoopTiming.Initialization).Forget();
+            RunCheck(PlayerLoopTiming.LastInitialization).Forget();
+            RunCheck(PlayerLoopTiming.EarlyUpdate).Forget();
+            RunCheck(PlayerLoopTiming.LastEarlyUpdate).Forget();
+            RunCheck(PlayerLoopTiming.FixedUpdate).Forget();
+            RunCheck(PlayerLoopTiming.LastFixedUpdate).Forget();
+            RunCheck(PlayerLoopTiming.PreUpdate).Forget();
+            RunCheck(PlayerLoopTiming.LastPreUpdate).Forget();
+            RunCheck(PlayerLoopTiming.Update).Forget();
+            RunCheck(PlayerLoopTiming.LastUpdate).Forget();
+            RunCheck(PlayerLoopTiming.PreLateUpdate).Forget();
+            RunCheck(PlayerLoopTiming.LastPreLateUpdate).Forget();
+            RunCheck(PlayerLoopTiming.PostLateUpdate).Forget();
+            RunCheck(PlayerLoopTiming.LastPostLateUpdate).Forget();
+
+        }));
+
         await UniTask.Yield();
+    }
+
+    async UniTaskVoid RunCheck(PlayerLoopTiming timing)
+    {
+        //await UniTask.Yield(timing);
+        //UnityEngine.Debug.Log("Yield:" + timing);
+        await UniTask.DelayFrame(1, timing);
+        UnityEngine.Debug.Log("Delay:" + timing);
     }
 
     private void Application_logMessageReceived2(string condition, string stackTrace, LogType type)
