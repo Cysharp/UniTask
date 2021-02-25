@@ -542,22 +542,62 @@ public class SandboxMain : MonoBehaviour
             {
                 Debug.LogError(e);
                 return;
+
+                
             }
         }
         Debug.Log("TestAsync Finished.");
     }
 
-    CancellationTokenSource clickCancelSource = new CancellationTokenSource();
-    TimeoutController timeoutController;
+
+
 
     async UniTaskVoid Start()
     {
-        timeoutController = new TimeoutController(clickCancelSource);
 
-        var defaultLoop = PlayerLoop.GetDefaultPlayerLoop();
-        PlayerLoopHelper.Initialize(ref defaultLoop, InjectPlayerLoopTimings.All);
+        // UniTask.Delay(TimeSpan.FromSeconds(1)).TimeoutWithoutException
 
-        var cts = new CancellationTokenSource();
+
+        var currentLoop = PlayerLoop.GetDefaultPlayerLoop();
+        PlayerLoopHelper.Initialize(ref currentLoop, InjectPlayerLoopTimings.Minimum); // minimum is Update | FixedUpdate | LastPostLateUpdate
+
+
+        
+
+
+        var cancelToken = new CancellationTokenSource();
+        cancelButton.onClick.AddListener(()=>
+        {
+            cancelToken.Cancel(); // cancel from button click.
+        });
+
+        var timeoutToken = new CancellationTokenSource();
+        timeoutToken.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
+
+        try
+        {
+            // combine token
+            var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancelToken.Token, timeoutToken.Token);
+
+            await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(linkedTokenSource.Token);
+        }
+        catch (OperationCanceledException ex)
+        {
+            if (timeoutToken.IsCancellationRequested)
+            {
+                UnityEngine.Debug.Log("Timeout.");
+            }
+            else if (cancelToken.IsCancellationRequested)
+            {
+                UnityEngine.Debug.Log("Cancel clicked.");
+            }
+            _ = ex;
+        }
+
+
+
+
+        
 
         // TestAsync(cts.Token).Forget();
 
@@ -566,13 +606,13 @@ public class SandboxMain : MonoBehaviour
             // try timeout
             try
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: timeoutController.Timeout(TimeSpan.FromSeconds(3)));
+                //await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: timeoutController.Timeout(TimeSpan.FromSeconds(3)));
                 UnityEngine.Debug.Log("Delay Complete, Reset(and reuse).");
-                timeoutController.Reset();
+                //timeoutController.Reset();
             }
             catch (OperationCanceledException ex)
             {
-                UnityEngine.Debug.Log("Timeout! FromTimeout?:" + timeoutController.IsTimeout());
+                //UnityEngine.Debug.Log("Timeout! FromTimeout?:" + timeoutController.IsTimeout());
                 _ = ex;
             }
 
@@ -581,7 +621,7 @@ public class SandboxMain : MonoBehaviour
 
         cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
-            clickCancelSource.Cancel();
+            //clickCancelSource.Cancel();
 
             //RunCheck(PlayerLoopTiming.Initialization).Forget();
             //RunCheck(PlayerLoopTiming.LastInitialization).Forget();

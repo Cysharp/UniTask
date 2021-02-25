@@ -35,6 +35,9 @@ public class Test1
         Debug.Log("Dosomething 2");
         await UniTask.Delay(1000, DelayType.DeltaTime);
         Debug.Log("Dosomething 3");
+        Debug.Log("and Quit.");
+
+        Environment.Exit(0);
     }
 }
 
