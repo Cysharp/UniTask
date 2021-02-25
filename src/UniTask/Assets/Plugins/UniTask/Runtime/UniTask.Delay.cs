@@ -108,7 +108,7 @@ namespace Cysharp.Threading.Tasks
 
 #if UNITY_EDITOR
             // force use Realtime.
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (PlayerLoopHelper.IsMainThread && !UnityEditor.EditorApplication.isPlaying)
             {
                 delayType = DelayType.Realtime;
             }
