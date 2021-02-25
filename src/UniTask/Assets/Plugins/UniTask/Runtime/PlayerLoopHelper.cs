@@ -98,6 +98,68 @@ namespace Cysharp.Threading.Tasks
 #endif
     }
 
+    [Flags]
+    public enum InjectPlayerLoopTimings
+    {
+        // Preset
+        All =
+            Initialization | LastInitialization |
+            EarlyUpdate | LastEarlyUpdate |
+            FixedUpdate | LastFixedUpdate |
+            PreUpdate | LastPreUpdate |
+            Update | LastUpdate |
+            PreLateUpdate | LastPreLateUpdate |
+            PostLateUpdate | LastPostLateUpdate |
+#if UNITY_2020_2_OR_NEWER
+            TimeUpdate | LastTimeUpdate,
+#endif
+
+        Standard =
+            Initialization |
+            EarlyUpdate |
+            FixedUpdate |
+            PreUpdate |
+            Update |
+            PreLateUpdate |
+            PostLateUpdate | LastPostLateUpdate |
+#if UNITY_2020_2_OR_NEWER
+            TimeUpdate,
+#endif
+
+        Minimum =
+            Update | FixedUpdate | LastPostLateUpdate,
+
+        // PlayerLoopTiming
+
+        Initialization = 1,
+        LastInitialization = 2,
+
+        EarlyUpdate = 4,
+        LastEarlyUpdate = 8,
+
+        FixedUpdate = 16,
+        LastFixedUpdate = 32,
+
+        PreUpdate = 64,
+        LastPreUpdate = 128,
+
+        Update = 256,
+        LastUpdate = 512,
+
+        PreLateUpdate = 1024,
+        LastPreLateUpdate = 2048,
+
+        PostLateUpdate = 4096,
+        LastPostLateUpdate = 8192,
+
+#if UNITY_2020_2_OR_NEWER
+        // Unity 2020.2 added TimeUpdate https://docs.unity3d.com/2020.2/Documentation/ScriptReference/PlayerLoop.TimeUpdate.html
+        TimeUpdate = 16384,
+        LastTimeUpdate = 32768,
+#endif
+
+    }
+
     public interface IPlayerLoopItem
     {
         bool MoveNext();
@@ -118,8 +180,9 @@ namespace Cysharp.Threading.Tasks
         static PlayerLoopRunner[] runners;
         internal static bool IsEditorApplicationQuitting { get; private set; }
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
-            Type loopRunnerYieldType, ContinuationQueue cq, Type lastLoopRunnerYieldType, ContinuationQueue lastCq,
-            Type loopRunnerType, PlayerLoopRunner runner, Type lastLoopRunnerType, PlayerLoopRunner lastRunner)
+            bool injectOnFirst,
+            Type loopRunnerYieldType, ContinuationQueue cq,
+            Type loopRunnerType, PlayerLoopRunner runner)
         {
 
 #if UNITY_EDITOR
@@ -134,21 +197,10 @@ namespace Cysharp.Threading.Tasks
                         runner.Run();
                         runner.Clear();
                     }
-                    if (lastRunner != null)
-                    {
-                        lastRunner.Run();
-                        lastRunner.Clear();
-                    }
-
                     if (cq != null)
                     {
                         cq.Run();
                         cq.Clear();
-                    }
-                    if (lastCq != null)
-                    {
-                        lastCq.Run();
-                        lastCq.Clear();
                     }
                     IsEditorApplicationQuitting = false;
                 }
@@ -161,36 +213,30 @@ namespace Cysharp.Threading.Tasks
                 updateDelegate = cq.Run
             };
 
-            var lastYieldLoop = new PlayerLoopSystem
-            {
-                type = lastLoopRunnerYieldType,
-                updateDelegate = lastCq.Run
-            };
-
             var runnerLoop = new PlayerLoopSystem
             {
                 type = loopRunnerType,
                 updateDelegate = runner.Run
             };
 
-            var lastRunnerLoop = new PlayerLoopSystem
-            {
-                type = lastLoopRunnerType,
-                updateDelegate = lastRunner.Run
-            };
-
             // Remove items from previous initializations.
             var source = loopSystem.subSystemList
-                .Where(ls => ls.type != loopRunnerYieldType && ls.type != loopRunnerType && ls.type != lastLoopRunnerYieldType && ls.type != lastLoopRunnerType)
+                .Where(ls => ls.type != loopRunnerYieldType && ls.type != loopRunnerType)
                 .ToArray();
 
-            var dest = new PlayerLoopSystem[source.Length + 4];
+            var dest = new PlayerLoopSystem[source.Length + 2];
 
-            Array.Copy(source, 0, dest, 2, source.Length);
-            dest[0] = yieldLoop;
-            dest[1] = runnerLoop;
-            dest[dest.Length - 2] = lastYieldLoop;
-            dest[dest.Length - 1] = lastRunnerLoop;
+            Array.Copy(source, 0, dest, injectOnFirst ? 2 : 0, source.Length);
+            if (injectOnFirst)
+            {
+                dest[0] = yieldLoop;
+                dest[1] = runnerLoop;
+            }
+            else
+            {
+                dest[dest.Length - 2] = yieldLoop;
+                dest[dest.Length - 1] = runnerLoop;
+            }
 
             return dest;
         }
@@ -311,7 +357,7 @@ namespace Cysharp.Threading.Tasks
             throw new Exception("Target PlayerLoopSystem does not found. Type:" + systemType.FullName);
         }
 
-        public static void Initialize(ref PlayerLoopSystem playerLoop)
+        public static void Initialize(ref PlayerLoopSystem playerLoop, InjectPlayerLoopTimings injectTimings = InjectPlayerLoopTimings.All)
         {
 #if UNITY_2020_2_OR_NEWER
             yielders = new ContinuationQueue[16];
@@ -324,6 +370,8 @@ namespace Cysharp.Threading.Tasks
             var copyList = playerLoop.subSystemList.ToArray();
 
             var i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.Initialization));
+            if (injectTimings | InjectPlayerLoopTimings.
+
             copyList[i].subSystemList = InsertRunner(copyList[i], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldInitialization), yielders[0] = new ContinuationQueue(PlayerLoopTiming.Initialization),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldInitialization), yielders[1] = new ContinuationQueue(PlayerLoopTiming.LastInitialization),
                                                                   typeof(UniTaskLoopRunners.UniTaskLoopRunnerInitialization), runners[0] = new PlayerLoopRunner(PlayerLoopTiming.Initialization),
