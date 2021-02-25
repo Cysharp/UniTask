@@ -41,6 +41,7 @@
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTaskSynchronizationContext.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\CancellationTokenSourceExtensions.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\EnumeratorAsyncExtensions.cs;
+..\UniTask\Assets\Plugins\UniTask\Runtime\TimeoutController.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\PlayerLoopHelper.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Delay.cs;
 ..\UniTask\Assets\Plugins\UniTask\Runtime\UniTask.Run.cs;

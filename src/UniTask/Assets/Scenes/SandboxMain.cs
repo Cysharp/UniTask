@@ -547,8 +547,13 @@ public class SandboxMain : MonoBehaviour
         Debug.Log("TestAsync Finished.");
     }
 
+    CancellationTokenSource clickCancelSource = new CancellationTokenSource();
+    TimeoutController timeoutController;
+
     async UniTaskVoid Start()
     {
+        timeoutController = new TimeoutController(clickCancelSource);
+
         var defaultLoop = PlayerLoop.GetDefaultPlayerLoop();
         PlayerLoopHelper.Initialize(ref defaultLoop, InjectPlayerLoopTimings.All);
 
@@ -558,29 +563,42 @@ public class SandboxMain : MonoBehaviour
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
-            PlayerLoopHelper.DumpCurrentPlayerLoop();
+            // try timeout
+            try
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: timeoutController.Timeout(TimeSpan.FromSeconds(3)));
+                UnityEngine.Debug.Log("Delay Complete, Reset(and reuse).");
+                timeoutController.Reset();
+            }
+            catch (OperationCanceledException ex)
+            {
+                UnityEngine.Debug.Log("Timeout! FromTimeout?:" + timeoutController.IsTimeout());
+                _ = ex;
+            }
+
             await UniTask.Yield();
         }));
 
         cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
-            await UniTask.Yield(PlayerLoopTiming.Initialization);
+            clickCancelSource.Cancel();
 
-            RunCheck(PlayerLoopTiming.Initialization).Forget();
-            RunCheck(PlayerLoopTiming.LastInitialization).Forget();
-            RunCheck(PlayerLoopTiming.EarlyUpdate).Forget();
-            RunCheck(PlayerLoopTiming.LastEarlyUpdate).Forget();
-            RunCheck(PlayerLoopTiming.FixedUpdate).Forget();
-            RunCheck(PlayerLoopTiming.LastFixedUpdate).Forget();
-            RunCheck(PlayerLoopTiming.PreUpdate).Forget();
-            RunCheck(PlayerLoopTiming.LastPreUpdate).Forget();
-            RunCheck(PlayerLoopTiming.Update).Forget();
-            RunCheck(PlayerLoopTiming.LastUpdate).Forget();
-            RunCheck(PlayerLoopTiming.PreLateUpdate).Forget();
-            RunCheck(PlayerLoopTiming.LastPreLateUpdate).Forget();
-            RunCheck(PlayerLoopTiming.PostLateUpdate).Forget();
-            RunCheck(PlayerLoopTiming.LastPostLateUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.Initialization).Forget();
+            //RunCheck(PlayerLoopTiming.LastInitialization).Forget();
+            //RunCheck(PlayerLoopTiming.EarlyUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.LastEarlyUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.FixedUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.LastFixedUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.PreUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.LastPreUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.Update).Forget();
+            //RunCheck(PlayerLoopTiming.LastUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.PreLateUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.LastPreLateUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.PostLateUpdate).Forget();
+            //RunCheck(PlayerLoopTiming.LastPostLateUpdate).Forget();
 
+            await UniTask.Yield();
         }));
 
         await UniTask.Yield();
