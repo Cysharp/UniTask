@@ -24,6 +24,7 @@ For advanced tips, see blog post: [Extends UnityWebRequest via async decorator p
 - [Getting started](#getting-started)
 - [Basics of UniTask and AsyncOperation](#basics-of-unitask-and-asyncoperation)
 - [Cancellation and Exception handling](#cancellation-and-exception-handling)
+- [Timeout handling](#timeout-handling)
 - [Progress](#progress)
 - [PlayerLoop](#playerloop)
 - [async void vs async UniTaskVoid](#async-void-vs-async-unitaskvoid)
