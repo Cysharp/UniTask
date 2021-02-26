@@ -111,9 +111,9 @@ namespace Cysharp.Threading.Tasks
             PreUpdate | LastPreUpdate |
             Update | LastUpdate |
             PreLateUpdate | LastPreLateUpdate |
-            PostLateUpdate | LastPostLateUpdate |
+            PostLateUpdate | LastPostLateUpdate
 #if UNITY_2020_2_OR_NEWER
-            TimeUpdate | LastTimeUpdate,
+            | TimeUpdate | LastTimeUpdate,
 #else
             ,
 #endif
@@ -128,9 +128,9 @@ namespace Cysharp.Threading.Tasks
             PreUpdate |
             Update |
             PreLateUpdate |
-            PostLateUpdate | LastPostLateUpdate |
+            PostLateUpdate | LastPostLateUpdate
 #if UNITY_2020_2_OR_NEWER
-            TimeUpdate
+            | TimeUpdate
 #endif
             ,
 
