@@ -7,6 +7,7 @@ using System;
 
 namespace Cysharp.Threading.Tasks
 {
+
     public static class CancellationTokenSourceExtensions
     {
         public static void CancelAfterSlim(this CancellationTokenSource cts, int millisecondsDelay, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)

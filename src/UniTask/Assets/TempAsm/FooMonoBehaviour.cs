@@ -12,16 +12,16 @@ public class FooMonoBehaviour : MonoBehaviour
 
     }
 
-    private async UniTask Download(UnityWebRequest req, string filePath)
-    {
-        _ = req.SendWebRequest();
+    //private async UniTask Download(UnityWebRequest req, string filePath)
+    //{
+    //    _ = req.SendWebRequest();
 
 
 
 
-        // var aaa = await foo;
-        // Debug.Log(aaa);
-        await UniTask.Yield();
-        //File.WriteAllText(filePath, req.downloadHandler.text ?? string.Empty);
-    }
+    //    // var aaa = await foo;
+    //    // Debug.Log(aaa);
+    //    await UniTask.Yield();
+    //    //File.WriteAllText(filePath, req.downloadHandler.text ?? string.Empty);
+    //}
 }

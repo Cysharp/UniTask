@@ -192,7 +192,7 @@ namespace Cysharp.Threading.Tasks
         /// <summary>
         /// Ignore task result when cancel raised first.
         /// </summary>
-        public static UniTask WithCancellation(this UniTask task, CancellationToken cancellationToken)
+        public static UniTask IgnoreWhenCanceled(this UniTask task, CancellationToken cancellationToken)
         {
             if (!cancellationToken.CanBeCanceled)
             {
@@ -209,13 +209,13 @@ namespace Cysharp.Threading.Tasks
                 return task;
             }
 
-            return new UniTask(new WithCancellationSource(task, cancellationToken), 0);
+            return new UniTask(new IgnoreWhenCanceledSource(task, cancellationToken), 0);
         }
 
         /// <summary>
         /// Ignore task result when cancel raised first.
         /// </summary>
-        public static UniTask<T> WithCancellation<T>(this UniTask<T> task, CancellationToken cancellationToken)
+        public static UniTask<T> IgnoreWhenCanceled<T>(this UniTask<T> task, CancellationToken cancellationToken)
         {
             if (!cancellationToken.CanBeCanceled)
             {
@@ -232,10 +232,10 @@ namespace Cysharp.Threading.Tasks
                 return task;
             }
 
-            return new UniTask<T>(new WithCancellationSource<T>(task, cancellationToken), 0);
+            return new UniTask<T>(new IgnoreWhenCanceledSource<T>(task, cancellationToken), 0);
         }
 
-        sealed class WithCancellationSource : IUniTaskSource
+        sealed class IgnoreWhenCanceledSource : IUniTaskSource
         {
             static readonly Action<object> cancellationCallbackDelegate = CancellationCallback;
 
@@ -243,7 +243,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration tokenRegistration;
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
-            public WithCancellationSource(UniTask task, CancellationToken cancellationToken)
+            public IgnoreWhenCanceledSource(UniTask task, CancellationToken cancellationToken)
             {
                 this.cancellationToken = cancellationToken;
                 this.tokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallbackDelegate, this);
@@ -269,7 +269,7 @@ namespace Cysharp.Threading.Tasks
 
             static void CancellationCallback(object state)
             {
-                var self = (WithCancellationSource)state;
+                var self = (IgnoreWhenCanceledSource)state;
                 self.core.TrySetCanceled(self.cancellationToken);
             }
 
@@ -294,7 +294,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        sealed class WithCancellationSource<T> : IUniTaskSource<T>
+        sealed class IgnoreWhenCanceledSource<T> : IUniTaskSource<T>
         {
             static readonly Action<object> cancellationCallbackDelegate = CancellationCallback;
 
@@ -302,7 +302,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration tokenRegistration;
             UniTaskCompletionSourceCore<T> core;
 
-            public WithCancellationSource(UniTask<T> task, CancellationToken cancellationToken)
+            public IgnoreWhenCanceledSource(UniTask<T> task, CancellationToken cancellationToken)
             {
                 this.cancellationToken = cancellationToken;
                 this.tokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallbackDelegate, this);
@@ -327,7 +327,7 @@ namespace Cysharp.Threading.Tasks
 
             static void CancellationCallback(object state)
             {
-                var self = (WithCancellationSource<T>)state;
+                var self = (IgnoreWhenCanceledSource<T>)state;
                 self.core.TrySetCanceled(self.cancellationToken);
             }
 

@@ -24,6 +24,7 @@ For advanced tips, see blog post: [Extends UnityWebRequest via async decorator p
 - [Getting started](#getting-started)
 - [Basics of UniTask and AsyncOperation](#basics-of-unitask-and-asyncoperation)
 - [Cancellation and Exception handling](#cancellation-and-exception-handling)
+- [Timeout handling](#timeout-handling)
 - [Progress](#progress)
 - [PlayerLoop](#playerloop)
 - [async void vs async UniTaskVoid](#async-void-vs-async-unitaskvoid)
@@ -127,9 +128,6 @@ async UniTask<string> DemoAsync()
 
     // shorthand of WhenAll, tuple can await directly
     var (google2, bing2, yahoo2) = await (task1, task2, task3);
-    
-    // You can handle timeouts easily
-    await GetTextAsync(UnityWebRequest.Get("http://unity.com")).Timeout(TimeSpan.FromMilliseconds(300));
 
     // return async-value.(or you can use `UniTask`(no result), `UniTaskVoid`(fire and forget)).
     return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
@@ -154,7 +152,7 @@ UniTask provides three pattern of extension methods.
 
 `WithCancellation` is a simple version of `ToUniTask`, both return `UniTask`. For details of cancellation, see: [Cancellation and Exception handling](#cancellation-and-exception-handling) section.
 
-> Note: WithCancellation is returned from native timing of PlayerLoop but ToUniTask is returned from specified PlayerLoopTiming. For details of timing, see: [PlayerLoop](#playerloop) section.
+> Note: await directly is returned from native timing of PlayerLoop but WithCancellation and ToUniTask are returned from specified PlayerLoopTiming. For details of timing, see: [PlayerLoop](#playerloop) section.
 
 > Note: AssetBundleRequest has `asset` and `allAssets`, default await returns `asset`. If you want to get `allAssets`, you can use `AwaitForAllAssets()` method.
 
@@ -286,6 +284,100 @@ if (isCanceled)
 
 Note: Only suppress throws if you call directly into the most source method. Otherwise, the return value will be converted, but the entire pipeline will not suppress throws.
 
+Timeout handling
+---
+Timeout is a variation of cancellation. You can set timeout by `CancellationTokenSouce.CancelAfterSlim(TimeSpan)` and pass CancellationToken to async methods.
+
+```csharp
+var cts = new CancellationTokenSource();
+cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
+
+try
+{
+    await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(cts.Token);
+}
+catch (OperationCanceledException ex)
+{
+    if (ex.CancellationToken == cts.Token)
+    {
+        UnityEngine.Debug.Log("Timeout");
+    }
+}
+```
+
+> `CancellationTokenSouce.CancelAfter` is a standard api. However in Unity you should not use it because it depends threading timer. `CancelAfterSlim` is UniTask's extension methods, it uses PlayerLoop instead.
+
+If you want to use timeout with other source of cancellation, use `CancellationTokenSource.CreateLinkedTokenSource`.
+
+```csharp
+var cancelToken = new CancellationTokenSource();
+cancelButton.onClick.AddListener(()=>
+{
+    cancelToken.Cancel(); // cancel from button click.
+});
+
+var timeoutToken = new CancellationTokenSource();
+timeoutToken.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
+
+try
+{
+    // combine token
+    var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancelToken.Token, timeoutToken.Token);
+
+    await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(linkedTokenSource.Token);
+}
+catch (OperationCanceledException ex)
+{
+    if (timeoutToken.IsCancellationRequested)
+    {
+        UnityEngine.Debug.Log("Timeout.");
+    }
+    else if (cancelToken.IsCancellationRequested)
+    {
+        UnityEngine.Debug.Log("Cancel clicked.");
+    }
+}
+```
+
+Optimize for reduce allocation of CancellationTokenSource for timeout per call async method, you can use UniTask's `TimeoutController`.
+
+```csharp
+TimeoutController timeoutController = new TimeoutController(); // setup to field for reuse.
+
+async UniTask FooAsync()
+{
+    try
+    {
+        // you can pass timeoutController.Timeout(TimeSpan) to cancellationToken.
+        await UnityWebRequest.Get("http://foo").SendWebRequest()
+            .WithCancellation(timeoutController.Timeout(TimeSpan.FromSeconds(5)));
+        timeoutController.Reset(); // call Reset(Stop timeout timer and ready for reuse) when succeed.
+    }
+    catch (OperationCanceledException ex)
+    {
+        if (timeoutController.IsTimeout())
+        {
+            UnityEngine.Debug.Log("timeout");
+        }
+    }
+}
+```
+
+If you want to use timeout with other source of cancellation, use `new TimeoutController(CancellationToken)`.
+
+```csharp
+TimeoutController timeoutController;
+CancellationTokenSource clickCancelSource;
+
+void Start()
+{
+    this.clickCancelSource = new CancellationTokenSource();
+    this.timeoutController = new TimeoutController(clickCancelSource);
+}
+```
+
+Note: UniTask has `.Timeout`, `.TimeoutWithoutException` methods however, if possible, do not use these, please pass `CancellationToken`. Because `.Timeout` work from external of task, can not stop timeoutted task. `.Timeout` means ignore result when timeout. If you pass a `CancellationToken` to the method, it will act from inside of the task, so it is possible to stop a running task.
+
 Progress
 ---
 Some async operations for unity have `ToUniTask(IProgress<float> progress = null, ...)` extension methods. 
@@ -366,7 +458,7 @@ It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.
 
 `AsyncOperation` is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after being called, the loaded scene's `Start` is called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
 
-In UniTask, await directly and `WithCancellation` use native timing, `ToUniTask` uses specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, it causes a different order of Start and continuation after await. So it is recommended not to use `LoadSceneAsync.ToUniTask`.
+In UniTask, await directly uses native timing, `WithCancellation` and `ToUniTask` use specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, it causes a different order of Start and continuation after await. So it is recommended not to use `LoadSceneAsync.ToUniTask`.
 
 In the stacktrace, you can check where it is running in playerloop.
 
@@ -407,6 +499,37 @@ void Start()
     PlayerLoopHelper.DumpCurrentPlayerLoop();
 }
 ```
+
+You can optimize loop cost slightly by remove unuse PlayerLoopTiming injection. You can call `PlayerLoopHelper.Initialize(InjectPlayerLoopTimings)` on initialize.
+
+```csharp
+var loop = PlayerLoop.GetCurrentPlayerLoop();
+PlayerLoopHelper.Initialize(ref loop, InjectPlayerLoopTimings.Minimum); // minimum is Update | FixedUpdate | LastPostLateUpdate
+```
+
+`InjectPlayerLoopTimings` has three preset, `All` and `Standard`(All without last except LastPostLateUpdate), `Minimum`(`Update | FixedUpdate | LastPostLateUpdate`). Default is All and you can combine custom inject timings like `InjectPlayerLoopTimings.Update | InjectPlayerLoopTimings.FixedUpdate | InjectPlayerLoopTimings.PreLateUpdate`.
+
+You can make error to use uninjected `PlayerLoopTiming` by [Microsoft.CodeAnalysis.BannedApiAnalyzers](https://github.com/dotnet/roslyn-analyzers/blob/master/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md). For example, you can setup `BannedSymbols.txt` like this for `InjectPlayerLoopTimings.Minimum`.
+
+```txt
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.Initialization; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastInitialization; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.EarlyUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastEarlyUpdate; Isn't injected this PlayerLoop in this project.d
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastFixedUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.PreUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastPreUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.PreLateUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastPreLateUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.PostLateUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.TimeUpdate; Isn't injected this PlayerLoop in this project.
+F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastTimeUpdate; Isn't injected this PlayerLoop in this project.
+```
+
+You can configure `RS0030` severity to error.
+
+![image](https://user-images.githubusercontent.com/46207/109150837-bb933880-77ac-11eb-85ba-4fd15819dbd0.png)
 
 async void vs async UniTaskVoid
 ---
@@ -812,8 +935,9 @@ For UnityEditor
 ---
 UniTask can run on Unity Editor like an Editor Coroutine. However, there are some limitations.
 
-* Delay, DelayFrame do not work correctly because they can not get deltaTime in editor. Return the result of the await immediately; you can use `DelayType.Realtime` to wait for the right time.
+* UniTask.Delay's DelayType.DeltaTime, UnscaledDeltaTime do not work correctly because they can not get deltaTime in editor. Therefore run on EditMode, automatically change DelayType to `DelayType.Realtime` that wait for the right time.
 * All PlayerLoopTiming run on the timing `EditorApplication.update`.
+* `-batchmode` with `-quit` does not work because does not run `EditorApplication.update`(quit on single frame) so should not use `-quit` and quit manually with `Environment.Exit(0)`.
 
 Compare with Standard Task API
 ---
