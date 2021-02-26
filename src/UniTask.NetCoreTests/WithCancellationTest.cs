@@ -16,7 +16,7 @@ namespace NetCoreTests
         {
             CancellationTokenSource cts = new CancellationTokenSource();
 
-            var v = await UniTask.Run(() => 10).WithCancellation(cts.Token);
+            var v = await UniTask.Run(() => 10).IgnoreWhenCanceled(cts.Token);
 
             v.Should().Be(10);
         }
@@ -30,7 +30,7 @@ namespace NetCoreTests
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 return 10;
-            }).WithCancellation(cts.Token);
+            }).IgnoreWhenCanceled(cts.Token);
 
             cts.Cancel();
 
