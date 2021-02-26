@@ -114,6 +114,8 @@ namespace Cysharp.Threading.Tasks
             PostLateUpdate | LastPostLateUpdate |
 #if UNITY_2020_2_OR_NEWER
             TimeUpdate | LastTimeUpdate,
+#else
+            ,
 #endif
 
         /// <summary>
@@ -128,8 +130,9 @@ namespace Cysharp.Threading.Tasks
             PreLateUpdate |
             PostLateUpdate | LastPostLateUpdate |
 #if UNITY_2020_2_OR_NEWER
-            TimeUpdate,
+            TimeUpdate
 #endif
+            ,
 
         /// <summary>
         /// Preset: Minimum pattern, Update | FixedUpdate | LastPostLateUpdate
@@ -158,14 +161,14 @@ namespace Cysharp.Threading.Tasks
         LastPreLateUpdate = 2048,
 
         PostLateUpdate = 4096,
-        LastPostLateUpdate = 8192,
+        LastPostLateUpdate = 8192
 
 #if UNITY_2020_2_OR_NEWER
+        ,
         // Unity 2020.2 added TimeUpdate https://docs.unity3d.com/2020.2/Documentation/ScriptReference/PlayerLoop.TimeUpdate.html
         TimeUpdate = 16384,
-        LastTimeUpdate = 32768,
+        LastTimeUpdate = 32768
 #endif
-
     }
 
     public interface IPlayerLoopItem
