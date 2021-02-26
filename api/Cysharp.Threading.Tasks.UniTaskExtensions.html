@@ -136,6 +136,20 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation_Cysharp_Threading_Tasks_UniTask_CancellationToken_">AttachExternalCancellation(UniTask, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_">AttachExternalCancellation&lt;T&gt;(UniTask&lt;T&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_ContinueWith_Cysharp_Threading_Tasks_UniTask_System_Action_">ContinueWith(UniTask, Action)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -400,20 +414,6 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled_Cysharp_Threading_Tasks_UniTask_CancellationToken_">IgnoreWhenCanceled(UniTask, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
-</td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_">IgnoreWhenCanceled&lt;T&gt;(UniTask&lt;T&gt;, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
-</td>
-      </tr>
-      <tr>
-        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_ToAsyncLazy_Cysharp_Threading_Tasks_UniTask_">ToAsyncLazy(UniTask)</a>
         </td>
         <td class="markdown level1 summary"></td>
@@ -627,6 +627,93 @@
     <dt><span class="parametername"><code>task</code></span> <span class="xref">Task</span>&lt;T&gt;</dt>
     <dd></dd>
     <dt><span class="parametername"><code>useCurrentSynchronizationContext</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>T</code></span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation_Cysharp_Threading_Tasks_UniTask_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation(Cysharp.Threading.Tasks.UniTask,CancellationToken)">AttachExternalCancellation(UniTask, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask AttachExternalCancellation(this UniTask task, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)">AttachExternalCancellation&lt;T&gt;(UniTask&lt;T&gt;, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; AttachExternalCancellation&lt;T&gt;(this UniTask&lt;T&gt; task, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -2649,93 +2736,6 @@
     <dt><span class="parametername"><code>T8</code></span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>T9</code></span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled_Cysharp_Threading_Tasks_UniTask_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled(Cysharp.Threading.Tasks.UniTask,CancellationToken)">IgnoreWhenCanceled(UniTask, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask IgnoreWhenCanceled(this UniTask task, CancellationToken cancellationToken)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)">IgnoreWhenCanceled&lt;T&gt;(UniTask&lt;T&gt;, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Ignore task result when cancel raised first.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; IgnoreWhenCanceled&lt;T&gt;(this UniTask&lt;T&gt; task, CancellationToken cancellationToken)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>task</code></span> <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;T&gt;</dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>T</code></span></dt>
     <dd></dd>
   </dl>
   </section>

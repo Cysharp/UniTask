@@ -19881,6 +19881,28 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTaskExtensions.AsUniTask(Of T)(Task(Of T), System.Boolean)
   nameWithType: UniTaskExtensions.AsUniTask<T>(Task<T>, Boolean)
   nameWithType.vb: UniTaskExtensions.AsUniTask(Of T)(Task(Of T), Boolean)
+- uid: Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation(Cysharp.Threading.Tasks.UniTask,CancellationToken)
+  name: AttachExternalCancellation(UniTask, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation_Cysharp_Threading_Tasks_UniTask_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation(Cysharp.Threading.Tasks.UniTask,CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation(Cysharp.Threading.Tasks.UniTask, CancellationToken)
+  nameWithType: UniTaskExtensions.AttachExternalCancellation(UniTask, CancellationToken)
+- uid: Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation*
+  name: AttachExternalCancellation
+  href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation
+  nameWithType: UniTaskExtensions.AttachExternalCancellation
+- uid: Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)
+  name: AttachExternalCancellation<T>(UniTask<T>, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_AttachExternalCancellation__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)
+  name.vb: AttachExternalCancellation(Of T)(UniTask(Of T), CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation<T>(Cysharp.Threading.Tasks.UniTask<T>, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTaskExtensions.AttachExternalCancellation(Of T)(Cysharp.Threading.Tasks.UniTask(Of T), CancellationToken)
+  nameWithType: UniTaskExtensions.AttachExternalCancellation<T>(UniTask<T>, CancellationToken)
+  nameWithType.vb: UniTaskExtensions.AttachExternalCancellation(Of T)(UniTask(Of T), CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTaskExtensions.ContinueWith(Cysharp.Threading.Tasks.UniTask,System.Action)
   name: ContinueWith(UniTask, Action)
   href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_ContinueWith_Cysharp_Threading_Tasks_UniTask_System_Action_
@@ -20292,28 +20314,6 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTaskExtensions.GetAwaiter(Of T1, T2, T3, T4, T5, T6, T7, T8, T9)(System.ValueTuple(Of Cysharp.Threading.Tasks.UniTask(Of T1), Cysharp.Threading.Tasks.UniTask(Of T2), Cysharp.Threading.Tasks.UniTask(Of T3), Cysharp.Threading.Tasks.UniTask(Of T4), Cysharp.Threading.Tasks.UniTask(Of T5), Cysharp.Threading.Tasks.UniTask(Of T6), Cysharp.Threading.Tasks.UniTask(Of T7), System.ValueTuple(Of Cysharp.Threading.Tasks.UniTask(Of T8), Cysharp.Threading.Tasks.UniTask(Of T9))))
   nameWithType: UniTaskExtensions.GetAwaiter<T1, T2, T3, T4, T5, T6, T7, T8, T9>((UniTask<T1> task1, UniTask<T2> task2, UniTask<T3> task3, UniTask<T4> task4, UniTask<T5> task5, UniTask<T6> task6, UniTask<T7> task7, UniTask<T8> task8, UniTask<T9> task9))
   nameWithType.vb: UniTaskExtensions.GetAwaiter(Of T1, T2, T3, T4, T5, T6, T7, T8, T9)((task1 As UniTask(Of T1), task2 As UniTask(Of T2), task3 As UniTask(Of T3), task4 As UniTask(Of T4), task5 As UniTask(Of T5), task6 As UniTask(Of T6), task7 As UniTask(Of T7), task8 As UniTask(Of T8), task9 As UniTask(Of T9)))
-- uid: Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled(Cysharp.Threading.Tasks.UniTask,CancellationToken)
-  name: IgnoreWhenCanceled(UniTask, CancellationToken)
-  href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled_Cysharp_Threading_Tasks_UniTask_CancellationToken_
-  commentId: M:Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled(Cysharp.Threading.Tasks.UniTask,CancellationToken)
-  fullName: Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled(Cysharp.Threading.Tasks.UniTask, CancellationToken)
-  nameWithType: UniTaskExtensions.IgnoreWhenCanceled(UniTask, CancellationToken)
-- uid: Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled*
-  name: IgnoreWhenCanceled
-  href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled_
-  commentId: Overload:Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled
-  nameWithType: UniTaskExtensions.IgnoreWhenCanceled
-- uid: Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)
-  name: IgnoreWhenCanceled<T>(UniTask<T>, CancellationToken)
-  href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_IgnoreWhenCanceled__1_Cysharp_Threading_Tasks_UniTask___0__CancellationToken_
-  commentId: M:Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled``1(Cysharp.Threading.Tasks.UniTask{``0},CancellationToken)
-  name.vb: IgnoreWhenCanceled(Of T)(UniTask(Of T), CancellationToken)
-  fullName: Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled<T>(Cysharp.Threading.Tasks.UniTask<T>, CancellationToken)
-  fullName.vb: Cysharp.Threading.Tasks.UniTaskExtensions.IgnoreWhenCanceled(Of T)(Cysharp.Threading.Tasks.UniTask(Of T), CancellationToken)
-  nameWithType: UniTaskExtensions.IgnoreWhenCanceled<T>(UniTask<T>, CancellationToken)
-  nameWithType.vb: UniTaskExtensions.IgnoreWhenCanceled(Of T)(UniTask(Of T), CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTaskExtensions.ToAsyncLazy(Cysharp.Threading.Tasks.UniTask)
   name: ToAsyncLazy(UniTask)
   href: api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_ToAsyncLazy_Cysharp_Threading_Tasks_UniTask_
