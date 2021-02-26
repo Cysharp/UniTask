@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>TaskPool Class
+    <title>InjectPlayerLoopTimings Enum
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="TaskPool Class
+    <meta name="title" content="InjectPlayerLoopTimings Enum
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,9 +71,9 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.TaskPool">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.InjectPlayerLoopTimings">
   
-  <h1 id="Cysharp_Threading_Tasks_TaskPool" data-uid="Cysharp.Threading.Tasks.TaskPool" class="text-break">TaskPool Class
+  <h1 id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings" data-uid="Cysharp.Threading.Tasks.InjectPlayerLoopTimings" class="text-break">InjectPlayerLoopTimings Enum
   </h1>
   <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
@@ -82,150 +82,99 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class TaskPool</code></pre>
+    <pre><code class="lang-csharp hljs">[Flags]
+public enum InjectPlayerLoopTimings</code></pre>
   </div>
 
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <span><span class="xref">System.Object</span></span> → 
-    <span class="xref">TaskPool</span>
-  </div>
   
   
   
   
   
   
-  
-  <h3 id="members">Members</h3>
-  <h4>Methods
-  </h4>
-  <table class="table table-condensed">
+  <h3 id="fields">Fields
+  </h3>
+  <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Name</th>
         <th>Description</th>
       </tr>
-    </thead>
+    <thead>
     <tbody>
       <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_GetCacheSizeInfo">GetCacheSizeInfo()</a>
-        </td>
-        <td class="markdown level1 summary"></td>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_All">All</td>
+        <td><p>Preset: All loops(default).</p>
+</td>
       </tr>
       <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_RegisterSizeGetter_System_Type_System_Func_System_Int32__">RegisterSizeGetter(Type, Func&lt;Int32&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_EarlyUpdate">EarlyUpdate</td>
+        <td></td>
       </tr>
       <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.TaskPool.html#Cysharp_Threading_Tasks_TaskPool_SetMaxPoolSize_System_Int32_">SetMaxPoolSize(Int32)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_FixedUpdate">FixedUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_Initialization">Initialization</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_LastEarlyUpdate">LastEarlyUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_LastFixedUpdate">LastFixedUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_LastInitialization">LastInitialization</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_LastPostLateUpdate">LastPostLateUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_LastPreLateUpdate">LastPreLateUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_LastPreUpdate">LastPreUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_LastUpdate">LastUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_Minimum">Minimum</td>
+        <td><p>Preset: Minimum pattern, Update | FixedUpdate | LastPostLateUpdate</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_PostLateUpdate">PostLateUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_PreLateUpdate">PreLateUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_PreUpdate">PreUpdate</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_Standard">Standard</td>
+        <td><p>Preset: All without last except LastPostLateUpdate.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Cysharp_Threading_Tasks_InjectPlayerLoopTimings_Update">Update</td>
+        <td></td>
       </tr>
     </tbody>
-  </table>
-  
-  <h3 id="methods">Methods
-  </h3>
-  <section>
-  <a id="Cysharp_Threading_Tasks_TaskPool_GetCacheSizeInfo_" data-uid="Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo*"></a>
-  <h4 id="Cysharp_Threading_Tasks_TaskPool_GetCacheSizeInfo" data-uid="Cysharp.Threading.Tasks.TaskPool.GetCacheSizeInfo">GetCacheSizeInfo()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;(Type, int)&gt; GetCacheSizeInfo()</code></pre>
-  </div>
-
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.ValueTuple</span>&lt;<span class="xref">System.Type</span>, <span class="xref">System.Int32</span>&gt;&gt;</dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_TaskPool_RegisterSizeGetter_" data-uid="Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter*"></a>
-  <h4 id="Cysharp_Threading_Tasks_TaskPool_RegisterSizeGetter_System_Type_System_Func_System_Int32__" data-uid="Cysharp.Threading.Tasks.TaskPool.RegisterSizeGetter(System.Type,System.Func{System.Int32})">RegisterSizeGetter(Type, Func&lt;Int32&gt;)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void RegisterSizeGetter(Type type, Func&lt;int&gt; getSize)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>type</code></span> <span class="xref">System.Type</span></dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>getSize</code></span> <span class="xref">System.Func</span>&lt;<span class="xref">System.Int32</span>&gt;</dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_TaskPool_SetMaxPoolSize_" data-uid="Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize*"></a>
-  <h4 id="Cysharp_Threading_Tasks_TaskPool_SetMaxPoolSize_System_Int32_" data-uid="Cysharp.Threading.Tasks.TaskPool.SetMaxPoolSize(System.Int32)">SetMaxPoolSize(Int32)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void SetMaxPoolSize(int maxPoolSize)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>maxPoolSize</code></span> <span class="xref">System.Int32</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  
-  
-  
+  </thead></thead></table>
 </article>
           </div>
           

@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>AsyncEndDragTrigger Class
+    <title>TimeoutController Class
    | UniTask </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="AsyncEndDragTrigger Class
+    <meta name="title" content="TimeoutController Class
    | UniTask ">
     <meta name="generator" content="docfx 2.51.0.0">
     
@@ -71,31 +71,29 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.TimeoutController">
   
-  <h1 id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger" class="text-break">AsyncEndDragTrigger Class
+  <h1 id="Cysharp_Threading_Tasks_TimeoutController" data-uid="Cysharp.Threading.Tasks.TimeoutController" class="text-break">TimeoutController Class
   </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.Triggers.html">Cysharp.Threading.Tasks.Triggers</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
   
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class AsyncEndDragTrigger : AsyncTriggerBase&lt;PointerEventData&gt;, IUniTaskAsyncEnumerable&lt;PointerEventData&gt;, IEndDragHandler</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class TimeoutController : IDisposable</code></pre>
   </div>
 
   <div class="inheritance">
     <h5>Inheritance</h5>
     <span><span class="xref">System.Object</span></span> → 
-    <span><a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncTriggerBase-1.html">AsyncTriggerBase</a>&lt;<span class="xref">PointerEventData</span>&gt;</span> → 
-    <span class="xref">AsyncEndDragTrigger</span>
+    <span class="xref">TimeoutController</span>
   </div>
   
   <div classs="implements">
     <h5>Implements</h5>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;<span class="xref">PointerEventData</span>&gt;</div>
-    <div><span class="xref">IEndDragHandler</span></div>
+    <div><span class="xref">System.IDisposable</span></div>
   </div>
   
   
@@ -104,6 +102,30 @@
   
   
   <h3 id="members">Members</h3>
+  <h4>Constructors
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.TimeoutController.html#Cysharp_Threading_Tasks_TimeoutController__ctor">TimeoutController()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.TimeoutController.html#Cysharp_Threading_Tasks_TimeoutController__ctor_CancellationTokenSource_">TimeoutController(CancellationTokenSource)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
   <h4>Methods
   </h4>
   <table class="table table-condensed">
@@ -116,48 +138,126 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_GetOnEndDragAsyncHandler">GetOnEndDragAsyncHandler()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.TimeoutController.html#Cysharp_Threading_Tasks_TimeoutController_Dispose">Dispose()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_GetOnEndDragAsyncHandler_CancellationToken_">GetOnEndDragAsyncHandler(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.TimeoutController.html#Cysharp_Threading_Tasks_TimeoutController_IsTimeout">IsTimeout()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_OnEndDragAsync">OnEndDragAsync()</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.TimeoutController.html#Cysharp_Threading_Tasks_TimeoutController_Reset">Reset()</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.html#Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_OnEndDragAsync_CancellationToken_">OnEndDragAsync(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.TimeoutController.html#Cysharp_Threading_Tasks_TimeoutController_Timeout_System_TimeSpan_">Timeout(TimeSpan)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
     </tbody>
   </table>
   
+  <h3 id="constructors">Constructors
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_TimeoutController__ctor_" data-uid="Cysharp.Threading.Tasks.TimeoutController.#ctor*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TimeoutController__ctor" data-uid="Cysharp.Threading.Tasks.TimeoutController.#ctor">TimeoutController()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeoutController()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_TimeoutController__ctor_" data-uid="Cysharp.Threading.Tasks.TimeoutController.#ctor*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TimeoutController__ctor_CancellationTokenSource_" data-uid="Cysharp.Threading.Tasks.TimeoutController.#ctor(CancellationTokenSource)">TimeoutController(CancellationTokenSource)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeoutController(CancellationTokenSource linkCancellationTokenSource)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>linkCancellationTokenSource</code></span> <span class="xref">CancellationTokenSource</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
   <h3 id="methods">Methods
   </h3>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_GetOnEndDragAsyncHandler_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.GetOnEndDragAsyncHandler*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_GetOnEndDragAsyncHandler" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.GetOnEndDragAsyncHandler">GetOnEndDragAsyncHandler()</h4>
+  <a id="Cysharp_Threading_Tasks_TimeoutController_Dispose_" data-uid="Cysharp.Threading.Tasks.TimeoutController.Dispose*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TimeoutController_Dispose" data-uid="Cysharp.Threading.Tasks.TimeoutController.Dispose">Dispose()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IAsyncOnEndDragHandler GetOnEndDragAsyncHandler()</code></pre>
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_TimeoutController_IsTimeout_" data-uid="Cysharp.Threading.Tasks.TimeoutController.IsTimeout*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TimeoutController_IsTimeout" data-uid="Cysharp.Threading.Tasks.TimeoutController.IsTimeout">IsTimeout()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsTimeout()</code></pre>
   </div>
 
   
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnEndDragHandler.html">IAsyncOnEndDragHandler</a></dt>
+    <dt><span class="xref">System.Boolean</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -174,60 +274,16 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_GetOnEndDragAsyncHandler_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.GetOnEndDragAsyncHandler*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_GetOnEndDragAsyncHandler_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.GetOnEndDragAsyncHandler(CancellationToken)">GetOnEndDragAsyncHandler(CancellationToken)</h4>
+  <a id="Cysharp_Threading_Tasks_TimeoutController_Reset_" data-uid="Cysharp.Threading.Tasks.TimeoutController.Reset*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TimeoutController_Reset" data-uid="Cysharp.Threading.Tasks.TimeoutController.Reset">Reset()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IAsyncOnEndDragHandler GetOnEndDragAsyncHandler(CancellationToken cancellationToken)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnEndDragHandler.html">IAsyncOnEndDragHandler</a></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_OnEndDragAsync_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.OnEndDragAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_OnEndDragAsync" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.OnEndDragAsync">OnEndDragAsync()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;PointerEventData&gt; OnEndDragAsync()</code></pre>
+    <pre><code class="lang-csharp hljs">public void Reset()</code></pre>
   </div>
 
   
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">PointerEventData</span>&gt;</dt>
-    <dd></dd>
-  </dl>
-  </section>
   
   
   
@@ -241,19 +297,19 @@
   
   </section>
   <section>
-  <a id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_OnEndDragAsync_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.OnEndDragAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_Triggers_AsyncEndDragTrigger_OnEndDragAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.Triggers.AsyncEndDragTrigger.OnEndDragAsync(CancellationToken)">OnEndDragAsync(CancellationToken)</h4>
+  <a id="Cysharp_Threading_Tasks_TimeoutController_Timeout_" data-uid="Cysharp.Threading.Tasks.TimeoutController.Timeout*"></a>
+  <h4 id="Cysharp_Threading_Tasks_TimeoutController_Timeout_System_TimeSpan_" data-uid="Cysharp.Threading.Tasks.TimeoutController.Timeout(System.TimeSpan)">Timeout(TimeSpan)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;PointerEventData&gt; OnEndDragAsync(CancellationToken cancellationToken)</code></pre>
+    <pre><code class="lang-csharp hljs">public CancellationToken Timeout(TimeSpan timeout)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dt><span class="parametername"><code>timeout</code></span> <span class="xref">System.TimeSpan</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -261,7 +317,7 @@
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">PointerEventData</span>&gt;</dt>
+    <dt><span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -280,10 +336,7 @@
   
   <h3 id="implements">Implements</h3>
   <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable&lt;T&gt;</a>
-  </div>
-  <div>
-      <span class="xref">IEndDragHandler</span>
+      <span class="xref">System.IDisposable</span>
   </div>
   
   
