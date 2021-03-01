@@ -20,10 +20,21 @@ namespace Cysharp.Threading.Tasks
 
     public partial struct UniTask
     {
-        public static YieldAwaitable Yield(PlayerLoopTiming timing = PlayerLoopTiming.Update)
+        public static YieldAwaitable Yield()
+        {
+            // optimized for single continuation
+            return new YieldAwaitable(PlayerLoopTiming.Update);
+        }
+
+        public static YieldAwaitable Yield(PlayerLoopTiming timing)
         {
             // optimized for single continuation
             return new YieldAwaitable(timing);
+        }
+
+        public static UniTask Yield(CancellationToken cancellationToken)
+        {
+            return new UniTask(YieldPromise.Create(PlayerLoopTiming.Update, cancellationToken, out var token), token);
         }
 
         public static UniTask Yield(PlayerLoopTiming timing, CancellationToken cancellationToken)
@@ -34,10 +45,35 @@ namespace Cysharp.Threading.Tasks
         /// <summary>
         /// Similar as UniTask.Yield but guaranteed run on next frame.
         /// </summary>
-        public static UniTask NextFrame(PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default)
+        public static UniTask NextFrame()
+        {
+            return new UniTask(NextFramePromise.Create(PlayerLoopTiming.Update, CancellationToken.None, out var token), token);
+        }
+
+        /// <summary>
+        /// Similar as UniTask.Yield but guaranteed run on next frame.
+        /// </summary>
+        public static UniTask NextFrame(PlayerLoopTiming timing)
+        {
+            return new UniTask(NextFramePromise.Create(timing, CancellationToken.None, out var token), token);
+        }
+
+        /// <summary>
+        /// Similar as UniTask.Yield but guaranteed run on next frame.
+        /// </summary>
+        public static UniTask NextFrame(CancellationToken cancellationToken)
+        {
+            return new UniTask(NextFramePromise.Create(PlayerLoopTiming.Update, cancellationToken, out var token), token);
+        }
+
+        /// <summary>
+        /// Similar as UniTask.Yield but guaranteed run on next frame.
+        /// </summary>
+        public static UniTask NextFrame(PlayerLoopTiming timing, CancellationToken cancellationToken)
         {
             return new UniTask(NextFramePromise.Create(timing, cancellationToken, out var token), token);
         }
+
 
         /// <summary>
         /// Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate).
