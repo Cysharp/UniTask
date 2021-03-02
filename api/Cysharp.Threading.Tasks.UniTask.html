@@ -299,6 +299,27 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame">NextFrame()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame_CancellationToken_">NextFrame(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame_Cysharp_Threading_Tasks_PlayerLoopTiming_">NextFrame(PlayerLoopTiming)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_NextFrame_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_">NextFrame(PlayerLoopTiming, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
@@ -767,6 +788,18 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
       <tr>
         <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WhenAny__9_Cysharp_Threading_Tasks_UniTask___0__Cysharp_Threading_Tasks_UniTask___1__Cysharp_Threading_Tasks_UniTask___2__Cysharp_Threading_Tasks_UniTask___3__Cysharp_Threading_Tasks_UniTask___4__Cysharp_Threading_Tasks_UniTask___5__Cysharp_Threading_Tasks_UniTask___6__Cysharp_Threading_Tasks_UniTask___7__Cysharp_Threading_Tasks_UniTask___8__">WhenAny&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9&gt;(UniTask&lt;T1&gt;, UniTask&lt;T2&gt;, UniTask&lt;T3&gt;, UniTask&lt;T4&gt;, UniTask&lt;T5&gt;, UniTask&lt;T6&gt;, UniTask&lt;T7&gt;, UniTask&lt;T8&gt;, UniTask&lt;T9&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Yield">Yield()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Yield_CancellationToken_">Yield(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -1790,13 +1823,120 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_NextFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_NextFrame" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame">NextFrame()</h4>
+  <div class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask NextFrame()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_NextFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_NextFrame_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame(CancellationToken)">NextFrame(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask NextFrame(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_NextFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_NextFrame_Cysharp_Threading_Tasks_PlayerLoopTiming_" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame(Cysharp.Threading.Tasks.PlayerLoopTiming)">NextFrame(PlayerLoopTiming)</h4>
+  <div class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask NextFrame(PlayerLoopTiming timing)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_NextFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_NextFrame_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.NextFrame(Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken)">NextFrame(PlayerLoopTiming, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Similar as UniTask.Yield but guaranteed run on next frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask NextFrame(PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask NextFrame(PlayerLoopTiming timing, CancellationToken cancellationToken)</code></pre>
   </div>
 
   <section>
@@ -5745,12 +5885,79 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Yield_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Yield" data-uid="Cysharp.Threading.Tasks.UniTask.Yield">Yield()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static YieldAwaitable Yield()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.YieldAwaitable.html">YieldAwaitable</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Yield_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Yield_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield(CancellationToken)">Yield(CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask Yield(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_Yield_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_Yield_Cysharp_Threading_Tasks_PlayerLoopTiming_" data-uid="Cysharp.Threading.Tasks.UniTask.Yield(Cysharp.Threading.Tasks.PlayerLoopTiming)">Yield(PlayerLoopTiming)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static YieldAwaitable Yield(PlayerLoopTiming timing = PlayerLoopTiming.Update)</code></pre>
+    <pre><code class="lang-csharp hljs">public static YieldAwaitable Yield(PlayerLoopTiming timing)</code></pre>
   </div>
 
   <section>
