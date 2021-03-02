@@ -58,6 +58,7 @@ namespace Cysharp.Threading.Tasks
             {
                 try
                 {
+                    task.GetAwaiter().GetResult();
                     return new ReturnObservable<AsyncUnit>(AsyncUnit.Default);
                 }
                 catch (Exception ex)
