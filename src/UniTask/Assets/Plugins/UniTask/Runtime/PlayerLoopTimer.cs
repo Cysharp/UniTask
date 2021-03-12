@@ -15,7 +15,8 @@ namespace Cysharp.Threading.Tasks
         readonly PlayerLoopTiming playerLoopTiming;
         readonly bool periodic;
 
-        bool isPlaying;
+        bool isRunning;
+        bool tryStop;
         bool isDisposed;
 
         protected PlayerLoopTimer(bool periodic, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action<object> timerCallback, object state)
@@ -64,8 +65,12 @@ namespace Cysharp.Threading.Tasks
             if (isDisposed) throw new ObjectDisposedException(null);
 
             ResetCore(null); // init state
-            isPlaying = true;
-            PlayerLoopHelper.AddAction(playerLoopTiming, this);
+            if (!isRunning)
+            {
+                isRunning = true;
+                PlayerLoopHelper.AddAction(playerLoopTiming, this);
+            }
+            tryStop = false;
         }
 
         /// <summary>
@@ -76,8 +81,12 @@ namespace Cysharp.Threading.Tasks
             if (isDisposed) throw new ObjectDisposedException(null);
 
             ResetCore(interval); // init state
-            isPlaying = true;
-            PlayerLoopHelper.AddAction(playerLoopTiming, this);
+            if (!isRunning)
+            {
+                isRunning = true;
+                PlayerLoopHelper.AddAction(playerLoopTiming, this);
+            }
+            tryStop = false;
         }
 
         /// <summary>
@@ -85,7 +94,7 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public void Stop()
         {
-            isPlaying = false;
+            tryStop = true;
         }
 
         protected abstract void ResetCore(TimeSpan? newInterval);
@@ -97,9 +106,21 @@ namespace Cysharp.Threading.Tasks
 
         bool IPlayerLoopItem.MoveNext()
         {
-            if (isDisposed) return false;
-            if (!isPlaying) return false;
-            if (cancellationToken.IsCancellationRequested) return false;
+            if (isDisposed)
+            {
+                isRunning = false;
+                return false;
+            }
+            if (tryStop)
+            {
+                isRunning = false;
+                return false;
+            }
+            if (cancellationToken.IsCancellationRequested)
+            {
+                isRunning = false;
+                return false;
+            }
 
             if (!MoveNextCore())
             {
@@ -112,6 +133,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
+                    isRunning = false;
                     return false;
                 }
             }
@@ -132,7 +154,6 @@ namespace Cysharp.Threading.Tasks
             : base(periodic, playerLoopTiming, cancellationToken, timerCallback, state)
         {
             ResetCore(interval);
-            this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
         }
 
         protected override bool MoveNextCore()
@@ -157,6 +178,7 @@ namespace Cysharp.Threading.Tasks
         protected override void ResetCore(TimeSpan? interval)
         {
             this.elapsed = 0.0f;
+            this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
             if (interval != null)
             {
                 this.interval = (float)interval.Value.TotalSeconds;
@@ -174,7 +196,6 @@ namespace Cysharp.Threading.Tasks
             : base(periodic, playerLoopTiming, cancellationToken, timerCallback, state)
         {
             ResetCore(interval);
-            this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
         }
 
         protected override bool MoveNextCore()
@@ -198,7 +219,8 @@ namespace Cysharp.Threading.Tasks
 
         protected override void ResetCore(TimeSpan? interval)
         {
-            elapsed = 0.0f;
+            this.elapsed = 0.0f;
+            this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
             if (interval != null)
             {
                 this.interval = (float)interval.Value.TotalSeconds;

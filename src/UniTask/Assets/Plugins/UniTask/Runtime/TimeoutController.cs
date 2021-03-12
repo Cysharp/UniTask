@@ -76,14 +76,13 @@ namespace Cysharp.Threading.Tasks
                 timer = null;
             }
 
-
             var useSource = (linkedSource != null) ? linkedSource : timeoutSource;
             var token = useSource.Token;
             if (timer == null)
             {
                 // Timer complete => timeoutSource.Cancel() -> linkedSource will be canceled.
                 // (linked)token is canceled => stop timer
-                timer = PlayerLoopTimer.Create(timeout, false, delayType, delayTiming, token, CancelCancellationTokenSourceStateDelegate, timeoutSource);
+                timer = PlayerLoopTimer.StartNew(timeout, false, delayType, delayTiming, token, CancelCancellationTokenSourceStateDelegate, timeoutSource);
             }
             else
             {
