@@ -4,32 +4,29 @@ using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks.Triggers;
 using System;
+using Cysharp.Threading.Tasks.Internal;
 
 namespace Cysharp.Threading.Tasks
 {
 
-    public static class CancellationTokenSourceExtensions
+    public static partial class CancellationTokenSourceExtensions
     {
-        public static void CancelAfterSlim(this CancellationTokenSource cts, int millisecondsDelay, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
+        readonly static Action<object> CancelCancellationTokenSourceStateDelegate = new Action<object>(CancelCancellationTokenSourceState);
+
+        static void CancelCancellationTokenSourceState(object state)
         {
-            var delay = UniTask.Delay(millisecondsDelay, delayType, delayTiming, cts.Token);
-            CancelAfterCore(cts, delay).Forget();
+            var cts = (CancellationTokenSource)state;
+            cts.Cancel();
         }
 
-        public static void CancelAfterSlim(this CancellationTokenSource cts, TimeSpan delayTimeSpan, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
+        public static IDisposable CancelAfterSlim(this CancellationTokenSource cts, int millisecondsDelay, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
         {
-            var delay = UniTask.Delay(delayTimeSpan, delayType, delayTiming, cts.Token);
-            CancelAfterCore(cts, delay).Forget();
+            return CancelAfterSlim(cts, TimeSpan.FromMilliseconds(millisecondsDelay), delayType, delayTiming);
         }
 
-        static async UniTaskVoid CancelAfterCore(CancellationTokenSource cts, UniTask delayTask)
+        public static IDisposable CancelAfterSlim(this CancellationTokenSource cts, TimeSpan delayTimeSpan, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
         {
-            var alreadyCanceled = await delayTask.SuppressCancellationThrow();
-            if (!alreadyCanceled)
-            {
-                cts.Cancel();
-                cts.Dispose();
-            }
+            return PlayerLoopTimer.StartNew(delayTimeSpan, false, delayType, delayTiming, cts.Token, CancelCancellationTokenSourceStateDelegate, cts);
         }
 
         public static void RegisterRaiseCancelOnDestroy(this CancellationTokenSource cts, Component component)
@@ -40,11 +37,7 @@ namespace Cysharp.Threading.Tasks
         public static void RegisterRaiseCancelOnDestroy(this CancellationTokenSource cts, GameObject gameObject)
         {
             var trigger = gameObject.GetAsyncDestroyTrigger();
-            trigger.CancellationToken.RegisterWithoutCaptureExecutionContext(state =>
-            {
-                var cts2 = (CancellationTokenSource)state;
-                cts2.Cancel();
-            }, cts);
+            trigger.CancellationToken.RegisterWithoutCaptureExecutionContext(CancelCancellationTokenSourceStateDelegate, cts);
         }
     }
 }

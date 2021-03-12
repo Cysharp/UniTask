@@ -1,8 +1,7 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System.Threading;
 using System;
-using Cysharp.Threading.Tasks.Internal;
+using System.Threading;
 
 namespace Cysharp.Threading.Tasks
 {
@@ -14,26 +13,44 @@ namespace Cysharp.Threading.Tasks
 
     public sealed class TimeoutController : IDisposable
     {
+        readonly static Action<object> CancelCancellationTokenSourceStateDelegate = new Action<object>(CancelCancellationTokenSourceState);
+
+        static void CancelCancellationTokenSourceState(object state)
+        {
+            var cts = (CancellationTokenSource)state;
+            cts.Cancel();
+        }
+
         CancellationTokenSource timeoutSource;
         CancellationTokenSource linkedSource;
-        StoppableDelayRealtimePromise timeoutDelay;
+        PlayerLoopTimer timer;
+        bool isDisposed;
 
+        readonly DelayType delayType;
+        readonly PlayerLoopTiming delayTiming;
         readonly CancellationTokenSource originalLinkCancellationTokenSource;
 
-        public TimeoutController()
+        public TimeoutController(DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
         {
             this.timeoutSource = new CancellationTokenSource();
             this.originalLinkCancellationTokenSource = null;
             this.linkedSource = null;
-            this.timeoutDelay = null;
+            this.delayType = delayType;
+            this.delayTiming = delayTiming;
         }
 
-        public TimeoutController(CancellationTokenSource linkCancellationTokenSource)
+        public TimeoutController(CancellationTokenSource linkCancellationTokenSource, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
         {
             this.timeoutSource = new CancellationTokenSource();
             this.originalLinkCancellationTokenSource = linkCancellationTokenSource;
             this.linkedSource = CancellationTokenSource.CreateLinkedTokenSource(timeoutSource.Token, linkCancellationTokenSource.Token);
-            this.timeoutDelay = null;
+            this.delayType = delayType;
+            this.delayTiming = delayTiming;
+        }
+
+        public CancellationToken Timeout(int millisecondsTimeout)
+        {
+            return Timeout(TimeSpan.FromMilliseconds(millisecondsTimeout));
         }
 
         public CancellationToken Timeout(TimeSpan timeout)
@@ -43,6 +60,7 @@ namespace Cysharp.Threading.Tasks
                 return originalLinkCancellationTokenSource.Token;
             }
 
+            // Timeouted, create new source and timer.
             if (timeoutSource.IsCancellationRequested)
             {
                 timeoutSource.Dispose();
@@ -53,18 +71,25 @@ namespace Cysharp.Threading.Tasks
                     this.linkedSource.Dispose();
                     this.linkedSource = CancellationTokenSource.CreateLinkedTokenSource(timeoutSource.Token, originalLinkCancellationTokenSource.Token);
                 }
+
+                timer?.Dispose();
+                timer = null;
             }
 
-            if (timeoutDelay == null)
+            var useSource = (linkedSource != null) ? linkedSource : timeoutSource;
+            var token = useSource.Token;
+            if (timer == null)
             {
-                RunDelayAsync(timeout).Forget(); // timeoutDelay = ... in RunDelayAsync(immediately, before await)
+                // Timer complete => timeoutSource.Cancel() -> linkedSource will be canceled.
+                // (linked)token is canceled => stop timer
+                timer = PlayerLoopTimer.StartNew(timeout, false, delayType, delayTiming, token, CancelCancellationTokenSourceStateDelegate, timeoutSource);
             }
             else
             {
-                timeoutDelay.RestartStopwatch(); // already running RunDelayAsync
+                timer.Restart(timeout);
             }
 
-            return (linkedSource != null) ? linkedSource.Token : timeoutSource.Token;
+            return token;
         }
 
         public bool IsTimeout()
@@ -74,184 +99,30 @@ namespace Cysharp.Threading.Tasks
 
         public void Reset()
         {
-            if (timeoutDelay != null)
-            {
-                timeoutDelay.Stop(); // stop delay, will finish RunDelayAsync
-                timeoutDelay = null;
-            }
-        }
-
-        async UniTaskVoid RunDelayAsync(TimeSpan timeout)
-        {
-            timeoutDelay = StoppableDelayRealtimePromise.Create(timeout, PlayerLoopTiming.Update, (linkedSource == null) ? CancellationToken.None : linkedSource.Token, out var version);
-            try
-            {
-                var reason = await new UniTask<DelayResult>(timeoutDelay, version);
-                if (reason == DelayResult.DelayCompleted)
-                {
-                    // UnityEngine.Debug.Log("DEBUG:Timeout Complete, try to call timeoutSource.Cancel");
-                    timeoutSource.Cancel();
-                }
-                else if (reason == DelayResult.LinkedTokenCanceled)
-                {
-                    // UnityEngine.Debug.Log("DEBUG:LinkedSource IsCancellationRequested");
-                }
-                else if (reason == DelayResult.ExternalStopped)
-                {
-                    // Reset(Promise.Stop) called, do nothing.
-                    // UnityEngine.Debug.Log("DEBUG:Reset called");
-                }
-            }
-            finally
-            {
-                timeoutDelay = null;
-            }
+            timer.Stop();
         }
 
         public void Dispose()
         {
-            if (timeoutDelay != null)
+            if (isDisposed) return;
+
+            try
             {
-                timeoutDelay.Stop();
-            }
-            timeoutSource.Dispose();
-            if (linkedSource != null)
-            {
-                linkedSource.Dispose();
-            }
-        }
+                // stop timer.
+                timer.Dispose();
 
-        enum DelayResult
-        {
-            LinkedTokenCanceled,
-            ExternalStopped,
-            DelayCompleted, // as Timeout.
-        }
-
-        // Stop + SuppressCancellationThrow.
-        sealed class StoppableDelayRealtimePromise : IUniTaskSource<DelayResult>, IPlayerLoopItem, ITaskPoolNode<StoppableDelayRealtimePromise>
-        {
-            static OperationCanceledException ExterenalStopException = new OperationCanceledException();
-
-            static TaskPool<StoppableDelayRealtimePromise> pool;
-            StoppableDelayRealtimePromise nextNode;
-            public ref StoppableDelayRealtimePromise NextNode => ref nextNode;
-
-            static StoppableDelayRealtimePromise()
-            {
-                TaskPool.RegisterSizeGetter(typeof(StoppableDelayRealtimePromise), () => pool.Size);
-            }
-
-            long delayTimeSpanTicks;
-            ValueStopwatch stopwatch;
-            CancellationToken cancellationToken;
-            bool externalStop;
-
-            UniTaskCompletionSourceCore<DelayResult> core;
-
-            StoppableDelayRealtimePromise()
-            {
-            }
-
-            public static StoppableDelayRealtimePromise Create(TimeSpan delayTimeSpan, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
-            {
-                if (!pool.TryPop(out var result))
+                // cancel and dispose.
+                timeoutSource.Cancel();
+                timeoutSource.Dispose();
+                if (linkedSource != null)
                 {
-                    result = new StoppableDelayRealtimePromise();
-                }
-
-                result.stopwatch = ValueStopwatch.StartNew();
-                result.delayTimeSpanTicks = delayTimeSpan.Ticks;
-                result.cancellationToken = cancellationToken;
-                result.externalStop = false;
-
-                TaskTracker.TrackActiveTask(result, 3);
-
-                PlayerLoopHelper.AddAction(timing, result);
-
-                token = result.core.Version;
-                return result;
-            }
-
-            public void Stop()
-            {
-                externalStop = true;
-            }
-
-            public void RestartStopwatch()
-            {
-                stopwatch = ValueStopwatch.StartNew();
-            }
-
-            public DelayResult GetResult(short token)
-            {
-                try
-                {
-                    return core.GetResult(token);
-                }
-                finally
-                {
-                    TryReturn();
+                    linkedSource.Cancel();
+                    linkedSource.Dispose();
                 }
             }
-
-            void IUniTaskSource.GetResult(short token)
+            finally
             {
-                GetResult(token);
-            }
-
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
-
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
-
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
-
-            public bool MoveNext()
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    core.TrySetResult(DelayResult.LinkedTokenCanceled);
-                    return false;
-                }
-
-                if (externalStop)
-                {
-                    core.TrySetResult(DelayResult.ExternalStopped);
-                    return false;
-                }
-
-                if (stopwatch.IsInvalid)
-                {
-                    core.TrySetResult(DelayResult.DelayCompleted);
-                    return false;
-                }
-
-                if (stopwatch.ElapsedTicks >= delayTimeSpanTicks)
-                {
-                    core.TrySetResult(DelayResult.DelayCompleted);
-                    return false;
-                }
-
-                return true;
-            }
-
-            bool TryReturn()
-            {
-                TaskTracker.RemoveTracking(this);
-                core.Reset();
-                stopwatch = default;
-                cancellationToken = default;
-                externalStop = false;
-                return pool.TryPush(this);
+                isDisposed = true;
             }
         }
     }
