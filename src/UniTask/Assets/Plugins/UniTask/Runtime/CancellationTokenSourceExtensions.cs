@@ -39,8 +39,6 @@ namespace Cysharp.Threading.Tasks
             var trigger = gameObject.GetAsyncDestroyTrigger();
             trigger.CancellationToken.RegisterWithoutCaptureExecutionContext(CancelCancellationTokenSourceStateDelegate, cts);
         }
-
-        
     }
 }
 
