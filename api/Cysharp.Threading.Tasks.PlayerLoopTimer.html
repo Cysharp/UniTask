@@ -1,0 +1,581 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PlayerLoopTimer Class
+   | UniTask </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PlayerLoopTimer Class
+   | UniTask ">
+    <meta name="generator" content="docfx 2.51.0.0">
+    
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/cysharp.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-default ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <div class="navbar-brand">
+                <a href="../">
+                  <img id="logo" src="../img/Icon.png" alt="">
+                  <span>UniTask</span>
+                </a>
+              </div>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer">
+  
+  <h1 id="Cysharp_Threading_Tasks_PlayerLoopTimer" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer" class="text-break">PlayerLoopTimer Class
+  </h1>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class PlayerLoopTimer : IDisposable, IPlayerLoopItem</code></pre>
+  </div>
+
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <span><span class="xref">System.Object</span></span> → 
+    <span class="xref">PlayerLoopTimer</span>
+  </div>
+  
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IDisposable</span></div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IPlayerLoopItem.html">IPlayerLoopItem</a></div>
+  </div>
+  
+  
+  
+  
+  
+  
+  <h3 id="members">Members</h3>
+  <h4>Constructors
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer__ctor_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Action_System_Object__System_Object_">PlayerLoopTimer(Boolean, PlayerLoopTiming, CancellationToken, Action&lt;Object&gt;, Object)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4>Methods
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_Create_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Action_System_Object__System_Object_">Create(TimeSpan, Boolean, DelayType, PlayerLoopTiming, CancellationToken, Action&lt;Object&gt;, Object)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_Dispose">Dispose()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_MoveNextCore">MoveNextCore()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_ResetCore_System_Nullable_System_TimeSpan__">ResetCore(Nullable&lt;TimeSpan&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_Restart">Restart()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Restart(Reset and Start) timer.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_Restart_System_TimeSpan_">Restart(TimeSpan)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Restart(Reset and Start) and change interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_StartNew_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Action_System_Object__System_Object_">StartNew(TimeSpan, Boolean, DelayType, PlayerLoopTiming, CancellationToken, Action&lt;Object&gt;, Object)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_Stop">Stop()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Stop timer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h4>Explicit Interface Implementations
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html#Cysharp_Threading_Tasks_PlayerLoopTimer_Cysharp_Threading_Tasks_IPlayerLoopItem_MoveNext">IPlayerLoopItem.MoveNext()</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h3 id="constructors">Constructors
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer__ctor_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.#ctor*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer__ctor_System_Boolean_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.#ctor(System.Boolean,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken,System.Action{System.Object},System.Object)">PlayerLoopTimer(Boolean, PlayerLoopTiming, CancellationToken, Action&lt;Object&gt;, Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected PlayerLoopTimer(bool periodic, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action&lt;object&gt; timerCallback, object state)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>periodic</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>playerLoopTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>timerCallback</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <h3 id="methods">Methods
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_Create_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Create*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_Create_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Create(System.TimeSpan,System.Boolean,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken,System.Action{System.Object},System.Object)">Create(TimeSpan, Boolean, DelayType, PlayerLoopTiming, CancellationToken, Action&lt;Object&gt;, Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PlayerLoopTimer Create(TimeSpan interval, bool periodic, DelayType delayType, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action&lt;object&gt; timerCallback, object state)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>interval</code></span> <span class="xref">System.TimeSpan</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>periodic</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>delayType</code></span> <a class="xref" href="Cysharp.Threading.Tasks.DelayType.html">DelayType</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>playerLoopTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>timerCallback</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html">PlayerLoopTimer</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_Dispose_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Dispose*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_Dispose" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_MoveNextCore_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.MoveNextCore*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_MoveNextCore" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.MoveNextCore">MoveNextCore()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected abstract bool MoveNextCore()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_ResetCore_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.ResetCore*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_ResetCore_System_Nullable_System_TimeSpan__" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.ResetCore(System.Nullable{System.TimeSpan})">ResetCore(Nullable&lt;TimeSpan&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected abstract void ResetCore(TimeSpan? newInterval)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>newInterval</code></span> <span class="xref">System.Nullable</span>&lt;<span class="xref">System.TimeSpan</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_Restart_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Restart*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_Restart" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Restart">Restart()</h4>
+  <div class="markdown level1 summary"><p>Restart(Reset and Start) timer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Restart()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_Restart_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Restart*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_Restart_System_TimeSpan_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Restart(System.TimeSpan)">Restart(TimeSpan)</h4>
+  <div class="markdown level1 summary"><p>Restart(Reset and Start) and change interval.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Restart(TimeSpan interval)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>interval</code></span> <span class="xref">System.TimeSpan</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_StartNew_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.StartNew*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_StartNew_System_TimeSpan_System_Boolean_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.StartNew(System.TimeSpan,System.Boolean,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken,System.Action{System.Object},System.Object)">StartNew(TimeSpan, Boolean, DelayType, PlayerLoopTiming, CancellationToken, Action&lt;Object&gt;, Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PlayerLoopTimer StartNew(TimeSpan interval, bool periodic, DelayType delayType, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action&lt;object&gt; timerCallback, object state)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>interval</code></span> <span class="xref">System.TimeSpan</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>periodic</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>delayType</code></span> <a class="xref" href="Cysharp.Threading.Tasks.DelayType.html">DelayType</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>playerLoopTiming</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>timerCallback</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTimer.html">PlayerLoopTimer</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_Stop_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Stop*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_Stop" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Stop">Stop()</h4>
+  <div class="markdown level1 summary"><p>Stop timer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Stop()</code></pre>
+  </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <h3 id="eii">Explicit Interface Implementations
+  </h3>
+  <section>
+  <a id="Cysharp_Threading_Tasks_PlayerLoopTimer_Cysharp_Threading_Tasks_IPlayerLoopItem_MoveNext_" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Cysharp#Threading#Tasks#IPlayerLoopItem#MoveNext*"></a>
+  <h4 id="Cysharp_Threading_Tasks_PlayerLoopTimer_Cysharp_Threading_Tasks_IPlayerLoopItem_MoveNext" data-uid="Cysharp.Threading.Tasks.PlayerLoopTimer.Cysharp#Threading#Tasks#IPlayerLoopItem#MoveNext">IPlayerLoopItem.MoveNext()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IPlayerLoopItem.MoveNext()</code></pre>
+  </div>
+
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IDisposable</span>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IPlayerLoopItem.html">IPlayerLoopItem</a>
+  </div>
+  
+  
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/docfx.override.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
