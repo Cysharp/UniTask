@@ -135,6 +135,18 @@ namespace Cysharp.Threading.Tasks
             return Delay(delayTimeSpan, delayType, delayTiming, cancellationToken);
         }
 
+        public static UniTask DelaySeconds(double secondsDelay, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var delayTimeSpan = TimeSpan.FromSeconds(secondsDelay);
+            return Delay(delayTimeSpan, ignoreTimeScale, delayTiming, cancellationToken);
+        }
+
+        public static UniTask DelaySeconds(double secondsDelay, DelayType delayType, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var delayTimeSpan = TimeSpan.FromSeconds(secondsDelay);
+            return Delay(delayTimeSpan, delayType, delayTiming, cancellationToken);
+        }
+
         public static UniTask Delay(TimeSpan delayTimeSpan, DelayType delayType, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (delayTimeSpan < TimeSpan.Zero)
