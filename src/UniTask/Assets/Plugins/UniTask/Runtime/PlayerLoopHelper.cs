@@ -96,6 +96,8 @@ namespace Cysharp.Threading.Tasks
         TimeUpdate = 14,
         LastTimeUpdate = 15,
 #endif
+
+        Manual
     }
 
     [Flags]
@@ -393,13 +395,12 @@ namespace Cysharp.Threading.Tasks
 
         public static void Initialize(ref PlayerLoopSystem playerLoop, InjectPlayerLoopTimings injectTimings = InjectPlayerLoopTimings.All)
         {
-#if UNITY_2020_2_OR_NEWER
-            yielders = new ContinuationQueue[16];
-            runners = new PlayerLoopRunner[16];
-#else
-            yielders = new ContinuationQueue[14];
-            runners = new PlayerLoopRunner[14];
-#endif
+            var manualIndex = (int)PlayerLoopTiming.Manual;
+            yielders = new ContinuationQueue[manualIndex+1];
+            runners = new PlayerLoopRunner[manualIndex+1];
+
+            yielders[manualIndex] = new ContinuationQueue(PlayerLoopTiming.Manual);
+            runners[manualIndex] = new PlayerLoopRunner(PlayerLoopTiming.Manual);
 
             var copyList = playerLoop.subSystemList.ToArray();
 
@@ -483,6 +484,27 @@ namespace Cysharp.Threading.Tasks
 
             playerLoop.subSystemList = copyList;
             PlayerLoop.SetPlayerLoop(playerLoop);
+        }
+
+        public static void ManualUpdate()
+        {
+            if (yielders != null)
+            {
+                var item = yielders[(int)PlayerLoopTiming.Manual];
+                if (item != null)
+                {
+                    item.Run();
+                }
+            }
+
+            if (runners != null)
+            {
+                var item = runners[(int)PlayerLoopTiming.Manual];
+                if (item != null)
+                {
+                    item.Run();
+                }
+            }
         }
 
         public static void AddAction(PlayerLoopTiming timing, IPlayerLoopItem action)

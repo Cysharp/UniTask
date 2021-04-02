@@ -140,6 +140,9 @@ namespace Cysharp.Threading.Tasks.Internal
                     LastTimeUpdate();
                     break;
 #endif
+                case PlayerLoopTiming.Manual:
+                    ManualUpdate();
+                    break;
                 default:
                     break;
             }
@@ -166,6 +169,7 @@ namespace Cysharp.Threading.Tasks.Internal
         void TimeUpdate() => RunCore();
         void LastTimeUpdate() => RunCore();
 #endif
+        void ManualUpdate() => RunCore();
 
         [System.Diagnostics.DebuggerHidden]
         void RunCore()
