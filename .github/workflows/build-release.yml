@@ -26,40 +26,51 @@ jobs:
       sha: ${{ steps.commit.outputs.sha }}
     steps:
       - uses: actions/checkout@v2
-      - name: before
+      - name: Output package.json (Before)
         run: cat ${{ env.TARGET_FILE}}
-      - name: update package.json to version ${{ env.GIT_TAG }}
+
+      - name: Update package.json to version ${{ env.GIT_TAG }}
         run: sed -i -e "s/\(\"version\":\) \"\(.*\)\",/\1 \"${{ env.GIT_TAG }}\",/" ${{ env.TARGET_FILE }}
-      - name: after
-        run: cat ${{ env.TARGET_FILE}}
+
+      - name: Check update
+        id: check_update
+        run: |
+          cat ${{ env.TARGET_FILE}}
+          git diff --exit-code || echo "::set-output name=changed::1"
+
       - name: Commit files
         id: commit
+        if: steps.check_update.outputs.changed == '1'
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git commit -m "feat: Update package.json to ${{ env.GIT_TAG }}" -a
           echo "::set-output name=sha::$(git rev-parse HEAD)"
-      - name: check sha
+
+      - name: Check sha
         run: echo "SHA ${SHA}"
         env:
           SHA: ${{ steps.commit.outputs.sha }}
-      - name: tag
+
+      - name: Create Tag
+        if: steps.check_update.outputs.changed == '1'
         run: git tag ${{ env.GIT_TAG }}
-        if: env.DRY_RUN == 'false'
+
       - name: Push changes
+        if: env.DRY_RUN == 'false' && steps.check_update.outputs.changed == '1'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
           tags: true
-        if: env.DRY_RUN == 'false'
+
       - name: Push changes (dry_run)
+        if: env.DRY_RUN == 'true' && steps.check_update.outputs.changed == '1'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ env.DRY_RUN_BRANCH_PREFIX }}-${{ env.GIT_TAG }}
           tags: false
-        if: env.DRY_RUN == 'true'
 
   build-dotnet:
     needs: [update-packagejson]
