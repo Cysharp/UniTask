@@ -848,7 +848,7 @@ button.OnClickAsAsyncEnumerable().Subscribe(async x =>
 
 Channel
 ---
-`Channel` is the same as [System.Threading.Tasks.Channels](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.channels?view=netcore-3.1) which is similar to a GoLang Channel.
+`Channel` is the same as [System.Threading.Tasks.Channels](https://docs.microsoft.com/en-us/dotnet/api/system.threading.channels?view=netcore-3.1) which is similar to a GoLang Channel.
 
 Currently it only supports multiple-producer, single-consumer unbounded channels. It can create by `Channel.CreateSingleConsumerUnbounded<T>()`.
 
