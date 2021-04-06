@@ -123,7 +123,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
+                xs.Should().BeEquivalentTo(ys);
             }
 
             {
@@ -139,7 +139,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
+                xs.Should().BeEquivalentTo(ys);
             }
 
             {
@@ -155,7 +155,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
+                xs.Should().BeEquivalentTo(ys);
             }
 
             {

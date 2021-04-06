@@ -126,7 +126,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.ToLookup(x => x);
 
                 xs.Count.Should().Be(ys.Count);
-                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
+                xs.Should().BeEquivalentTo(ys);
                 foreach (var key in xs.Select(x => x.Key))
                 {
                     xs[key].Should().Equal(ys[key]);
@@ -136,14 +136,14 @@ namespace NetCoreTests.Linq
                 var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().ToLookupAsync(x => x);
                 var ys = Enumerable.Range(1, 0).ToLookup(x => x);
 
-                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
+                xs.Should().BeEquivalentTo(ys);
             }
             {
                 var xs = await arr.ToUniTaskAsyncEnumerable().ToLookupAsync(x => x, x => x * 2);
                 var ys = arr.ToLookup(x => x, x => x * 2);
 
                 xs.Count.Should().Be(ys.Count);
-                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
+                xs.Should().BeEquivalentTo(ys);
                 foreach (var key in xs.Select(x => x.Key))
                 {
                     xs[key].Should().Equal(ys[key]);
@@ -153,7 +153,7 @@ namespace NetCoreTests.Linq
                 var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().ToLookupAsync(x => x, x => x * 2);
                 var ys = Enumerable.Range(1, 0).ToLookup(x => x, x => x * 2);
 
-                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
+                xs.Should().BeEquivalentTo(ys);
             }
         }
 
