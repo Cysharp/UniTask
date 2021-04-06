@@ -1,7 +1,7 @@
 {
     "name": "com.cysharp.unitask",
     "displayName": "UniTask",
-    "version": "2.2.4",
+    "version": "2.2.5",
     "unity": "2018.4",
     "description": "Provides an efficient async/await integration to Unity.",
     "keywords": [ "async/await", "async", "Task", "UniTask" ],
