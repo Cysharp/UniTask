@@ -181,7 +181,7 @@ namespace Cysharp.Threading.Tasks
         static readonly ContinuationQueue ThrowMarkerContinuationQueue = new ContinuationQueue(PlayerLoopTiming.Initialization);
         static readonly PlayerLoopRunner ThrowMarkerPlayerLoopRunner = new PlayerLoopRunner(PlayerLoopTiming.Initialization);
 
-        public static SynchronizationContext UnitySynchronizationContext => unitySynchronizationContetext;
+        public static SynchronizationContext UnitySynchronizationContext => unitySynchronizationContext;
         public static int MainThreadId => mainThreadId;
         internal static string ApplicationDataPath => applicationDataPath;
 
@@ -189,7 +189,7 @@ namespace Cysharp.Threading.Tasks
 
         static int mainThreadId;
         static string applicationDataPath;
-        static SynchronizationContext unitySynchronizationContetext;
+        static SynchronizationContext unitySynchronizationContext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
         internal static bool IsEditorApplicationQuitting { get; private set; }
@@ -289,7 +289,7 @@ namespace Cysharp.Threading.Tasks
         static void Init()
         {
             // capture default(unity) sync-context.
-            unitySynchronizationContetext = SynchronizationContext.Current;
+            unitySynchronizationContext = SynchronizationContext.Current;
             mainThreadId = Thread.CurrentThread.ManagedThreadId;
             try
             {
