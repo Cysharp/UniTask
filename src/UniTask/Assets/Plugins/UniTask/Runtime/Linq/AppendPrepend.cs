@@ -17,7 +17,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return new AppendPrepend<TSource>(source, element, true);
+            return new AppendPrepend<TSource>(source, element, false);
         }
     }
 
@@ -79,7 +79,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 if (enumerator == null)
                 {
-                    if (state == State.RequireAppend)
+                    if (state == State.RequirePrepend)
                     {
                         Current = element;
                         state = State.None;
