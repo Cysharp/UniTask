@@ -34,10 +34,10 @@ namespace NetCoreTests.Linq
         {
             var ys = array.Distinct().ToArray();
             {
-                (await array.ToUniTaskAsyncEnumerable().Distinct().ToArrayAsync()).Should().BeEquivalentTo(ys);
-                (await array.ToUniTaskAsyncEnumerable().Distinct(x => x).ToArrayAsync()).Should().BeEquivalentTo(ys);
-                (await array.ToUniTaskAsyncEnumerable().DistinctAwait(x => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
-                (await array.ToUniTaskAsyncEnumerable().DistinctAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().Distinct().ToArrayAsync()).Should().Equal(ys);
+                (await array.ToUniTaskAsyncEnumerable().Distinct(x => x).ToArrayAsync()).Should().Equal(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctAwait(x => UniTask.Run(() => x)).ToArrayAsync()).Should().Equal(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync()).Should().Equal(ys);
             }
         }
 
@@ -71,10 +71,10 @@ namespace NetCoreTests.Linq
         {
             var ys = await array.ToAsyncEnumerable().DistinctUntilChanged().ToArrayAsync();
             {
-                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChanged().ToArrayAsync()).Should().BeEquivalentTo(ys);
-                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChanged(x => x).ToArrayAsync()).Should().BeEquivalentTo(ys);
-                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChangedAwait(x => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
-                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChangedAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync()).Should().BeEquivalentTo(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChanged().ToArrayAsync()).Should().Equal(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChanged(x => x).ToArrayAsync()).Should().Equal(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChangedAwait(x => UniTask.Run(() => x)).ToArrayAsync()).Should().Equal(ys);
+                (await array.ToUniTaskAsyncEnumerable().DistinctUntilChangedAwaitWithCancellation((x, _) => UniTask.Run(() => x)).ToArrayAsync()).Should().Equal(ys);
             }
         }
 
@@ -112,7 +112,7 @@ namespace NetCoreTests.Linq
                 {
                     var xs = await a1.ToUniTaskAsyncEnumerable().Except(a2.ToUniTaskAsyncEnumerable()).ToArrayAsync();
                     var ys = a1.Except(a2).ToArray();
-                    xs.Should().BeEquivalentTo(ys);
+                    xs.Should().Equal(ys);
                 }
             }
         }
@@ -141,7 +141,7 @@ namespace NetCoreTests.Linq
                 {
                     var xs = await a1.ToUniTaskAsyncEnumerable().Intersect(a2.ToUniTaskAsyncEnumerable()).ToArrayAsync();
                     var ys = a1.Intersect(a2).ToArray();
-                    xs.Should().BeEquivalentTo(ys);
+                    xs.Should().Equal(ys);
                 }
             }
         }
@@ -170,7 +170,7 @@ namespace NetCoreTests.Linq
                 {
                     var xs = await a1.ToUniTaskAsyncEnumerable().Union(a2.ToUniTaskAsyncEnumerable()).ToArrayAsync();
                     var ys = a1.Union(a2).ToArray();
-                    xs.Should().BeEquivalentTo(ys);
+                    xs.Should().Equal(ys);
                 }
             }
         }

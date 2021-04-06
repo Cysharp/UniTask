@@ -24,7 +24,7 @@ namespace NetCoreTests.Linq
             var xs = await Enumerable.Range(start, count).ToUniTaskAsyncEnumerable().Append(99).ToArrayAsync();
             var ys = Enumerable.Range(start, count).Append(99).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace NetCoreTests.Linq
             var xs = await Enumerable.Range(start, count).ToUniTaskAsyncEnumerable().Prepend(99).ToArrayAsync();
             var ys = Enumerable.Range(start, count).Prepend(99).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace NetCoreTests.Linq
 
             var xs = await l.ToUniTaskAsyncEnumerable().Concat(r.ToUniTaskAsyncEnumerable()).ToArrayAsync();
             var ys = l.Concat(r).ToArray();
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -119,17 +119,17 @@ namespace NetCoreTests.Linq
             {
                 var xs = await Enumerable.Range(1, 0).ToUniTaskAsyncEnumerable().DefaultIfEmpty(99).ToArrayAsync();
                 var ys = Enumerable.Range(1, 0).DefaultIfEmpty(99).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await Enumerable.Range(1, 1).ToUniTaskAsyncEnumerable().DefaultIfEmpty(99).ToArrayAsync();
                 var ys = Enumerable.Range(1, 1).DefaultIfEmpty(99).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await Enumerable.Range(1, 10).ToUniTaskAsyncEnumerable().DefaultIfEmpty(99).ToArrayAsync();
                 var ys = Enumerable.Range(1, 10).DefaultIfEmpty(99).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             // Throw
             {

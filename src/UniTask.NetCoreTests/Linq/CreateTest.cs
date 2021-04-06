@@ -30,7 +30,7 @@ namespace NetCoreTests.Linq
 
             var ys = await Range(from, count).AsUniTaskAsyncEnumerable().ToArrayAsync();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -57,19 +57,19 @@ namespace NetCoreTests.Linq
             list.Should().BeEmpty();
 
             await e.MoveNextAsync();
-            list.Should().BeEquivalentTo(100);
+            list.Should().Equal(100);
             e.Current.Should().Be(10);
 
             await e.MoveNextAsync();
-            list.Should().BeEquivalentTo(100, 200);
+            list.Should().Equal(100, 200);
             e.Current.Should().Be(20);
 
             await e.MoveNextAsync();
-            list.Should().BeEquivalentTo(100, 200, 300);
+            list.Should().Equal(100, 200, 300);
             e.Current.Should().Be(30);
 
             (await e.MoveNextAsync()).Should().BeFalse();
-            list.Should().BeEquivalentTo(100, 200, 300, 400);
+            list.Should().Equal(100, 200, 300, 400);
         }
 
         [Fact]
@@ -144,19 +144,19 @@ namespace NetCoreTests.Linq
             list.Should().BeEmpty();
 
             await e.MoveNextAsync();
-            list.Should().BeEquivalentTo(100);
+            list.Should().Equal(100);
             e.Current.Should().Be(10);
 
             await e.MoveNextAsync();
-            list.Should().BeEquivalentTo(100, 200);
+            list.Should().Equal(100, 200);
             e.Current.Should().Be(20);
 
             await e.MoveNextAsync();
-            list.Should().BeEquivalentTo(100, 200, 300);
+            list.Should().Equal(100, 200, 300);
             e.Current.Should().Be(30);
 
             (await e.MoveNextAsync()).Should().BeFalse();
-            list.Should().BeEquivalentTo(100, 200, 300, 400);
+            list.Should().Equal(100, 200, 300, 400);
         }
 
         async IAsyncEnumerable<int> Range(int from, int count)

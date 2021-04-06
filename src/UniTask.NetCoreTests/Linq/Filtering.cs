@@ -23,26 +23,26 @@ namespace NetCoreTests.Linq
             {
                 var a = await src.Where(x => x % 2 == 0).ToArrayAsync();
                 var expected = range.Where(x => x % 2 == 0).ToArray();
-                a.Should().BeEquivalentTo(expected);
+                a.Should().Equal(expected);
             }
             {
                 var a = await src.Where((x, i) => (x + i) % 2 == 0).ToArrayAsync();
                 var expected = range.Where((x, i) => (x + i) % 2 == 0).ToArray();
-                a.Should().BeEquivalentTo(expected);
+                a.Should().Equal(expected);
             }
             {
                 var a = await src.WhereAwait(x => UniTask.Run(() => x % 2 == 0)).ToArrayAsync();
                 var b = await src.WhereAwait(x => UniTask.FromResult(x % 2 == 0)).ToArrayAsync();
                 var expected = range.Where(x => x % 2 == 0).ToArray();
-                a.Should().BeEquivalentTo(expected);
-                b.Should().BeEquivalentTo(expected);
+                a.Should().Equal(expected);
+                b.Should().Equal(expected);
             }
             {
                 var a = await src.WhereAwait((x, i) => UniTask.Run(() => (x + i) % 2 == 0)).ToArrayAsync();
                 var b = await src.WhereAwait((x, i) => UniTask.FromResult((x + i) % 2 == 0)).ToArrayAsync();
                 var expected = range.Where((x, i) => (x + i) % 2 == 0).ToArray();
-                a.Should().BeEquivalentTo(expected);
-                b.Should().BeEquivalentTo(expected);
+                a.Should().Equal(expected);
+                b.Should().Equal(expected);
             }
         }
 
@@ -79,7 +79,7 @@ namespace NetCoreTests.Linq
             var a = await data.ToUniTaskAsyncEnumerable().OfType<int>().ToArrayAsync();
             var b = data.OfType<int>().ToArray();
 
-            a.Should().BeEquivalentTo(b);
+            a.Should().Equal(b);
         }
 
 
@@ -101,7 +101,7 @@ namespace NetCoreTests.Linq
             var a = await data.ToUniTaskAsyncEnumerable().Cast<int>().ToArrayAsync();
             var b = data.Cast<int>().ToArray();
 
-            a.Should().BeEquivalentTo(b);
+            a.Should().Equal(b);
         }
 
 

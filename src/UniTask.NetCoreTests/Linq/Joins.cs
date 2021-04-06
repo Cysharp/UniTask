@@ -38,7 +38,7 @@ namespace NetCoreTests.Linq
             var xs = await outer.ToUniTaskAsyncEnumerable().Join(inner.ToUniTaskAsyncEnumerable(), x => x, x => x, (x, y) => (x, y)).ToArrayAsync();
             var ys = outer.Join(inner, x => x, x => x, (x, y) => (x, y)).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
 
@@ -66,7 +66,7 @@ namespace NetCoreTests.Linq
             var xs = await outer.ToUniTaskAsyncEnumerable().JoinAwait(inner.ToUniTaskAsyncEnumerable(), x => RandomRun(x), x => RandomRun(x), (x, y) => RandomRun((x, y))).ToArrayAsync();
             var ys = outer.Join(inner, x => x, x => x, (x, y) => (x, y)).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
 
@@ -94,7 +94,7 @@ namespace NetCoreTests.Linq
             var xs = await outer.ToUniTaskAsyncEnumerable().JoinAwaitWithCancellation(inner.ToUniTaskAsyncEnumerable(), (x, _) => RandomRun(x), (x, _) => RandomRun(x), (x, y, _) => RandomRun((x, y))).ToArrayAsync();
             var ys = outer.Join(inner, x => x, x => x, (x, y) => (x, y)).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
 
@@ -123,7 +123,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
             }
 
             {
@@ -131,7 +131,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x, (key, xs) => (key, xs.ToArray())).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().BeEquivalentTo(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
+                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().Equal(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
             }
 
             {
@@ -139,7 +139,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
             }
 
             {
@@ -147,7 +147,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x, (key, xs) => (key, xs.ToArray())).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().BeEquivalentTo(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
+                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().Equal(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
             }
 
             {
@@ -155,7 +155,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.Key).Should().BeEquivalentTo(ys.OrderBy(x => x.Key));
+                xs.OrderBy(x => x.Key).Should().Equal(ys.OrderBy(x => x.Key));
             }
 
             {
@@ -163,7 +163,7 @@ namespace NetCoreTests.Linq
                 var ys = arr.GroupBy(x => x, (key, xs) => (key, xs.ToArray())).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().BeEquivalentTo(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
+                xs.OrderBy(x => x.key).SelectMany(x => x.Item2).Should().Equal(ys.OrderBy(x => x.key).SelectMany(x => x.Item2));
             }
         }
 
@@ -199,21 +199,21 @@ namespace NetCoreTests.Linq
                 var ys = outer.GroupJoin(inner, x => x, x => x, (x, y) => (x, string.Join(", ", y))).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await outer.ToUniTaskAsyncEnumerable().GroupJoinAwait(inner.ToUniTaskAsyncEnumerable(), x => RandomRun(x), x => RandomRun(x), (x, y) => RandomRun((x, string.Join(", ", y)))).ToArrayAsync();
                 var ys = outer.GroupJoin(inner, x => x, x => x, (x, y) => (x, string.Join(", ", y))).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await outer.ToUniTaskAsyncEnumerable().GroupJoinAwaitWithCancellation(inner.ToUniTaskAsyncEnumerable(), (x, _) => RandomRun(x), (x, _) => RandomRun(x), (x, y, _) => RandomRun((x, string.Join(", ", y)))).ToArrayAsync();
                 var ys = outer.GroupJoin(inner, x => x, x => x, (x, y) => (x, string.Join(", ", y))).ToArray();
 
                 xs.Length.Should().Be(ys.Length);
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
         }
 

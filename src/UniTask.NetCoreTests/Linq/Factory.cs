@@ -22,7 +22,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Range(start, count).ToArrayAsync();
             var ys = Enumerable.Range(start, count).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Theory]
@@ -36,7 +36,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Repeat(value, count).ToArrayAsync();
             var ys = Enumerable.Repeat(value, count).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Empty<int>().ToArrayAsync();
             var ys = Enumerable.Empty<int>().ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Theory]

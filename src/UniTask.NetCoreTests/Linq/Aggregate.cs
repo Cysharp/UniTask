@@ -481,7 +481,7 @@ namespace NetCoreTests.Linq
                 list.Add(x);
             });
 
-            list.Should().BeEquivalentTo(Enumerable.Range(1, 10));
+            list.Should().Equal(Enumerable.Range(1, 10));
 
             var list2 = new List<(int, int)>();
             await Enumerable.Range(5, 10).ToUniTaskAsyncEnumerable().ForEachAsync((index, x) =>
@@ -490,7 +490,7 @@ namespace NetCoreTests.Linq
             });
 
             var list3 = Enumerable.Range(5, 10).Select((index, x) => (index, x)).ToArray();
-            list2.Should().BeEquivalentTo(list3);
+            list2.Should().Equal(list3);
         }
     }
 }

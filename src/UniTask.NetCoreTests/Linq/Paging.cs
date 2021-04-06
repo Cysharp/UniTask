@@ -27,7 +27,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Range(1, collection).Skip(skipCount).ToArrayAsync();
             var ys = Enumerable.Range(1, collection).Skip(skipCount).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Range(1, collection).SkipLast(skipCount).ToArrayAsync();
             var ys = Enumerable.Range(1, collection).SkipLast(skipCount).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeLast(takeCount).ToArrayAsync();
             var ys = Enumerable.Range(1, collection).TakeLast(takeCount).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -103,7 +103,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Range(1, collection).Take(takeCount).ToArrayAsync();
             var ys = Enumerable.Range(1, collection).Take(takeCount).ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -130,37 +130,37 @@ namespace NetCoreTests.Linq
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).SkipWhile(x => x < skipCount).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).SkipWhile(x => x < skipCount).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).SkipWhile((x, i) => x < (skipCount - i)).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).SkipWhile((x, i) => x < (skipCount - i)).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).SkipWhileAwait(x => UniTask.Run(() => x < skipCount)).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).SkipWhile(x => x < skipCount).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).SkipWhileAwait((x, i) => UniTask.Run(() => x < (skipCount - i))).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).SkipWhile((x, i) => x < (skipCount - i)).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).SkipWhileAwaitWithCancellation((x, _) => UniTask.Run(() => x < skipCount)).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).SkipWhile(x => x < skipCount).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).SkipWhileAwaitWithCancellation((x, i, _) => UniTask.Run(() => x < (skipCount - i))).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).SkipWhile((x, i) => x < (skipCount - i)).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
         }
 
@@ -213,37 +213,37 @@ namespace NetCoreTests.Linq
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeWhile(x => x < skipCount).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).TakeWhile(x => x < skipCount).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeWhile((x, i) => x < (skipCount - i)).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).TakeWhile((x, i) => x < (skipCount - i)).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeWhileAwait(x => UniTask.Run(() => x < skipCount)).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).TakeWhile(x => x < skipCount).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeWhileAwait((x, i) => UniTask.Run(() => x < (skipCount - i))).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).TakeWhile((x, i) => x < (skipCount - i)).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeWhileAwaitWithCancellation((x, _) => UniTask.Run(() => x < skipCount)).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).TakeWhile(x => x < skipCount).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, collection).TakeWhileAwaitWithCancellation((x, i, _) => UniTask.Run(() => x < (skipCount - i))).ToArrayAsync();
                 var ys = Enumerable.Range(1, collection).TakeWhile((x, i) => x < (skipCount - i)).ToArray();
 
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
         }
 

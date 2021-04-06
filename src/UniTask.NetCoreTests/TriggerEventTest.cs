@@ -34,7 +34,7 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
 
                 ev.SetCompleted();
 
@@ -46,7 +46,7 @@ namespace NetCoreTests
                 ev.SetCompleted();
                 ev.SetCanceled(default);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
                 one.CompletedCalled.Count.Should().Be(1);
             }
             // after removed, onemore
@@ -59,7 +59,7 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
 
                 ev.SetCompleted();
 
@@ -71,7 +71,7 @@ namespace NetCoreTests
                 ev.SetCompleted();
                 ev.SetCanceled(default);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
                 one.CompletedCalled.Count.Should().Be(1);
             }
         }
@@ -102,10 +102,10 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                four.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
+                four.NextCalled.Should().Equal(10, 20, 30);
 
                 ev.SetCompleted();
 
@@ -120,11 +120,11 @@ namespace NetCoreTests
                 ev.SetCompleted();
                 ev.SetCanceled(default);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
                 one.CompletedCalled.Count.Should().Be(1);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
                 three.CompletedCalled.Count.Should().Be(1);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
                 three.CompletedCalled.Count.Should().Be(1);
             }
 
@@ -145,10 +145,10 @@ namespace NetCoreTests
                 ev.SetResult(30);
                 ev.Add(four);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                four.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
+                four.NextCalled.Should().Equal(10, 20, 30);
 
                 ev.SetCompleted();
 
@@ -163,11 +163,11 @@ namespace NetCoreTests
                 ev.SetCompleted();
                 ev.SetCanceled(default);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
                 one.CompletedCalled.Count.Should().Be(1);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
                 three.CompletedCalled.Count.Should().Be(1);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
                 three.CompletedCalled.Count.Should().Be(1);
             }
         }
@@ -190,9 +190,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
 
                 ev.Remove(one);
 
@@ -200,9 +200,9 @@ namespace NetCoreTests
                 ev.SetResult(50);
                 ev.SetResult(60);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40, 50, 60);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40, 50, 60);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30, 40, 50, 60);
+                three.NextCalled.Should().Equal(10, 20, 30, 40, 50, 60);
             }
         }
         [Fact]
@@ -222,9 +222,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
 
                 ev.Remove(two);
 
@@ -232,9 +232,9 @@ namespace NetCoreTests
                 ev.SetResult(50);
                 ev.SetResult(60);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40, 50, 60);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40, 50, 60);
+                one.NextCalled.Should().Equal(10, 20, 30, 40, 50, 60);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30, 40, 50, 60);
             }
         }
         [Fact]
@@ -254,9 +254,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
 
                 ev.Remove(three);
 
@@ -264,9 +264,9 @@ namespace NetCoreTests
                 ev.SetResult(50);
                 ev.SetResult(60);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40, 50, 60);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40, 50, 60);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30, 40, 50, 60);
+                two.NextCalled.Should().Equal(10, 20, 30, 40, 50, 60);
+                three.NextCalled.Should().Equal(10, 20, 30);
             }
         }
 
@@ -321,9 +321,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
             }
 
             public void Run2()
@@ -342,9 +342,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
             }
 
             public void Run3()
@@ -363,9 +363,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10);
-                two.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10);
+                two.NextCalled.Should().Equal(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
             }
         }
 
@@ -390,9 +390,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
                 two.NextCalled.Count.Should().Be(0);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                three.NextCalled.Should().Equal(10, 20, 30);
             }
 
             public void Run2()
@@ -412,9 +412,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10);
+                three.NextCalled.Should().Equal(10, 20, 30);
             }
 
             public void Run3()
@@ -434,9 +434,9 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
-                two.NextCalled.Should().BeEquivalentTo(10);
-                three.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
+                two.NextCalled.Should().Equal(10);
+                three.NextCalled.Should().Equal(10, 20, 30);
             }
         }
 
@@ -464,10 +464,10 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                one.NextCalled.Should().Equal(10, 20, 30);
                 two.NextCalled.Count.Should().Be(0);
                 three.NextCalled.Count.Should().Be(0);
-                four.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                four.NextCalled.Should().Equal(10, 20, 30);
             }
 
             public void Run2()
@@ -490,10 +490,10 @@ namespace NetCoreTests
                 ev.SetResult(20);
                 ev.SetResult(30);
 
-                one.NextCalled.Should().BeEquivalentTo(10);
+                one.NextCalled.Should().Equal(10);
                 two.NextCalled.Count.Should().Be(0);
                 three.NextCalled.Count.Should().Be(0);
-                four.NextCalled.Should().BeEquivalentTo(10, 20, 30);
+                four.NextCalled.Should().Equal(10, 20, 30);
             }
 
 
@@ -533,10 +533,10 @@ namespace NetCoreTests
                 ev.SetResult(30);
                 ev.SetResult(40);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40);
-                two.NextCalled.Should().BeEquivalentTo(20, 30, 40);
-                three.NextCalled.Should().BeEquivalentTo(30, 40);
-                four.NextCalled.Should().BeEquivalentTo(40);
+                one.NextCalled.Should().Equal(10, 20, 30, 40);
+                two.NextCalled.Should().Equal(20, 30, 40);
+                three.NextCalled.Should().Equal(30, 40);
+                four.NextCalled.Should().Equal(40);
             }
 
             public void Run2()
@@ -573,10 +573,10 @@ namespace NetCoreTests
                 ev.SetResult(30);
                 ev.SetResult(40);
 
-                one.NextCalled.Should().BeEquivalentTo(10, 20, 30, 40);
-                two.NextCalled.Should().BeEquivalentTo(20, 30, 40);
-                three.NextCalled.Should().BeEquivalentTo(30, 40);
-                four.NextCalled.Should().BeEquivalentTo(40);
+                one.NextCalled.Should().Equal(10, 20, 30, 40);
+                two.NextCalled.Should().Equal(20, 30, 40);
+                three.NextCalled.Should().Equal(30, 40);
+                four.NextCalled.Should().Equal(40);
             }
         }
     }

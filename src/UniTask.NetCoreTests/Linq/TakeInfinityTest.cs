@@ -24,7 +24,7 @@ namespace NetCoreTests.Linq
             rp.Value = 4;
             rp.Value = 5;
 
-            (await xs).Should().BeEquivalentTo(1, 2, 3, 4, 5);
+            (await xs).Should().Equal(1, 2, 3, 4, 5);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace NetCoreTests.Linq
             rp.Value = 4;
             rp.Value = 5;
 
-            (await xs).Should().BeEquivalentTo(1, 2, 3, 4);
+            (await xs).Should().Equal(1, 2, 3, 4);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace NetCoreTests.Linq
             await c;
             var foo = await xs;
 
-            foo.Should().BeEquivalentTo(new[] { 1, 10, 20 });
+            foo.Should().Equal(new[] { 1, 10, 20 });
 
             async Task CancelAsync()
             {
@@ -85,7 +85,7 @@ namespace NetCoreTests.Linq
             await c;
             var foo = await xs;
 
-            foo.Should().BeEquivalentTo(new[] { 20, 30, 40 });
+            foo.Should().Equal(new[] { 20, 30, 40 });
 
             async Task CancelAsync()
             {
@@ -116,7 +116,7 @@ namespace NetCoreTests.Linq
             await c;
             var foo = await xs;
 
-            foo.Should().BeEquivalentTo(new[] { 1, 10, 20 });
+            foo.Should().Equal(new[] { 1, 10, 20 });
 
             async Task CancelAsync()
             {
@@ -145,7 +145,7 @@ namespace NetCoreTests.Linq
             await c;
             var foo = await xs;
 
-            foo.Should().BeEquivalentTo(new[] { 20, 30, 40 });
+            foo.Should().Equal(new[] { 20, 30, 40 });
 
             async Task CancelAsync()
             {

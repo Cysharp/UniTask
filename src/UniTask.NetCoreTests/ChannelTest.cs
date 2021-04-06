@@ -276,8 +276,8 @@ namespace NetCoreTests
             reference.Writer.TryComplete();
             channel.Writer.TryComplete();
 
-            (await ta1).Should().BeEquivalentTo(new[] { 10, 20, 30 });
-            (await ta2).Should().BeEquivalentTo(new[] { 10, 20, 30 });
+            (await ta1).Should().Equal(new[] { 10, 20, 30 });
+            (await ta2).Should().Equal(new[] { 10, 20, 30 });
         }
 
         [Fact]

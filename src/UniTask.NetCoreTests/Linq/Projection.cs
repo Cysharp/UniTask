@@ -24,7 +24,7 @@ namespace NetCoreTests.Linq
             var xs = await Enumerable.Range(start, count).ToUniTaskAsyncEnumerable().Reverse().ToArrayAsync();
             var ys = Enumerable.Range(start, count).Reverse().ToArray();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -46,18 +46,18 @@ namespace NetCoreTests.Linq
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, count).Select(x => x * x).ToArrayAsync();
                 var ys = Enumerable.Range(1, count).Select(x => x * x).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
 
                 var zs = await UniTaskAsyncEnumerable.Range(1, count).SelectAwait((x) => UniTask.Run(() => x * x)).ToArrayAsync();
-                zs.Should().BeEquivalentTo(ys);
+                zs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, count).Select((x, i) => x * x * i).ToArrayAsync();
                 var ys = Enumerable.Range(1, count).Select((x, i) => x * x * i).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
 
                 var zs = await UniTaskAsyncEnumerable.Range(1, count).SelectAwait((x, i) => UniTask.Run(() => x * x * i)).ToArrayAsync();
-                zs.Should().BeEquivalentTo(ys);
+                zs.Should().Equal(ys);
             }
         }
 
@@ -98,22 +98,22 @@ namespace NetCoreTests.Linq
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectMany(x => UniTaskAsyncEnumerable.Range(99, rightCount * x)).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany(x => Enumerable.Range(99, rightCount * x)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectMany((i, x) => UniTaskAsyncEnumerable.Range(99 * i, rightCount * x)).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany((i, x) => Enumerable.Range(99 * i, rightCount * x)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectMany(x => UniTaskAsyncEnumerable.Range(99, rightCount * x), (x, y) => x * y).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany(x => Enumerable.Range(99, rightCount * x), (x, y) => x * y).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectMany((i, x) => UniTaskAsyncEnumerable.Range(99 * i, rightCount * x), (x, y) => x * y).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany((i, x) => Enumerable.Range(99 * i, rightCount * x), (x, y) => x * y).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
 
             // await
@@ -121,22 +121,22 @@ namespace NetCoreTests.Linq
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwait(x => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99, rightCount * x))).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany(x => Enumerable.Range(99, rightCount * x)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwait((i, x) => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99 * i, rightCount * x))).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany((i, x) => Enumerable.Range(99 * i, rightCount * x)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwait(x => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99, rightCount * x)), (x, y) => UniTask.Run(() => x * y)).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany(x => Enumerable.Range(99, rightCount * x), (x, y) => x * y).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwait((i, x) => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99 * i, rightCount * x)), (x, y) => UniTask.Run(() => x * y)).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany((i, x) => Enumerable.Range(99 * i, rightCount * x), (x, y) => x * y).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
 
             // with cancel
@@ -144,22 +144,22 @@ namespace NetCoreTests.Linq
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwaitWithCancellation((x, _) => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99, rightCount * x))).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany(x => Enumerable.Range(99, rightCount * x)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwaitWithCancellation((i, x, _) => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99 * i, rightCount * x))).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany((i, x) => Enumerable.Range(99 * i, rightCount * x)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwaitWithCancellation((x, _) => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99, rightCount * x)), (x, y, _) => UniTask.Run(() => x * y)).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany(x => Enumerable.Range(99, rightCount * x), (x, y) => x * y).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).SelectManyAwaitWithCancellation((i, x, _) => UniTask.Run(() => UniTaskAsyncEnumerable.Range(99 * i, rightCount * x)), (x, y, _) => UniTask.Run(() => x * y)).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).SelectMany((i, x) => Enumerable.Range(99 * i, rightCount * x), (x, y) => x * y).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
         }
 
@@ -219,17 +219,17 @@ namespace NetCoreTests.Linq
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).Zip(UniTaskAsyncEnumerable.Range(99, rightCount)).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).Zip(Enumerable.Range(99, rightCount)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).ZipAwait(UniTaskAsyncEnumerable.Range(99, rightCount), (x, y) => UniTask.Run(() => (x, y))).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).Zip(Enumerable.Range(99, rightCount)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await UniTaskAsyncEnumerable.Range(1, leftCount).ZipAwaitWithCancellation(UniTaskAsyncEnumerable.Range(99, rightCount), (x, y, _) => UniTask.Run(() => (x, y))).ToArrayAsync();
                 var ys = Enumerable.Range(1, leftCount).Zip(Enumerable.Range(99, rightCount)).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
         }
         [Fact]
@@ -288,7 +288,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount).Select(x => string.Join(",", x)).ToArrayAsync();
             var ys = await AsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount).Select(x => string.Join(",", x)).ToArrayAsync();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Theory]
@@ -305,7 +305,7 @@ namespace NetCoreTests.Linq
             var xs = await UniTaskAsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount, skipCount).Select(x => string.Join(",", x)).ToArrayAsync();
             var ys = await AsyncEnumerable.Range(0, rangeCount).Buffer(bufferCount, skipCount).Select(x => string.Join(",", x)).ToArrayAsync();
 
-            xs.Should().BeEquivalentTo(ys);
+            xs.Should().Equal(ys);
         }
 
         [Fact]
@@ -402,7 +402,7 @@ namespace NetCoreTests.Linq
         public async Task PariwiseImmediate()
         {
             var xs = await UniTaskAsyncEnumerable.Range(1, 5).Pairwise().ToArrayAsync();
-            xs.Should().BeEquivalentTo((1, 2), (2, 3), (3, 4), (4, 5));
+            xs.Should().Equal((1, 2), (2, 3), (3, 4), (4, 5));
         }
 
         [Fact]
@@ -426,7 +426,7 @@ namespace NetCoreTests.Linq
 
             await complete;
 
-            list.Should().BeEquivalentTo((10, 20), (20, 30), (30, 40), (40, 50));
+            list.Should().Equal((10, 20), (20, 30), (30, 40), (40, 50));
         }
 
         class MyException : Exception

@@ -26,7 +26,7 @@ namespace NetCoreTests.Linq
 
             rp.Value = 2;
 
-            (await b).Should().BeEquivalentTo(1, 2);
+            (await b).Should().Equal(1, 2);
 
             var c = multicast.ToArrayAsync();
 
@@ -36,8 +36,8 @@ namespace NetCoreTests.Linq
 
             rp.Dispose();
 
-            (await a).Should().BeEquivalentTo(1, 2, 3, 4, 5);
-            (await c).Should().BeEquivalentTo(3, 4, 5);
+            (await a).Should().Equal(1, 2, 3, 4, 5);
+            (await c).Should().Equal(3, 4, 5);
 
             disp.Dispose();
         }
@@ -56,7 +56,7 @@ namespace NetCoreTests.Linq
 
             rp.Value = 2;
 
-            (await b).Should().BeEquivalentTo(1, 2);
+            (await b).Should().Equal(1, 2);
 
             var c = multicast.ToArrayAsync();
 

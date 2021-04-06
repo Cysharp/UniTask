@@ -59,32 +59,32 @@ namespace NetCoreTests.Linq
             {
                 var xs = await array.ToUniTaskAsyncEnumerable().OrderBy(x => x).ToArrayAsync();
                 var ys = array.OrderBy(x => x).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await array.ToUniTaskAsyncEnumerable().OrderByDescending(x => x).ToArrayAsync();
                 var ys = array.OrderByDescending(x => x).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await array.ToUniTaskAsyncEnumerable().OrderByAwait(RandomRun).ToArrayAsync();
                 var ys = array.OrderBy(x => x).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await array.ToUniTaskAsyncEnumerable().OrderByDescendingAwait(RandomRun).ToArrayAsync();
                 var ys = array.OrderByDescending(x => x).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await array.ToUniTaskAsyncEnumerable().OrderByAwaitWithCancellation(RandomRun).ToArrayAsync();
                 var ys = array.OrderBy(x => x).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
             {
                 var xs = await array.ToUniTaskAsyncEnumerable().OrderByDescendingAwaitWithCancellation(RandomRun).ToArrayAsync();
                 var ys = array.OrderByDescending(x => x).ToArray();
-                xs.Should().BeEquivalentTo(ys);
+                xs.Should().Equal(ys);
             }
         }
 
@@ -125,14 +125,14 @@ namespace NetCoreTests.Linq
                     var g2 = await array.ToUniTaskAsyncEnumerable().OrderByDescending(x => x.Age).ThenByDescending(x => x.FirstName).ThenBy(x => x.LastName).ToArrayAsync();
                     var h2 = await array.ToUniTaskAsyncEnumerable().OrderByDescending(x => x.Age).ThenByDescending(x => x.FirstName).ThenByDescending(x => x.LastName).ToArrayAsync();
 
-                    a.Should().BeEquivalentTo(a2);
-                    b.Should().BeEquivalentTo(b2);
-                    c.Should().BeEquivalentTo(c2);
-                    d.Should().BeEquivalentTo(d2);
-                    e.Should().BeEquivalentTo(e2);
-                    f.Should().BeEquivalentTo(f2);
-                    g.Should().BeEquivalentTo(g2);
-                    h.Should().BeEquivalentTo(h2);
+                    a.Should().Equal(a2);
+                    b.Should().Equal(b2);
+                    c.Should().Equal(c2);
+                    d.Should().Equal(d2);
+                    e.Should().Equal(e2);
+                    f.Should().Equal(f2);
+                    g.Should().Equal(g2);
+                    h.Should().Equal(h2);
                 }
                 {
                     var a2 = await array.ToUniTaskAsyncEnumerable().OrderByAwait(x => RandomRun(x.Age)).ThenByAwait(x => RandomRun(x.FirstName)).ThenByAwait(x => RandomRun(x.LastName)).ToArrayAsync();
@@ -144,14 +144,14 @@ namespace NetCoreTests.Linq
                     var g2 = await array.ToUniTaskAsyncEnumerable().OrderByDescendingAwait(x => RandomRun(x.Age)).ThenByDescendingAwait(x => RandomRun(x.FirstName)).ThenByAwait(x => RandomRun(x.LastName)).ToArrayAsync();
                     var h2 = await array.ToUniTaskAsyncEnumerable().OrderByDescendingAwait(x => RandomRun(x.Age)).ThenByDescendingAwait(x => RandomRun(x.FirstName)).ThenByDescendingAwait(x => RandomRun(x.LastName)).ToArrayAsync();
 
-                    a.Should().BeEquivalentTo(a2);
-                    b.Should().BeEquivalentTo(b2);
-                    c.Should().BeEquivalentTo(c2);
-                    d.Should().BeEquivalentTo(d2);
-                    e.Should().BeEquivalentTo(e2);
-                    f.Should().BeEquivalentTo(f2);
-                    g.Should().BeEquivalentTo(g2);
-                    h.Should().BeEquivalentTo(h2);
+                    a.Should().Equal(a2);
+                    b.Should().Equal(b2);
+                    c.Should().Equal(c2);
+                    d.Should().Equal(d2);
+                    e.Should().Equal(e2);
+                    f.Should().Equal(f2);
+                    g.Should().Equal(g2);
+                    h.Should().Equal(h2);
                 }
                 {
                     var a2 = await array.ToUniTaskAsyncEnumerable().OrderByAwaitWithCancellation((x, ct) => RandomRun(x.Age)).ThenByAwaitWithCancellation((x, ct) => RandomRun(x.FirstName)).ThenByAwaitWithCancellation((x, ct) => RandomRun(x.LastName)).ToArrayAsync();
@@ -163,14 +163,14 @@ namespace NetCoreTests.Linq
                     var g2 = await array.ToUniTaskAsyncEnumerable().OrderByDescendingAwaitWithCancellation((x, ct) => RandomRun(x.Age)).ThenByDescendingAwaitWithCancellation((x, ct) => RandomRun(x.FirstName)).ThenByAwaitWithCancellation((x, ct) => RandomRun(x.LastName)).ToArrayAsync();
                     var h2 = await array.ToUniTaskAsyncEnumerable().OrderByDescendingAwaitWithCancellation((x, ct) => RandomRun(x.Age)).ThenByDescendingAwaitWithCancellation((x, ct) => RandomRun(x.FirstName)).ThenByDescendingAwaitWithCancellation((x, ct) => RandomRun(x.LastName)).ToArrayAsync();
 
-                    a.Should().BeEquivalentTo(a2);
-                    b.Should().BeEquivalentTo(b2);
-                    c.Should().BeEquivalentTo(c2);
-                    d.Should().BeEquivalentTo(d2);
-                    e.Should().BeEquivalentTo(e2);
-                    f.Should().BeEquivalentTo(f2);
-                    g.Should().BeEquivalentTo(g2);
-                    h.Should().BeEquivalentTo(h2);
+                    a.Should().Equal(a2);
+                    b.Should().Equal(b2);
+                    c.Should().Equal(c2);
+                    d.Should().Equal(d2);
+                    e.Should().Equal(e2);
+                    f.Should().Equal(f2);
+                    g.Should().Equal(g2);
+                    h.Should().Equal(h2);
                 }
             }
         }

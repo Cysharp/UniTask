@@ -31,7 +31,7 @@ namespace NetCoreTests
 
             var ar = await array;
 
-            ar.Should().BeEquivalentTo(new[] { 99, 100, 100, 100, 131 });
+            ar.Should().Equal(new[] { 99, 100, 100, 100, 131 });
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace NetCoreTests
 
             var ar = await array;
 
-            ar.Should().BeEquivalentTo(new[] { 100, 100, 100, 131, 191 });
+            ar.Should().Equal(new[] { 100, 100, 100, 131, 191 });
         }
 
         //[Fact]
@@ -70,7 +70,7 @@ namespace NetCoreTests
 
         //    var ar = await array;
 
-        //    ar.Should().BeEquivalentTo(new[] { 99, 100, 100, 100, 131 });
+        //    ar.Should().Equal(new[] { 99, 100, 100, 100, 131 });
         //}
 
         //[Fact]
@@ -88,7 +88,7 @@ namespace NetCoreTests
 
         //    var ar = await array;
 
-        //    ar.Should().BeEquivalentTo(new[] { 100, 100, 100, 131, 191 });
+        //    ar.Should().Equal(new[] { 100, 100, 100, 131, 191 });
         //}
 
 
