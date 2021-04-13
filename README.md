@@ -241,6 +241,54 @@ CancellationToken can be created by `CancellationTokenSource` or MonoBehaviour's
 await UniTask.DelayFrame(1000, cancellationToken: this.GetCancellationTokenOnDestroy());
 ```
 
+For propagate Cancellation, all async method recommend to accept `CancellationToken cancellationToken` at last argument, and pass `CancellationToken` from root to end.
+
+```csharp
+await FooAsync(this.GetCancellationTokenOnDestroy());
+
+// ---
+
+async UniTask FooAsync(CancellationToken cancellationToken)
+{
+    await BarAsync(cancellationToken);
+}
+
+async UniTask BarAsync(CancellationToken cancellationToken)
+{
+    await UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+}
+```
+
+`CancellationToken` means lifecycle of async. You can hold your own lifecycle insteadof default CancellationTokenOnDestroy.
+
+```csharp
+public class MyBehaviour : MonoBehaviour
+{
+    CancellationTokenSource disableCancellation = new CancellationTokenSource();
+    CancellationTokenSource destroyCancellation = new CancellationTokenSource();
+
+    private void OnEnable()
+    {
+        if (disableCancellation != null)
+        {
+            disableCancellation.Dispose();
+        }
+        disableCancellation = new CancellationTokenSource();
+    }
+
+    private void OnDisable()
+    {
+        disableCancellation.Cancel();
+    }
+
+    private void OnDestroy()
+    {
+        destroyCancellation.Cancel();
+        destroyCancellation.Dispose();
+    }
+}
+```
+
 When cancellation is detected, all methods throw `OperationCanceledException` and propagate upstream. `OperationCanceledException` is a special exception, if this exception is not handled, it is propagated finally to `UniTaskScheduler.UnobservedTaskException`.
 
 The default behaviour of received unhandled exception is to write log as exception. Log level can be changed using `UniTaskScheduler.UnobservedExceptionWriteLogType`. If you want to use custom behaviour, set an action to `UniTaskScheduler.UnobservedTaskException.`
@@ -265,7 +313,7 @@ public async UniTask<int> BarAsync()
         var x = await FooAsync();
         return x * 2;
     }
-    catch (Exception ex) when (!(ex is OperationCanceledException))
+    catch (Exception ex) when (!(ex is OperationCanceledException)) // when (ex is not OperationCanceledException) at C# 9.0
     {
         return -1;
     }
