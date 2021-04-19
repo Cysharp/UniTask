@@ -12,7 +12,6 @@ on:
 
 jobs:
   build-dotnet:
-    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]'))"
     runs-on: ubuntu-latest
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -26,7 +25,7 @@ jobs:
       - run: dotnet test -c Debug ./src/UniTask.NetCoreTests/UniTask.NetCoreTests.csproj
 
   build-unity:
-    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]')) && ((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:'))"
+    if: "((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:'))"
     strategy:
       matrix:
         unity: ["2019.3.9f1", "2019.4.13f1", "2020.1.12f1"]
