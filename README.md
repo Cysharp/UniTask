@@ -985,7 +985,7 @@ UniTask can run on Unity Editor like an Editor Coroutine. However, there are som
 
 * UniTask.Delay's DelayType.DeltaTime, UnscaledDeltaTime do not work correctly because they can not get deltaTime in editor. Therefore run on EditMode, automatically change DelayType to `DelayType.Realtime` that wait for the right time.
 * All PlayerLoopTiming run on the timing `EditorApplication.update`.
-* `-batchmode` with `-quit` does not work because does not run `EditorApplication.update`(quit on single frame) so should not use `-quit` and quit manually with `Environment.Exit(0)`.
+* `-batchmode` with `-quit` does not work because Unity does not run `EditorApplication.update` and quit after a single frame. Instead, don't use `-quit` and quit manually with `EditorApplication.Exit(0)`.
 
 Compare with Standard Task API
 ---
