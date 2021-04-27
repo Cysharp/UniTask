@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ExceptionExamples.unity
     guid: b5fed17e3ece238439bc796d8747df5d
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: edc485cde0ff14046a21a7c2a51bb0ac
+  - enabled: 1
+    path: Assets/Scenes/scene2.unity
+    guid: 84d1cc7b4b33fa54f98a29e843b1db30
   m_configObjects: {}
