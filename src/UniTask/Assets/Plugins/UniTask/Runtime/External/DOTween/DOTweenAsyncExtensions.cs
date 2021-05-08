@@ -16,14 +16,14 @@ namespace Cysharp.Threading.Tasks
         Kill,
         KillWithCompleteCallback,
         Complete,
-        CompleteWithSeqeunceCallback,
+        CompleteWithSequenceCallback,
         CancelAwait,
 
         // AndCancelAwait
         KillAndCancelAwait,
         KillWithCompleteCallbackAndCancelAwait,
         CompleteAndCancelAwait,
-        CompleteWithSeqeunceCallbackAndCancelAwait
+        CompleteWithSequenceCallbackAndCancelAwait
     }
 
     public static class DOTweenAsyncExtensions
@@ -238,7 +238,7 @@ namespace Cysharp.Threading.Tasks
                     if (this.cancelBehaviour == TweenCancelBehaviour.KillAndCancelAwait
                         || this.cancelBehaviour == TweenCancelBehaviour.KillWithCompleteCallbackAndCancelAwait
                         || this.cancelBehaviour == TweenCancelBehaviour.CompleteAndCancelAwait
-                        || this.cancelBehaviour == TweenCancelBehaviour.CompleteWithSeqeunceCallbackAndCancelAwait
+                        || this.cancelBehaviour == TweenCancelBehaviour.CompleteWithSequenceCallbackAndCancelAwait
                         || this.cancelBehaviour == TweenCancelBehaviour.CancelAwait)
                     {
                         canceled = true;
@@ -288,10 +288,10 @@ namespace Cysharp.Threading.Tasks
                         this.canceled = true;
                         this.tween.Complete(false);
                         break;
-                    case TweenCancelBehaviour.CompleteWithSeqeunceCallback:
+                    case TweenCancelBehaviour.CompleteWithSequenceCallback:
                         this.tween.Complete(true);
                         break;
-                    case TweenCancelBehaviour.CompleteWithSeqeunceCallbackAndCancelAwait:
+                    case TweenCancelBehaviour.CompleteWithSequenceCallbackAndCancelAwait:
                         this.canceled = true;
                         this.tween.Complete(true);
                         break;
@@ -350,10 +350,10 @@ namespace Cysharp.Threading.Tasks
                     case TweenCancelBehaviour.CompleteAndCancelAwait:
                         tween.Complete(false);
                         break;
-                    case TweenCancelBehaviour.CompleteWithSeqeunceCallback:
+                    case TweenCancelBehaviour.CompleteWithSequenceCallback:
                         tween.Complete(true);
                         break;
-                    case TweenCancelBehaviour.CompleteWithSeqeunceCallbackAndCancelAwait:
+                    case TweenCancelBehaviour.CompleteWithSequenceCallbackAndCancelAwait:
                         tween.Complete(true);
                         break;
                     case TweenCancelBehaviour.CancelAwait:
