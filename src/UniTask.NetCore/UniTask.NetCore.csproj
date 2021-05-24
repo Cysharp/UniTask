@@ -5,6 +5,8 @@
         <AssemblyName>UniTask</AssemblyName>
         <LangVersion>8.0</LangVersion>
         <RootNamespace>Cysharp.Threading.Tasks</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
 
         <!-- NuGet Packaging -->
         <Id>UniTask</Id>
