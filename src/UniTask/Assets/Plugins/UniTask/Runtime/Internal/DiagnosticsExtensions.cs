@@ -148,7 +148,7 @@ namespace Cysharp.Threading.Tasks.Internal
 
             foreach (var candidateMethod in methods)
             {
-                var attributes = candidateMethod.GetCustomAttributes<StateMachineAttribute>();
+                var attributes = candidateMethod.GetCustomAttributes<StateMachineAttribute>(false);
                 if (attributes == null)
                 {
                     continue;
