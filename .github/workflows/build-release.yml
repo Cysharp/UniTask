@@ -15,7 +15,6 @@ env:
   GIT_TAG: ${{ github.event.inputs.tag }}
   DRY_RUN: ${{ github.event.inputs.dry_run }}
   DRY_RUN_BRANCH_PREFIX: "test_release"
-  DOTNET_SDK_VERISON_3: 3.1.x
 
 jobs:
   update-packagejson:
@@ -85,9 +84,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ needs.update-packagejson.outputs.sha }}
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "${{ env.DOTNET_SDK_VERSION_3 }}"
       # build and pack
       - run: dotnet build -c Release -p:Version=${{ env.GIT_TAG }}
       - run: dotnet test -c Release --no-build
@@ -151,10 +147,6 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       NUGET_XMLDOC_MODE: skip
     steps:
-      # setup dotnet for nuget push
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "${{ env.DOTNET_SDK_VERSION_3 }}"
       # Create Releases
       - uses: actions/create-release@v1
         id: create_release
