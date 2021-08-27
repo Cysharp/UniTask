@@ -27,10 +27,10 @@ namespace UniTask.Analyzer
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
 
-            context.RegisterOperationAction(AnalyzeSymbol, OperationKind.Invocation);
+            context.RegisterOperationAction(AnalyzeOperation, OperationKind.Invocation);
         }
 
-        private static void AnalyzeSymbol(OperationAnalysisContext context)
+        private static void AnalyzeOperation(OperationAnalysisContext context)
         {
             var token = context.Compilation.GetTypeByMetadataName(typeof(CancellationToken).FullName);
             if (token == null) return;
