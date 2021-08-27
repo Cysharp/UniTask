@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UniTask.Analyzer": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\UniTask.NetCoreSandbox\\UniTask.NetCoreSandbox.csproj"
+    }
+  }
+}

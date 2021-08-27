@@ -15,6 +15,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UniTask.NetCore\UniTask.NetCore.csproj" />
+
+
+      <ProjectReference Include="..\UniTask.Analyzer\UniTask.Analyzer.csproj">
+          <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+          <OutputItemType>Analyzer</OutputItemType>
+      </ProjectReference>
   </ItemGroup>
 
 </Project>
