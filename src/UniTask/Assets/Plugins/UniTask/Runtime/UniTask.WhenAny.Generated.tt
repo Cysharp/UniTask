@@ -113,5 +113,61 @@ namespace Cysharp.Threading.Tasks
         }
 
 <# } #>
+<# for(var i = 2; i <= 15; i++ ) {
+    var range = Enumerable.Range(1, i);
+    var args = string.Join(", ", range.Select(x => $"UniTask task{x}"));
+    var targs = string.Join(", ", range.Select(x => $"task{x}"));
+#>
+        public static UniTask<int> WhenAny(<#= args #>)
+        {
+            return new UniTask<int>(new WhenAnyPromise(<#= targs #>), 0);
+        }
+
+<# } #>
+        sealed partial class WhenAnyPromise : IUniTaskSource<int>
+        {
+<# for(var i = 2; i <= 15; i++ ) {
+    var range = Enumerable.Range(1, i);
+    var args = string.Join(", ", range.Select(x => $"UniTask task{x}"));
+    var startTasks = string.Join("\n", range.Select(x => $"{new string(' ', 16)}StartTask(task{x}, {x-1});"));
+#>
+            public WhenAnyPromise(<#= args #>)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+<#= startTasks #>
+            }
+
+<# } #>
+            void StartTask(UniTask task, int index)
+            {
+                Awaiter awaiter;
+
+                try
+                {
+                    awaiter = task.GetAwaiter();
+                }
+                catch (Exception ex)
+                {
+                    core.TrySetException(ex);
+                    return; // consume others.
+                }
+
+                if (awaiter.IsCompleted)
+                {
+                    TryInvokeContinuation(this, awaiter, index);
+                }
+                else
+                {
+                    awaiter.SourceOnCompleted(state =>
+                    {
+                        using (var t = (StateTuple<WhenAnyPromise, Awaiter, int>)state)
+                        {
+                            TryInvokeContinuation(t.Item1, t.Item2, t.Item3);
+                        }
+                    }, StateTuple.Create(this, awaiter, index));
+                }
+            }
+        }
     }
 }
