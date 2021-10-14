@@ -113,6 +113,37 @@ namespace Cysharp.Threading.TasksTests
         });
 
         [UnityTest]
+        public IEnumerator WhenAllVoid() => UniTask.ToCoroutine(async () =>
+        {
+            bool aResult = false;
+            bool bResult = false;
+            bool cResult = false;
+
+            var a = UniTask.Create(async () =>
+            {
+                await UniTask.DelayFrame(1);
+                aResult = true;
+            });
+
+            var b = UniTask.Create(async () =>
+            {
+                await UniTask.DelayFrame(2);
+                bResult = true;
+            });
+
+            var c = UniTask.Create(async () =>
+            {
+                await UniTask.DelayFrame(3);
+                cResult = true;
+            });
+
+            await UniTask.WhenAll(a, b, c);
+            aResult.Should().Be(true);
+            bResult.Should().Be(true);
+            cResult.Should().Be(true);
+        });
+
+        [UnityTest]
         public IEnumerator WhenAny() => UniTask.ToCoroutine(async () =>
         {
             var a = UniTask.FromResult(999);
