@@ -125,6 +125,19 @@ namespace Cysharp.Threading.TasksTests
         });
 
         [UnityTest]
+        public IEnumerator WhenAnyVoid() => UniTask.ToCoroutine(async () =>
+        {
+            bool result = false;
+            var a = UniTask.Create(async () => { result = true; });
+            var b = UniTask.Yield(PlayerLoopTiming.Update, CancellationToken.None);
+            var c = UniTask.DelayFrame(99);
+
+            int win = await UniTask.WhenAny(a, b, c);
+            win.Should().Be(0);
+            result.Should().Be(true);
+        });
+
+        [UnityTest]
         public IEnumerator BothEnumeratorCheck() => UniTask.ToCoroutine(async () =>
         {
             await ToaruCoroutineEnumerator(); // wait 5 frame:)

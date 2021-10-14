@@ -265,7 +265,7 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        sealed class WhenAnyPromise : IUniTaskSource<int>
+        sealed partial class WhenAnyPromise : IUniTaskSource<int>
         {
             int completedCount;
             UniTaskCompletionSourceCore<int> core;

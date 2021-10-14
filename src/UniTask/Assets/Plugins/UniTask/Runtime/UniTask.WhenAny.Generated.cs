@@ -5056,5 +5056,310 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8, task9), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12, UniTask task13)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12, UniTask task13, UniTask task14)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14), 0);
+        }
+
+        public static UniTask<int> WhenAny(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12, UniTask task13, UniTask task14, UniTask task15)
+        {
+            return new UniTask<int>(new WhenAnyPromise(task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14, task15), 0);
+        }
+
+        sealed partial class WhenAnyPromise : IUniTaskSource<int>
+        {
+            public WhenAnyPromise(UniTask task1, UniTask task2)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+                StartTask(task9, 8);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+                StartTask(task9, 8);
+                StartTask(task10, 9);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+                StartTask(task9, 8);
+                StartTask(task10, 9);
+                StartTask(task11, 10);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+                StartTask(task9, 8);
+                StartTask(task10, 9);
+                StartTask(task11, 10);
+                StartTask(task12, 11);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12, UniTask task13)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+                StartTask(task9, 8);
+                StartTask(task10, 9);
+                StartTask(task11, 10);
+                StartTask(task12, 11);
+                StartTask(task13, 12);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12, UniTask task13, UniTask task14)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+                StartTask(task9, 8);
+                StartTask(task10, 9);
+                StartTask(task11, 10);
+                StartTask(task12, 11);
+                StartTask(task13, 12);
+                StartTask(task14, 13);
+            }
+
+            public WhenAnyPromise(UniTask task1, UniTask task2, UniTask task3, UniTask task4, UniTask task5, UniTask task6, UniTask task7, UniTask task8, UniTask task9, UniTask task10, UniTask task11, UniTask task12, UniTask task13, UniTask task14, UniTask task15)
+            {
+                TaskTracker.TrackActiveTask(this, 3);
+
+                StartTask(task1, 0);
+                StartTask(task2, 1);
+                StartTask(task3, 2);
+                StartTask(task4, 3);
+                StartTask(task5, 4);
+                StartTask(task6, 5);
+                StartTask(task7, 6);
+                StartTask(task8, 7);
+                StartTask(task9, 8);
+                StartTask(task10, 9);
+                StartTask(task11, 10);
+                StartTask(task12, 11);
+                StartTask(task13, 12);
+                StartTask(task14, 13);
+                StartTask(task15, 14);
+            }
+
+            void StartTask(UniTask task, int index)
+            {
+                Awaiter awaiter;
+
+                try
+                {
+                    awaiter = task.GetAwaiter();
+                }
+                catch (Exception ex)
+                {
+                    core.TrySetException(ex);
+                    return; // consume others.
+                }
+
+                if (awaiter.IsCompleted)
+                {
+                    TryInvokeContinuation(this, awaiter, index);
+                }
+                else
+                {
+                    awaiter.SourceOnCompleted(state =>
+                    {
+                        using (var t = (StateTuple<WhenAnyPromise, Awaiter, int>)state)
+                        {
+                            TryInvokeContinuation(t.Item1, t.Item2, t.Item3);
+                        }
+                    }, StateTuple.Create(this, awaiter, index));
+                }
+            }
+        }
     }
 }
