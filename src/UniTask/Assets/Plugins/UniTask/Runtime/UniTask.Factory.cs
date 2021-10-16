@@ -194,6 +194,7 @@ namespace Cysharp.Threading.Tasks
         sealed class ExceptionResultSource : IUniTaskSource
         {
             readonly ExceptionDispatchInfo exception;
+            bool calledGet;
 
             public ExceptionResultSource(Exception exception)
             {
@@ -202,6 +203,11 @@ namespace Cysharp.Threading.Tasks
 
             public void GetResult(short token)
             {
+                if (!calledGet)
+                {
+                    calledGet = true;
+                    GC.SuppressFinalize(this);
+                }
                 exception.Throw();
             }
 
@@ -219,11 +225,20 @@ namespace Cysharp.Threading.Tasks
             {
                 continuation(state);
             }
+
+            ~ExceptionResultSource()
+            {
+                if (!calledGet)
+                {
+                    UniTaskScheduler.PublishUnobservedTaskException(exception.SourceException);
+                }
+            }
         }
 
         sealed class ExceptionResultSource<T> : IUniTaskSource<T>
         {
             readonly ExceptionDispatchInfo exception;
+            bool calledGet;
 
             public ExceptionResultSource(Exception exception)
             {
@@ -232,12 +247,22 @@ namespace Cysharp.Threading.Tasks
 
             public T GetResult(short token)
             {
+                if (!calledGet)
+                {
+                    calledGet = true;
+                    GC.SuppressFinalize(this);
+                }
                 exception.Throw();
                 return default;
             }
 
             void IUniTaskSource.GetResult(short token)
             {
+                if (!calledGet)
+                {
+                    calledGet = true;
+                    GC.SuppressFinalize(this);
+                }
                 exception.Throw();
             }
 
@@ -254,6 +279,14 @@ namespace Cysharp.Threading.Tasks
             public void OnCompleted(Action<object> continuation, object state, short token)
             {
                 continuation(state);
+            }
+
+            ~ExceptionResultSource()
+            {
+                if (!calledGet)
+                {
+                    UniTaskScheduler.PublishUnobservedTaskException(exception.SourceException);
+                }
             }
         }
 
