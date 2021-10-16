@@ -366,6 +366,28 @@ namespace Cysharp.Threading.TasksTests
             UniTaskScheduler.UnobservedTaskException -= action;
         });
 
+        [UnityTest]
+        public IEnumerator ThrowExceptionUnawaited() => UniTask.ToCoroutine(async () =>
+        {
+            LogAssert.Expect(LogType.Exception, "Exception: MyException");
+
+#pragma warning disable 1998
+            async UniTask Throw() => throw new Exception("MyException");
+#pragma warning restore 1998
+
+#pragma warning disable 4014
+            Throw();
+#pragma warning restore 4014
+
+            await UniTask.DelayFrame(3);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            await UniTask.DelayFrame(1);
+        });
+
         async UniTask InException1()
         {
             await UniTask.Yield();
