@@ -860,7 +860,7 @@ await rp.WaitAsync(); // wait until next value set
 
 // also exists ToReadOnlyAsyncReactiveProperty
 var rp2 = new AsyncReactiveProperty<int>(99);
-var rorp = rp.CombineLatest(rp2, (x, y) => (x, y)).ToReadOnlyAsyncReactiveProperty();
+var rorp = rp.CombineLatest(rp2, (x, y) => (x, y)).ToReadOnlyAsyncReactiveProperty(CancellationToken.None);
 ```
 
 A pull-type asynchronous stream does not get the next values until the asynchronous processing in the sequence is complete. This could spill data from push-type events such as buttons.
