@@ -805,32 +805,13 @@ async UniTask TripleClick(CancellationToken token)
 }
 ```
 
-All MonoBehaviour message events can convert async-streams by `AsyncTriggers` that can be enabled by `using Cysharp.Threading.Tasks.Triggers;`.
+All MonoBehaviour message events can convert async-streams by `AsyncTriggers` that can be enabled by `using Cysharp.Threading.Tasks.Triggers;`. AsyncTrigger can be created using `GetAsync***Trigger` and triggers itself as UniTaskAsyncEnumerable.
 
 ```csharp
-using Cysharp.Threading.Tasks.Triggers;
-
-async UniTaskVoid MonitorCollision()
-{
-    await gameObject.OnCollisionEnterAsync();
-    Debug.Log("Collision Enter");
-    /* do anything */
-
-    await gameObject.OnCollisionExitAsync();
-    Debug.Log("Collision Exit");
-}
-```
-
-Similar to uGUI event, AsyncTrigger can be created using `GetAsync***Trigger` and triggers itself as UniTaskAsyncEnumerable.
-
-```csharp
-// use await multiple times, get AsyncTriggerHandler is more efficient.
-using(var trigger = this.GetOnCollisionEnterAsyncHandler())
-{
-    await OnCollisionEnterAsync();
-    await OnCollisionEnterAsync();
-    await OnCollisionEnterAsync();
-}
+var trigger = this.GetOnCollisionEnterAsyncHandler();
+await trigger.OnCollisionEnterAsync();
+await trigger.OnCollisionEnterAsync();
+await trigger.OnCollisionEnterAsync();
 
 // every moves.
 await this.GetAsyncMoveTrigger().ForEachAsync(axisEventData =>
