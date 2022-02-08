@@ -502,11 +502,11 @@ It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.
 
 `yield return null` and `UniTask.Yield` are similar but different. `yield return null` always returns next frame but `UniTask.Yield` returns next called. That is, call `UniTask.Yield(PlayerLoopTiming.Update)` on `PreUpdate`, it returns same frame. `UniTask.NextFrame()` guarantees return next frame, you can expect this to behave exactly the same as `yield return null`.
 
-> UniTask.Yield(without CancellationToken) is a special type, returns `YieldAwaitable` and run on YieldRunner. It is most lightweight and fastest.
+> UniTask.Yield(without CancellationToken) is a special type, returns `YieldAwaitable` and runs on YieldRunner. It is the most lightweight and fastest.
 
 `AsyncOperation` is returned from native timing. For example, await `SceneManager.LoadSceneAsync` is returned from `EarlyUpdate.UpdatePreloading` and after being called, the loaded scene's `Start` is called from `EarlyUpdate.ScriptRunDelayedStartupFrame`. Also `await UnityWebRequest` is returned from `EarlyUpdate.ExecuteMainThreadJobs`.
 
-In UniTask, await directly uses native timing, `WithCancellation` and `ToUniTask` use specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, it causes a different order of Start and continuation after await. So it is recommended not to use `LoadSceneAsync.ToUniTask`.
+In UniTask, await directly uses native timing, while `WithCancellation` and `ToUniTask` use specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, it causes a different order of Start and continuation after await. So it is recommended not to use `LoadSceneAsync.ToUniTask`.
 
 In the stacktrace, you can check where it is running in playerloop.
 
