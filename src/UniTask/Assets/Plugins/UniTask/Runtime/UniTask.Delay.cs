@@ -2,6 +2,7 @@
 
 using Cysharp.Threading.Tasks.Internal;
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
@@ -74,21 +75,22 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(NextFramePromise.Create(timing, cancellationToken, out var token), token);
         }
 
-
-        /// <summary>
-        /// Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate).
-        /// </summary>
+        [Obsolete("Use WaitForEndOfFrame(MonoBehaviour) instead or UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate). Equivalent for coroutine's WaitForEndOfFrame requires MonoBehaviour(runner of Coroutine).")]
         public static YieldAwaitable WaitForEndOfFrame()
         {
             return UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         }
 
-        /// <summary>
-        /// Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken).
-        /// </summary>
+        [Obsolete("Use WaitForEndOfFrame(MonoBehaviour) instead or UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate). Equivalent for coroutine's WaitForEndOfFrame requires MonoBehaviour(runner of Coroutine).")]
         public static UniTask WaitForEndOfFrame(CancellationToken cancellationToken)
         {
             return UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken);
+        }
+
+        public static UniTask WaitForEndOfFrame(MonoBehaviour coroutineRunner, CancellationToken cancellationToken = default)
+        {
+            var source = WaitForEndOfFramePromise.Create(coroutineRunner, cancellationToken, out var token);
+            return new UniTask(source, token);
         }
 
         /// <summary>
@@ -349,6 +351,113 @@ namespace Cysharp.Threading.Tasks
                 core.Reset();
                 cancellationToken = default;
                 return pool.TryPush(this);
+            }
+        }
+
+        sealed class WaitForEndOfFramePromise : IUniTaskSource, ITaskPoolNode<WaitForEndOfFramePromise>, System.Collections.IEnumerator
+        {
+            static TaskPool<WaitForEndOfFramePromise> pool;
+            WaitForEndOfFramePromise nextNode;
+            public ref WaitForEndOfFramePromise NextNode => ref nextNode;
+
+            static WaitForEndOfFramePromise()
+            {
+                TaskPool.RegisterSizeGetter(typeof(WaitForEndOfFramePromise), () => pool.Size);
+            }
+
+            CancellationToken cancellationToken;
+            UniTaskCompletionSourceCore<object> core;
+
+            WaitForEndOfFramePromise()
+            {
+            }
+
+            public static IUniTaskSource Create(MonoBehaviour coroutineRunner, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                if (!pool.TryPop(out var result))
+                {
+                    result = new WaitForEndOfFramePromise();
+                }
+
+                result.cancellationToken = cancellationToken;
+
+                TaskTracker.TrackActiveTask(result, 3);
+
+                coroutineRunner.StartCoroutine(result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public void GetResult(short token)
+            {
+                try
+                {
+                    core.GetResult(token);
+                }
+                finally
+                {
+                    TryReturn();
+                }
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            bool TryReturn()
+            {
+                TaskTracker.RemoveTracking(this);
+                core.Reset();
+                Reset(); // Reset Enumerator
+                cancellationToken = default;
+                return pool.TryPush(this);
+            }
+
+            // Coroutine Runner implementation
+
+            static readonly WaitForEndOfFrame waitForEndOfFrameYieldInstruction = new WaitForEndOfFrame();
+            bool isFirst = true;
+
+            object IEnumerator.Current => waitForEndOfFrameYieldInstruction;
+
+            bool IEnumerator.MoveNext()
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                    return true; // start WaitForEndOfFrame
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
+                    return false;
+                }
+
+                core.TrySetResult(null);
+                return false;
+            }
+
+            public void Reset()
+            {
+                isFirst = true;
             }
         }
 

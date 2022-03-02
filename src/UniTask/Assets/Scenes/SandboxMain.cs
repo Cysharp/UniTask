@@ -543,7 +543,7 @@ public class SandboxMain : MonoBehaviour
                 Debug.LogError(e);
                 return;
 
-                
+
             }
         }
         Debug.Log("TestAsync Finished.");
@@ -555,6 +555,7 @@ public class SandboxMain : MonoBehaviour
     async UniTaskVoid Start()
     {
 
+
         // UniTask.Delay(TimeSpan.FromSeconds(1)).TimeoutWithoutException
 
 
@@ -562,61 +563,35 @@ public class SandboxMain : MonoBehaviour
         PlayerLoopHelper.Initialize(ref currentLoop, InjectPlayerLoopTimings.Minimum); // minimum is Update | FixedUpdate | LastPostLateUpdate
 
 
-        
-
-
-        var cancelToken = new CancellationTokenSource();
-        cancelButton.onClick.AddListener(()=>
-        {
-            cancelToken.Cancel(); // cancel from button click.
-        });
-
-        var timeoutToken = new CancellationTokenSource();
-        timeoutToken.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
-
-        try
-        {
-            // combine token
-            var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancelToken.Token, timeoutToken.Token);
-
-            await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(linkedTokenSource.Token);
-        }
-        catch (OperationCanceledException ex)
-        {
-            if (timeoutToken.IsCancellationRequested)
-            {
-                UnityEngine.Debug.Log("Timeout.");
-            }
-            else if (cancelToken.IsCancellationRequested)
-            {
-                UnityEngine.Debug.Log("Cancel clicked.");
-            }
-            _ = ex;
-        }
 
 
 
 
-        
 
         // TestAsync(cts.Token).Forget();
 
         okButton.onClick.AddListener(UniTask.UnityAction(async () =>
         {
-            // try timeout
-            try
-            {
-                //await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: timeoutController.Timeout(TimeSpan.FromSeconds(3)));
-                UnityEngine.Debug.Log("Delay Complete, Reset(and reuse).");
-                //timeoutController.Reset();
-            }
-            catch (OperationCanceledException ex)
-            {
-                //UnityEngine.Debug.Log("Timeout! FromTimeout?:" + timeoutController.IsTimeout());
-                _ = ex;
-            }
+            await UniTask.WaitForEndOfFrame(this);
+            var texture = new Texture2D(Screen.width, Screen.height);
+            texture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+            texture.Apply();
 
-            await UniTask.Yield();
+            var jpg = texture.EncodeToJPG();
+            File.WriteAllBytes("testscreencapture.jpg", jpg);
+            Debug.Log("ok?");
+
+            //var texture = ScreenCapture.CaptureScreenshotAsTexture();
+            //if (texture == null)
+            //{
+            //    Debug.Log("fail");
+            //}
+            //else
+            //{
+            //    var jpg = texture.EncodeToJPG();
+            //    File.WriteAllBytes("testscreencapture.jpg", jpg);
+            //    Debug.Log("ok?");
+            //}
         }));
 
         cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
