@@ -28,7 +28,7 @@ namespace NetCoreSandbox
             await FooAsync(10, cts.Token);
 
             // NG(Compiler Error)
-            await FooAsync(10);
+            // await FooAsync(10);
 
 
 
