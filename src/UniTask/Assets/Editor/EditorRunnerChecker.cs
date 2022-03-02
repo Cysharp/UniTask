@@ -22,7 +22,9 @@ public static class EditorRunnerChecker
 
         //var r = await UnityWebRequest.Get("https://bing.com/").SendWebRequest().ToUniTask();
         //Debug.Log(r.downloadHandler.text.Substring(0, 100));
-        await UniTask.Yield();
+        //await UniTask.Yield();
+
+        await UniTask.DelayFrame(30);
 
         Debug.Log("End");
     }

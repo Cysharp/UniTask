@@ -444,7 +444,19 @@ namespace Cysharp.Threading.Tasks
                     // skip in initial frame.
                     if (initialFrame == Time.frameCount)
                     {
+#if UNITY_EDITOR
+                        // force use Realtime.
+                        if (PlayerLoopHelper.IsMainThread && !UnityEditor.EditorApplication.isPlaying)
+                        {
+                            //goto ++currentFrameCount
+                        }
+                        else
+                        {
+                            return true;
+                        }
+#else
                         return true;
+#endif
                     }
                 }
 
