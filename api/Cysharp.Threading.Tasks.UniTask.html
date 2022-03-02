@@ -519,15 +519,19 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
         <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame">WaitForEndOfFrame()</a>
         </td>
-        <td class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate).</p>
-</td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_MonoBehaviour_System_Threading_CancellationToken_">WaitForEndOfFrame(MonoBehaviour, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_System_Threading_CancellationToken_">WaitForEndOfFrame(CancellationToken)</a>
         </td>
-        <td class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken).</p>
-</td>
+        <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
@@ -3128,12 +3132,12 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame">WaitForEndOfFrame()</h4>
-  <div class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate).</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static YieldAwaitable WaitForEndOfFrame()</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use WaitForEndOfFrame(MonoBehaviour) instead or UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate). Equivalent for coroutine's WaitForEndOfFrame requires MonoBehaviour(runner of Coroutine).&quot;)]
+public static YieldAwaitable WaitForEndOfFrame()</code></pre>
   </div>
 
   
@@ -3158,13 +3162,52 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(System.Threading.CancellationToken)">WaitForEndOfFrame(CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Same as UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken).</p>
-</div>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_MonoBehaviour_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(MonoBehaviour,System.Threading.CancellationToken)">WaitForEndOfFrame(MonoBehaviour, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask WaitForEndOfFrame(CancellationToken cancellationToken)</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask WaitForEndOfFrame(MonoBehaviour coroutineRunner, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>coroutineRunner</code></span> <span class="xref">MonoBehaviour</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(System.Threading.CancellationToken)">WaitForEndOfFrame(CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use WaitForEndOfFrame(MonoBehaviour) instead or UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate). Equivalent for coroutine's WaitForEndOfFrame requires MonoBehaviour(runner of Coroutine).&quot;)]
+public static UniTask WaitForEndOfFrame(CancellationToken cancellationToken)</code></pre>
   </div>
 
   <section>

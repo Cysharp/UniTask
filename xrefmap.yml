@@ -18659,6 +18659,12 @@ references:
   commentId: M:Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame
   fullName: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame()
   nameWithType: UniTask.WaitForEndOfFrame()
+- uid: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(MonoBehaviour,System.Threading.CancellationToken)
+  name: WaitForEndOfFrame(MonoBehaviour, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_MonoBehaviour_System_Threading_CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(MonoBehaviour,System.Threading.CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(MonoBehaviour, System.Threading.CancellationToken)
+  nameWithType: UniTask.WaitForEndOfFrame(MonoBehaviour, CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.WaitForEndOfFrame(System.Threading.CancellationToken)
   name: WaitForEndOfFrame(CancellationToken)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitForEndOfFrame_System_Threading_CancellationToken_
