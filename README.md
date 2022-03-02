@@ -947,9 +947,9 @@ UniTask's own unit tests are written using Unity Test Runner and [Cysharp/Runtim
 
 ThreadPool limitation
 ---
-Most UniTask methods run on a single thread (PlayerLoop), with only `UniTask.Run` and `UniTask.SwitchToThreadPool` running on a thread pool. If you use a thread pool, it won't work with WebGL and so on.
+Most UniTask methods run on a single thread (PlayerLoop), with only `UniTask.Run`(`Task.Run` equivalent) and `UniTask.SwitchToThreadPool` running on a thread pool. If you use a thread pool, it won't work with WebGL and so on.
 
-`UniTask.Run` will be deprecated in the future (marked with an Obsolete) and only `RunOnThreadPool` will be used. If you use `UniTask.Run`, consider whether you can use `UniTask.Create` or `UniTask.Void`.
+`UniTask.Run` is now deprecated. You can use `UniTask.RunOnThreadPool` instead. And also consider whether you can use `UniTask.Create` or `UniTask.Void`.
 
 IEnumerator.ToUniTask limitation
 ---
@@ -1004,7 +1004,7 @@ Use UniTask type.
 | `IAsyncDisposable` | `IUniTaskAsyncDisposable` |
 | `Task.Delay` | `UniTask.Delay` |
 | `Task.Yield` | `UniTask.Yield` |
-| `Task.Run` | `UniTask.Run` |
+| `Task.Run` | `UniTask.RunOnThreadPool` |
 | `Task.WhenAll` | `UniTask.WhenAll` |
 | `Task.WhenAny` | `UniTask.WhenAny` |
 | `Task.CompletedTask` | `UniTask.CompletedTask` |
