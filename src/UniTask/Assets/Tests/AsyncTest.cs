@@ -310,33 +310,33 @@ namespace Cysharp.Threading.TasksTests
             yield return null;
         }
 
-        [UnityTest]
-        public IEnumerator ExceptionUnobserved1() => UniTask.ToCoroutine(async () =>
-        {
-            bool calledEx = false;
-            Action<Exception> action = exx =>
-            {
-                calledEx = true;
-                exx.Message.Should().Be("MyException");
-            };
+        //[UnityTest]
+        //public IEnumerator ExceptionUnobserved1() => UniTask.ToCoroutine(async () =>
+        //{
+        //    bool calledEx = false;
+        //    Action<Exception> action = exx =>
+        //    {
+        //        calledEx = true;
+        //        exx.Message.Should().Be("MyException");
+        //    };
 
-            UniTaskScheduler.UnobservedTaskException += action;
+        //    UniTaskScheduler.UnobservedTaskException += action;
 
-            var ex = InException1();
-            ex = default(UniTask);
+        //    var ex = InException1();
+        //    ex = default(UniTask);
 
-            await UniTask.DelayFrame(3);
+        //    await UniTask.DelayFrame(3);
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+        //    GC.Collect();
+        //    GC.WaitForPendingFinalizers();
+        //    GC.Collect();
 
-            await UniTask.DelayFrame(1);
+        //    await UniTask.DelayFrame(1);
 
-            calledEx.Should().BeTrue();
+        //    calledEx.Should().BeTrue();
 
-            UniTaskScheduler.UnobservedTaskException -= action;
-        });
+        //    UniTaskScheduler.UnobservedTaskException -= action;
+        //});
 
         [UnityTest]
         public IEnumerator ExceptionUnobserved2() => UniTask.ToCoroutine(async () =>
