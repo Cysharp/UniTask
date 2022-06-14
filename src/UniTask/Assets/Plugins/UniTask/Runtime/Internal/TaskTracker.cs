@@ -76,7 +76,7 @@ namespace Cysharp.Threading.Tasks
         [Conditional( "ENABLE_PROFILER" )]
         public static void TrackActiveTask(IUniTaskSource task, int skipFrame)
         {
-#if UNITY_EDITOR
+#if ENABLE_PROFILER
             dirty = true;
             if (!EnableState.EnableTracking) return;
             var stackTrace = EnableState.EnableStackTrace ? new StackTrace(skipFrame, true).CleanupAsyncStackTrace() : "";
@@ -99,7 +99,7 @@ namespace Cysharp.Threading.Tasks
         [Conditional( "ENABLE_PROFILER" )]
         public static void RemoveTracking(IUniTaskSource task)
         {
-#if UNITY_EDITOR
+#if ENABLE_PROFILER
             dirty = true;
             if (!EnableState.EnableTracking) return;
             var success = tracking.TryRemove(task);
