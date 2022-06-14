@@ -39,9 +39,9 @@ namespace Cysharp.Threading.Tasks.Editor
             window = this; // set singleton.
             splitterState = SplitterGUILayout.CreateSplitterState(new float[] { 75f, 25f }, new int[] { 32, 32 }, null);
             treeView = new UniTaskTrackerTreeView();
-            TaskTracker.EditorEnableState.EnableAutoReload = EditorPrefs.GetBool(TaskTracker.EnableAutoReloadKey, false);
-            TaskTracker.EditorEnableState.EnableTracking = EditorPrefs.GetBool(TaskTracker.EnableTrackingKey, false);
-            TaskTracker.EditorEnableState.EnableStackTrace = EditorPrefs.GetBool(TaskTracker.EnableStackTraceKey, false);
+            TaskTracker.EnableState.EnableAutoReload = EditorPrefs.GetBool(TaskTracker.EnableAutoReloadKey, false);
+            TaskTracker.EnableState.EnableTracking = EditorPrefs.GetBool(TaskTracker.EnableTrackingKey, false);
+            TaskTracker.EnableState.EnableStackTrace = EditorPrefs.GetBool(TaskTracker.EnableStackTraceKey, false);
         }
 
         void OnGUI()
@@ -63,9 +63,9 @@ namespace Cysharp.Threading.Tasks.Editor
 
         #region HeadPanel
 
-        public static bool EnableAutoReload => TaskTracker.EditorEnableState.EnableAutoReload;
-        public static bool EnableTracking => TaskTracker.EditorEnableState.EnableTracking;
-        public static bool EnableStackTrace => TaskTracker.EditorEnableState.EnableStackTrace;
+        public static bool EnableAutoReload => TaskTracker.EnableState.EnableAutoReload;
+        public static bool EnableTracking => TaskTracker.EnableState.EnableTracking;
+        public static bool EnableStackTrace => TaskTracker.EnableState.EnableStackTrace;
         static readonly GUIContent EnableAutoReloadHeadContent = EditorGUIUtility.TrTextContent("Enable AutoReload", "Reload automatically.", (Texture)null);
         static readonly GUIContent ReloadHeadContent = EditorGUIUtility.TrTextContent("Reload", "Reload View.", (Texture)null);
         static readonly GUIContent GCHeadContent = EditorGUIUtility.TrTextContent("GC.Collect", "Invoke GC.Collect.", (Texture)null);
@@ -80,17 +80,17 @@ namespace Cysharp.Threading.Tasks.Editor
 
             if (GUILayout.Toggle(EnableAutoReload, EnableAutoReloadHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption) != EnableAutoReload)
             {
-                TaskTracker.EditorEnableState.EnableAutoReload = !EnableAutoReload;
+                TaskTracker.EnableState.EnableAutoReload = !EnableAutoReload;
             }
 
             if (GUILayout.Toggle(EnableTracking, EnableTrackingHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption) != EnableTracking)
             {
-                TaskTracker.EditorEnableState.EnableTracking = !EnableTracking;
+                TaskTracker.EnableState.EnableTracking = !EnableTracking;
             }
 
             if (GUILayout.Toggle(EnableStackTrace, EnableStackTraceHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption) != EnableStackTrace)
             {
-                TaskTracker.EditorEnableState.EnableStackTrace = !EnableStackTrace;
+                TaskTracker.EnableState.EnableStackTrace = !EnableStackTrace;
             }
 
             GUILayout.FlexibleSpace();

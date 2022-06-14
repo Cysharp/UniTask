@@ -21,7 +21,7 @@ namespace Cysharp.Threading.Tasks
         public const string EnableTrackingKey = "UniTaskTrackerWindow_EnableTrackingKey";
         public const string EnableStackTraceKey = "UniTaskTrackerWindow_EnableStackTraceKey";
 
-        public static class EditorEnableState
+        public static class EnableState
         {
             static bool enableAutoReload;
             public static bool EnableAutoReload
@@ -57,6 +57,15 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+#elif ENABLE_PROFILER
+
+        public static class EnableState
+        {
+            public static bool EnableAutoReload;
+            public static bool EnableTracking;
+            public static bool EnableStackTrace;
+        }
+
 #endif
 
 
@@ -64,16 +73,16 @@ namespace Cysharp.Threading.Tasks
 
         static readonly WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)> tracking = new WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>();
 
-        [Conditional("UNITY_EDITOR")]
+        [Conditional( "ENABLE_PROFILER" )]
         public static void TrackActiveTask(IUniTaskSource task, int skipFrame)
         {
 #if UNITY_EDITOR
             dirty = true;
-            if (!EditorEnableState.EnableTracking) return;
-            var stackTrace = EditorEnableState.EnableStackTrace ? new StackTrace(skipFrame, true).CleanupAsyncStackTrace() : "";
+            if (!EnableState.EnableTracking) return;
+            var stackTrace = EnableState.EnableStackTrace ? new StackTrace(skipFrame, true).CleanupAsyncStackTrace() : "";
 
             string typeName;
-            if (EditorEnableState.EnableStackTrace)
+            if (EnableState.EnableStackTrace)
             {
                 var sb = new StringBuilder();
                 TypeBeautify(task.GetType(), sb);
@@ -87,12 +96,12 @@ namespace Cysharp.Threading.Tasks
 #endif
         }
 
-        [Conditional("UNITY_EDITOR")]
+        [Conditional( "ENABLE_PROFILER" )]
         public static void RemoveTracking(IUniTaskSource task)
         {
 #if UNITY_EDITOR
             dirty = true;
-            if (!EditorEnableState.EnableTracking) return;
+            if (!EnableState.EnableTracking) return;
             var success = tracking.TryRemove(task);
 #endif
         }
