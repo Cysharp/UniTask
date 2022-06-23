@@ -1,4 +1,4 @@
-﻿#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || UNITASK_WEBREQUEST_SUPPORT)
+#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || UNITASK_WEBREQUEST_SUPPORT)
 
 using System;
 using System.Collections.Generic;
@@ -49,7 +49,7 @@ namespace Cysharp.Threading.Tasks
             {
                 if (msg == null)
                 {
-                    if (Text != null)
+                    if(!string.IsNullOrWhiteSpace(Text))
                     {
                         msg = Error + Environment.NewLine + Text;
                     }
