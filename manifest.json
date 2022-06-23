@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenAwaitable.Awaiter.html",
-          "hash": "Q0ZbqKVyOCftlJVoaEXL6A=="
+          "hash": "IbMQ4dPKSM/AoNqXpl7uKA=="
         }
       },
       "is_incremental": false,
@@ -129,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.CancellationTokenEqualityComparer.html",
-          "hash": "HxyU4x1nyaoMYIN7Nhnwkw=="
+          "hash": "tSY0Yo2H8u7UWWY7MsF6Hw=="
         }
       },
       "is_incremental": false,
@@ -237,7 +237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder-1.html",
-          "hash": "E0bm2sCdtz/DqaN1zbYU/g=="
+          "hash": "WBt72zn/qSsG5GFKeUqr7w=="
         }
       },
       "is_incremental": false,
@@ -249,7 +249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.html",
-          "hash": "v/phmi0KvE5wyprD5FmGQQ=="
+          "hash": "2fUXehHodLar6E1AyhRWZw=="
         }
       },
       "is_incremental": false,
@@ -261,7 +261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.html",
-          "hash": "uBt+Tcf7Yp/xe9HydcA40Q=="
+          "hash": "XzrlCCBHiMGwr7X2B+CBnA=="
         }
       },
       "is_incremental": false,
@@ -297,7 +297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.EnumerableAsyncExtensions.html",
-          "hash": "1DDXLg5UtwiJEFi5fJyb7w=="
+          "hash": "uQ7ReePuP8mT6T2d/dGZdQ=="
         }
       },
       "is_incremental": false,
@@ -309,7 +309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.html",
-          "hash": "jVyax+wrt3/BMuFYMVqd5A=="
+          "hash": "x0eIiNxbOfC4pQpTr0yeKg=="
         }
       },
       "is_incremental": false,
@@ -609,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.IUniTaskOrderedAsyncEnumerable-1.html",
-          "hash": "TfPtijHVvTTyGl5cg8IdFw=="
+          "hash": "o3Ou4JAQ3ZEVA5Bb4rdHWQ=="
         }
       },
       "is_incremental": false,
@@ -669,7 +669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html",
-          "hash": "BsC1rDKdHyaf1WmHP0ubUA=="
+          "hash": "rJmK4IUChDyBrLEH77Cz9g=="
         }
       },
       "is_incremental": false,
@@ -741,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.Progress.html",
-          "hash": "xyBY7SuoRtfRTKcRGwNqZg=="
+          "hash": "M4VmXliqJc5gTlVHkSi7tA=="
         }
       },
       "is_incremental": false,
@@ -765,7 +765,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.ReturnToSynchronizationContext.Awaiter.html",
-          "hash": "2mviovj51vGpihUWULBkyg=="
+          "hash": "mXRaInaJtG3jG0iXS3oqTw=="
         }
       },
       "is_incremental": false,
@@ -801,7 +801,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html",
-          "hash": "UH/+R9ilcp3f1QmFOR0QBw=="
+          "hash": "9BKI4xyhCwLpHKEPPJ0jbA=="
         }
       },
       "is_incremental": false,
@@ -825,7 +825,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.SwitchToTaskPoolAwaitable.Awaiter.html",
-          "hash": "VAHU2dQu4TAODL4z4PEpqQ=="
+          "hash": "VjcFEMmYAwtpWNIJeJF1pQ=="
         }
       },
       "is_incremental": false,
@@ -849,7 +849,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.SwitchToThreadPoolAwaitable.Awaiter.html",
-          "hash": "0CNr9OIdx3+pXDmuFbyNxA=="
+          "hash": "RFIUX77JIG/KWPuBYQySlA=="
         }
       },
       "is_incremental": false,
@@ -885,7 +885,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.TaskPool.html",
-          "hash": "LVYQtyUf2qO8hlnntkR0sg=="
+          "hash": "9emBL4220Fx+KtEsWjnYSQ=="
         }
       },
       "is_incremental": false,
@@ -897,7 +897,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.TaskTracker.html",
-          "hash": "LhqnSHCKaBVGbYSBed6jCA=="
+          "hash": "ccVKn9sVhGH+DvJf7PN3fw=="
         }
       },
       "is_incremental": false,
@@ -2781,7 +2781,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UniTask-1.Awaiter.html",
-          "hash": "/wJDDabuNi1koT1jWndTyg=="
+          "hash": "F2xG1F0KCZaoda7+HCRJtA=="
         }
       },
       "is_incremental": false,
@@ -2805,7 +2805,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UniTask.Awaiter.html",
-          "hash": "G3zipPGPdnK+vOJmxu9RBQ=="
+          "hash": "S14p7TKkACXdZCvekKFBTg=="
         }
       },
       "is_incremental": false,
@@ -2817,7 +2817,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UniTask.html",
-          "hash": "pN3bVbG+zzstJnQdFr47MA=="
+          "hash": "zMX4aWGKcJ843FuSPFLIcA=="
         }
       },
       "is_incremental": false,
@@ -2913,7 +2913,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UniTaskExtensions.html",
-          "hash": "ja3s3EIqPcDYG7U8dSnkQA=="
+          "hash": "CuAkwkrgD9PPKAzwfesNtg=="
         }
       },
       "is_incremental": false,
@@ -3345,7 +3345,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.AsyncOperationAwaiter.html",
-          "hash": "KiOzsayp8LaSe0YFbIikVQ=="
+          "hash": "QxPiMeIhnzaVEPGDwruW8w=="
         }
       },
       "is_incremental": false,
@@ -3357,7 +3357,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.UnityAsyncExtensions.ResourceRequestAwaiter.html",
-          "hash": "0Lpwg1D+HiPC4nKxDQII3g=="
+          "hash": "PNJNtWQ/HIeFU90n6NwKuQ=="
         }
       },
       "is_incremental": false,
@@ -3417,7 +3417,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.YieldAwaitable.Awaiter.html",
-          "hash": "wssu9MVB8Y6AoRb2cicBkg=="
+          "hash": "Y3F3yOtZP5cpalbgn8MQWA=="
         }
       },
       "is_incremental": false,
