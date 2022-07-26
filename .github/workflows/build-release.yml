@@ -6,90 +6,44 @@ on:
       tag:
         description: "tag: git tag you want create. (sample 1.0.0)"
         required: true
-      dry_run:
-        description: "dry_run: true will never create relase/nuget."
+      dry-run:
+        description: "dry-run: true will never create relase/nuget."
         required: true
-        default: "false"
+        default: false
+        type: boolean
 
 env:
   GIT_TAG: ${{ github.event.inputs.tag }}
-  DRY_RUN: ${{ github.event.inputs.dry_run }}
-  DRY_RUN_BRANCH_PREFIX: "test_release"
+  DRY_RUN: ${{ github.event.inputs.dry-run }}
 
 jobs:
   update-packagejson:
-    runs-on: ubuntu-latest
-    env:
-      TARGET_FILE: ./src/UniTask/Assets/Plugins/UniTask/package.json
-    outputs:
-      sha: ${{ steps.commit.outputs.sha }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Output package.json (Before)
-        run: cat ${{ env.TARGET_FILE}}
-
-      - name: Update package.json to version ${{ env.GIT_TAG }}
-        run: sed -i -e "s/\(\"version\":\) \"\(.*\)\",/\1 \"${{ env.GIT_TAG }}\",/" ${{ env.TARGET_FILE }}
-
-      - name: Check update
-        id: check_update
-        run: |
-          cat ${{ env.TARGET_FILE}}
-          git diff --exit-code || echo "::set-output name=changed::1"
-
-      - name: Commit files
-        id: commit
-        if: steps.check_update.outputs.changed == '1'
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -m "feat: Update package.json to ${{ env.GIT_TAG }}" -a
-          echo "::set-output name=sha::$(git rev-parse HEAD)"
-
-      - name: Check sha
-        run: echo "SHA ${SHA}"
-        env:
-          SHA: ${{ steps.commit.outputs.sha }}
-
-      - name: Create Tag
-        if: steps.check_update.outputs.changed == '1'
-        run: git tag ${{ env.GIT_TAG }}
-
-      - name: Push changes
-        if: env.DRY_RUN == 'false' && steps.check_update.outputs.changed == '1'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          tags: true
-
-      - name: Push changes (dry_run)
-        if: env.DRY_RUN == 'true' && steps.check_update.outputs.changed == '1'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ env.DRY_RUN_BRANCH_PREFIX }}-${{ env.GIT_TAG }}
-          tags: false
+    uses: Cysharp/Actions/.github/workflows/update-packagejson.yaml@main
+    with:
+      file-path: ./src/UniTask/Assets/Plugins/UniTask/package.json
+      tag: ${{ github.event.inputs.tag }}
+      dry-run: ${{ fromJson(github.event.inputs.dry-run) }}
 
   build-dotnet:
     needs: [update-packagejson]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      NUGET_XMLDOC_MODE: skip
     steps:
       - run: echo ${{ needs.update-packagejson.outputs.sha }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ needs.update-packagejson.outputs.sha }}
+      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
+        with:
+          dotnet-version: |
+            3.1.x
+            6.0.x
       # build and pack
       - run: dotnet build -c Release -p:Version=${{ env.GIT_TAG }}
       - run: dotnet test -c Release --no-build
       - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ env.GIT_TAG }} -o ./publish
       # Store artifacts.
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         with:
           name: nuget
           path: ./publish/
@@ -112,7 +66,7 @@ jobs:
       # Execute scripts: Export Package
       # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
       - name: Export unitypackage
-        uses: game-ci/unity-builder@v2.0-alpha-6
+        uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets[matrix.license] }}
         with:
@@ -122,15 +76,9 @@ jobs:
           buildMethod: PackageExporter.Export
           versioning: None
 
-      - name: check all .meta is commited
-        run: |
-          if git ls-files --others --exclude-standard -t | grep --regexp='[.]meta$'; then
-            echo "Detected .meta file generated. Do you forgot commit a .meta file?"
-            exit 1
-          else
-            echo "Great, all .meta files are commited."
-          fi
-        working-directory: src/UniTask
+      - uses: Cysharp/Actions/.github/actions/check-metas@main # check meta files
+        with:
+          directory: src/UniTask
 
       # Store artifacts.
       - uses: actions/upload-artifact@v2
@@ -139,14 +87,12 @@ jobs:
           path: ./src/UniTask/UniTask.${{ env.GIT_TAG }}.unitypackage
 
   create-release:
-    if: github.event.inputs.dry_run == 'false'
+    if: github.event.inputs.dry-run == 'false'
     needs: [update-packagejson, build-dotnet, build-unity]
     runs-on: ubuntu-latest
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      NUGET_XMLDOC_MODE: skip
+    timeout-minutes: 10
     steps:
+      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
       # Create Releases
       - uses: actions/create-release@v1
         id: create_release
@@ -173,12 +119,8 @@ jobs:
           asset_content_type: application/octet-stream
 
   cleanup:
-    if: github.event.inputs.dry_run == 'true'
-    needs: [build-dotnet, build-unity]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: ${{ github.token }}
-          branches: ${{ env.DRY_RUN_BRANCH_PREFIX }}-${{ env.GIT_TAG }}
+    if: needs.update-packagejson.outputs.is-branch-created == 'true'
+    needs: [update-packagejson, build-dotnet, build-unity]
+    uses: Cysharp/Actions/.github/workflows/clean-packagejson-branch.yaml@main
+    with:
+      branch: ${{ needs.update-packagejson.outputs.branch-name }}
