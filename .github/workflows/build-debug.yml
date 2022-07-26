@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       # Execute scripts: RuntimeUnitTestToolkit
       # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend mono /BuildTarget StandaloneLinux64
       - name: Build UnitTest(Linux64, mono)
