@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="UniTask Struct
    | UniTask ">
-    <meta name="generator" content="docfx 2.51.0.0">
+    <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -83,7 +83,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public struct UniTask</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly struct UniTask</code></pre>
   </div>
 
   
@@ -825,7 +825,7 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask">Implicit(UniTask to ValueTask)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask">Implicit(in UniTask to ValueTask)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -906,7 +906,7 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTaskStatus Status { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTaskStatus Status { get; }</code></pre>
   </div>
 
   
@@ -1017,7 +1017,7 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;AsyncUnit&gt; AsAsyncUnitUniTask()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask&lt;AsyncUnit&gt; AsAsyncUnitUniTask()</code></pre>
   </div>
 
   
@@ -1630,7 +1630,7 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask.Awaiter GetAwaiter()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask.Awaiter GetAwaiter()</code></pre>
   </div>
 
   
@@ -1972,7 +1972,7 @@ For example: FooAction = UniTask.Action(async () =&gt; { /* */ })</p>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask Preserve()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask Preserve()</code></pre>
   </div>
 
   
@@ -2453,7 +2453,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask RunOnThreadPool(Action action, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask RunOnThreadPool(Action action, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2495,7 +2495,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask RunOnThreadPool(Action&lt;object&gt; action, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask RunOnThreadPool(Action&lt;object&gt; action, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2539,7 +2539,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask RunOnThreadPool(Func&lt;UniTask&gt; action, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask RunOnThreadPool(Func&lt;UniTask&gt; action, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2581,7 +2581,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask RunOnThreadPool(Func&lt;object, UniTask&gt; action, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask RunOnThreadPool(Func&lt;object, UniTask&gt; action, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2625,7 +2625,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;T&gt; func, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;T&gt; func, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2674,7 +2674,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;UniTask&lt;T&gt;&gt; func, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;UniTask&lt;T&gt;&gt; func, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2723,7 +2723,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;object, T&gt; func, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;object, T&gt; func, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2774,7 +2774,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt; func, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; RunOnThreadPool&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt; func, object state, bool configureAwait = true, CancellationToken cancellationToken = null)</code></pre>
   </div>
 
   <section>
@@ -2825,7 +2825,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;bool&gt; SuppressCancellationThrow()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask&lt;bool&gt; SuppressCancellationThrow()</code></pre>
   </div>
 
   
@@ -2992,7 +2992,7 @@ public static UniTask&lt;T&gt; Run&lt;T&gt;(Func&lt;object, UniTask&lt;T&gt;&gt;
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+    <pre><code class="lang-csharp hljs">public override readonly string ToString()</code></pre>
   </div>
 
   
@@ -6065,7 +6065,7 @@ public static UniTask WaitForEndOfFrame(CancellationToken cancellationToken)</co
   </h3>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_op_Implicit_" data-uid="Cysharp.Threading.Tasks.UniTask.op_Implicit*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask" data-uid="Cysharp.Threading.Tasks.UniTask.op_Implicit(Cysharp.Threading.Tasks.UniTask@)~System.Threading.Tasks.ValueTask">Implicit(UniTask to ValueTask)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask" data-uid="Cysharp.Threading.Tasks.UniTask.op_Implicit(Cysharp.Threading.Tasks.UniTask@)~System.Threading.Tasks.ValueTask">Implicit(in UniTask to ValueTask)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   

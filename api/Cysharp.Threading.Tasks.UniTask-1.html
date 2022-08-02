@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="UniTask&lt;T&gt; Struct
    | UniTask ">
-    <meta name="generator" content="docfx 2.51.0.0">
+    <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -83,7 +83,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public struct UniTask&lt;T&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly struct UniTask&lt;T&gt;</code></pre>
   </div>
 
   
@@ -205,7 +205,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html#Cysharp_Threading_Tasks_UniTask_1_op_Implicit_Cysharp_Threading_Tasks_UniTask__0____System_Threading_Tasks_ValueTask__0_">Implicit(UniTask&lt;T&gt; to ValueTask&lt;T&gt;)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html#Cysharp_Threading_Tasks_UniTask_1_op_Implicit_Cysharp_Threading_Tasks_UniTask__0____System_Threading_Tasks_ValueTask__0_">Implicit(in UniTask&lt;T&gt; to ValueTask&lt;T&gt;)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -285,7 +285,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTaskStatus Status { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTaskStatus Status { get; }</code></pre>
   </div>
 
   
@@ -317,7 +317,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask AsUniTask()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask AsUniTask()</code></pre>
   </div>
 
   
@@ -347,7 +347,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;T&gt;.Awaiter GetAwaiter()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask&lt;T&gt;.Awaiter GetAwaiter()</code></pre>
   </div>
 
   
@@ -378,7 +378,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;T&gt; Preserve()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask&lt;T&gt; Preserve()</code></pre>
   </div>
 
   
@@ -409,7 +409,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;(bool IsCanceled, T Result)&gt; SuppressCancellationThrow()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask&lt;(bool IsCanceled, T Result)&gt; SuppressCancellationThrow()</code></pre>
   </div>
 
   
@@ -439,7 +439,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+    <pre><code class="lang-csharp hljs">public override readonly string ToString()</code></pre>
   </div>
 
   
@@ -505,7 +505,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_1_op_Implicit_" data-uid="Cysharp.Threading.Tasks.UniTask`1.op_Implicit*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_1_op_Implicit_Cysharp_Threading_Tasks_UniTask__0____System_Threading_Tasks_ValueTask__0_" data-uid="Cysharp.Threading.Tasks.UniTask`1.op_Implicit(Cysharp.Threading.Tasks.UniTask{`0}@)~System.Threading.Tasks.ValueTask{`0}">Implicit(UniTask&lt;T&gt; to ValueTask&lt;T&gt;)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_1_op_Implicit_Cysharp_Threading_Tasks_UniTask__0____System_Threading_Tasks_ValueTask__0_" data-uid="Cysharp.Threading.Tasks.UniTask`1.op_Implicit(Cysharp.Threading.Tasks.UniTask{`0}@)~System.Threading.Tasks.ValueTask{`0}">Implicit(in UniTask&lt;T&gt; to ValueTask&lt;T&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   

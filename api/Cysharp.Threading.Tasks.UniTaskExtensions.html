@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="UniTaskExtensions Class
    | UniTask ">
-    <meta name="generator" content="docfx 2.51.0.0">
+    <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -751,7 +751,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask ContinueWith(this UniTask task, Action continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask ContinueWith(this UniTask task, Action continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -790,7 +790,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask ContinueWith(this UniTask task, Func&lt;UniTask&gt; continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask ContinueWith(this UniTask task, Func&lt;UniTask&gt; continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -829,7 +829,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; ContinueWith&lt;T&gt;(this UniTask task, Func&lt;T&gt; continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; ContinueWith&lt;T&gt;(this UniTask task, Func&lt;T&gt; continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -875,7 +875,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; ContinueWith&lt;T&gt;(this UniTask task, Func&lt;UniTask&lt;T&gt;&gt; continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; ContinueWith&lt;T&gt;(this UniTask task, Func&lt;UniTask&lt;T&gt;&gt; continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -921,7 +921,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask ContinueWith&lt;T&gt;(this UniTask&lt;T&gt; task, Action&lt;T&gt; continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask ContinueWith&lt;T&gt;(this UniTask&lt;T&gt; task, Action&lt;T&gt; continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -967,7 +967,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask ContinueWith&lt;T&gt;(this UniTask&lt;T&gt; task, Func&lt;T, UniTask&gt; continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask ContinueWith&lt;T&gt;(this UniTask&lt;T&gt; task, Func&lt;T, UniTask&gt; continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -1013,7 +1013,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;TR&gt; ContinueWith&lt;T, TR&gt;(this UniTask&lt;T&gt; task, Func&lt;T, TR&gt; continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;TR&gt; ContinueWith&lt;T, TR&gt;(this UniTask&lt;T&gt; task, Func&lt;T, TR&gt; continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -1061,7 +1061,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;TR&gt; ContinueWith&lt;T, TR&gt;(this UniTask&lt;T&gt; task, Func&lt;T, UniTask&lt;TR&gt;&gt; continuationFunction)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;TR&gt; ContinueWith&lt;T, TR&gt;(this UniTask&lt;T&gt; task, Func&lt;T, UniTask&lt;TR&gt;&gt; continuationFunction)</code></pre>
   </div>
 
   <section>
@@ -2838,7 +2838,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask Unwrap(this UniTask&lt;UniTask&gt; task)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask Unwrap(this UniTask&lt;UniTask&gt; task)</code></pre>
   </div>
 
   <section>
@@ -2875,7 +2875,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask Unwrap(this UniTask&lt;Task&gt; task)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask Unwrap(this UniTask&lt;Task&gt; task)</code></pre>
   </div>
 
   <section>
@@ -2912,7 +2912,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask Unwrap(this UniTask&lt;Task&gt; task, bool continueOnCapturedContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask Unwrap(this UniTask&lt;Task&gt; task, bool continueOnCapturedContext)</code></pre>
   </div>
 
   <section>
@@ -2951,7 +2951,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask Unwrap(this Task&lt;UniTask&gt; task)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask Unwrap(this Task&lt;UniTask&gt; task)</code></pre>
   </div>
 
   <section>
@@ -2988,7 +2988,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask Unwrap(this Task&lt;UniTask&gt; task, bool continueOnCapturedContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask Unwrap(this Task&lt;UniTask&gt; task, bool continueOnCapturedContext)</code></pre>
   </div>
 
   <section>
@@ -3027,7 +3027,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; Unwrap&lt;T&gt;(this UniTask&lt;UniTask&lt;T&gt;&gt; task)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; Unwrap&lt;T&gt;(this UniTask&lt;UniTask&lt;T&gt;&gt; task)</code></pre>
   </div>
 
   <section>
@@ -3071,7 +3071,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; Unwrap&lt;T&gt;(this UniTask&lt;Task&lt;T&gt;&gt; task)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; Unwrap&lt;T&gt;(this UniTask&lt;Task&lt;T&gt;&gt; task)</code></pre>
   </div>
 
   <section>
@@ -3115,7 +3115,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; Unwrap&lt;T&gt;(this UniTask&lt;Task&lt;T&gt;&gt; task, bool continueOnCapturedContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; Unwrap&lt;T&gt;(this UniTask&lt;Task&lt;T&gt;&gt; task, bool continueOnCapturedContext)</code></pre>
   </div>
 
   <section>
@@ -3161,7 +3161,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; Unwrap&lt;T&gt;(this Task&lt;UniTask&lt;T&gt;&gt; task)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; Unwrap&lt;T&gt;(this Task&lt;UniTask&lt;T&gt;&gt; task)</code></pre>
   </div>
 
   <section>
@@ -3205,7 +3205,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;T&gt; Unwrap&lt;T&gt;(this Task&lt;UniTask&lt;T&gt;&gt; task, bool continueOnCapturedContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async UniTask&lt;T&gt; Unwrap&lt;T&gt;(this Task&lt;UniTask&lt;T&gt;&gt; task, bool continueOnCapturedContext)</code></pre>
   </div>
 
   <section>

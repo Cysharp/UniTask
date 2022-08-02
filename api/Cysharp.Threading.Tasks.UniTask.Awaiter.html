@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="UniTask.Awaiter Struct
    | UniTask ">
-    <meta name="generator" content="docfx 2.51.0.0">
+    <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -82,7 +82,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion</code></pre>
   </div>
 
   
@@ -110,7 +110,7 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter__ctor_Cysharp_Threading_Tasks_UniTask__">Awaiter(UniTask)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter__ctor_Cysharp_Threading_Tasks_UniTask__">Awaiter(in UniTask)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -176,7 +176,7 @@
   </h3>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Awaiter__ctor_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.#ctor*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter__ctor_Cysharp_Threading_Tasks_UniTask__" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.#ctor(Cysharp.Threading.Tasks.UniTask@)">Awaiter(UniTask)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter__ctor_Cysharp_Threading_Tasks_UniTask__" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.#ctor(Cysharp.Threading.Tasks.UniTask@)">Awaiter(in UniTask)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -213,7 +213,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool IsCompleted { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly bool IsCompleted { get; }</code></pre>
   </div>
 
   
@@ -245,7 +245,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void GetResult()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly void GetResult()</code></pre>
   </div>
 
   
@@ -268,7 +268,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void OnCompleted(Action continuation)</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly void OnCompleted(Action continuation)</code></pre>
   </div>
 
   <section>
@@ -299,7 +299,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SourceOnCompleted(Action&lt;object&gt; continuation, object state)</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly void SourceOnCompleted(Action&lt;object&gt; continuation, object state)</code></pre>
   </div>
 
   <section>
@@ -331,7 +331,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void UnsafeOnCompleted(Action continuation)</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly void UnsafeOnCompleted(Action continuation)</code></pre>
   </div>
 
   <section>

@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="UniTaskCancelableAsyncEnumerable&lt;T&gt;.Enumerator Struct
    | UniTask ">
-    <meta name="generator" content="docfx 2.51.0.0">
+    <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -82,7 +82,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public struct Enumerator</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly struct Enumerator</code></pre>
   </div>
 
   
@@ -145,7 +145,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public T Current { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly T Current { get; }</code></pre>
   </div>
 
   
@@ -177,7 +177,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask DisposeAsync()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask DisposeAsync()</code></pre>
   </div>
 
   
@@ -207,7 +207,7 @@
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;bool&gt; MoveNextAsync()</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly UniTask&lt;bool&gt; MoveNextAsync()</code></pre>
   </div>
 
   
