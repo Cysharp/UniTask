@@ -159,6 +159,28 @@ namespace Cysharp.Threading.Tasks
 
 #endif
 
+#if UNITASK_DOTWEEN_SUPPORT
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) TweenCallback.
+        /// For example: tween.OnComplete(UniTask.TweenCallback(async () => { /* */ } ))
+        /// </summary>
+        public static DG.Tweening.TweenCallback TweenCallback(Func<UniTaskVoid> asyncAction)
+        {
+            return () => asyncAction().Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) TweenCallback.
+        /// For example: tween.OnComplete(UniTask.TweenCallback(FooAsync, this.GetCancellationTokenOnDestroy()))
+        /// </summary>
+        public static DG.Tweening.TweenCallback TweenCallback(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return () => asyncAction(cancellationToken).Forget();
+        }
+
+#endif
+
         /// <summary>
         /// Defer the task creation just before call await.
         /// </summary>
