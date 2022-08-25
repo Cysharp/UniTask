@@ -531,7 +531,7 @@ namespace Cysharp.Threading.Tasks
                     sb.AppendLine();
                     continue;
                 }
-                
+
                 foreach (var subSystem in header.subSystemList)
                 {
                     sb.AppendFormat("{0}", subSystem.type.Name);
