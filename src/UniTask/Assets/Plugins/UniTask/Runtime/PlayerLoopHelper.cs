@@ -536,7 +536,7 @@ namespace Cysharp.Threading.Tasks
                 {
                     sb.AppendFormat("{0}", subSystem.type.Name);
                     sb.AppendLine();
-                    
+
                     if (subSystem.subSystemList != null)
                     {
                         UnityEngine.Debug.LogWarning("More Subsystem:" + subSystem.subSystemList.Length);
