@@ -99,7 +99,7 @@ namespace Cysharp.Threading.Tasks
 
         public void Reset()
         {
-            timer.Stop();
+            timer?.Stop();
         }
 
         public void Dispose()
