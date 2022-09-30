@@ -99,7 +99,7 @@ namespace Cysharp.Threading.Tasks
 
         public void Reset()
         {
-            timer.Stop();
+            timer?.Stop();
         }
 
         public void Dispose()
@@ -109,7 +109,7 @@ namespace Cysharp.Threading.Tasks
             try
             {
                 // stop timer.
-                timer.Dispose();
+                timer?.Dispose();
 
                 // cancel and dispose.
                 timeoutSource.Cancel();
