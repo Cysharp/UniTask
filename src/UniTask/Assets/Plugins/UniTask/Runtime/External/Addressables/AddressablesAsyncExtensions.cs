@@ -44,7 +44,21 @@ namespace Cysharp.Threading.Tasks
                 return UniTask.CompletedTask;
             }
 
-            return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, timing, progress, cancellationToken, out var token), token);
+            var task = new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, timing, progress, cancellationToken, out var token), token);
+            return DetachContinuationFromAsyncOperationHandleCompletedCallback(task);
+        }
+
+        private static async UniTask DetachContinuationFromAsyncOperationHandleCompletedCallback(UniTask task)
+        {
+            try
+            {
+                await task;
+            }
+            finally
+            {
+                // Completed callback is deferred until the LateUpdate of the current frame,
+                await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+            }
         }
 
         public struct AsyncOperationHandleAwaiter : ICriticalNotifyCompletion
@@ -255,7 +269,21 @@ namespace Cysharp.Threading.Tasks
                 return UniTask.FromResult(handle.Result);
             }
 
-            return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, timing, progress, cancellationToken, out var token), token);
+            var task = new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, timing, progress, cancellationToken, out var token), token);
+            return DetachContinuationFromAsyncOperationHandleCompletedCallback(task);
+        }
+
+        private static async UniTask<T> DetachContinuationFromAsyncOperationHandleCompletedCallback<T>(UniTask<T> task)
+        {
+            try
+            {
+                return await task;
+            }
+            finally
+            {
+                // Completed callback is deferred until the LateUpdate of the current frame,
+                await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+            }
         }
 
         sealed class AsyncOperationHandleConfiguredSource<T> : IUniTaskSource<T>, IPlayerLoopItem, ITaskPoolNode<AsyncOperationHandleConfiguredSource<T>>
