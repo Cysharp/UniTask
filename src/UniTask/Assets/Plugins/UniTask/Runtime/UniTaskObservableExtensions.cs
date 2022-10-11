@@ -133,7 +133,7 @@ namespace Cysharp.Threading.Tasks
             {
                 var self = (ToUniTaskObserver<T>)state;
                 self.disposable.Dispose();
-                self.promise.TrySetCanceled();
+                self.promise.TrySetCanceled(self.cancellationToken);
             }
 
             public void OnNext(T value)
@@ -203,7 +203,7 @@ namespace Cysharp.Threading.Tasks
             {
                 var self = (FirstValueToUniTaskObserver<T>)state;
                 self.disposable.Dispose();
-                self.promise.TrySetCanceled();
+                self.promise.TrySetCanceled(self.cancellationToken);
             }
 
             public void OnNext(T value)
