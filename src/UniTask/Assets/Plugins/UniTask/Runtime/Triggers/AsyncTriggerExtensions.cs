@@ -8,6 +8,16 @@ namespace Cysharp.Threading.Tasks
 {
     public static class UniTaskCancellationExtensions
     {
+#if UNITY_2022_2_OR_NEWER
+
+        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
+        public static CancellationToken GetCancellationTokenOnDestroy(this MonoBehaviour monoBehaviour)
+        {
+            return monoBehaviour.destroyCancellationToken;
+        }
+
+#endif
+
         /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
         public static CancellationToken GetCancellationTokenOnDestroy(this GameObject gameObject)
         {
@@ -17,6 +27,13 @@ namespace Cysharp.Threading.Tasks
         /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
         public static CancellationToken GetCancellationTokenOnDestroy(this Component component)
         {
+#if UNITY_2022_2_OR_NEWER
+            if (component is MonoBehaviour mb)
+            {
+                return mb.destroyCancellationToken;
+            }
+#endif
+
             return component.GetAsyncDestroyTrigger().CancellationToken;
         }
     }
