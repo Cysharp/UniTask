@@ -688,13 +688,27 @@ namespace Cysharp.Threading.Tasks
             static void OnCanceled1(object state)
             {
                 var self = (UnityEventHandlerAsyncEnumerator)state;
-                self.DisposeAsync().Forget();
+                try
+                {
+                    self.completionSource.TrySetCanceled(self.cancellationToken1);
+                }
+                finally
+                {
+                    self.DisposeAsync().Forget();
+                }
             }
 
             static void OnCanceled2(object state)
             {
                 var self = (UnityEventHandlerAsyncEnumerator)state;
-                self.DisposeAsync().Forget();
+                try
+                {
+                    self.completionSource.TrySetCanceled(self.cancellationToken2);
+                }
+                finally
+                {
+                    self.DisposeAsync().Forget();
+                }
             }
 
             public UniTask DisposeAsync()
@@ -706,6 +720,8 @@ namespace Cysharp.Threading.Tasks
                     registration1.Dispose();
                     registration2.Dispose();
                     unityEvent.RemoveListener(unityAction);
+
+                    completionSource.TrySetCanceled();
                 }
 
                 return default;
@@ -793,13 +809,27 @@ namespace Cysharp.Threading.Tasks
             static void OnCanceled1(object state)
             {
                 var self = (UnityEventHandlerAsyncEnumerator)state;
-                self.DisposeAsync().Forget();
+                try
+                {
+                    self.completionSource.TrySetCanceled(self.cancellationToken1);
+                }
+                finally
+                {
+                    self.DisposeAsync().Forget();
+                }
             }
 
             static void OnCanceled2(object state)
             {
                 var self = (UnityEventHandlerAsyncEnumerator)state;
-                self.DisposeAsync().Forget();
+                try
+                {
+                    self.completionSource.TrySetCanceled(self.cancellationToken2);
+                }
+                finally
+                {
+                    self.DisposeAsync().Forget();
+                }
             }
 
             public UniTask DisposeAsync()
@@ -815,6 +845,8 @@ namespace Cysharp.Threading.Tasks
                         disp.Dispose();
                     }
                     unityEvent.RemoveListener(unityAction);
+
+                    completionSource.TrySetCanceled();
                 }
 
                 return default;
