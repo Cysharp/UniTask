@@ -94,19 +94,21 @@ namespace Cysharp.Threading.Tasks
         }
 
         /// <summary>
-        /// Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate).
+        /// Same as UniTask.Yield(PlayerLoopTiming.LastFixedUpdate).
         /// </summary>
         public static YieldAwaitable WaitForFixedUpdate()
         {
-            return UniTask.Yield(PlayerLoopTiming.FixedUpdate);
+            // use LastFixedUpdate instead of FixedUpdate
+            // https://github.com/Cysharp/UniTask/issues/377
+            return UniTask.Yield(PlayerLoopTiming.LastFixedUpdate);
         }
 
         /// <summary>
-        /// Same as UniTask.Yield(PlayerLoopTiming.FixedUpdate, cancellationToken).
+        /// Same as UniTask.Yield(PlayerLoopTiming.LastFixedUpdate, cancellationToken).
         /// </summary>
         public static UniTask WaitForFixedUpdate(CancellationToken cancellationToken)
         {
-            return UniTask.Yield(PlayerLoopTiming.FixedUpdate, cancellationToken);
+            return UniTask.Yield(PlayerLoopTiming.LastFixedUpdate, cancellationToken);
         }
 
         public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
