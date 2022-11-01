@@ -793,7 +793,7 @@ namespace Cysharp.Threading.Tasks
                     }
                     if (cancellationToken2.CanBeCanceled)
                     {
-                        registration2 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel2, this);
+                        registration2 = cancellationToken2.RegisterWithoutCaptureExecutionContext(cancel2, this);
                     }
                 }
 
