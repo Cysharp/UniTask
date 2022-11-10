@@ -1091,7 +1091,7 @@ openupm add com.cysharp.unitask
 
 .NET Core 版本的 UniTask 是 Unity UniTask 的子集，移除了 PlayerLoop 依赖的方法。
 
-它以比标准 Task/ValueTask 更高的性能运行，但在使用时应注意忽略 ExecutionContext/SynchronizationContext。`AysncLocal`也不起作用，因为它忽略了 ExecutionContext。
+它以比标准 Task/ValueTask 更高的性能运行，但在使用时应注意忽略 ExecutionContext/SynchronizationContext。`AsyncLocal`也不起作用，因为它忽略了 ExecutionContext。
 
 如果您在内部使用 UniTask，但将 ValueTask 作为外部 API 提供，您可以编写如下（受[PooledAwait](https://github.com/mgravell/PooledAwait)启发）代码。
 

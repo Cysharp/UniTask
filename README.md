@@ -1088,7 +1088,7 @@ For .NET Core, use NuGet.
 
 UniTask of .NET Core version is a subset of Unity UniTask with PlayerLoop dependent methods removed.
 
-It runs at higher performance than the standard Task/ValueTask, but you should be careful to ignore the ExecutionContext/SynchronizationContext when using it. `AysncLocal` also does not work because it ignores ExecutionContext.
+It runs at higher performance than the standard Task/ValueTask, but you should be careful to ignore the ExecutionContext/SynchronizationContext when using it. `AsyncLocal` also does not work because it ignores ExecutionContext.
 
 If you use UniTask internally, but provide ValueTask as an external API, you can write it like the following(Inspired by [PooledAwait](https://github.com/mgravell/PooledAwait)).
 
