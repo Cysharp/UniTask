@@ -166,7 +166,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
-                    this.error = new ExceptionHolder(ExceptionDispatchInfo.Capture(error));
+                    this.error = new ExceptionHolder(error);
                 }
 
                 if (continuation != null || Interlocked.CompareExchange(ref this.continuation, UniTaskCompletionSourceCoreShared.s_sentinel, null) != null)
@@ -635,7 +635,7 @@ namespace Cysharp.Threading.Tasks
 
             if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
 
-            this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
+            this.exception = new ExceptionHolder(exception);
             return TrySignalCompletion(UniTaskStatus.Faulted);
         }
 
@@ -820,7 +820,7 @@ namespace Cysharp.Threading.Tasks
 
             if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
 
-            this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
+            this.exception = new ExceptionHolder(exception);
             return TrySignalCompletion(UniTaskStatus.Faulted);
         }
 
