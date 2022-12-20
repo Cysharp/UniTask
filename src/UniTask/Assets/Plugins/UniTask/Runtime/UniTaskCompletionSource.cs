@@ -46,12 +46,13 @@ namespace Cysharp.Threading.Tasks
 
         public ExceptionHolder(Exception exception)
         {
-            if (exception is AggregateException aex && aex.InnerExceptions?.Count == 1)
+            var flattenedAggregate = (exception as AggregateException)?.Flatten();
+            if (flattenedAggregate?.InnerExceptions?.Count == 1)
             {
-                this.exception = ExceptionDispatchInfo.Capture(aex.InnerExceptions[0]);
+                this.exception = ExceptionDispatchInfo.Capture(flattenedAggregate.InnerExceptions[0]);
             }
             else
-        {
+            {
                 this.exception = ExceptionDispatchInfo.Capture(exception);
             }
         }
