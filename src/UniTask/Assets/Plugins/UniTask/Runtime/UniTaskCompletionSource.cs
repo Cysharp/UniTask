@@ -44,9 +44,16 @@ namespace Cysharp.Threading.Tasks
         ExceptionDispatchInfo exception;
         bool calledGet = false;
 
-        public ExceptionHolder(ExceptionDispatchInfo exception)
+        public ExceptionHolder(Exception exception)
         {
-            this.exception = exception;
+            if (exception is AggregateException aex && aex.InnerExceptions?.Count == 1)
+            {
+                this.exception = ExceptionDispatchInfo.Capture(aex.InnerExceptions[0]);
+            }
+            else
+        {
+                this.exception = ExceptionDispatchInfo.Capture(exception);
+            }
         }
 
         public ExceptionDispatchInfo GetException()
