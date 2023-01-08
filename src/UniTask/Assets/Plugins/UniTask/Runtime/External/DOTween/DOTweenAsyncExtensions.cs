@@ -105,17 +105,15 @@ namespace Cysharp.Threading.Tasks
 
             if (!tween.IsActive()) return UniTask.CompletedTask;
             
-            var registration = cancellationToken.Register(() =>
-            {
-                if (tween.IsActive())
-                {
-                    tween.Kill();
-                }
-            });
+            using var registration = cancellationToken.Register(() =>
+			{
+				if (tween.IsActive())
+				{
+					tween.Kill();
+				}
+			});
 
-            tween.OnKill((() => registration.Dispose()));
-
-            return tween.ToUniTask(TweenCancelBehaviour.KillAndCancelAwait, cancellationToken);
+			return tween.ToUniTask(TweenCancelBehaviour.KillAndCancelAwait, cancellationToken);
         }
 
         public struct TweenAwaiter : ICriticalNotifyCompletion
