@@ -99,13 +99,13 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(TweenConfiguredSource.Create(tween, tweenCancelBehaviour, cancellationToken, CallbackType.StepComplete, out var token), token);
         }
         
-        public static UniTask AwaitWithCancellation(this Tween tween, CancellationToken cancellationToken)
+        public static async UniTask AwaitWithCancellation(this Tween tween, CancellationToken cancellationToken)
         {
             Error.ThrowArgumentNullException(tween, nameof(tween));
 
-            if (!tween.IsActive()) return UniTask.CompletedTask;
+			if (!tween.IsActive()) await UniTask.CompletedTask;
             
-            using var registration = cancellationToken.Register(() =>
+			using var registration = cancellationToken.Register(() =>
 			{
 				if (tween.IsActive())
 				{
@@ -113,7 +113,7 @@ namespace Cysharp.Threading.Tasks
 				}
 			});
 
-			return tween.ToUniTask(TweenCancelBehaviour.KillAndCancelAwait, cancellationToken);
+			await tween.ToUniTask(TweenCancelBehaviour.KillAndCancelAwait, cancellationToken);
         }
 
         public struct TweenAwaiter : ICriticalNotifyCompletion
