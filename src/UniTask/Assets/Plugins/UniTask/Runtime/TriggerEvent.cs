@@ -20,8 +20,6 @@ namespace Cysharp.Threading.Tasks
     {
         ITriggerHandler<T> head; // head.prev is last
         ITriggerHandler<T> iteratingHead;
-
-        bool preserveRemoveSelf;
         ITriggerHandler<T> iteratingNode;
 
         void LogError(Exception ex)
@@ -44,6 +42,7 @@ namespace Cysharp.Threading.Tasks
             while (h != null)
             {
                 iteratingNode = h;
+                var next = h.Next;
 
                 try
                 {
@@ -55,18 +54,7 @@ namespace Cysharp.Threading.Tasks
                     Remove(h);
                 }
 
-                if (preserveRemoveSelf)
-                {
-                    preserveRemoveSelf = false;
-                    iteratingNode = null;
-                    var next = h.Next;
-                    Remove(h);
-                    h = next;
-                }
-                else
-                {
-                    h = h.Next;
-                }
+                h = next;
             }
 
             iteratingNode = null;
@@ -96,8 +84,7 @@ namespace Cysharp.Threading.Tasks
                 {
                     LogError(ex);
                 }
-
-                preserveRemoveSelf = false;
+                
                 iteratingNode = null;
                 var next = h.Next;
                 Remove(h);
@@ -131,8 +118,7 @@ namespace Cysharp.Threading.Tasks
                 {
                     LogError(ex);
                 }
-
-                preserveRemoveSelf = false;
+                
                 iteratingNode = null;
                 var next = h.Next;
                 Remove(h);
@@ -166,8 +152,7 @@ namespace Cysharp.Threading.Tasks
                 {
                     LogError(ex);
                 }
-
-                preserveRemoveSelf = false;
+                
                 iteratingNode = null;
                 var next = h.Next;
                 Remove(h);
@@ -240,72 +225,64 @@ namespace Cysharp.Threading.Tasks
         public void Remove(ITriggerHandler<T> handler)
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
+            
+            var prev = handler.Prev;
+            var next = handler.Next;
 
-            if (iteratingNode != null && iteratingNode == handler)
+            if (next != null)
             {
-                // if remove self, reserve remove self after invoke completed.
-                preserveRemoveSelf = true;
+                next.Prev = prev;
+            }
+
+            if (handler == head)
+            {
+                head = next;
+            }
+            else if (handler == iteratingHead)
+            {
+                iteratingHead = next;
             }
             else
             {
-                var prev = handler.Prev;
-                var next = handler.Next;
-
-                if (next != null)
+                // when handler is head, prev indicate last so don't use it.
+                if (prev != null)
                 {
-                    next.Prev = prev;
+                    prev.Next = next;
                 }
-
-                if (handler == head)
-                {
-                    head = next;
-                }
-                else if (handler == iteratingHead)
-                {
-                    iteratingHead = next;
-                }
-                else
-                {
-                    // when handler is head, prev indicate last so don't use it.
-                    if (prev != null)
-                    {
-                        prev.Next = next;
-                    }
-                }
-
-                if (head != null)
-                {
-                    if (head.Prev == handler)
-                    {
-                        if (prev != head)
-                        {
-                            head.Prev = prev;
-                        }
-                        else
-                        {
-                            head.Prev = null;
-                        }
-                    }
-                }
-
-                if (iteratingHead != null)
-                {
-                    if (iteratingHead.Prev == handler)
-                    {
-                        if (prev != iteratingHead.Prev)
-                        {
-                            iteratingHead.Prev = prev;
-                        }
-                        else
-                        {
-                            iteratingHead.Prev = null;
-                        }
-                    }
-                }
-
-                handler.Prev = null;
-                handler.Next = null;
             }
+
+            if (head != null)
+            {
+                if (head.Prev == handler)
+                {
+                    if (prev != head)
+                    {
+                        head.Prev = prev;
+                    }
+                    else
+                    {
+                        head.Prev = null;
+                    }
+                }
+            }
+
+            if (iteratingHead != null)
+            {
+                if (iteratingHead.Prev == handler)
+                {
+                    if (prev != iteratingHead.Prev)
+                    {
+                        iteratingHead.Prev = prev;
+                    }
+                    else
+                    {
+                        iteratingHead.Prev = null;
+                    }
+                }
+            }
+
+            handler.Prev = null;
+            handler.Next = null;
         }
     }
 }
