@@ -509,6 +509,25 @@ namespace Cysharp.Threading.Tasks
             }
             q.Enqueue(continuation);
         }
+        
+        public static void StopAll() 
+        {
+            IsEditorApplicationQuitting = true;
+
+            if (runners != null) {
+                for (var i = 0; i < runners.Length; i++) {
+                    runners[i].Clear();
+                }
+            }
+
+            if (yielders != null) {
+                for (var i = 0; i < yielders.Length; i++) {
+                    yielders[i].Clear();
+                }
+            }
+
+            IsEditorApplicationQuitting = false;
+        }
 
         // Diagnostics helper
 
