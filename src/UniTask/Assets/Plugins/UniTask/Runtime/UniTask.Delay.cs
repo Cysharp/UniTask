@@ -111,7 +111,17 @@ namespace Cysharp.Threading.Tasks
             return UniTask.Yield(PlayerLoopTiming.LastFixedUpdate, cancellationToken);
         }
 
-        public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+		public static UniTask WaitForSeconds(float duration, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+		{
+			return Delay(Mathf.RoundToInt(1000 * duration), ignoreTimeScale, delayTiming, cancellationToken);
+		}
+
+		public static UniTask WaitForSeconds(int duration, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+		{
+			return Delay(1000 * duration, ignoreTimeScale, delayTiming, cancellationToken);
+		}
+
+		public static UniTask DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (delayFrameCount < 0)
             {
