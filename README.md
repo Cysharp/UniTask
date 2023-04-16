@@ -656,6 +656,47 @@ External Assets
 ---
 By default, UniTask supports TextMeshPro(`BindTo(TMP_Text)` and `TMP_InputField` event extensions like standard uGUI `InputField`), DOTween(`Tween` as awaitable) and Addressables(`AsyncOperationHandle` and `AsyncOperationHandle<T>` as awaitable).
 
+You can react to the change of the value and update it using TextMeshPro by binding the field to the `AsyncReactiveProperty`. For more infomation, please read [Awaitable Events](https://github.com/QuocHieuNguyen/UniTask#awaitable-events). 
+```csharp
+// BindTo(TMP_Text)
+public class ExampleUniTaskTMPro : MonoBehaviour
+{
+    public TextMeshPro textMesh;
+    // Start is called before the first frame update
+    async void Start()
+    {
+       var exampleValue = new AsyncReactiveProperty<string>("Hello World");
+       exampleValue.ForEachAsync(x =>
+       {
+           Debug.Log(x); // print each time the property is changed
+       }, this.GetCancellationTokenOnDestroy()).Forget();
+
+       exampleValue.BindTo(this.textMesh); // bind to the TextMeshPro field
+       exampleValue.Value = "Luck"; // the value of the text field of the TextMeshPro is now "Luck"
+    }
+}
+```
+You can add event to the `TMP_InputField` by using `OnSelectAsync` or `OnEndEditAsync`
+
+```csharp
+
+public class ExampleUniTaskInputField : MonoBehaviour
+{
+    [SerializeField] private TMP_InputField inputField;
+
+    async UniTask Start()
+    {
+        inputField.text = "Please select here";
+        await inputField.OnSelectAsync(); 
+        inputField.text = ""; // the input field is empty after selecting
+
+        var value = await inputField.OnEndEditAsync();
+        var text = $"You just type {value}";
+
+        inputField.text = text; // the value of the input field after editing
+    }
+}
+```
 There are defined in separated asmdefs like `UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
 
 TextMeshPro and Addressables support are automatically enabled when importing their packages from package manager. However for DOTween support, it is required to import `com.demigiant.dotween` from [OpenUPM](https://openupm.com/packages/com.demigiant.dotween/) or to define `UNITASK_DOTWEEN_SUPPORT` to enable it.
