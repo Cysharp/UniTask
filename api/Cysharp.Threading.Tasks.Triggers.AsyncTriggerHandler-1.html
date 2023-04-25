@@ -82,7 +82,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class AsyncTriggerHandler&lt;T&gt; : IAsyncFixedUpdateHandler, IAsyncLateUpdateHandler, IAsyncOnAnimatorIKHandler, IAsyncOnAnimatorMoveHandler, IAsyncOnApplicationFocusHandler, IAsyncOnApplicationPauseHandler, IAsyncOnApplicationQuitHandler, IAsyncOnAudioFilterReadHandler, IAsyncOnBecameInvisibleHandler, IAsyncOnBecameVisibleHandler, IAsyncOnBeforeTransformParentChangedHandler, IAsyncOnCanvasGroupChangedHandler, IAsyncOnCollisionEnterHandler, IAsyncOnCollisionEnter2DHandler, IAsyncOnCollisionExitHandler, IAsyncOnCollisionExit2DHandler, IAsyncOnCollisionStayHandler, IAsyncOnCollisionStay2DHandler, IAsyncOnControllerColliderHitHandler, IAsyncOnDisableHandler, IAsyncOnDrawGizmosHandler, IAsyncOnDrawGizmosSelectedHandler, IAsyncOnEnableHandler, IAsyncOnGUIHandler, IAsyncOnJointBreakHandler, IAsyncOnJointBreak2DHandler, IAsyncOnMouseDownHandler, IAsyncOnMouseDragHandler, IAsyncOnMouseEnterHandler, IAsyncOnMouseExitHandler, IAsyncOnMouseOverHandler, IAsyncOnMouseUpHandler, IAsyncOnMouseUpAsButtonHandler, IAsyncOnParticleCollisionHandler, IAsyncOnParticleSystemStoppedHandler, IAsyncOnParticleTriggerHandler, IAsyncOnPostRenderHandler, IAsyncOnPreCullHandler, IAsyncOnPreRenderHandler, IAsyncOnRectTransformDimensionsChangeHandler, IAsyncOnRectTransformRemovedHandler, IAsyncOnRenderImageHandler, IAsyncOnRenderObjectHandler, IAsyncOnServerInitializedHandler, IAsyncOnTransformChildrenChangedHandler, IAsyncOnTransformParentChangedHandler, IAsyncOnTriggerEnterHandler, IAsyncOnTriggerEnter2DHandler, IAsyncOnTriggerExitHandler, IAsyncOnTriggerExit2DHandler, IAsyncOnTriggerStayHandler, IAsyncOnTriggerStay2DHandler, IAsyncOnValidateHandler, IAsyncOnWillRenderObjectHandler, IAsyncResetHandler, IAsyncUpdateHandler, IAsyncOnBeginDragHandler, IAsyncOnCancelHandler, IAsyncOnDeselectHandler, IAsyncOnDragHandler, IAsyncOnDropHandler, IAsyncOnEndDragHandler, IAsyncOnInitializePotentialDragHandler, IAsyncOnMoveHandler, IAsyncOnPointerClickHandler, IAsyncOnPointerDownHandler, IAsyncOnPointerEnterHandler, IAsyncOnPointerExitHandler, IAsyncOnPointerUpHandler, IAsyncOnScrollHandler, IAsyncOnSelectHandler, IAsyncOnSubmitHandler, IAsyncOnUpdateSelectedHandler, IAsyncOneShotTrigger, IUniTaskSource&lt;T&gt;, IUniTaskSource, IValueTaskSource, IValueTaskSource&lt;T&gt;, ITriggerHandler&lt;T&gt;, IDisposable</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class AsyncTriggerHandler&lt;T&gt; : IAsyncOneShotTrigger, IUniTaskSource&lt;T&gt;, IUniTaskSource, IValueTaskSource, IValueTaskSource&lt;T&gt;, ITriggerHandler&lt;T&gt;, IDisposable, IAsyncFixedUpdateHandler, IAsyncLateUpdateHandler, IAsyncOnAnimatorIKHandler, IAsyncOnAnimatorMoveHandler, IAsyncOnApplicationFocusHandler, IAsyncOnApplicationPauseHandler, IAsyncOnApplicationQuitHandler, IAsyncOnAudioFilterReadHandler, IAsyncOnBecameInvisibleHandler, IAsyncOnBecameVisibleHandler, IAsyncOnBeforeTransformParentChangedHandler, IAsyncOnCanvasGroupChangedHandler, IAsyncOnCollisionEnterHandler, IAsyncOnCollisionEnter2DHandler, IAsyncOnCollisionExitHandler, IAsyncOnCollisionExit2DHandler, IAsyncOnCollisionStayHandler, IAsyncOnCollisionStay2DHandler, IAsyncOnControllerColliderHitHandler, IAsyncOnDisableHandler, IAsyncOnDrawGizmosHandler, IAsyncOnDrawGizmosSelectedHandler, IAsyncOnEnableHandler, IAsyncOnGUIHandler, IAsyncOnJointBreakHandler, IAsyncOnJointBreak2DHandler, IAsyncOnMouseDownHandler, IAsyncOnMouseDragHandler, IAsyncOnMouseEnterHandler, IAsyncOnMouseExitHandler, IAsyncOnMouseOverHandler, IAsyncOnMouseUpHandler, IAsyncOnMouseUpAsButtonHandler, IAsyncOnParticleCollisionHandler, IAsyncOnParticleSystemStoppedHandler, IAsyncOnParticleTriggerHandler, IAsyncOnPostRenderHandler, IAsyncOnPreCullHandler, IAsyncOnPreRenderHandler, IAsyncOnRectTransformDimensionsChangeHandler, IAsyncOnRectTransformRemovedHandler, IAsyncOnRenderImageHandler, IAsyncOnRenderObjectHandler, IAsyncOnServerInitializedHandler, IAsyncOnTransformChildrenChangedHandler, IAsyncOnTransformParentChangedHandler, IAsyncOnTriggerEnterHandler, IAsyncOnTriggerEnter2DHandler, IAsyncOnTriggerExitHandler, IAsyncOnTriggerExit2DHandler, IAsyncOnTriggerStayHandler, IAsyncOnTriggerStay2DHandler, IAsyncOnValidateHandler, IAsyncOnWillRenderObjectHandler, IAsyncResetHandler, IAsyncUpdateHandler, IAsyncOnBeginDragHandler, IAsyncOnCancelHandler, IAsyncOnDeselectHandler, IAsyncOnDragHandler, IAsyncOnDropHandler, IAsyncOnEndDragHandler, IAsyncOnInitializePotentialDragHandler, IAsyncOnMoveHandler, IAsyncOnPointerClickHandler, IAsyncOnPointerDownHandler, IAsyncOnPointerEnterHandler, IAsyncOnPointerExitHandler, IAsyncOnPointerUpHandler, IAsyncOnScrollHandler, IAsyncOnSelectHandler, IAsyncOnSubmitHandler, IAsyncOnUpdateSelectedHandler</code></pre>
   </div>
 
   <div class="inheritance">
@@ -93,6 +93,13 @@
   
   <div classs="implements">
     <h5>Implements</h5>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOneShotTrigger.html">IAsyncOneShotTrigger</a></div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource</a>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a></div>
+    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span></div>
+    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>&lt;T&gt;</div>
+    <div><a class="xref" href="Cysharp.Threading.Tasks.ITriggerHandler-1.html">ITriggerHandler</a>&lt;T&gt;</div>
+    <div><span class="xref">System.IDisposable</span></div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncFixedUpdateHandler.html">IAsyncFixedUpdateHandler</a></div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncLateUpdateHandler.html">IAsyncLateUpdateHandler</a></div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnAnimatorIKHandler.html">IAsyncOnAnimatorIKHandler</a></div>
@@ -166,13 +173,6 @@
     <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnSelectHandler.html">IAsyncOnSelectHandler</a></div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnSubmitHandler.html">IAsyncOnSubmitHandler</a></div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnUpdateSelectedHandler.html">IAsyncOnUpdateSelectedHandler</a></div>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOneShotTrigger.html">IAsyncOneShotTrigger</a></div>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource</a>&lt;T&gt;</div>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a></div>
-    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span></div>
-    <div><span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>&lt;T&gt;</div>
-    <div><a class="xref" href="Cysharp.Threading.Tasks.ITriggerHandler-1.html">ITriggerHandler</a>&lt;T&gt;</div>
-    <div><span class="xref">System.IDisposable</span></div>
   </div>
   
   
@@ -3320,6 +3320,27 @@
   
   <h3 id="implements">Implements</h3>
   <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOneShotTrigger.html">IAsyncOneShotTrigger</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a>
+  </div>
+  <div>
+      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>
+  </div>
+  <div>
+      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;</span>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.ITriggerHandler-1.html">ITriggerHandler&lt;T&gt;</a>
+  </div>
+  <div>
+      <span class="xref">System.IDisposable</span>
+  </div>
+  <div>
       <a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncFixedUpdateHandler.html">IAsyncFixedUpdateHandler</a>
   </div>
   <div>
@@ -3537,27 +3558,6 @@
   </div>
   <div>
       <a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOnUpdateSelectedHandler.html">IAsyncOnUpdateSelectedHandler</a>
-  </div>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.Triggers.IAsyncOneShotTrigger.html">IAsyncOneShotTrigger</a>
-  </div>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html">IUniTaskSource&lt;T&gt;</a>
-  </div>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a>
-  </div>
-  <div>
-      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource</span>
-  </div>
-  <div>
-      <span class="xref">System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;</span>
-  </div>
-  <div>
-      <a class="xref" href="Cysharp.Threading.Tasks.ITriggerHandler-1.html">ITriggerHandler&lt;T&gt;</a>
-  </div>
-  <div>
-      <span class="xref">System.IDisposable</span>
   </div>
   
   
