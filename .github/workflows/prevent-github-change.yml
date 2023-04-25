@@ -1,0 +1,10 @@
+name: Prevent github change
+on:
+  pull_request:
+    paths:
+      - ".github/**/*.yaml"
+      - ".github/**/*.yml"
+
+jobs:
+  detect:
+    uses: Cysharp/Actions/.github/workflows/prevent-github-change.yaml@main
