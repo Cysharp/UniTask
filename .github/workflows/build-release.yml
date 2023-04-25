@@ -53,9 +53,6 @@ jobs:
     strategy:
       matrix:
         unity: ["2019.3.9f1"]
-        include:
-          - unity: 2019.3.9f1
-            license: UNITY_LICENSE_2019
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
