@@ -65,16 +65,17 @@ jobs:
           ref: ${{ needs.update-packagejson.outputs.sha }}
       # Execute scripts: Export Package
       # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
-      - name: Export unitypackage
-        uses: game-ci/unity-builder@v2
+      - name: Build Unity (.unitypacakge)
+        uses: Cysharp/Actions/.github/actions/unity-builder@main
         env:
-          UNITY_LICENSE: ${{ secrets[matrix.license] }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           projectPath: src/UniTask
           unityVersion: ${{ matrix.unity }}
           targetPlatform: StandaloneLinux64
           buildMethod: PackageExporter.Export
-          versioning: None
 
       - uses: Cysharp/Actions/.github/actions/check-metas@main # check meta files
         with:
