@@ -41,7 +41,7 @@ namespace Cysharp.Threading.Tasks
             return promise.Task;
         }
 
-        public static UniTask<T> AsUniTask<T>(this Task<T> task, CancellationToken cancellationToken = default, bool useCurrentSynchronizationContext = true)
+        public static UniTask<T> AsUniTask<T>(this Task<T> task, CancellationToken cancellationToken, bool useCurrentSynchronizationContext = true)
         {
             var promise = new UniTaskCompletionSource<T>();
             var state = StatePool<UniTaskCompletionSource<T>, CancellationToken>.Create(promise, cancellationToken);
@@ -102,7 +102,7 @@ namespace Cysharp.Threading.Tasks
             return promise.Task;
         }
 
-        public static UniTask AsUniTask(this Task task, CancellationToken cancellationToken = default, bool useCurrentSynchronizationContext = true)
+        public static UniTask AsUniTask(this Task task, CancellationToken cancellationToken, bool useCurrentSynchronizationContext = true)
         {
             var promise = new UniTaskCompletionSource();
             var state = StatePool<UniTaskCompletionSource, CancellationToken>.Create(promise, cancellationToken);
