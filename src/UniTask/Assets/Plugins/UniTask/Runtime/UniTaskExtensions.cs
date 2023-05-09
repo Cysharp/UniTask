@@ -41,6 +41,37 @@ namespace Cysharp.Threading.Tasks
             return promise.Task;
         }
 
+        public static UniTask<T> AsUniTask<T>(this Task<T> task, CancellationToken cancellationToken = default, bool useCurrentSynchronizationContext = true)
+        {
+            var promise = new UniTaskCompletionSource<T>();
+            var state = StatePool<UniTaskCompletionSource<T>, CancellationToken>.Create(promise, cancellationToken);
+
+            task.ContinueWith((x, state) =>
+            {
+                var tuple = (StateTuple<UniTaskCompletionSource<T>, CancellationToken>)state;
+                tuple.Deconstruct(out var p, out var token);
+
+                switch (x.Status)
+                {
+                    case TaskStatus.Canceled:
+                        p.TrySetCanceled(token);
+                        break;
+                    case TaskStatus.Faulted:
+                        p.TrySetException(x.Exception);
+                        break;
+                    case TaskStatus.RanToCompletion:
+                        p.TrySetResult(x.Result);
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
+
+                tuple.Dispose();
+            }, state, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
+
+            return promise.Task;
+        }
+
         /// <summary>
         /// Convert Task -> UniTask.
         /// </summary>
@@ -67,6 +98,37 @@ namespace Cysharp.Threading.Tasks
                         throw new NotSupportedException();
                 }
             }, promise, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
+
+            return promise.Task;
+        }
+
+        public static UniTask AsUniTask(this Task task, CancellationToken cancellationToken = default, bool useCurrentSynchronizationContext = true)
+        {
+            var promise = new UniTaskCompletionSource();
+            var state = StatePool<UniTaskCompletionSource, CancellationToken>.Create(promise, cancellationToken);
+
+            task.ContinueWith((x, state) =>
+            {
+                var tuple = (StateTuple<UniTaskCompletionSource, CancellationToken>)state;
+                tuple.Deconstruct(out var p, out var token);
+
+                switch (x.Status)
+                {
+                    case TaskStatus.Canceled:
+                        p.TrySetCanceled(token);
+                        break;
+                    case TaskStatus.Faulted:
+                        p.TrySetException(x.Exception);
+                        break;
+                    case TaskStatus.RanToCompletion:
+                        p.TrySetResult();
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
+
+                tuple.Dispose();
+            }, state, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
 
             return promise.Task;
         }
