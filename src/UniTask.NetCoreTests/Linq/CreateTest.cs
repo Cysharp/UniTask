@@ -159,6 +159,30 @@ namespace NetCoreTests.Linq
             list.Should().Equal(100, 200, 300, 400);
         }
 
+        [Fact]
+        public async Task AwaitForeachBreak()
+        {
+            var finallyCalled = false;
+            var enumerable = UniTaskAsyncEnumerable.Create<int>(async (writer, _) =>
+            {
+                try
+                {
+                    await writer.YieldAsync(1);
+                }
+                finally
+                {
+                    finallyCalled = true;
+                }
+            });
+
+            await foreach (var x in enumerable)
+            {
+                x.Should().Be(1);
+                break;
+            }
+            finallyCalled.Should().BeTrue();
+        }
+
         async IAsyncEnumerable<int> Range(int from, int count)
         {
             for (int i = 0; i < count; i++)
