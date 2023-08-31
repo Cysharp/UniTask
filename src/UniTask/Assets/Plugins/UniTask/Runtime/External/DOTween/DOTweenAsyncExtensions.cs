@@ -257,10 +257,9 @@ namespace Cysharp.Threading.Tasks
 
             void OnUpdate()
             {
-                originalUpdateAction?.Invoke();
-
                 if (!cancellationToken.IsCancellationRequested)
                 {
+                    originalUpdateAction?.Invoke();
                     return;
                 }
 
