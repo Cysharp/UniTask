@@ -28,7 +28,7 @@ namespace Cysharp.Threading.Tasks
                         p.TrySetCanceled();
                         break;
                     case TaskStatus.Faulted:
-                        p.TrySetException(x.Exception);
+                        p.TrySetException(x.Exception.InnerExceptions.Count == 1 ? x.Exception.InnerException : x.Exception);
                         break;
                     case TaskStatus.RanToCompletion:
                         p.TrySetResult(x.Result);
@@ -58,7 +58,7 @@ namespace Cysharp.Threading.Tasks
                         p.TrySetCanceled();
                         break;
                     case TaskStatus.Faulted:
-                        p.TrySetException(x.Exception);
+                        p.TrySetException(x.Exception.InnerExceptions.Count == 1 ? x.Exception.InnerException : x.Exception);
                         break;
                     case TaskStatus.RanToCompletion:
                         p.TrySetResult();
