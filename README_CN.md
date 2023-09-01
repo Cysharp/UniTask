@@ -43,7 +43,6 @@ UniTask
 - [API References](#api-references)
 - [UPM Package](#upm-package)
   - [通过 git URL 安装](#%E9%80%9A%E8%BF%87-git-url-%E5%AE%89%E8%A3%85)
-  - [通过 OpenUPM 安装](#%E9%80%9A%E8%BF%87-openupm-%E5%AE%89%E8%A3%85)
 - [.NET Core](#net-core)
 - [License](#license)
 
@@ -661,7 +660,8 @@ UniTaskTracker 仅用于调试用途，因为启用跟踪和捕获堆栈跟踪�
 
 在单独的 asmdef 中定义，如`UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
 
-从包管理器导入包时，会自动启用 TextMeshPro 和 Addressables 支持。但是对于 DOTween 支持，需要`com.demigiant.dotween`从[OpenUPM](https://openupm.com/packages/com.demigiant.dotween/)导入或定义`UNITASK_DOTWEEN_SUPPORT`以启用它。
+从 Package manager 中导入软件包时，会自动启用对 TextMeshPro 和 Addressables 的支持。
+但对于 DOTween 支持，则需要从 [DOTWeen assets](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676r) 中导入并定义脚本定义符号 `UNITASK_DOTWEEN_SUPPORT` 后才能启用。
 
 ```csharp
 // 动画序列

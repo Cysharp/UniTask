@@ -1,4 +1,3 @@
-UniTask
 ===
 [![GitHub Actions](https://github.com/Cysharp/UniTask/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/UniTask/actions) [![Releases](https://img.shields.io/github/release/Cysharp/UniTask.svg)](https://github.com/Cysharp/UniTask/releases) [![Readme_CN](https://img.shields.io/badge/UniTask-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-red)](https://github.com/Cysharp/UniTask/blob/master/README_CN.md)
 
@@ -44,7 +43,6 @@ For advanced tips, see blog post: [Extends UnityWebRequest via async decorator p
 - [API References](#api-references)
 - [UPM Package](#upm-package)
   - [Install via git URL](#install-via-git-url)
-  - [Install via OpenUPM](#install-via-openupm)
 - [.NET Core](#net-core)
 - [License](#license)
 
@@ -658,7 +656,8 @@ By default, UniTask supports TextMeshPro(`BindTo(TMP_Text)` and `TMP_InputField`
 
 There are defined in separated asmdefs like `UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
 
-TextMeshPro and Addressables support are automatically enabled when importing their packages from package manager. However for DOTween support, it is required to import `com.demigiant.dotween` from [OpenUPM](https://openupm.com/packages/com.demigiant.dotween/) or to define `UNITASK_DOTWEEN_SUPPORT` to enable it.
+TextMeshPro and Addressables support are automatically enabled when importing their packages from package manager. 
+However for DOTween support, after importing from the [DOTWeen assets](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676r) and define the scripting define symbol `UNITASK_DOTWEEN_SUPPORT` to enable it.
 
 ```csharp
 // sequential
@@ -1072,13 +1071,6 @@ or add `"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/
 
 If you want to set a target version, UniTask uses the `*.*.*` release tag so you can specify a version like `#2.1.0`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
 
-### Install via OpenUPM
-
-The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
-
-```
-openupm add com.cysharp.unitask
-```
 
 .NET Core
 ---
