@@ -86,8 +86,8 @@ namespace Cysharp.Threading.Tasks
                     LogError(ex);
                 }
 
-                iteratingNode = null;
                 var next = h == iteratingNode ? h.Next : iteratingNode;
+                iteratingNode = null;
                 Remove(h);
                 h = next;
             }
