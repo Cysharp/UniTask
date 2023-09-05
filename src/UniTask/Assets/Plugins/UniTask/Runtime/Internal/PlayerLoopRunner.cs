@@ -76,6 +76,10 @@ namespace Cysharp.Threading.Tasks.Internal
 #if DEBUG
             switch (timing)
             {
+                case PlayerLoopTiming.EditorUpdate:
+                    EditorUpdate();
+                    break;
+                
                 case PlayerLoopTiming.Initialization:
                     Initialization();
                     break;
@@ -134,6 +138,7 @@ namespace Cysharp.Threading.Tasks.Internal
 #endif
         }
 
+        void EditorUpdate() => RunCore();
         void Initialization() => RunCore();
         void LastInitialization() => RunCore();
         void EarlyUpdate() => RunCore();

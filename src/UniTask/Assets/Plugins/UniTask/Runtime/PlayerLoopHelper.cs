@@ -70,6 +70,8 @@ namespace Cysharp.Threading.Tasks
 
     public enum PlayerLoopTiming
     {
+        EditorUpdate = -1,
+        
         Initialization = 0,
         LastInitialization = 1,
 
@@ -192,6 +194,10 @@ namespace Cysharp.Threading.Tasks
         static SynchronizationContext unitySynchronizationContext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
+
+        static ContinuationQueue editorYielder;
+        static PlayerLoopRunner editorRunner;
+        
         internal static bool IsEditorApplicationQuitting { get; private set; }
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
             bool injectOnFirst,
@@ -332,31 +338,8 @@ namespace Cysharp.Threading.Tasks
 
         private static void ForceEditorPlayerLoopUpdate()
         {
-            if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling || EditorApplication.isUpdating)
-            {
-                // Not in Edit mode, don't interfere
-                return;
-            }
-
-            // EditorApplication.QueuePlayerLoopUpdate causes performance issue, don't call directly.
-            // EditorApplication.QueuePlayerLoopUpdate();
-
-            if (yielders != null)
-            {
-                foreach (var item in yielders)
-                {
-                    if (item != null) item.Run();
-                }
-            }
-
-            if (runners != null)
-            {
-                foreach (var item in runners)
-                {
-                    if (item != null) item.Run();
-                }
-            }
-
+            editorYielder?.Run();
+            editorRunner?.Run();
             UniTaskSynchronizationContext.Run();
         }
 
@@ -476,6 +459,10 @@ namespace Cysharp.Threading.Tasks
                 InjectPlayerLoopTimings.LastTimeUpdate, 15, false,
                 typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastYieldTimeUpdate), typeof(UniTaskLoopRunners.UniTaskLoopRunnerLastTimeUpdate), PlayerLoopTiming.LastTimeUpdate);
 #endif
+            
+            // Editor Update
+            editorYielder = new ContinuationQueue(PlayerLoopTiming.EditorUpdate);
+            editorRunner = new PlayerLoopRunner(PlayerLoopTiming.EditorUpdate);
 
             // Insert UniTaskSynchronizationContext to Update loop
             var i = FindLoopSystemIndex(copyList, typeof(PlayerLoopType.Update));
@@ -487,7 +474,10 @@ namespace Cysharp.Threading.Tasks
 
         public static void AddAction(PlayerLoopTiming timing, IPlayerLoopItem action)
         {
-            var runner = runners[(int)timing];
+            var runner = timing == PlayerLoopTiming.EditorUpdate 
+                ? editorRunner 
+                : runners[(int)timing];
+            
             if (runner == null)
             {
                 ThrowInvalidLoopTiming(timing);
@@ -502,7 +492,7 @@ namespace Cysharp.Threading.Tasks
 
         public static void AddContinuation(PlayerLoopTiming timing, Action continuation)
         {
-            var q = yielders[(int)timing];
+            var q = timing == PlayerLoopTiming.EditorUpdate ? editorYielder : yielders[(int)timing];
             if (q == null)
             {
                 ThrowInvalidLoopTiming(timing);
