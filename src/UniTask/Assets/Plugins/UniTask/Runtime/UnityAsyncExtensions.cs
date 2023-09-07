@@ -900,7 +900,11 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
-                    if (asyncOperation.webRequest.IsError())
+                    if (asyncOperation.webRequest == null)
+                    {
+                        core.TrySetException(new ObjectDisposedException("The webRequest has been destroyed."));
+                    }
+                    else if (asyncOperation.webRequest.IsError())
                     {
                         core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
                     }
