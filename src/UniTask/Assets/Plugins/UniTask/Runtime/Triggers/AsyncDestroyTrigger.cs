@@ -83,7 +83,7 @@ namespace Cysharp.Threading.Tasks.Triggers
 
             public bool MoveNext()
             {
-                if (trigger.called) return false;
+                if (trigger.called || trigger.awakeCalled) return false;
                 if (trigger == null)
                 {
                     trigger.OnDestroy();
