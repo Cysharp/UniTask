@@ -75,6 +75,12 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(NextFramePromise.Create(timing, cancellationToken, out var token), token);
         }
 
+#if UNITY_2023_1_OR_NEWER
+        public static async UniTask WaitForEndOfFrame(CancellationToken cancellationToken = default)
+        {
+            await Awaitable.EndOfFrameAsync(cancellationToken);
+        }
+#else        
         [Obsolete("Use WaitForEndOfFrame(MonoBehaviour) instead or UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate). Equivalent for coroutine's WaitForEndOfFrame requires MonoBehaviour(runner of Coroutine).")]
         public static YieldAwaitable WaitForEndOfFrame()
         {
@@ -86,6 +92,7 @@ namespace Cysharp.Threading.Tasks
         {
             return UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate, cancellationToken);
         }
+#endif        
 
         public static UniTask WaitForEndOfFrame(MonoBehaviour coroutineRunner, CancellationToken cancellationToken = default)
         {
