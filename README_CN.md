@@ -43,6 +43,7 @@ UniTask
 - [API References](#api-references)
 - [UPM Package](#upm-package)
   - [通过 git URL 安装](#%E9%80%9A%E8%BF%87-git-url-%E5%AE%89%E8%A3%85)
+  - [通过 OpenUPM 安装](#%E9%80%9A%E8%BF%87-openupm-%E5%AE%89%E8%A3%85)
 - [.NET Core](#net-core)
 - [License](#license)
 
