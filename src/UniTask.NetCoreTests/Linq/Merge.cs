@@ -13,77 +13,61 @@ namespace NetCoreTests.Linq
         [Fact]
         public async Task TwoSource()
         {
-            var semaphore = new SemaphoreSlim(1, 1);
-            
             var a = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
-                
-                await semaphore.WaitAsync();
+
                 await writer.YieldAsync("A1");
-                semaphore.Release();
-                
-                await semaphore.WaitAsync();
+                await Task.Delay(TimeSpan.FromMilliseconds(20));
                 await writer.YieldAsync("A2");
-                semaphore.Release();
             });
-            
+
             var b = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
-                
-                await semaphore.WaitAsync();
+
+                await Task.Delay(TimeSpan.FromMilliseconds(10));
                 await writer.YieldAsync("B1");
                 await writer.YieldAsync("B2");
-                semaphore.Release();
-                
-                await semaphore.WaitAsync();
+                await Task.Delay(TimeSpan.FromMilliseconds(30));
                 await writer.YieldAsync("B3");
-                semaphore.Release();
             });
 
             var result = await a.Merge(b).ToArrayAsync();
             result.Should().Equal("A1", "B1", "B2", "A2", "B3");
         }
-        
+
         [Fact]
         public async Task ThreeSource()
         {
-            var semaphore = new SemaphoreSlim(0, 1);
-            
             var a = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
-                
-                await semaphore.WaitAsync();
+
+                await Task.Delay(TimeSpan.FromMilliseconds(10));
                 await writer.YieldAsync("A1");
-                semaphore.Release();
-                
-                await semaphore.WaitAsync();
+
+                await Task.Delay(TimeSpan.FromMilliseconds(30));
                 await writer.YieldAsync("A2");
-                semaphore.Release();
             });
-            
+
             var b = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
-                
-                await semaphore.WaitAsync();
+
+                await Task.Delay(TimeSpan.FromMilliseconds(20));
                 await writer.YieldAsync("B1");
                 await writer.YieldAsync("B2");
-                semaphore.Release();
-                
-                await semaphore.WaitAsync();
+
+                await Task.Delay(TimeSpan.FromMilliseconds(40));
                 await writer.YieldAsync("B3");
-                semaphore.Release();
             });
-            
+
             var c = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
-                
+
                 await writer.YieldAsync("C1");
-                semaphore.Release();
             });
 
             var result = await a.Merge(b, c).ToArrayAsync();
@@ -107,15 +91,15 @@ namespace NetCoreTests.Linq
             var enumerator = a.Merge(b).GetAsyncEnumerator();
             (await enumerator.MoveNextAsync()).Should().Be(true);
             enumerator.Current.Should().Be("A1");
-            
+
             await Assert.ThrowsAsync<UniTaskTestException>(async () => await enumerator.MoveNextAsync());
         }
-        
+
         [Fact]
         public async Task Cancel()
         {
             var cts = new CancellationTokenSource();
-            
+
             var a = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await writer.YieldAsync("A1");
@@ -129,7 +113,7 @@ namespace NetCoreTests.Linq
             var enumerator = a.Merge(b).GetAsyncEnumerator(cts.Token);
             (await enumerator.MoveNextAsync()).Should().Be(true);
             enumerator.Current.Should().Be("A1");
-            
+
             cts.Cancel();
             await Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
         }
