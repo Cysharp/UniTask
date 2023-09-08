@@ -20,8 +20,6 @@ namespace Cysharp.Threading.Tasks
     {
         ITriggerHandler<T> head; // head.prev is last
         ITriggerHandler<T> iteratingHead;
-
-        bool preserveRemoveSelf;
         ITriggerHandler<T> iteratingNode;
 
         void LogError(Exception ex)
@@ -55,18 +53,9 @@ namespace Cysharp.Threading.Tasks
                     Remove(h);
                 }
 
-                if (preserveRemoveSelf)
-                {
-                    preserveRemoveSelf = false;
-                    iteratingNode = null;
-                    var next = h.Next;
-                    Remove(h);
-                    h = next;
-                }
-                else
-                {
-                    h = h.Next;
-                }
+                // If `h` itself is removed by OnNext, h.Next is null.
+                // Therefore, instead of looking at h.Next, the `iteratingNode` reference itself is replaced.
+                h = h == iteratingNode ? h.Next : iteratingNode;
             }
 
             iteratingNode = null;
@@ -97,9 +86,8 @@ namespace Cysharp.Threading.Tasks
                     LogError(ex);
                 }
 
-                preserveRemoveSelf = false;
+                var next = h == iteratingNode ? h.Next : iteratingNode;
                 iteratingNode = null;
-                var next = h.Next;
                 Remove(h);
                 h = next;
             }
@@ -132,9 +120,8 @@ namespace Cysharp.Threading.Tasks
                     LogError(ex);
                 }
 
-                preserveRemoveSelf = false;
+                var next = h == iteratingNode ? h.Next : iteratingNode;
                 iteratingNode = null;
-                var next = h.Next;
                 Remove(h);
                 h = next;
             }
@@ -167,9 +154,8 @@ namespace Cysharp.Threading.Tasks
                     LogError(ex);
                 }
 
-                preserveRemoveSelf = false;
+                var next = h == iteratingNode ? h.Next : iteratingNode;
                 iteratingNode = null;
-                var next = h.Next;
                 Remove(h);
                 h = next;
             }
@@ -241,71 +227,65 @@ namespace Cysharp.Threading.Tasks
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            if (iteratingNode != null && iteratingNode == handler)
+            var prev = handler.Prev;
+            var next = handler.Next;
+
+            if (next != null)
             {
-                // if remove self, reserve remove self after invoke completed.
-                preserveRemoveSelf = true;
+                next.Prev = prev;
             }
-            else
+
+            if (handler == head)
             {
-                var prev = handler.Prev;
-                var next = handler.Next;
-
-                if (next != null)
-                {
-                    next.Prev = prev;
-                }
-
-                if (handler == head)
-                {
-                    head = next;
-                }
-                else if (handler == iteratingHead)
-                {
-                    iteratingHead = next;
-                }
-                else
-                {
-                    // when handler is head, prev indicate last so don't use it.
-                    if (prev != null)
-                    {
-                        prev.Next = next;
-                    }
-                }
-
-                if (head != null)
-                {
-                    if (head.Prev == handler)
-                    {
-                        if (prev != head)
-                        {
-                            head.Prev = prev;
-                        }
-                        else
-                        {
-                            head.Prev = null;
-                        }
-                    }
-                }
-
-                if (iteratingHead != null)
-                {
-                    if (iteratingHead.Prev == handler)
-                    {
-                        if (prev != iteratingHead.Prev)
-                        {
-                            iteratingHead.Prev = prev;
-                        }
-                        else
-                        {
-                            iteratingHead.Prev = null;
-                        }
-                    }
-                }
-
-                handler.Prev = null;
-                handler.Next = null;
+                head = next;
             }
+            // when handler is head, prev indicate last so don't use it.
+            else if (prev != null)
+            {
+                prev.Next = next;
+            }
+
+            if (handler == iteratingNode)
+            {
+                iteratingNode = next;
+            }
+            if (handler == iteratingHead)
+            {
+                iteratingHead = next;
+            }
+
+            if (head != null)
+            {
+                if (head.Prev == handler)
+                {
+                    if (prev != head)
+                    {
+                        head.Prev = prev;
+                    }
+                    else
+                    {
+                        head.Prev = null;
+                    }
+                }
+            }
+
+            if (iteratingHead != null)
+            {
+                if (iteratingHead.Prev == handler)
+                {
+                    if (prev != iteratingHead.Prev)
+                    {
+                        iteratingHead.Prev = prev;
+                    }
+                    else
+                    {
+                        iteratingHead.Prev = null;
+                    }
+                }
+            }
+
+            handler.Prev = null;
+            handler.Next = null;
         }
     }
 }
