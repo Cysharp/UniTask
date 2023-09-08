@@ -137,8 +137,8 @@ namespace Cysharp.Threading.Tasks
                 if (continuation != null || Interlocked.CompareExchange(ref this.continuation, UniTaskCompletionSourceCoreShared.s_sentinel, null) != null)
                 {
                     continuation(continuationState);
-                    return true;
                 }
+                return true;
             }
 
             return false;
@@ -165,8 +165,8 @@ namespace Cysharp.Threading.Tasks
                 if (continuation != null || Interlocked.CompareExchange(ref this.continuation, UniTaskCompletionSourceCoreShared.s_sentinel, null) != null)
                 {
                     continuation(continuationState);
-                    return true;
                 }
+                return true;
             }
 
             return false;
@@ -184,8 +184,8 @@ namespace Cysharp.Threading.Tasks
                 if (continuation != null || Interlocked.CompareExchange(ref this.continuation, UniTaskCompletionSourceCoreShared.s_sentinel, null) != null)
                 {
                     continuation(continuationState);
-                    return true;
                 }
+                return true;
             }
 
             return false;
