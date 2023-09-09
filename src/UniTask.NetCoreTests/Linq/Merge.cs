@@ -29,7 +29,7 @@ namespace NetCoreTests.Linq
                 await Task.Delay(TimeSpan.FromMilliseconds(10));
                 await writer.YieldAsync("B1");
                 await writer.YieldAsync("B2");
-                await Task.Delay(TimeSpan.FromMilliseconds(30));
+                await Task.Delay(TimeSpan.FromMilliseconds(100));
                 await writer.YieldAsync("B3");
             });
 
@@ -47,7 +47,7 @@ namespace NetCoreTests.Linq
                 await Task.Delay(TimeSpan.FromMilliseconds(10));
                 await writer.YieldAsync("A1");
 
-                await Task.Delay(TimeSpan.FromMilliseconds(30));
+                await Task.Delay(TimeSpan.FromMilliseconds(40));
                 await writer.YieldAsync("A2");
             });
 
@@ -59,7 +59,7 @@ namespace NetCoreTests.Linq
                 await writer.YieldAsync("B1");
                 await writer.YieldAsync("B2");
 
-                await Task.Delay(TimeSpan.FromMilliseconds(40));
+                await Task.Delay(TimeSpan.FromMilliseconds(80));
                 await writer.YieldAsync("B3");
             });
 
