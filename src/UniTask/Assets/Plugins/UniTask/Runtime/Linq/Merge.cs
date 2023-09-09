@@ -66,7 +66,7 @@ namespace Cysharp.Threading.Tasks.Linq
             readonly int length;
             readonly IUniTaskAsyncEnumerator<T>[] enumerators;
             readonly MergeSourceState[] states;
-            readonly Queue<(T, Exception)> resultQueue = new Queue<(T, Exception)>();
+            readonly Queue<(T, Exception)> queuedResult = new Queue<(T, Exception)>();
             readonly CancellationToken cancellationToken;
 
             public T Current { get; private set; }
@@ -89,10 +89,14 @@ namespace Cysharp.Threading.Tasks.Linq
                 cancellationToken.ThrowIfCancellationRequested();
                 completionSource.Reset();
 
-                lock (states)
+                lock (queuedResult)
                 {
-                    if (TryDequeue(out var queuedValue, out var queuedException))
+                    if (queuedResult.Count > 0)
                     {
+                        var result = queuedResult.Dequeue();
+                        var queuedValue = result.Item1;
+                        var queuedException = result.Item2;
+
                         if (queuedException != null)
                         {
                             completionSource.TrySetException(queuedException);
@@ -162,10 +166,9 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     if (!completionSource.TrySetException(ex))
                     {
-                        //
-                        lock (states)
+                        lock (queuedResult)
                         {
-                            resultQueue.Enqueue((default, ex));
+                            queuedResult.Enqueue((default, ex));
                         }
                     }
                     return;
@@ -174,11 +177,11 @@ namespace Cysharp.Threading.Tasks.Linq
                 var completedAll = IsCompletedAll();
                 if (hasNext || completedAll)
                 {
-                    lock (states)
+                    lock (queuedResult)
                     {
                         if (completionSource.GetStatus(completionSource.Version).IsCompleted())
                         {
-                            resultQueue.Enqueue((enumerators[index].Current, null));
+                            queuedResult.Enqueue((enumerators[index].Current, null));
                         }
                         else
                         {
@@ -187,23 +190,6 @@ namespace Cysharp.Threading.Tasks.Linq
                         }
                     }
                 }
-            }
-
-            bool TryDequeue(out T value, out Exception ex)
-            {
-                lock (states)
-                {
-                    if (resultQueue.Count > 0)
-                    {
-                        var result = resultQueue.Dequeue();
-                        value = result.Item1;
-                        ex = result.Item2;
-                        return true;
-                    }
-                }
-                value = default;
-                ex = default;
-                return false;
             }
 
             bool IsCompletedAll()
