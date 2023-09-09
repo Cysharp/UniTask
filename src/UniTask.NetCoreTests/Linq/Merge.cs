@@ -13,24 +13,33 @@ namespace NetCoreTests.Linq
         [Fact]
         public async Task TwoSource()
         {
+            var semaphore = new SemaphoreSlim(1, 1);
+
             var a = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
 
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("A1");
-                await Task.Delay(TimeSpan.FromMilliseconds(20));
+                semaphore.Release();
+
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("A2");
+                semaphore.Release();
             });
 
             var b = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
 
-                await Task.Delay(TimeSpan.FromMilliseconds(10));
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("B1");
                 await writer.YieldAsync("B2");
-                await Task.Delay(TimeSpan.FromMilliseconds(100));
+                semaphore.Release();
+
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("B3");
+                semaphore.Release();
             });
 
             var result = await a.Merge(b).ToArrayAsync();
@@ -40,27 +49,33 @@ namespace NetCoreTests.Linq
         [Fact]
         public async Task ThreeSource()
         {
+            var semaphore = new SemaphoreSlim(0, 1);
+
             var a = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
 
-                await Task.Delay(TimeSpan.FromMilliseconds(10));
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("A1");
+                semaphore.Release();
 
-                await Task.Delay(TimeSpan.FromMilliseconds(40));
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("A2");
+                semaphore.Release();
             });
 
             var b = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
                 await UniTask.SwitchToThreadPool();
 
-                await Task.Delay(TimeSpan.FromMilliseconds(20));
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("B1");
                 await writer.YieldAsync("B2");
+                semaphore.Release();
 
-                await Task.Delay(TimeSpan.FromMilliseconds(80));
+                await semaphore.WaitAsync();
                 await writer.YieldAsync("B3");
+                semaphore.Release();
             });
 
             var c = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
@@ -68,6 +83,7 @@ namespace NetCoreTests.Linq
                 await UniTask.SwitchToThreadPool();
 
                 await writer.YieldAsync("C1");
+                semaphore.Release();
             });
 
             var result = await a.Merge(b, c).ToArrayAsync();
