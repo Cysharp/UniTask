@@ -147,8 +147,10 @@ namespace Cysharp.Threading.Tasks.Linq
 
             static void GetResultAt(object state)
             {
-                var tuple = (StateTuple<_Merge, int, UniTask<bool>.Awaiter>)state;
-                tuple.Item1.GetResultAt(tuple.Item2, tuple.Item3);
+                using (var tuple = (StateTuple<_Merge, int, UniTask<bool>.Awaiter>)state)
+                {
+                    tuple.Item1.GetResultAt(tuple.Item2, tuple.Item3);
+                }
             }
 
             void GetResultAt(int index, UniTask<bool>.Awaiter awaiter)
