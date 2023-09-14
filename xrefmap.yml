@@ -5860,6 +5860,49 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.MaxAwaitWithCancellationAsync(Of TSource, TResult)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of TSource), System.Func(Of TSource, System.Threading.CancellationToken, Cysharp.Threading.Tasks.UniTask(Of TResult)), System.Threading.CancellationToken)
   nameWithType: UniTaskAsyncEnumerable.MaxAwaitWithCancellationAsync<TSource, TResult>(IUniTaskAsyncEnumerable<TSource>, Func<TSource, CancellationToken, UniTask<TResult>>, CancellationToken)
   nameWithType.vb: UniTaskAsyncEnumerable.MaxAwaitWithCancellationAsync(Of TSource, TResult)(IUniTaskAsyncEnumerable(Of TSource), Func(Of TSource, CancellationToken, UniTask(Of TResult)), CancellationToken)
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge*
+  name: Merge
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Merge_
+  commentId: Overload:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge
+  nameWithType: UniTaskAsyncEnumerable.Merge
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0})
+  name: Merge<T>(IUniTaskAsyncEnumerable<T>, IUniTaskAsyncEnumerable<T>)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Merge__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0})
+  name.vb: Merge(Of T)(IUniTaskAsyncEnumerable(Of T), IUniTaskAsyncEnumerable(Of T))
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge<T>(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<T>, Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<T>)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge(Of T)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of T), Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of T))
+  nameWithType: UniTaskAsyncEnumerable.Merge<T>(IUniTaskAsyncEnumerable<T>, IUniTaskAsyncEnumerable<T>)
+  nameWithType.vb: UniTaskAsyncEnumerable.Merge(Of T)(IUniTaskAsyncEnumerable(Of T), IUniTaskAsyncEnumerable(Of T))
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0})
+  name: Merge<T>(IUniTaskAsyncEnumerable<T>, IUniTaskAsyncEnumerable<T>, IUniTaskAsyncEnumerable<T>)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Merge__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0__
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0},Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0})
+  name.vb: Merge(Of T)(IUniTaskAsyncEnumerable(Of T), IUniTaskAsyncEnumerable(Of T), IUniTaskAsyncEnumerable(Of T))
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge<T>(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<T>, Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<T>, Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<T>)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge(Of T)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of T), Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of T), Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of T))
+  nameWithType: UniTaskAsyncEnumerable.Merge<T>(IUniTaskAsyncEnumerable<T>, IUniTaskAsyncEnumerable<T>, IUniTaskAsyncEnumerable<T>)
+  nameWithType.vb: UniTaskAsyncEnumerable.Merge(Of T)(IUniTaskAsyncEnumerable(Of T), IUniTaskAsyncEnumerable(Of T), IUniTaskAsyncEnumerable(Of T))
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0}[])
+  name: Merge<T>(IUniTaskAsyncEnumerable<T>[])
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Merge__1_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0____
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0}[])
+  name.vb: Merge(Of T)(IUniTaskAsyncEnumerable(Of T)())
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge<T>(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<T>[])
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge(Of T)(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of T)())
+  nameWithType: UniTaskAsyncEnumerable.Merge<T>(IUniTaskAsyncEnumerable<T>[])
+  nameWithType.vb: UniTaskAsyncEnumerable.Merge(Of T)(IUniTaskAsyncEnumerable(Of T)())
+- uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(IEnumerable{Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0}})
+  name: Merge<T>(IEnumerable<IUniTaskAsyncEnumerable<T>>)
+  href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_Merge__1_IEnumerable_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable___0___
+  commentId: M:Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge``1(IEnumerable{Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{``0}})
+  name.vb: Merge(Of T)(IEnumerable(Of IUniTaskAsyncEnumerable(Of T)))
+  fullName: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge<T>(IEnumerable<Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable<T>>)
+  fullName.vb: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.Merge(Of T)(IEnumerable(Of Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable(Of T)))
+  nameWithType: UniTaskAsyncEnumerable.Merge<T>(IEnumerable<IUniTaskAsyncEnumerable<T>>)
+  nameWithType.vb: UniTaskAsyncEnumerable.Merge(Of T)(IEnumerable(Of IUniTaskAsyncEnumerable(Of T)))
 - uid: Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.MinAsync(Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable{System.Decimal},System.Threading.CancellationToken)
   name: MinAsync(IUniTaskAsyncEnumerable<Decimal>, CancellationToken)
   href: api/Cysharp.Threading.Tasks.Linq.UniTaskAsyncEnumerable.html#Cysharp_Threading_Tasks_Linq_UniTaskAsyncEnumerable_MinAsync_Cysharp_Threading_Tasks_IUniTaskAsyncEnumerable_System_Decimal__System_Threading_CancellationToken_
