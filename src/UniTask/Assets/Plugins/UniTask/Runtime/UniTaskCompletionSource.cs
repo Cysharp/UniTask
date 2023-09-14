@@ -328,6 +328,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         UniTaskCompletionSourceCore<AsyncUnit> core;
+        short version;
 
         AutoResetUniTaskCompletionSource()
         {
@@ -340,6 +341,7 @@ namespace Cysharp.Threading.Tasks
             {
                 result = new AutoResetUniTaskCompletionSource();
             }
+            result.version = result.core.Version;
             TaskTracker.TrackActiveTask(result, 2);
             return result;
         }
@@ -383,19 +385,19 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public bool TrySetResult()
         {
-            return core.TrySetResult(AsyncUnit.Default);
+            return version == core.Version && core.TrySetResult(AsyncUnit.Default);
         }
 
         [DebuggerHidden]
         public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            return core.TrySetCanceled(cancellationToken);
+            return version == core.Version && core.TrySetCanceled(cancellationToken);
         }
 
         [DebuggerHidden]
         public bool TrySetException(Exception exception)
         {
-            return core.TrySetException(exception);
+            return version == core.Version && core.TrySetException(exception);
         }
 
         [DebuggerHidden]
@@ -409,7 +411,6 @@ namespace Cysharp.Threading.Tasks
             {
                 TryReturn();
             }
-
         }
 
         [DebuggerHidden]
@@ -451,6 +452,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         UniTaskCompletionSourceCore<T> core;
+        short version;
 
         AutoResetUniTaskCompletionSource()
         {
@@ -463,6 +465,7 @@ namespace Cysharp.Threading.Tasks
             {
                 result = new AutoResetUniTaskCompletionSource<T>();
             }
+            result.version = result.core.Version;
             TaskTracker.TrackActiveTask(result, 2);
             return result;
         }
@@ -506,19 +509,19 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public bool TrySetResult(T result)
         {
-            return core.TrySetResult(result);
+            return version == core.Version && core.TrySetResult(result);
         }
 
         [DebuggerHidden]
         public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            return core.TrySetCanceled(cancellationToken);
+            return version == core.Version && core.TrySetCanceled(cancellationToken);
         }
 
         [DebuggerHidden]
         public bool TrySetException(Exception exception)
         {
-            return core.TrySetException(exception);
+            return version == core.Version && core.TrySetException(exception);
         }
 
         [DebuggerHidden]
@@ -937,5 +940,5 @@ namespace Cysharp.Threading.Tasks
             }
             return false;
         }
-    }
+   }
 }
