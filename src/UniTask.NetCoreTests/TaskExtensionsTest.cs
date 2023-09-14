@@ -20,6 +20,15 @@ namespace NetCoreTests
                 await ThrowOrValueAsync().AsUniTask();
             });
         }
+
+        [Fact]
+        public async Task PropagateExceptionWhenAll()
+        {
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await Task.WhenAll(ThrowAsync(), ThrowAsync()).AsUniTask();
+            });
+        }
  
         async Task ThrowAsync()
         {
