@@ -176,19 +176,19 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_OnCompleted_Action_System_Object__System_Object_System_Int16_">OnCompleted(Action&lt;Object&gt;, Object, Int16)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_OnCompleted_System_Action_System_Object__System_Object_System_Int16_">OnCompleted(Action&lt;Object&gt;, Object, Int16)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_CancellationToken_">TrySetCanceled(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_System_Threading_CancellationToken_">TrySetCanceled(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetException_Exception_">TrySetException(Exception)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskCompletionSource-1.html#Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetException_System_Exception_">TrySetException(Exception)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -360,7 +360,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_OnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.OnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_OnCompleted_Action_System_Object__System_Object_System_Int16_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.OnCompleted(Action{System.Object},System.Object,System.Int16)">OnCompleted(Action&lt;Object&gt;, Object, Int16)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_OnCompleted_System_Action_System_Object__System_Object_System_Int16_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.OnCompleted(System.Action{System.Object},System.Object,System.Int16)">OnCompleted(Action&lt;Object&gt;, Object, Int16)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -371,7 +371,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
+    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
     <dd></dd>
     <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
     <dd></dd>
@@ -394,18 +394,18 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetCanceled*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetCanceled(CancellationToken)">TrySetCanceled(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetCanceled_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetCanceled(System.Threading.CancellationToken)">TrySetCanceled(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TrySetCanceled(CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public bool TrySetCanceled(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -431,7 +431,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetException_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetException*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetException_Exception_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetException(Exception)">TrySetException(Exception)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskCompletionSource_1_TrySetException_System_Exception_" data-uid="Cysharp.Threading.Tasks.UniTaskCompletionSource`1.TrySetException(System.Exception)">TrySetException(Exception)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -442,7 +442,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>exception</code></span> <span class="xref">Exception</span></dt>
+    <dt><span class="parametername"><code>exception</code></span> <span class="xref">System.Exception</span></dt>
     <dd></dd>
   </dl>
   </section>
