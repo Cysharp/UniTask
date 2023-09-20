@@ -148,6 +148,7 @@ namespace Cysharp.Threading.Tasks
             Tween tween;
             TweenCancelBehaviour cancelBehaviour;
             CancellationToken cancellationToken;
+            CancellationTokenRegistration cancellationRegistration;
             CallbackType callbackType;
             bool canceled;
 
@@ -207,7 +208,7 @@ namespace Cysharp.Threading.Tasks
                     default:
                         break;
                 }
-                
+
                 if (result.originalCompleteAction == result.onCompleteCallbackDelegate)
                 {
                     result.originalCompleteAction = null;
@@ -215,7 +216,7 @@ namespace Cysharp.Threading.Tasks
 
                 if (cancellationToken.CanBeCanceled)
                 {
-                    cancellationToken.RegisterWithoutCaptureExecutionContext(x =>
+                    result.cancellationRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(x =>
                     {
                         var source = (TweenConfiguredSource)x;
                         switch (source.cancelBehaviour)
@@ -376,6 +377,7 @@ namespace Cysharp.Threading.Tasks
             {
                 TaskTracker.RemoveTracking(this);
                 core.Reset();
+                cancellationRegistration.Dispose();
 
                 switch (callbackType)
                 {
