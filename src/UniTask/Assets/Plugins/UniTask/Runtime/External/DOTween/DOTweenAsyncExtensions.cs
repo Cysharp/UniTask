@@ -251,30 +251,7 @@ namespace Cysharp.Threading.Tasks
                                 source.tween.Complete(true);
                                 break;
                             case TweenCancelBehaviour.CancelAwait:
-                                // restore to original callback
-                                switch (callbackType)
-                                {
-                                    case CallbackType.Kill:
-                                        tween.onKill = source.originalCompleteAction;
-                                        break;
-                                    case CallbackType.Complete:
-                                        tween.onComplete = source.originalCompleteAction;
-                                        break;
-                                    case CallbackType.Pause:
-                                        tween.onPause = source.originalCompleteAction;
-                                        break;
-                                    case CallbackType.Play:
-                                        tween.onPlay = source.originalCompleteAction;
-                                        break;
-                                    case CallbackType.Rewind:
-                                        tween.onRewind = source.originalCompleteAction;
-                                        break;
-                                    case CallbackType.StepComplete:
-                                        tween.onStepComplete = source.originalCompleteAction;
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                source.RestoreOriginalCallback();
                                 source.core.TrySetCanceled(source.cancellationToken);
                                 break;
                         }
@@ -379,6 +356,16 @@ namespace Cysharp.Threading.Tasks
                 core.Reset();
                 cancellationRegistration.Dispose();
 
+                RestoreOriginalCallback();
+
+                tween = default;
+                cancellationToken = default;
+                originalCompleteAction = default;
+                return pool.TryPush(this);
+            }
+
+            void RestoreOriginalCallback()
+            {
                 switch (callbackType)
                 {
                     case CallbackType.Kill:
@@ -402,11 +389,6 @@ namespace Cysharp.Threading.Tasks
                     default:
                         break;
                 }
-
-                tween = default;
-                cancellationToken = default;
-                originalCompleteAction = default;
-                return pool.TryPush(this);
             }
         }
     }
