@@ -82,7 +82,8 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class AsyncReactiveProperty&lt;T&gt; : IAsyncReactiveProperty&lt;T&gt;, IReadOnlyAsyncReactiveProperty&lt;T&gt;, IUniTaskAsyncEnumerable&lt;T&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">[Serializable]
+public class AsyncReactiveProperty&lt;T&gt; : IAsyncReactiveProperty&lt;T&gt;, IReadOnlyAsyncReactiveProperty&lt;T&gt;, IUniTaskAsyncEnumerable&lt;T&gt;, IDisposable</code></pre>
   </div>
 
   <div class="inheritance">
@@ -96,7 +97,7 @@
     <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncReactiveProperty-1.html">IAsyncReactiveProperty</a>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IReadOnlyAsyncReactiveProperty-1.html">IReadOnlyAsyncReactiveProperty</a>&lt;T&gt;</div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable</a>&lt;T&gt;</div>
-    <div><span class="xref">IDisposable</span></div>
+    <div><span class="xref">System.IDisposable</span></div>
   </div>
   
   
@@ -166,7 +167,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_AsyncReactiveProperty_1_GetAsyncEnumerator_CancellationToken_">GetAsyncEnumerator(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_AsyncReactiveProperty_1_GetAsyncEnumerator_System_Threading_CancellationToken_">GetAsyncEnumerator(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -178,7 +179,7 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WaitAsync_CancellationToken_">WaitAsync(CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncReactiveProperty-1.html#Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WaitAsync_System_Threading_CancellationToken_">WaitAsync(CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -300,7 +301,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_AsyncReactiveProperty_1_GetAsyncEnumerator_" data-uid="Cysharp.Threading.Tasks.AsyncReactiveProperty`1.GetAsyncEnumerator*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncReactiveProperty_1_GetAsyncEnumerator_CancellationToken_" data-uid="Cysharp.Threading.Tasks.AsyncReactiveProperty`1.GetAsyncEnumerator(CancellationToken)">GetAsyncEnumerator(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_AsyncReactiveProperty_1_GetAsyncEnumerator_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.AsyncReactiveProperty`1.GetAsyncEnumerator(System.Threading.CancellationToken)">GetAsyncEnumerator(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -311,7 +312,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -369,18 +370,18 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WaitAsync_" data-uid="Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WaitAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WaitAsync_CancellationToken_" data-uid="Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WaitAsync(CancellationToken)">WaitAsync(CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_AsyncReactiveProperty_1_WaitAsync_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.AsyncReactiveProperty`1.WaitAsync(System.Threading.CancellationToken)">WaitAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask&lt;T&gt; WaitAsync(CancellationToken cancellationToken = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public UniTask&lt;T&gt; WaitAsync(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -485,7 +486,7 @@
       <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskAsyncEnumerable-1.html">IUniTaskAsyncEnumerable&lt;T&gt;</a>
   </div>
   <div>
-      <span class="xref">IDisposable</span>
+      <span class="xref">System.IDisposable</span>
   </div>
   
   

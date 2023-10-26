@@ -82,14 +82,13 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly struct Awaiter</code></pre>
   </div>
 
   
   <div classs="implements">
     <h5>Implements</h5>
-    <div><span class="xref">System.Runtime.CompilerServices.ICriticalNotifyCompletion</span></div>
-    <div><span class="xref">System.Runtime.CompilerServices.INotifyCompletion</span></div>
+    <div><span class="xref">ICriticalNotifyCompletion</span></div>
   </div>
   
   
@@ -152,20 +151,20 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter_OnCompleted_Action_">OnCompleted(Action)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter_OnCompleted_System_Action_">OnCompleted(Action)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter_SourceOnCompleted_Action_System_Object__System_Object_">SourceOnCompleted(Action&lt;Object&gt;, Object)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter_SourceOnCompleted_System_Action_System_Object__System_Object_">SourceOnCompleted(Action&lt;Object&gt;, Object)</a>
         </td>
         <td class="markdown level1 summary"><p>If register manually continuation, you can use it instead of for compiler OnCompleted methods.</p>
 </td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter_UnsafeOnCompleted_Action_">UnsafeOnCompleted(Action)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask.Awaiter.html#Cysharp_Threading_Tasks_UniTask_Awaiter_UnsafeOnCompleted_System_Action_">UnsafeOnCompleted(Action)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -263,7 +262,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Awaiter_OnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.OnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter_OnCompleted_Action_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.OnCompleted(Action)">OnCompleted(Action)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter_OnCompleted_System_Action_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.OnCompleted(System.Action)">OnCompleted(Action)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -274,7 +273,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">Action</span></dt>
+    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -293,7 +292,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Awaiter_SourceOnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.SourceOnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter_SourceOnCompleted_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.SourceOnCompleted(Action{System.Object},System.Object)">SourceOnCompleted(Action&lt;Object&gt;, Object)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter_SourceOnCompleted_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.SourceOnCompleted(System.Action{System.Object},System.Object)">SourceOnCompleted(Action&lt;Object&gt;, Object)</h4>
   <div class="markdown level1 summary"><p>If register manually continuation, you can use it instead of for compiler OnCompleted methods.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -305,7 +304,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
+    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
     <dd></dd>
     <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
     <dd></dd>
@@ -326,7 +325,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_Awaiter_UnsafeOnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.UnsafeOnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter_UnsafeOnCompleted_Action_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.UnsafeOnCompleted(Action)">UnsafeOnCompleted(Action)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_Awaiter_UnsafeOnCompleted_System_Action_" data-uid="Cysharp.Threading.Tasks.UniTask.Awaiter.UnsafeOnCompleted(System.Action)">UnsafeOnCompleted(Action)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -337,7 +336,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">Action</span></dt>
+    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -357,10 +356,7 @@
   
   <h3 id="implements">Implements</h3>
   <div>
-      <span class="xref">System.Runtime.CompilerServices.ICriticalNotifyCompletion</span>
-  </div>
-  <div>
-      <span class="xref">System.Runtime.CompilerServices.INotifyCompletion</span>
+      <span class="xref">ICriticalNotifyCompletion</span>
   </div>
   
   
