@@ -295,7 +295,7 @@ public class MyBehaviour : MonoBehaviour
 
 When cancellation is detected, all methods throw `OperationCanceledException` and propagate upstream. When exception(not limited to `OperationCanceledException`) is not handled in async method, it is propagated finally to `UniTaskScheduler.UnobservedTaskException`. The default behaviour of received unhandled exception is to write log as exception. Log level can be changed using `UniTaskScheduler.UnobservedExceptionWriteLogType`. If you want to use custom behaviour, set an action to `UniTaskScheduler.UnobservedTaskException.`
 
-Andalso `OperationCanceledException` is a special exception, this is silently ignored at `UnobservedTaskException`.
+And also `OperationCanceledException` is a special exception, this is silently ignored at `UnobservedTaskException`.
 
 If you want to cancel behaviour in an async UniTask method, throw `OperationCanceledException` manually.
 
