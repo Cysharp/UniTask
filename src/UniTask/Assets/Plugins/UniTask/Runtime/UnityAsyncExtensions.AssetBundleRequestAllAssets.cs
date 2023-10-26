@@ -24,12 +24,17 @@ namespace Cysharp.Threading.Tasks
             return AwaitForAllAssets(asyncOperation, null, PlayerLoopTiming.Update, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<UnityEngine.Object[]> AwaitForAllAssets(this AssetBundleRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<UnityEngine.Object[]> AwaitForAllAssets(this AssetBundleRequest asyncOperation, CancellationToken cancellationToken, bool cancelImmediately)
+        {
+            return AwaitForAllAssets(asyncOperation, null, PlayerLoopTiming.Update, cancellationToken: cancellationToken, cancelImmediately: cancelImmediately);
+        }
+
+        public static UniTask<UnityEngine.Object[]> AwaitForAllAssets(this AssetBundleRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityEngine.Object[]>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.allAssets);
-            return new UniTask<UnityEngine.Object[]>(AssetBundleRequestAllAssetsConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask<UnityEngine.Object[]>(AssetBundleRequestAllAssetsConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, cancelImmediately, out var token), token);
         }
 
         public struct AssetBundleRequestAllAssetsAwaiter : ICriticalNotifyCompletion
@@ -95,15 +100,15 @@ namespace Cysharp.Threading.Tasks
             AssetBundleRequest asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
+            CancellationTokenRegistration cancellationTokenRegistration;
 
             UniTaskCompletionSourceCore<UnityEngine.Object[]> core;
 
             AssetBundleRequestAllAssetsConfiguredSource()
             {
-
             }
 
-            public static IUniTaskSource<UnityEngine.Object[]> Create(AssetBundleRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<UnityEngine.Object[]> Create(AssetBundleRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, bool cancelImmediately, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -118,6 +123,15 @@ namespace Cysharp.Threading.Tasks
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
+                
+                if (cancelImmediately && cancellationToken.CanBeCanceled)
+                {
+                    result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
+                    {
+                        var promise = (AssetBundleRequestAllAssetsConfiguredSource)state;
+                        promise.core.TrySetCanceled(promise.cancellationToken);
+                    }, result);
+                }
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -188,6 +202,7 @@ namespace Cysharp.Threading.Tasks
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                cancellationTokenRegistration.Dispose();
                 return pool.TryPush(this);
             }
         }

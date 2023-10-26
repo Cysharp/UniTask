@@ -29,13 +29,18 @@ namespace Cysharp.Threading.Tasks
         {
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
+        
+        public static UniTask WithCancellation(this AsyncOperation asyncOperation, CancellationToken cancellationToken, bool cancelImmediately)
+        {
+            return ToUniTask(asyncOperation, cancellationToken: cancellationToken, cancelImmediately: cancelImmediately);
+        }
 
-        public static UniTask ToUniTask(this AsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask ToUniTask(this AsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled(cancellationToken);
             if (asyncOperation.isDone) return UniTask.CompletedTask;
-            return new UniTask(AsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask(AsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, cancelImmediately, out var token), token);
         }
 
         public struct AsyncOperationAwaiter : ICriticalNotifyCompletion
@@ -92,15 +97,15 @@ namespace Cysharp.Threading.Tasks
             AsyncOperation asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
+            CancellationTokenRegistration cancellationTokenRegistration;
 
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
             AsyncOperationConfiguredSource()
             {
-
             }
 
-            public static IUniTaskSource Create(AsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource Create(AsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, bool cancelImmediately, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -110,6 +115,16 @@ namespace Cysharp.Threading.Tasks
                 if (!pool.TryPop(out var result))
                 {
                     result = new AsyncOperationConfiguredSource();
+                }
+                
+                
+                if (cancelImmediately && cancellationToken.CanBeCanceled)
+                {
+                    result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
+                    {
+                        var promise = (AsyncOperationConfiguredSource)state;
+                        promise.core.TrySetCanceled(promise.cancellationToken);
+                    }, result);
                 }
 
                 result.asyncOperation = asyncOperation;
@@ -135,7 +150,6 @@ namespace Cysharp.Threading.Tasks
                     TryReturn();
                 }
             }
-
 
             public UniTaskStatus GetStatus(short token)
             {
@@ -181,6 +195,7 @@ namespace Cysharp.Threading.Tasks
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                cancellationTokenRegistration.Dispose();
                 return pool.TryPush(this);
             }
         }
@@ -739,7 +754,12 @@ namespace Cysharp.Threading.Tasks
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<UnityWebRequest> ToUniTask(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<UnityWebRequest> WithCancellation(this UnityWebRequestAsyncOperation asyncOperation, CancellationToken cancellationToken, bool cancelImmediately)
+        {
+            return ToUniTask(asyncOperation, cancellationToken: cancellationToken, cancelImmediately: cancelImmediately);
+        }
+
+        public static UniTask<UnityWebRequest> ToUniTask(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityWebRequest>(cancellationToken);
@@ -751,7 +771,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 return UniTask.FromResult(asyncOperation.webRequest);
             }
-            return new UniTask<UnityWebRequest>(UnityWebRequestAsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask<UnityWebRequest>(UnityWebRequestAsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, cancelImmediately, out var token), token);
         }
 
         public struct UnityWebRequestAsyncOperationAwaiter : ICriticalNotifyCompletion
@@ -820,15 +840,15 @@ namespace Cysharp.Threading.Tasks
             UnityWebRequestAsyncOperation asyncOperation;
             IProgress<float> progress;
             CancellationToken cancellationToken;
+            CancellationTokenRegistration cancellationTokenRegistration;
 
             UniTaskCompletionSourceCore<UnityWebRequest> core;
 
             UnityWebRequestAsyncOperationConfiguredSource()
             {
-
             }
 
-            public static IUniTaskSource<UnityWebRequest> Create(UnityWebRequestAsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<UnityWebRequest> Create(UnityWebRequestAsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, bool cancelImmediately, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -843,6 +863,15 @@ namespace Cysharp.Threading.Tasks
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
+                
+                if (cancelImmediately && cancellationToken.CanBeCanceled)
+                {
+                    result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
+                    {
+                        var promise = (UnityWebRequestAsyncOperationConfiguredSource)state;
+                        promise.core.TrySetCanceled(promise.cancellationToken);
+                    }, result);
+                }
 
                 TaskTracker.TrackActiveTask(result, 3);
 
@@ -925,6 +954,7 @@ namespace Cysharp.Threading.Tasks
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
+                cancellationTokenRegistration.Dispose();
                 return pool.TryPush(this);
             }
         }
