@@ -336,6 +336,18 @@ if (isCanceled)
 
 Note: Only suppress throws if you call directly into the most source method. Otherwise, the return value will be converted, but the entire pipeline will not suppress throws.
 
+Some features that use Unity's player loop, such as `UniTask.Yield` and `UniTask.Delay` etc, determines CancellationToken state on the player loop. 
+This means it does not cancel immediately upon `CancellationToken` fired. 
+
+If you want to change this behaviour, the cancellation to be immediate, set the `cancelImmediately` flag as an argument.
+
+```csharp
+await UniTask.Yield(cancellationToken, cancelImmediately: true);
+```
+
+Note: Setting `cancelImmediately` to true and detecting an immediate cancellation is more costly than the default behavior.
+This is because it uses `CancellationToken.Register`; it is heavier than checking CancellationToken on the player loop.
+
 Timeout handling
 ---
 Timeout is a variation of cancellation. You can set timeout by `CancellationTokenSouce.CancelAfterSlim(TimeSpan)` and pass CancellationToken to async methods.
@@ -363,7 +375,7 @@ If you want to use timeout with other source of cancellation, use `CancellationT
 
 ```csharp
 var cancelToken = new CancellationTokenSource();
-cancelButton.onClick.AddListener(()=>
+cancelButton.onClick.AddListener(() =>
 {
     cancelToken.Cancel(); // cancel from button click.
 });
