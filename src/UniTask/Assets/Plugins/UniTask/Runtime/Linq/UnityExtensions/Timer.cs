@@ -109,7 +109,6 @@ namespace Cysharp.Threading.Tasks.Linq
                 this.ignoreTimeScale = ignoreTimeScale;
                 this.cancellationToken = cancellationToken;
                 
-                
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
                     cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
@@ -128,12 +127,16 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 // return false instead of throw
-                if (disposed || cancellationToken.IsCancellationRequested || completed) return CompletedTasks.False;
+                if (disposed || completed) return CompletedTasks.False;
 
                 // reset value here.
                 this.elapsed = 0;
 
                 completionSource.Reset();
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                }
                 return new UniTask<bool>(this, completionSource.Version);
             }
 
@@ -150,11 +153,16 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public bool MoveNext()
             {
-                if (disposed || cancellationToken.IsCancellationRequested)
+                if (disposed)
                 {
                     completionSource.TrySetResult(false);
                     return false;
                 }
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                    return false;
+                }                
 
                 if (dueTimePhase)
                 {
@@ -261,13 +269,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask<bool> MoveNextAsync()
             {
-                // return false instead of throw
-                if (disposed || cancellationToken.IsCancellationRequested || completed) return CompletedTasks.False;
+                if (disposed || completed) return CompletedTasks.False;
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                }
 
                 // reset value here.
                 this.currentFrame = 0;
-
                 completionSource.Reset();
                 return new UniTask<bool>(this, completionSource.Version);
             }
@@ -285,7 +295,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public bool MoveNext()
             {
-                if (disposed || cancellationToken.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                    return false;
+                }
+                if (disposed)
                 {
                     completionSource.TrySetResult(false);
                     return false;

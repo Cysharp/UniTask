@@ -56,10 +56,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask<bool> MoveNextAsync()
             {
-                // return false instead of throw
-                if (disposed || cancellationToken.IsCancellationRequested) return CompletedTasks.False;
-
+                if (disposed) return CompletedTasks.False;
+                
                 completionSource.Reset();
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                }
                 return new UniTask<bool>(this, completionSource.Version);
             }
 
@@ -76,7 +80,13 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public bool MoveNext()
             {
-                if (disposed || cancellationToken.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                    return false;
+                }
+                
+                if (disposed)
                 {
                     completionSource.TrySetResult(false);
                     return false;

@@ -85,8 +85,15 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask<bool> MoveNextAsync()
             {
-                // return false instead of throw
-                if (disposed || cancellationToken.IsCancellationRequested) return CompletedTasks.False;
+                if (disposed) return CompletedTasks.False;
+
+                completionSource.Reset();
+                
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 if (first)
                 {
@@ -99,7 +106,6 @@ namespace Cysharp.Threading.Tasks.Linq
                     return CompletedTasks.True;
                 }
 
-                completionSource.Reset();
                 return new UniTask<bool>(this, completionSource.Version);
             }
 
@@ -107,6 +113,7 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 if (!disposed)
                 {
+                    cancellationTokenRegistration.Dispose();
                     disposed = true;
                     TaskTracker.RemoveTracking(this);
                 }
@@ -115,13 +122,18 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public bool MoveNext()
             {
-                if (disposed || cancellationToken.IsCancellationRequested || targetAsUnityObject == null) // destroyed = cancel.
+                if (disposed || targetAsUnityObject == null) 
                 {
                     completionSource.TrySetResult(false);
                     DisposeAsync().Forget();
                     return false;
                 }
-
+                
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                    return false;
+                }
                 TProperty nextValue = default(TProperty);
                 try
                 {
@@ -205,8 +217,16 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask<bool> MoveNextAsync()
             {
-                if (disposed || cancellationToken.IsCancellationRequested) return CompletedTasks.False;
+                if (disposed) return CompletedTasks.False;
 
+                completionSource.Reset();
+                
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
+                
                 if (first)
                 {
                     first = false;
@@ -218,7 +238,6 @@ namespace Cysharp.Threading.Tasks.Linq
                     return CompletedTasks.True;
                 }
 
-                completionSource.Reset();
                 return new UniTask<bool>(this, completionSource.Version);
             }
 
@@ -235,10 +254,16 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public bool MoveNext()
             {
-                if (disposed || cancellationToken.IsCancellationRequested || !target.TryGetTarget(out var t))
+                if (disposed || !target.TryGetTarget(out var t))
                 {
                     completionSource.TrySetResult(false);
                     DisposeAsync().Forget();
+                    return false;
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
