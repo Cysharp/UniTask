@@ -54,6 +54,29 @@ namespace Cysharp.Threading.Tasks
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
+        public static <#= ToUniTaskReturnType(t.returnType) #> WithCancellation(this <#= t.typeName #> asyncOperation, bool handleImmediately, CancellationToken cancellationToken)
+        {
+            if (handleImmediately)
+            {
+                Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+                if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<#= IsVoid(t) ? "" : "<" + t.returnType + ">" #>(cancellationToken);
+<# if(IsUnityWebRequest(t)) { #>
+                if (asyncOperation.isDone)
+                {
+                    if (asyncOperation.webRequest.IsError())
+                    {
+                        return UniTask.FromException<UnityWebRequest>(new UnityWebRequestException(asyncOperation.webRequest));
+                    }
+                    return UniTask.FromResult(asyncOperation.webRequest);
+                }
+<# } else { #>
+                if (asyncOperation.isDone) return <#= IsVoid(t) ? "UniTask.CompletedTask" : $"UniTask.FromResult(asyncOperation.{t.returnField})" #>;
+<# } #>
+                return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>CallbackHandlerSource.Create(asyncOperation, cancellationToken, out var token), token);
+            }
+            return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
+        }
+
         public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
@@ -137,6 +160,130 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+        sealed class <#= t.typeName #>CallbackHandlerSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, ITaskPoolNode<<#= t.typeName #>CallbackHandlerSource>
+        {
+            static TaskPool<<#= t.typeName #>CallbackHandlerSource> pool;
+            <#= t.typeName #>CallbackHandlerSource nextNode;
+            public ref <#= t.typeName #>CallbackHandlerSource NextNode => ref nextNode;
+
+            static <#= t.typeName #>CallbackHandlerSource()
+            {
+                TaskPool.RegisterSizeGetter(typeof(<#= t.typeName #>CallbackHandlerSource), () => pool.Size);
+            }
+
+            <#= t.typeName #> asyncOperation;
+            IProgress<float> progress;
+            CancellationToken cancellationToken;
+            CancellationTokenRegistration cancellationTokenRegistration;
+
+            UniTaskCompletionSourceCore<<#= IsVoid(t) ? "AsyncUnit" : t.returnType #>> core;
+
+            <#= t.typeName #>CallbackHandlerSource()
+            {
+            }
+
+            public static <#= ToIUniTaskSourceReturnType(t.returnType) #> Create(<#= t.typeName #> asyncOperation, CancellationToken cancellationToken, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource<#= IsVoid(t) ? "" : $"<{t.returnType}>" #>.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                if (!pool.TryPop(out var result))
+                {
+                    result = new <#= t.typeName #>CallbackHandlerSource();
+                }
+
+                result.asyncOperation = asyncOperation;
+                result.cancellationToken = cancellationToken;
+
+                asyncOperation.completed += result.AsyncOperationCompletedHandler;
+
+                if (cancellationToken.CanBeCanceled)
+                {
+                    result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
+                    {
+                        var source = (<#= t.typeName #>CallbackHandlerSource)state;
+<# if(IsUnityWebRequest(t)) { #>
+                        source.asyncOperation.webRequest.Abort();
+<# } #>
+                        source.core.TrySetCanceled(source.cancellationToken);
+                    }, result);
+                }
+
+                TaskTracker.TrackActiveTask(result, 3);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public <#= t.returnType #> GetResult(short token)
+            {
+                try
+                {
+<# if (!IsVoid(t)) { #>
+                    return core.GetResult(token);
+<# } else { #>
+                    core.GetResult(token);
+<# } #>
+                }
+                finally
+                {
+                    TryReturn();
+                }
+            }
+
+<# if (!IsVoid(t)) { #>
+            void IUniTaskSource.GetResult(short token)
+            {
+                GetResult(token);
+            }
+<# } #>
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                return core.GetStatus(token);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return core.UnsafeGetStatus();
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                core.OnCompleted(continuation, state, token);
+            }
+
+            bool TryReturn()
+            {
+                TaskTracker.RemoveTracking(this);
+                core.Reset();
+                asyncOperation.completed -= AsyncOperationCompletedHandler;
+                asyncOperation = default;
+                progress = default;
+                cancellationToken = default;
+                cancellationTokenRegistration.Dispose();
+                return pool.TryPush(this);
+            }
+
+            void AsyncOperationCompletedHandler(AsyncOperation _)
+            {
+<# if(IsUnityWebRequest(t)) { #>
+                if (asyncOperation.webRequest.IsError())
+                {
+                    core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
+                }
+                else
+                {
+                    core.TrySetResult(asyncOperation.webRequest);
+                }
+<# } else { #>
+                core.TrySetResult(<#= IsVoid(t) ? "AsyncUnit.Default" : $"asyncOperation.{t.returnField}" #>);
+<# } #>
+            }
+        }
+
         sealed class <#= t.typeName #>ConfiguredSource : <#= ToIUniTaskSourceReturnType(t.returnType) #>, IPlayerLoopItem, ITaskPoolNode<<#= t.typeName #>ConfiguredSource>
         {
             static TaskPool<<#= t.typeName #>ConfiguredSource> pool;
@@ -156,7 +303,6 @@ namespace Cysharp.Threading.Tasks
 
             <#= t.typeName #>ConfiguredSource()
             {
-
             }
 
             public static <#= ToIUniTaskSourceReturnType(t.returnType) #> Create(<#= t.typeName #> asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
