@@ -700,7 +700,7 @@ Unity 2020.2 supports C# 8.0 so you can use `await foreach`. This is the new Upd
 
 ```csharp
 // Unity 2020.2, C# 8.0
-await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(token))
+await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate().WithCancellation(token))
 {
     Debug.Log("Update() " + Time.frameCount);
 }
@@ -710,10 +710,10 @@ In a C# 7.3 environment, you can use the `ForEachAsync` method to work in almost
 
 ```csharp
 // C# 7.3(Unity 2018.3~)
-await UniTaskAsyncEnumerable.EveryUpdate(token).ForEachAsync(_ =>
+await UniTaskAsyncEnumerable.EveryUpdate().ForEachAsync(_ =>
 {
     Debug.Log("Update() " + Time.frameCount);
-});
+}, token);
 ```
 
 UniTaskAsyncEnumerable implements asynchronous LINQ, similar to LINQ in `IEnumerable<T>` or Rx in `IObservable<T>`. All standard LINQ query operators can be applied to asynchronous streams. For example, the following code shows how to apply a Where filter to a button-click asynchronous stream that runs once every two clicks.

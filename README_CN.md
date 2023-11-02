@@ -685,7 +685,7 @@ Unity 2020.2 支持 C# 8.0，因此您可以使用`await foreach`. 这是异步�
 
 ```csharp
 // Unity 2020.2, C# 8.0
-await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(token))
+await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate().WithCancellation(token))
 {
     Debug.Log("Update() " + Time.frameCount);
 }
@@ -695,10 +695,10 @@ await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(token))
 
 ```csharp
 // C# 7.3(Unity 2018.3~)
-await UniTaskAsyncEnumerable.EveryUpdate(token).ForEachAsync(_ =>
+await UniTaskAsyncEnumerable.EveryUpdate().ForEachAsync(_ =>
 {
     Debug.Log("Update() " + Time.frameCount);
-});
+}, token);
 ```
 
 UniTaskAsyncEnumerable 实现异步 LINQ，类似于 LINQ 的`IEnumerable<T>`或 Rx 的 `IObservable<T>`。所有标准 LINQ 查询运算符都可以应用于异步流。例如，以下代码表示如何将 Where 过滤器应用于每两次单击运行一次的按钮单击异步流。
