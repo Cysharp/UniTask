@@ -458,19 +458,19 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Boolean_">ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken, Boolean)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncOperation_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">ToUniTask(AsyncOperation, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncOperation_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Boolean_">ToUniTask(AsyncOperation, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken, Boolean)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_ResourceRequest_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_">ToUniTask(ResourceRequest, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_ResourceRequest_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Boolean_">ToUniTask(ResourceRequest, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken, Boolean)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -482,13 +482,31 @@
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncGPUReadbackRequest_System_Threading_CancellationToken_System_Boolean_">WithCancellation(AsyncGPUReadbackRequest, CancellationToken, Boolean)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncOperation_System_Threading_CancellationToken_">WithCancellation(AsyncOperation, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncOperation_System_Threading_CancellationToken_System_Boolean_">WithCancellation(AsyncOperation, CancellationToken, Boolean)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
           <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_ResourceRequest_System_Threading_CancellationToken_">WithCancellation(ResourceRequest, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"></td>
+      </tr>
+      <tr>
+        <td>
+          <a class="xref" href="Cysharp.Threading.Tasks.UnityAsyncExtensions.html#Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_ResourceRequest_System_Threading_CancellationToken_System_Boolean_">WithCancellation(ResourceRequest, CancellationToken, Boolean)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -2728,12 +2746,12 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncGPUReadbackRequest_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncGPUReadbackRequest,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken,System.Boolean)">ToUniTask(AsyncGPUReadbackRequest, PlayerLoopTiming, CancellationToken, Boolean)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;AsyncGPUReadbackRequest&gt; ToUniTask(this AsyncGPUReadbackRequest asyncOperation, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;AsyncGPUReadbackRequest&gt; ToUniTask(this AsyncGPUReadbackRequest asyncOperation, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)</code></pre>
   </div>
 
   <section>
@@ -2744,6 +2762,8 @@
     <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
     <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancelImmediately</code></span> <span class="xref">System.Boolean</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -2769,12 +2789,12 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncOperation_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncOperation,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">ToUniTask(AsyncOperation, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_AsyncOperation_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(AsyncOperation,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken,System.Boolean)">ToUniTask(AsyncOperation, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken, Boolean)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask ToUniTask(this AsyncOperation asyncOperation, IProgress&lt;float&gt; progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask ToUniTask(this AsyncOperation asyncOperation, IProgress&lt;float&gt; progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)</code></pre>
   </div>
 
   <section>
@@ -2787,6 +2807,8 @@
     <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
     <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancelImmediately</code></span> <span class="xref">System.Boolean</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -2812,12 +2834,12 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_ResourceRequest_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(ResourceRequest,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken)">ToUniTask(ResourceRequest, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_ToUniTask_ResourceRequest_System_IProgress_System_Single__Cysharp_Threading_Tasks_PlayerLoopTiming_System_Threading_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.ToUniTask(ResourceRequest,System.IProgress{System.Single},Cysharp.Threading.Tasks.PlayerLoopTiming,System.Threading.CancellationToken,System.Boolean)">ToUniTask(ResourceRequest, IProgress&lt;Single&gt;, PlayerLoopTiming, CancellationToken, Boolean)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static UniTask&lt;UnityEngine.Object&gt; ToUniTask(this ResourceRequest asyncOperation, IProgress&lt;float&gt; progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;UnityEngine.Object&gt; ToUniTask(this ResourceRequest asyncOperation, IProgress&lt;float&gt; progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)</code></pre>
   </div>
 
   <section>
@@ -2830,6 +2852,8 @@
     <dt><span class="parametername"><code>timing</code></span> <a class="xref" href="Cysharp.Threading.Tasks.PlayerLoopTiming.html">PlayerLoopTiming</a></dt>
     <dd></dd>
     <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancelImmediately</code></span> <span class="xref">System.Boolean</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -2894,6 +2918,47 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncGPUReadbackRequest_System_Threading_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncGPUReadbackRequest,System.Threading.CancellationToken,System.Boolean)">WithCancellation(AsyncGPUReadbackRequest, CancellationToken, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;AsyncGPUReadbackRequest&gt; WithCancellation(this AsyncGPUReadbackRequest asyncOperation, CancellationToken cancellationToken, bool cancelImmediately)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncOperation</code></span> <span class="xref">AsyncGPUReadbackRequest</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancelImmediately</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">AsyncGPUReadbackRequest</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation*"></a>
   <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncOperation_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncOperation,System.Threading.CancellationToken)">WithCancellation(AsyncOperation, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
@@ -2933,6 +2998,47 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_AsyncOperation_System_Threading_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(AsyncOperation,System.Threading.CancellationToken,System.Boolean)">WithCancellation(AsyncOperation, CancellationToken, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask WithCancellation(this AsyncOperation asyncOperation, CancellationToken cancellationToken, bool cancelImmediately)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncOperation</code></span> <span class="xref">AsyncOperation</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancelImmediately</code></span> <span class="xref">System.Boolean</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation*"></a>
   <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_ResourceRequest_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(ResourceRequest,System.Threading.CancellationToken)">WithCancellation(ResourceRequest, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
@@ -2947,6 +3053,47 @@
     <dt><span class="parametername"><code>asyncOperation</code></span> <span class="xref">ResourceRequest</span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  <section>
+  <h5 class="returns">Returns</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.html">UniTask</a>&lt;<span class="xref">UnityEngine.Object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+  </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </section>
+  <section>
+  <a id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation*"></a>
+  <h4 id="Cysharp_Threading_Tasks_UnityAsyncExtensions_WithCancellation_ResourceRequest_System_Threading_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.UnityAsyncExtensions.WithCancellation(ResourceRequest,System.Threading.CancellationToken,System.Boolean)">WithCancellation(ResourceRequest, CancellationToken, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UniTask&lt;UnityEngine.Object&gt; WithCancellation(this ResourceRequest asyncOperation, CancellationToken cancellationToken, bool cancelImmediately)</code></pre>
+  </div>
+
+  <section>
+  <h5 class="parameters">Parameters</h5>
+  <dl class="cysharpdocfx-valuedefinition">
+    <dt><span class="parametername"><code>asyncOperation</code></span> <span class="xref">ResourceRequest</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
+    <dd></dd>
+    <dt><span class="parametername"><code>cancelImmediately</code></span> <span class="xref">System.Boolean</span></dt>
     <dd></dd>
   </dl>
   </section>
