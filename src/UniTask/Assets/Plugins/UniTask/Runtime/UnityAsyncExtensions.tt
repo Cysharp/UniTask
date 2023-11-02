@@ -16,6 +16,7 @@
 
     Func<string, string> ToUniTaskReturnType = x => (x == "void") ? "UniTask" : $"UniTask<{x}>";
     Func<string, string> ToIUniTaskSourceReturnType = x => (x == "void") ? "IUniTaskSource" : $"IUniTaskSource<{x}>";
+    Func<(string typeName, string returnType, string returnField), bool> IsAsyncOperationBase = x => x.typeName == "AsyncOperation";
     Func<(string typeName, string returnType, string returnField), bool> IsUnityWebRequest = x => x.returnType == "UnityWebRequest";
     Func<(string typeName, string returnType, string returnField), bool> IsAssetBundleModule = x => x.typeName == "AssetBundleRequest" || x.typeName == "AssetBundleCreateRequest";
     Func<(string typeName, string returnType, string returnField), bool> IsVoid = x => x.returnType == "void";
@@ -43,11 +44,18 @@ namespace Cysharp.Threading.Tasks
 <# } #>
         #region <#= t.typeName #>
 
+<# if (IsAsyncOperationBase(t))  { #>
+#if !UNITY_2023_1_OR_NEWER
+        // from Unity2023.1.0a15, AsyncOperationAwaitableExtensions.GetAwaiter is defined in UnityEngine.
+<# } #>
         public static <#= t.typeName #>Awaiter GetAwaiter(this <#= t.typeName #> asyncOperation)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             return new <#= t.typeName #>Awaiter(asyncOperation);
         }
+<# if (IsAsyncOperationBase(t))  { #>
+#endif
+<# } #>
 
         public static <#= ToUniTaskReturnType(t.returnType) #> WithCancellation(this <#= t.typeName #> asyncOperation, CancellationToken cancellationToken)
         {
