@@ -102,6 +102,7 @@ namespace Cysharp.Threading.Tasks
 
             AsyncOperationConfiguredSource()
             {
+                continuationAction = Continuation;
             }
 
             public static IUniTaskSource Create(AsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, bool handleImmediately, CancellationToken cancellationToken, out short token)
@@ -123,7 +124,6 @@ namespace Cysharp.Threading.Tasks
 
                 if (handleImmediately)
                 {
-                    result.continuationAction = result.Continuation;
                     asyncOperation.completed += result.continuationAction;
 
                     if (cancellationToken.CanBeCanceled)
@@ -322,6 +322,7 @@ namespace Cysharp.Threading.Tasks
 
             ResourceRequestConfiguredSource()
             {
+                continuationAction = Continuation;
             }
 
             public static IUniTaskSource<UnityEngine.Object> Create(ResourceRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, bool handleImmediately, CancellationToken cancellationToken, out short token)
@@ -343,7 +344,6 @@ namespace Cysharp.Threading.Tasks
 
                 if (handleImmediately)
                 {
-                    result.continuationAction = result.Continuation;
                     asyncOperation.completed += result.continuationAction;
 
                     if (cancellationToken.CanBeCanceled)
@@ -547,6 +547,7 @@ namespace Cysharp.Threading.Tasks
 
             AssetBundleRequestConfiguredSource()
             {
+                continuationAction = Continuation;
             }
 
             public static IUniTaskSource<UnityEngine.Object> Create(AssetBundleRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, bool handleImmediately, CancellationToken cancellationToken, out short token)
@@ -568,7 +569,6 @@ namespace Cysharp.Threading.Tasks
 
                 if (handleImmediately)
                 {
-                    result.continuationAction = result.Continuation;
                     asyncOperation.completed += result.continuationAction;
 
                     if (cancellationToken.CanBeCanceled)
@@ -773,6 +773,7 @@ namespace Cysharp.Threading.Tasks
 
             AssetBundleCreateRequestConfiguredSource()
             {
+                continuationAction = Continuation;
             }
 
             public static IUniTaskSource<AssetBundle> Create(AssetBundleCreateRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, bool handleImmediately, CancellationToken cancellationToken, out short token)
@@ -794,7 +795,6 @@ namespace Cysharp.Threading.Tasks
 
                 if (handleImmediately)
                 {
-                    result.continuationAction = result.Continuation;
                     asyncOperation.completed += result.continuationAction;
 
                     if (cancellationToken.CanBeCanceled)
@@ -1014,6 +1014,7 @@ namespace Cysharp.Threading.Tasks
 
             UnityWebRequestAsyncOperationConfiguredSource()
             {
+                continuationAction = Continuation;
             }
 
             public static IUniTaskSource<UnityWebRequest> Create(UnityWebRequestAsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, bool handleImmediately, CancellationToken cancellationToken, out short token)
@@ -1035,7 +1036,6 @@ namespace Cysharp.Threading.Tasks
 
                 if (handleImmediately)
                 {
-                    result.continuationAction = result.Continuation;
                     asyncOperation.completed += result.continuationAction;
 
                     if (cancellationToken.CanBeCanceled)

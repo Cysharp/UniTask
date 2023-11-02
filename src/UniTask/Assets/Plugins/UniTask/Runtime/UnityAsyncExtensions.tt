@@ -165,6 +165,7 @@ namespace Cysharp.Threading.Tasks
 
             <#= t.typeName #>ConfiguredSource()
             {
+                continuationAction = Continuation;
             }
 
             public static <#= ToIUniTaskSourceReturnType(t.returnType) #> Create(<#= t.typeName #> asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, bool handleImmediately, CancellationToken cancellationToken, out short token)
@@ -186,7 +187,6 @@ namespace Cysharp.Threading.Tasks
 
                 if (handleImmediately)
                 {
-                    result.continuationAction = result.Continuation;
                     asyncOperation.completed += result.continuationAction;
 
                     if (cancellationToken.CanBeCanceled)
