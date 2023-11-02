@@ -247,17 +247,18 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
+                // Already completed
+                if (completed || asyncOperation == null)
+                {
+                    return false;
+                }
+
                 if (cancellationToken.IsCancellationRequested)
                 {
 <# if(IsUnityWebRequest(t)) { #>
                     asyncOperation.webRequest.Abort();
 <# } #>
                     core.TrySetCanceled(cancellationToken);
-                    return false;
-                }
-
-                if (asyncOperation == null)
-                {
                     return false;
                 }
 

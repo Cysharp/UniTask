@@ -171,14 +171,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                if (cancellationToken.IsCancellationRequested)
+                // Already completed
+                if (completed || asyncOperation == null)
                 {
-                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
-                if (asyncOperation == null)
+                if (cancellationToken.IsCancellationRequested)
                 {
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -397,14 +398,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                if (cancellationToken.IsCancellationRequested)
+                // Already completed
+                if (completed || asyncOperation == null)
                 {
-                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
-                if (asyncOperation == null)
+                if (cancellationToken.IsCancellationRequested)
                 {
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -624,14 +626,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                if (cancellationToken.IsCancellationRequested)
+                // Already completed
+                if (completed || asyncOperation == null)
                 {
-                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
-                if (asyncOperation == null)
+                if (cancellationToken.IsCancellationRequested)
                 {
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -852,14 +855,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                if (cancellationToken.IsCancellationRequested)
+                // Already completed
+                if (completed || asyncOperation == null)
                 {
-                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
-                if (asyncOperation == null)
+                if (cancellationToken.IsCancellationRequested)
                 {
+                    core.TrySetCanceled(cancellationToken);
                     return false;
                 }
 
@@ -1096,15 +1100,16 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
+                // Already completed
+                if (completed || asyncOperation == null)
+                {
+                    return false;
+                }
+
                 if (cancellationToken.IsCancellationRequested)
                 {
                     asyncOperation.webRequest.Abort();
                     core.TrySetCanceled(cancellationToken);
-                    return false;
-                }
-
-                if (asyncOperation == null)
-                {
                     return false;
                 }
 
