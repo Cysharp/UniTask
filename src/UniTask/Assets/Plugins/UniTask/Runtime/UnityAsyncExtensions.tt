@@ -54,12 +54,12 @@ namespace Cysharp.Threading.Tasks
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static <#= ToUniTaskReturnType(t.returnType) #> WithCancellation(this <#= t.typeName #> asyncOperation, bool handleImmediately, CancellationToken cancellationToken)
+        public static <#= ToUniTaskReturnType(t.returnType) #> WithCancellation(this <#= t.typeName #> asyncOperation, CancellationToken cancellationToken, bool cancelImmediately)
         {
-            return ToUniTask(asyncOperation, handleImmediately: handleImmediately, cancellationToken: cancellationToken);
+            return ToUniTask(asyncOperation, cancellationToken: cancellationToken, cancelImmediately: cancelImmediately);
         }
 
-        public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, bool handleImmediately = false, CancellationToken cancellationToken = default(CancellationToken))
+        public static <#= ToUniTaskReturnType(t.returnType) #> ToUniTask(this <#= t.typeName #> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
         {
             Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<#= IsVoid(t) ? "" : "<" + t.returnType + ">" #>(cancellationToken);
@@ -75,7 +75,7 @@ namespace Cysharp.Threading.Tasks
 <# } else { #>
             if (asyncOperation.isDone) return <#= IsVoid(t) ? "UniTask.CompletedTask" : $"UniTask.FromResult(asyncOperation.{t.returnField})" #>;
 <# } #>
-            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, timing, progress, handleImmediately, cancellationToken, out var token), token);
+            return new <#= ToUniTaskReturnType(t.returnType) #>(<#= t.typeName #>ConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, cancelImmediately, out var token), token);
         }
 
         public struct <#= t.typeName #>Awaiter : ICriticalNotifyCompletion
@@ -168,7 +168,7 @@ namespace Cysharp.Threading.Tasks
                 continuationAction = Continuation;
             }
 
-            public static <#= ToIUniTaskSourceReturnType(t.returnType) #> Create(<#= t.typeName #> asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, bool handleImmediately, CancellationToken cancellationToken, out short token)
+            public static <#= ToIUniTaskSourceReturnType(t.returnType) #> Create(<#= t.typeName #> asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, bool cancelImmediately, out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -184,22 +184,19 @@ namespace Cysharp.Threading.Tasks
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
                 result.completed = false;
+                
+                asyncOperation.completed += result.continuationAction;
 
-                if (handleImmediately)
+                if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
-                    asyncOperation.completed += result.continuationAction;
-
-                    if (cancellationToken.CanBeCanceled)
+                    result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
                     {
-                        result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
-                        {
-                            var source = (<#= t.typeName #>ConfiguredSource)state;
+                        var source = (<#= t.typeName #>ConfiguredSource)state;
 <# if(IsUnityWebRequest(t)) { #>
-                            source.asyncOperation.webRequest.Abort();
+                        source.asyncOperation.webRequest.Abort();
 <# } #>
-                            source.core.TrySetCanceled(source.cancellationToken);
-                        }, result);
-                    }
+                        source.core.TrySetCanceled(source.cancellationToken);
+                    }, result);
                 }
 
                 TaskTracker.TrackActiveTask(result, 3);
@@ -256,6 +253,11 @@ namespace Cysharp.Threading.Tasks
                     asyncOperation.webRequest.Abort();
 <# } #>
                     core.TrySetCanceled(cancellationToken);
+                    return false;
+                }
+
+                if (asyncOperation == null)
+                {
                     return false;
                 }
 
