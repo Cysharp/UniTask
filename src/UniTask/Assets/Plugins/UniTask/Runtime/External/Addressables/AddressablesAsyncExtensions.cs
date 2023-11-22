@@ -7,6 +7,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
+using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Cysharp.Threading.Tasks
@@ -171,6 +172,10 @@ namespace Cysharp.Threading.Tasks
                     completed = true;
                     if (cancellationToken.IsCancellationRequested)
                     {
+                        If (handle.IsValid())
+                        {
+                            Addressables.Release(handle);
+                        }
                         core.TrySetCanceled(cancellationToken);
                     }
                     else if (handle.Status == AsyncOperationStatus.Failed)
@@ -215,6 +220,10 @@ namespace Cysharp.Threading.Tasks
                 if (cancellationToken.IsCancellationRequested)
                 {
                     completed = true;
+                    if (handle.IsValid())
+                    {
+                        Addressables.Release(handle);
+                    }
                     core.TrySetCanceled(cancellationToken);
                     return false;
                 }
@@ -353,6 +362,10 @@ namespace Cysharp.Threading.Tasks
                     completed = true;
                     if (cancellationToken.IsCancellationRequested)
                     {
+                        if (handle.IsValid())
+                        {
+                            Addressables.Release(handle);
+                        }
                         core.TrySetCanceled(cancellationToken);
                     }
                     else if (argHandle.Status == AsyncOperationStatus.Failed)
@@ -402,6 +415,10 @@ namespace Cysharp.Threading.Tasks
                 if (cancellationToken.IsCancellationRequested)
                 {
                     completed = true;
+                    if (handle.IsValid())
+                    {
+                        Addressables.Release(handle);
+                    }
                     core.TrySetCanceled(cancellationToken);
                     return false;
                 }
