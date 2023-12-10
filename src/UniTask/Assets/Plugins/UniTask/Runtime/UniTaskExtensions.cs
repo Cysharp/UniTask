@@ -454,7 +454,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         /// <summary>
-        /// Timeout with suppress OperationCanceledException. Returns (bool, IsCacneled).
+        /// Timeout with suppress OperationCanceledException. Returns (bool, IsCanceled).
         /// </summary>
         public static async UniTask<bool> TimeoutWithoutException(this UniTask task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
