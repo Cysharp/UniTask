@@ -19,7 +19,7 @@ namespace Cysharp.Threading.Tasks
 
     // similar as IValueTaskSource
     public interface IUniTaskSource
-#if (!UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
+#if (!UNITY_2018_3_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
         : System.Threading.Tasks.Sources.IValueTaskSource
 #pragma warning disable CS0108
 #endif
@@ -30,7 +30,7 @@ namespace Cysharp.Threading.Tasks
 
         UniTaskStatus UnsafeGetStatus(); // only for debug use.
 
-#if (!UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
+#if (!UNITY_2018_3_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
 #pragma warning restore CS0108
 
         System.Threading.Tasks.Sources.ValueTaskSourceStatus System.Threading.Tasks.Sources.IValueTaskSource.GetStatus(short token)
@@ -53,13 +53,13 @@ namespace Cysharp.Threading.Tasks
     }
 
     public interface IUniTaskSource<out T> : IUniTaskSource
-#if (!UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
+#if (!UNITY_2018_3_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
         , System.Threading.Tasks.Sources.IValueTaskSource<T>
 #endif
     {
         new T GetResult(short token);
 
-#if (!UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
+#if (!UNITY_2018_3_OR_NEWER || UNITY_2021_2_OR_NEWER) && !NETSTANDARD2_0
 
         new public UniTaskStatus GetStatus(short token)
         {

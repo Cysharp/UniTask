@@ -69,7 +69,7 @@ namespace Cysharp.Threading.Tasks
             return new UniTask<bool>(new IsCanceledSource(source), token);
         }
 
-#if !UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER
+#if !UNITY_2018_3_OR_NEWER || UNITY_2021_2_OR_NEWER
 
         public static implicit operator System.Threading.Tasks.ValueTask(in UniTask self)
         {
@@ -440,7 +440,7 @@ namespace Cysharp.Threading.Tasks
             return self.AsUniTask();
         }
 
-#if !UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER
+#if !UNITY_2018_3_OR_NEWER || UNITY_2021_2_OR_NEWER
 
         public static implicit operator System.Threading.Tasks.ValueTask<T>(in UniTask<T> self)
         {
