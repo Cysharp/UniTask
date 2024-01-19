@@ -69,6 +69,8 @@ namespace Cysharp.Threading.Tasks
             return new UniTask<bool>(new IsCanceledSource(source), token);
         }
 
+#if !UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER
+
         public static implicit operator System.Threading.Tasks.ValueTask(in UniTask self)
         {
             if (self.source == null)
@@ -82,6 +84,8 @@ namespace Cysharp.Threading.Tasks
             return new System.Threading.Tasks.ValueTask(self.source, self.token);
 #endif
         }
+
+#endif
 
         public override string ToString()
         {
@@ -436,6 +440,8 @@ namespace Cysharp.Threading.Tasks
             return self.AsUniTask();
         }
 
+#if !UNITY_2018_1_OR_NEWER || UNITY_2021_2_OR_NEWER
+
         public static implicit operator System.Threading.Tasks.ValueTask<T>(in UniTask<T> self)
         {
             if (self.source == null)
@@ -449,6 +455,8 @@ namespace Cysharp.Threading.Tasks
             return new System.Threading.Tasks.ValueTask<T>(self.source, self.token);
 #endif
         }
+
+#endif
 
         /// <summary>
         /// returns (bool IsCanceled, T Result) instead of throws OperationCanceledException.
