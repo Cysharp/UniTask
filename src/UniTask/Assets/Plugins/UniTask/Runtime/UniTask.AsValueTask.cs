@@ -1,4 +1,5 @@
-﻿#pragma warning disable 0649
+﻿#if !UNITY_2018_3_OR_NEWER || UNITY_2021_2_OR_NEWER
+#pragma warning disable 0649
 
 using System;
 using System.Threading.Tasks;
@@ -95,3 +96,4 @@ namespace Cysharp.Threading.Tasks
 #endif
     }
 }
+#endif
