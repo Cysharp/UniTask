@@ -51,7 +51,7 @@ For advanced tips, see blog post: [Extends UnityWebRequest via async decorator p
 
 Getting started
 ---
-Install via [UPM package](#upm-package) or asset package(`UniTask.*.*.*.unitypackage`) available in [UniTask/releases](https://github.com/Cysharp/UniTask/releases) page.
+Install via [UPM package](#upm-package) with git reference or asset package(`UniTask.*.*.*.unitypackage`) available in [UniTask/releases](https://github.com/Cysharp/UniTask/releases).
 
 ```csharp
 // extension awaiter/methods can be used by this namespace
