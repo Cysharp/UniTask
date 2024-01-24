@@ -3329,6 +3329,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html",
+          "hash": "Aorjb9qgRobJqYYc34VfJG4yjpTUWUsPlJDsnuK/I2Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Cysharp.Threading.Tasks.UniTaskVoid.yml",
       "output": {
         ".html": {
@@ -3441,7 +3453,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Cysharp.Threading.Tasks.html",
-          "hash": "RSSWLv5s3si7Am+APWH3JwBeFzzvtTxCeOOJ1nN0FV8="
+          "hash": "s+7FDV4wxdpjgJ+u5V8ipKlSZHQRODKFVzr5wOMyvXQ="
         }
       },
       "is_incremental": false,
@@ -3453,7 +3465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "066Um5whqj2Yvq5cUdFYX9QTxW6NAMTc3R1cwFPSyJk="
+          "hash": "kaZociLFu/eshVDx/0Fs5LGTO3hVlxO3LdDDYblrG9U="
         }
       },
       "is_incremental": false,
@@ -3507,7 +3519,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 287,
+          "total_file_count": 288,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {

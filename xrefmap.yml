@@ -21065,6 +21065,59 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Send
   nameWithType: UniTaskSynchronizationContext.Send
+- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions
+  name: UniTaskValueTaskExtensions
+  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html
+  commentId: T:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions
+  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions
+  nameWithType: UniTaskValueTaskExtensions
+- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(ValueTask)
+  name: AsUniTask(ValueTask)
+  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsUniTask_ValueTask_
+  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(ValueTask)
+  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(ValueTask)
+  nameWithType: UniTaskValueTaskExtensions.AsUniTask(ValueTask)
+- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask*
+  name: AsUniTask
+  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsUniTask_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask
+  nameWithType: UniTaskValueTaskExtensions.AsUniTask
+- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask``1(ValueTask{``0})
+  name: AsUniTask<T>(ValueTask<T>)
+  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsUniTask__1_ValueTask___0__
+  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask``1(ValueTask{``0})
+  name.vb: AsUniTask(Of T)(ValueTask(Of T))
+  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask<T>(ValueTask<T>)
+  fullName.vb: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(Of T)(ValueTask(Of T))
+  nameWithType: UniTaskValueTaskExtensions.AsUniTask<T>(ValueTask<T>)
+  nameWithType.vb: UniTaskValueTaskExtensions.AsUniTask(Of T)(ValueTask(Of T))
+- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(Cysharp.Threading.Tasks.UniTask@)
+  name: AsValueTask(in UniTask)
+  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsValueTask_Cysharp_Threading_Tasks_UniTask__
+  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(Cysharp.Threading.Tasks.UniTask@)
+  name.vb: AsValueTask(ByRef UniTask)
+  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(in Cysharp.Threading.Tasks.UniTask)
+  fullName.vb: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(ByRef Cysharp.Threading.Tasks.UniTask)
+  nameWithType: UniTaskValueTaskExtensions.AsValueTask(in UniTask)
+  nameWithType.vb: UniTaskValueTaskExtensions.AsValueTask(ByRef UniTask)
+- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask*
+  name: AsValueTask
+  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsValueTask_
+  commentId: Overload:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask
+  isSpec: "True"
+  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask
+  nameWithType: UniTaskValueTaskExtensions.AsValueTask
+- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask``1(Cysharp.Threading.Tasks.UniTask{``0}@)
+  name: AsValueTask<T>(in UniTask<T>)
+  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsValueTask__1_Cysharp_Threading_Tasks_UniTask___0___
+  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask``1(Cysharp.Threading.Tasks.UniTask{``0}@)
+  name.vb: AsValueTask(Of T)(ByRef UniTask(Of T))
+  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask<T>(in Cysharp.Threading.Tasks.UniTask<T>)
+  fullName.vb: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(Of T)(ByRef Cysharp.Threading.Tasks.UniTask(Of T))
+  nameWithType: UniTaskValueTaskExtensions.AsValueTask<T>(in UniTask<T>)
+  nameWithType.vb: UniTaskValueTaskExtensions.AsValueTask(Of T)(ByRef UniTask(Of T))
 - uid: Cysharp.Threading.Tasks.UniTaskVoid
   name: UniTaskVoid
   href: api/Cysharp.Threading.Tasks.UniTaskVoid.html
