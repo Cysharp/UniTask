@@ -1,3 +1,5 @@
+#pragma warning disable CS1998
+
 using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
