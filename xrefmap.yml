@@ -3151,40 +3151,6 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.IUniTaskSource.OnCompleted
   nameWithType: IUniTaskSource.OnCompleted
-- uid: Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetResult(System.Int16)
-  name: IValueTaskSource.GetResult(Int16)
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource.html#Cysharp_Threading_Tasks_IUniTaskSource_System_Threading_Tasks_Sources_IValueTaskSource_GetResult_System_Int16_
-  commentId: M:Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetResult(System.Int16)
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16)
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(System.Int16)
-  nameWithType: IUniTaskSource.IValueTaskSource.GetResult(Int16)
-  nameWithType.vb: IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16)
-- uid: Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetResult*
-  name: IValueTaskSource.GetResult
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource.html#Cysharp_Threading_Tasks_IUniTaskSource_System_Threading_Tasks_Sources_IValueTaskSource_GetResult_
-  commentId: Overload:Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetResult
-  isSpec: "True"
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource.GetResult
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult
-  nameWithType: IUniTaskSource.IValueTaskSource.GetResult
-  nameWithType.vb: IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult
-- uid: Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetStatus(System.Int16)
-  name: IValueTaskSource.GetStatus(Int16)
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource.html#Cysharp_Threading_Tasks_IUniTaskSource_System_Threading_Tasks_Sources_IValueTaskSource_GetStatus_System_Int16_
-  commentId: M:Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetStatus(System.Int16)
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource.GetStatus(Int16)
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetStatus(System.Int16)
-  nameWithType: IUniTaskSource.IValueTaskSource.GetStatus(Int16)
-  nameWithType.vb: IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetStatus(Int16)
-- uid: Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetStatus*
-  name: IValueTaskSource.GetStatus
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource.html#Cysharp_Threading_Tasks_IUniTaskSource_System_Threading_Tasks_Sources_IValueTaskSource_GetStatus_
-  commentId: Overload:Cysharp.Threading.Tasks.IUniTaskSource.System#Threading#Tasks#Sources#IValueTaskSource#GetStatus
-  isSpec: "True"
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource.GetStatus
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetStatus
-  nameWithType: IUniTaskSource.IValueTaskSource.GetStatus
-  nameWithType.vb: IUniTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetStatus
 - uid: Cysharp.Threading.Tasks.IUniTaskSource.UnsafeGetStatus
   name: UnsafeGetStatus()
   href: api/Cysharp.Threading.Tasks.IUniTaskSource.html#Cysharp_Threading_Tasks_IUniTaskSource_UnsafeGetStatus
@@ -3224,79 +3190,6 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).GetResult
   nameWithType: IUniTaskSource<T>.GetResult
   nameWithType.vb: IUniTaskSource(Of T).GetResult
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.GetStatus(System.Int16)
-  name: GetStatus(Int16)
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_GetStatus_System_Int16_
-  commentId: M:Cysharp.Threading.Tasks.IUniTaskSource`1.GetStatus(System.Int16)
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.GetStatus(System.Int16)
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).GetStatus(System.Int16)
-  nameWithType: IUniTaskSource<T>.GetStatus(Int16)
-  nameWithType.vb: IUniTaskSource(Of T).GetStatus(Int16)
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.GetStatus*
-  name: GetStatus
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_GetStatus_
-  commentId: Overload:Cysharp.Threading.Tasks.IUniTaskSource`1.GetStatus
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.GetStatus
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).GetStatus
-  nameWithType: IUniTaskSource<T>.GetStatus
-  nameWithType.vb: IUniTaskSource(Of T).GetStatus
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.OnCompleted(Action{System.Object},System.Object,System.Int16)
-  name: OnCompleted(Action<Object>, Object, Int16)
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_OnCompleted_Action_System_Object__System_Object_System_Int16_
-  commentId: M:Cysharp.Threading.Tasks.IUniTaskSource`1.OnCompleted(Action{System.Object},System.Object,System.Int16)
-  name.vb: OnCompleted(Action(Of Object), Object, Int16)
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.OnCompleted(Action<System.Object>, System.Object, System.Int16)
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).OnCompleted(Action(Of System.Object), System.Object, System.Int16)
-  nameWithType: IUniTaskSource<T>.OnCompleted(Action<Object>, Object, Int16)
-  nameWithType.vb: IUniTaskSource(Of T).OnCompleted(Action(Of Object), Object, Int16)
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.OnCompleted*
-  name: OnCompleted
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_OnCompleted_
-  commentId: Overload:Cysharp.Threading.Tasks.IUniTaskSource`1.OnCompleted
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.OnCompleted
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).OnCompleted
-  nameWithType: IUniTaskSource<T>.OnCompleted
-  nameWithType.vb: IUniTaskSource(Of T).OnCompleted
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetResult(System.Int16)
-  name: IValueTaskSource<T>.GetResult(Int16)
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetResult_System_Int16_
-  commentId: M:Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetResult(System.Int16)
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult(Int16)
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult(System.Int16)
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult(System.Int16)
-  nameWithType: IUniTaskSource<T>.IValueTaskSource<T>.GetResult(Int16)
-  nameWithType.vb: IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult(Int16)
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetResult*
-  name: IValueTaskSource<T>.GetResult
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetResult_
-  commentId: Overload:Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetResult
-  isSpec: "True"
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult
-  nameWithType: IUniTaskSource<T>.IValueTaskSource<T>.GetResult
-  nameWithType.vb: IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetResult
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetStatus(System.Int16)
-  name: IValueTaskSource<T>.GetStatus(Int16)
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetStatus_System_Int16_
-  commentId: M:Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetStatus(System.Int16)
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus(Int16)
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus(System.Int16)
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus(System.Int16)
-  nameWithType: IUniTaskSource<T>.IValueTaskSource<T>.GetStatus(Int16)
-  nameWithType.vb: IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus(Int16)
-- uid: Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetStatus*
-  name: IValueTaskSource<T>.GetStatus
-  href: api/Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetStatus_
-  commentId: Overload:Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetStatus
-  isSpec: "True"
-  name.vb: System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus
-  fullName: Cysharp.Threading.Tasks.IUniTaskSource<T>.System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus
-  fullName.vb: Cysharp.Threading.Tasks.IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus
-  nameWithType: IUniTaskSource<T>.IValueTaskSource<T>.GetStatus
-  nameWithType.vb: IUniTaskSource(Of T).System.Threading.Tasks.Sources.IValueTaskSource<T>.GetStatus
 - uid: Cysharp.Threading.Tasks.Linq
   name: Cysharp.Threading.Tasks.Linq
   href: api/Cysharp.Threading.Tasks.Linq.html
@@ -18303,25 +18196,6 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.NextFrame
   nameWithType: UniTask.NextFrame
-- uid: Cysharp.Threading.Tasks.UniTask.op_Implicit(Cysharp.Threading.Tasks.UniTask@)~System.Threading.Tasks.ValueTask
-  name: Implicit(in UniTask to ValueTask)
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_op_Implicit_Cysharp_Threading_Tasks_UniTask___System_Threading_Tasks_ValueTask
-  commentId: M:Cysharp.Threading.Tasks.UniTask.op_Implicit(Cysharp.Threading.Tasks.UniTask@)~System.Threading.Tasks.ValueTask
-  name.vb: Widening(ByRef UniTask to ValueTask)
-  fullName: Cysharp.Threading.Tasks.UniTask.Implicit(in Cysharp.Threading.Tasks.UniTask to System.Threading.Tasks.ValueTask)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Widening(ByRef Cysharp.Threading.Tasks.UniTask to System.Threading.Tasks.ValueTask)
-  nameWithType: UniTask.Implicit(in UniTask to ValueTask)
-  nameWithType.vb: UniTask.Widening(ByRef UniTask to ValueTask)
-- uid: Cysharp.Threading.Tasks.UniTask.op_Implicit*
-  name: Implicit
-  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_op_Implicit_
-  commentId: Overload:Cysharp.Threading.Tasks.UniTask.op_Implicit
-  isSpec: "True"
-  name.vb: Widening
-  fullName: Cysharp.Threading.Tasks.UniTask.Implicit
-  fullName.vb: Cysharp.Threading.Tasks.UniTask.Widening
-  nameWithType: UniTask.Implicit
-  nameWithType.vb: UniTask.Widening
 - uid: Cysharp.Threading.Tasks.UniTask.Preserve
   name: Preserve()
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Preserve
@@ -19340,15 +19214,6 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTask(Of T).Widening(Cysharp.Threading.Tasks.UniTask(Of T) to Cysharp.Threading.Tasks.UniTask)
   nameWithType: UniTask<T>.Implicit(UniTask<T> to UniTask)
   nameWithType.vb: UniTask(Of T).Widening(UniTask(Of T) to UniTask)
-- uid: Cysharp.Threading.Tasks.UniTask`1.op_Implicit(Cysharp.Threading.Tasks.UniTask{`0}@)~System.Threading.Tasks.ValueTask{`0}
-  name: Implicit(in UniTask<T> to ValueTask<T>)
-  href: api/Cysharp.Threading.Tasks.UniTask-1.html#Cysharp_Threading_Tasks_UniTask_1_op_Implicit_Cysharp_Threading_Tasks_UniTask__0____System_Threading_Tasks_ValueTask__0_
-  commentId: M:Cysharp.Threading.Tasks.UniTask`1.op_Implicit(Cysharp.Threading.Tasks.UniTask{`0}@)~System.Threading.Tasks.ValueTask{`0}
-  name.vb: Widening(ByRef UniTask(Of T) to ValueTask(Of T))
-  fullName: Cysharp.Threading.Tasks.UniTask<T>.Implicit(in Cysharp.Threading.Tasks.UniTask<T> to System.Threading.Tasks.ValueTask<T>)
-  fullName.vb: Cysharp.Threading.Tasks.UniTask(Of T).Widening(ByRef Cysharp.Threading.Tasks.UniTask(Of T) to System.Threading.Tasks.ValueTask(Of T))
-  nameWithType: UniTask<T>.Implicit(in UniTask<T> to ValueTask<T>)
-  nameWithType.vb: UniTask(Of T).Widening(ByRef UniTask(Of T) to ValueTask(Of T))
 - uid: Cysharp.Threading.Tasks.UniTask`1.op_Implicit*
   name: Implicit
   href: api/Cysharp.Threading.Tasks.UniTask-1.html#Cysharp_Threading_Tasks_UniTask_1_op_Implicit_
@@ -21028,59 +20893,6 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Send
   nameWithType: UniTaskSynchronizationContext.Send
-- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions
-  name: UniTaskValueTaskExtensions
-  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html
-  commentId: T:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions
-  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions
-  nameWithType: UniTaskValueTaskExtensions
-- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(ValueTask)
-  name: AsUniTask(ValueTask)
-  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsUniTask_ValueTask_
-  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(ValueTask)
-  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(ValueTask)
-  nameWithType: UniTaskValueTaskExtensions.AsUniTask(ValueTask)
-- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask*
-  name: AsUniTask
-  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsUniTask_
-  commentId: Overload:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask
-  nameWithType: UniTaskValueTaskExtensions.AsUniTask
-- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask``1(ValueTask{``0})
-  name: AsUniTask<T>(ValueTask<T>)
-  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsUniTask__1_ValueTask___0__
-  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask``1(ValueTask{``0})
-  name.vb: AsUniTask(Of T)(ValueTask(Of T))
-  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask<T>(ValueTask<T>)
-  fullName.vb: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsUniTask(Of T)(ValueTask(Of T))
-  nameWithType: UniTaskValueTaskExtensions.AsUniTask<T>(ValueTask<T>)
-  nameWithType.vb: UniTaskValueTaskExtensions.AsUniTask(Of T)(ValueTask(Of T))
-- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(Cysharp.Threading.Tasks.UniTask@)
-  name: AsValueTask(in UniTask)
-  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsValueTask_Cysharp_Threading_Tasks_UniTask__
-  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(Cysharp.Threading.Tasks.UniTask@)
-  name.vb: AsValueTask(ByRef UniTask)
-  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(in Cysharp.Threading.Tasks.UniTask)
-  fullName.vb: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(ByRef Cysharp.Threading.Tasks.UniTask)
-  nameWithType: UniTaskValueTaskExtensions.AsValueTask(in UniTask)
-  nameWithType.vb: UniTaskValueTaskExtensions.AsValueTask(ByRef UniTask)
-- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask*
-  name: AsValueTask
-  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsValueTask_
-  commentId: Overload:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask
-  isSpec: "True"
-  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask
-  nameWithType: UniTaskValueTaskExtensions.AsValueTask
-- uid: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask``1(Cysharp.Threading.Tasks.UniTask{``0}@)
-  name: AsValueTask<T>(in UniTask<T>)
-  href: api/Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskValueTaskExtensions_AsValueTask__1_Cysharp_Threading_Tasks_UniTask___0___
-  commentId: M:Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask``1(Cysharp.Threading.Tasks.UniTask{``0}@)
-  name.vb: AsValueTask(Of T)(ByRef UniTask(Of T))
-  fullName: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask<T>(in Cysharp.Threading.Tasks.UniTask<T>)
-  fullName.vb: Cysharp.Threading.Tasks.UniTaskValueTaskExtensions.AsValueTask(Of T)(ByRef Cysharp.Threading.Tasks.UniTask(Of T))
-  nameWithType: UniTaskValueTaskExtensions.AsValueTask<T>(in UniTask<T>)
-  nameWithType.vb: UniTaskValueTaskExtensions.AsValueTask(Of T)(ByRef UniTask(Of T))
 - uid: Cysharp.Threading.Tasks.UniTaskVoid
   name: UniTaskVoid
   href: api/Cysharp.Threading.Tasks.UniTaskVoid.html

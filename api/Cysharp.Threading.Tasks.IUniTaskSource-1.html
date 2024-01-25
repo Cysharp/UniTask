@@ -82,7 +82,7 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IUniTaskSource&lt;out T&gt; : IUniTaskSource, IValueTaskSource, IValueTaskSource&lt;T&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IUniTaskSource&lt;out T&gt; : IUniTaskSource</code></pre>
   </div>
 
   
@@ -116,42 +116,6 @@
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_GetStatus_System_Int16_">GetStatus(Int16)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_OnCompleted_Action_System_Object__System_Object_System_Int16_">OnCompleted(Action&lt;Object&gt;, Object, Int16)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-    </tbody>
-  </table>
-  <h4>Explicit Interface Implementations
-  </h4>
-  <table class="table table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetResult_System_Int16_">IValueTaskSource&lt;T&gt;.GetResult(Int16)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource-1.html#Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetStatus_System_Int16_">IValueTaskSource&lt;T&gt;.GetStatus(Int16)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
     </tbody>
   </table>
   
@@ -179,153 +143,6 @@
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
     <dt><span class="xref">T</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_IUniTaskSource_1_GetStatus_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.GetStatus*"></a>
-  <h4 id="Cysharp_Threading_Tasks_IUniTaskSource_1_GetStatus_System_Int16_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.GetStatus(System.Int16)">GetStatus(Int16)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual UniTaskStatus GetStatus(short token)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTaskStatus.html">UniTaskStatus</a></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_IUniTaskSource_1_OnCompleted_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.OnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_IUniTaskSource_1_OnCompleted_Action_System_Object__System_Object_System_Int16_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.OnCompleted(Action{System.Object},System.Object,System.Int16)">OnCompleted(Action&lt;Object&gt;, Object, Int16)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">virtual void OnCompleted(Action&lt;object&gt; continuation, object state, short token)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <h3 id="eii">Explicit Interface Implementations
-  </h3>
-  <section>
-  <a id="Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetResult_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetResult(System.Int16)">IValueTaskSource&lt;T&gt;.GetResult(Int16)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">T IValueTaskSource&lt;T&gt;.GetResult(short token)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">T</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetStatus_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetStatus*"></a>
-  <h4 id="Cysharp_Threading_Tasks_IUniTaskSource_1_System_Threading_Tasks_Sources_IValueTaskSource_T__GetStatus_System_Int16_" data-uid="Cysharp.Threading.Tasks.IUniTaskSource`1.System#Threading#Tasks#Sources#IValueTaskSource{T}#GetStatus(System.Int16)">IValueTaskSource&lt;T&gt;.GetStatus(Int16)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">ValueTaskSourceStatus IValueTaskSource&lt;T&gt;.GetStatus(short token)</code></pre>
-  </div>
-
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Threading.Tasks.Sources.ValueTaskSourceStatus</span></dt>
     <dd></dd>
   </dl>
   </section>
