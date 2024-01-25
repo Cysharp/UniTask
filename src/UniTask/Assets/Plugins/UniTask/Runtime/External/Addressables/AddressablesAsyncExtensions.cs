@@ -109,7 +109,7 @@ namespace Cysharp.Threading.Tasks
                 TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource), () => pool.Size);
             }
 
-            readonly Action<AsyncOperationHandle> continuationAction;
+            readonly Action<AsyncOperationHandle> completedCallback;
             AsyncOperationHandle handle;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -120,7 +120,7 @@ namespace Cysharp.Threading.Tasks
 
             AsyncOperationHandleConfiguredSource()
             {
-                continuationAction = Continuation;
+                completedCallback = HandleCompleted;
             }
 
             public static IUniTaskSource Create(AsyncOperationHandle handle, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, bool cancelImmediately, out short token)
@@ -145,6 +145,10 @@ namespace Cysharp.Threading.Tasks
                     result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
                     {
                         var promise = (AsyncOperationHandleConfiguredSource)state;
+                        if (promise.handle.IsValid())
+                        {
+                            Addressables.Release(promise.handle);
+                        }
                         promise.core.TrySetCanceled(promise.cancellationToken);
                     }, result);
                 }
@@ -153,15 +157,18 @@ namespace Cysharp.Threading.Tasks
 
                 PlayerLoopHelper.AddAction(timing, result);
 
-                handle.Completed += result.continuationAction;
+                handle.Completed += result.completedCallback;
 
                 token = result.core.Version;
                 return result;
             }
 
-            void Continuation(AsyncOperationHandle _)
+            void HandleCompleted(AsyncOperationHandle _)
             {
-                handle.Completed -= continuationAction;
+                if (handle.IsValid())
+                {
+                    handle.Completed -= completedCallback;
+                }
 
                 if (completed)
                 {
@@ -172,7 +179,7 @@ namespace Cysharp.Threading.Tasks
                     completed = true;
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        If (handle.IsValid())
+                        if (handle.IsValid())
                         {
                             Addressables.Release(handle);
                         }
@@ -299,7 +306,7 @@ namespace Cysharp.Threading.Tasks
                 TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource<T>), () => pool.Size);
             }
 
-            readonly Action<AsyncOperationHandle<T>> continuationAction;
+            readonly Action<AsyncOperationHandle<T>> completedCallback;
             AsyncOperationHandle<T> handle;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -310,7 +317,7 @@ namespace Cysharp.Threading.Tasks
 
             AsyncOperationHandleConfiguredSource()
             {
-                continuationAction = Continuation;
+                completedCallback = HandleCompleted;
             }
 
             public static IUniTaskSource<T> Create(AsyncOperationHandle<T> handle, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, bool cancelImmediately, out short token)
@@ -335,6 +342,10 @@ namespace Cysharp.Threading.Tasks
                     result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
                     {
                         var promise = (AsyncOperationHandleConfiguredSource<T>)state;
+                        if (promise.handle.IsValid())
+                        {
+                            Addressables.Release(promise.handle);
+                        }
                         promise.core.TrySetCanceled(promise.cancellationToken);
                     }, result);
                 }
@@ -343,15 +354,18 @@ namespace Cysharp.Threading.Tasks
 
                 PlayerLoopHelper.AddAction(timing, result);
 
-                handle.Completed += result.continuationAction;
+                handle.Completed += result.completedCallback;
 
                 token = result.core.Version;
                 return result;
             }
 
-            void Continuation(AsyncOperationHandle<T> argHandle)
+            void HandleCompleted(AsyncOperationHandle<T> argHandle)
             {
-                handle.Completed -= continuationAction;
+                if (handle.IsValid())
+                {
+                    handle.Completed -= completedCallback;
+                }
 
                 if (completed)
                 {
