@@ -2,7 +2,8 @@
     "name": "UniTask.Addressables",
     "references": [
         "UniTask",
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "Unity.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
