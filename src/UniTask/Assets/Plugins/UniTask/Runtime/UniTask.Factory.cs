@@ -159,7 +159,7 @@ namespace Cysharp.Threading.Tasks
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For exampe: onClick.AddListener(UniTask.UnityAction(async () => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async () => { /* */ } ))
         /// </summary>
         public static UnityEngine.Events.UnityAction UnityAction(Func<UniTaskVoid> asyncAction)
         {
@@ -168,7 +168,7 @@ namespace Cysharp.Threading.Tasks
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For exampe: onClick.AddListener(UniTask.UnityAction(FooAsync, this.GetCancellationTokenOnDestroy()))
+        /// For example: onClick.AddListener(UniTask.UnityAction(FooAsync, this.GetCancellationTokenOnDestroy()))
         /// </summary>
         public static UnityEngine.Events.UnityAction UnityAction(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
         {
@@ -177,7 +177,7 @@ namespace Cysharp.Threading.Tasks
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For exampe: onClick.AddListener(UniTask.UnityAction(FooAsync, this.GetCancellationTokenOnDestroy()))
+        /// For example: onClick.AddListener(UniTask.UnityAction(FooAsync, this.GetCancellationTokenOnDestroy()))
         /// </summary>
         public static UnityEngine.Events.UnityAction UnityAction<T>(Func<T, UniTaskVoid> asyncAction, T state)
         {
