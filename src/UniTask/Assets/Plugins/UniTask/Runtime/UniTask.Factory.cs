@@ -81,6 +81,16 @@ namespace Cysharp.Threading.Tasks
             return factory();
         }
 
+        public static UniTask Create(Func<CancellationToken, UniTask> factory, CancellationToken cancellationToken)
+        {
+            return factory(cancellationToken);
+        }
+
+        public static UniTask Create<T>(Func<T, UniTask> factory, T state)
+        {
+            return factory(state);
+        }
+
         public static UniTask<T> Create<T>(Func<UniTask<T>> factory)
         {
             return factory();
@@ -137,6 +147,14 @@ namespace Cysharp.Threading.Tasks
             return () => asyncAction(cancellationToken).Forget();
         }
 
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// </summary>
+        public static Action Action<T>(Func<T, UniTaskVoid> asyncAction, T state)
+        {
+            return () => asyncAction(state).Forget();
+        }
+
 #if UNITY_2018_3_OR_NEWER
 
         /// <summary>
@@ -155,6 +173,15 @@ namespace Cysharp.Threading.Tasks
         public static UnityEngine.Events.UnityAction UnityAction(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
         {
             return () => asyncAction(cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For exampe: onClick.AddListener(UniTask.UnityAction(FooAsync, this.GetCancellationTokenOnDestroy()))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction UnityAction<T>(Func<T, UniTaskVoid> asyncAction, T state)
+        {
+            return () => asyncAction(state).Forget();
         }
 
 #endif
