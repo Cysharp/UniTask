@@ -177,7 +177,7 @@ namespace Cysharp.Threading.Tasks
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(FooAsync, this.GetCancellationTokenOnDestroy()))
+        /// For example: onClick.AddListener(UniTask.UnityAction(FooAsync, argument))
         /// </summary>
         public static UnityEngine.Events.UnityAction UnityAction<T>(Func<T, UniTaskVoid> asyncAction, T state)
         {
