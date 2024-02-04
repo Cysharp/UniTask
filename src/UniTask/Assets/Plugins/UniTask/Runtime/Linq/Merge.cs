@@ -27,7 +27,9 @@ namespace Cysharp.Threading.Tasks.Linq
 
         public static IUniTaskAsyncEnumerable<T> Merge<T>(this IEnumerable<IUniTaskAsyncEnumerable<T>> sources)
         {
-            return new Merge<T>(sources.ToArray());
+            return sources is IUniTaskAsyncEnumerable<T>[] array
+                ? new Merge<T>(array)
+                : new Merge<T>(sources.ToArray());
         }
 
         public static IUniTaskAsyncEnumerable<T> Merge<T>(params IUniTaskAsyncEnumerable<T>[] sources)
