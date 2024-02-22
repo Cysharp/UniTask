@@ -63,10 +63,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask RunOnThreadPool(Action action, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
@@ -91,10 +92,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask RunOnThreadPool(Action<object> action, object state, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
@@ -119,10 +121,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask RunOnThreadPool(Func<UniTask> action, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
@@ -147,10 +150,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask RunOnThreadPool(Func<object, UniTask> action, object state, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
@@ -175,10 +179,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask<T> RunOnThreadPool<T>(Func<T> func, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
@@ -202,10 +207,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask<T> RunOnThreadPool<T>(Func<UniTask<T>> func, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
@@ -232,10 +238,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask<T> RunOnThreadPool<T>(Func<object, T> func, object state, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
@@ -259,10 +266,11 @@ namespace Cysharp.Threading.Tasks
         public static async UniTask<T> RunOnThreadPool<T>(Func<object, UniTask<T>> func, object state, bool configureAwait = true, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+#if !UNITY_WEBGL
             await UniTask.SwitchToThreadPool();
 
             cancellationToken.ThrowIfCancellationRequested();
+#endif
 
             if (configureAwait)
             {
