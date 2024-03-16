@@ -195,6 +195,23 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+        public static UniTask WaitForOnBeforeRender(CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
+        {
+            return new UniTask(YieldPromise.Create(EngineCallbackTiming.OnBeforeRender, cancellationToken, cancelImmediately, out var token), token);
+        }
+
+        public static UniTask WaitForWillRenderCanvases(CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
+        {
+            return new UniTask(YieldPromise.Create(EngineCallbackTiming.WillRenderCanvases, cancellationToken, cancelImmediately, out var token), token);
+        }
+
+#if UNITY_2021_3_OR_NEWER
+        public static UniTask WaitForPreWillRenderCanvases(CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
+        {
+            return new UniTask(YieldPromise.Create(EngineCallbackTiming.PreWillRenderCanvases, cancellationToken, cancelImmediately, out var token), token);
+        }
+#endif
+
         sealed class YieldPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<YieldPromise>
         {
             static TaskPool<YieldPromise> pool;
@@ -214,20 +231,15 @@ namespace Cysharp.Threading.Tasks
             {
             }
 
-            public static IUniTaskSource Create(PlayerLoopTiming timing, CancellationToken cancellationToken, bool cancelImmediately, out short token)
+            private static YieldPromise Create(CancellationToken cancellationToken, bool cancelImmediately)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
-                }
-
                 if (!pool.TryPop(out var result))
                 {
                     result = new YieldPromise();
                 }
 
                 result.cancellationToken = cancellationToken;
-                
+
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
                     result.cancellationTokenRegistration = cancellationToken.RegisterWithoutCaptureExecutionContext(state =>
@@ -236,6 +248,35 @@ namespace Cysharp.Threading.Tasks
                         promise.core.TrySetCanceled(promise.cancellationToken);
                     }, result);
                 }
+
+                return result;
+            }
+
+            public static IUniTaskSource Create(EngineCallbackTiming timing, CancellationToken cancellationToken, bool cancelImmediately, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                var result = Create(cancellationToken, cancelImmediately);
+
+                TaskTracker.TrackActiveTask(result, 3);
+
+                PlayerLoopHelper.AddAction(timing, result);
+
+                token = result.core.Version;
+                return result;
+            }
+
+            public static IUniTaskSource Create(PlayerLoopTiming timing, CancellationToken cancellationToken, bool cancelImmediately, out short token)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return AutoResetUniTaskCompletionSource.CreateFromCanceled(cancellationToken, out token);
+                }
+
+                var result = Create(cancellationToken, cancelImmediately);
 
                 TaskTracker.TrackActiveTask(result, 3);
 

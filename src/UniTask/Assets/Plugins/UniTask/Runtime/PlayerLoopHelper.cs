@@ -98,6 +98,16 @@ namespace Cysharp.Threading.Tasks
 #endif
     }
 
+    public enum EngineCallbackTiming
+    {
+        OnBeforeRender = 0,
+
+        WillRenderCanvases = 1,
+#if UNITY_2021_3_OR_NEWER
+        PreWillRenderCanvases = 2,
+#endif
+    }
+
     [Flags]
     public enum InjectPlayerLoopTimings
     {
@@ -171,6 +181,25 @@ namespace Cysharp.Threading.Tasks
 #endif
     }
 
+    [Flags]
+    public enum InjectEngineCallbackTimings
+    {
+        All =
+            OnBeforeRender |
+            WillRenderCanvases
+#if UNITY_2021_3_OR_NEWER
+            | PreWillRenderCanvases
+#endif
+        ,
+
+        OnBeforeRender = 1,
+
+        WillRenderCanvases = 2,
+#if UNITY_2021_3_OR_NEWER
+        PreWillRenderCanvases = 4,
+#endif
+    }
+
     public interface IPlayerLoopItem
     {
         bool MoveNext();
@@ -192,6 +221,7 @@ namespace Cysharp.Threading.Tasks
         static SynchronizationContext unitySynchronizationContext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
+        static EngineCallbackRunner[] callbackRunners;
         internal static bool IsEditorApplicationQuitting { get; private set; }
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
             bool injectOnFirst,
@@ -395,7 +425,20 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
-        public static void Initialize(ref PlayerLoopSystem playerLoop, InjectPlayerLoopTimings injectTimings = InjectPlayerLoopTimings.All)
+        static bool GetInjectCallback(InjectEngineCallbackTimings injectTimings, InjectEngineCallbackTimings targetTimings,
+            int index, EngineCallbackTiming engineCallbackTiming, out EngineCallbackRunner runner)
+        {
+            runner = null;
+            if ((injectTimings & targetTimings) == targetTimings)
+            {
+                runner = (callbackRunners[index] = new EngineCallbackRunner(engineCallbackTiming));
+                return true;
+            }
+            return runner != null;
+        }
+
+        public static void Initialize(ref PlayerLoopSystem playerLoop, InjectPlayerLoopTimings injectTimings = InjectPlayerLoopTimings.All,
+            InjectEngineCallbackTimings injectCallbackTimings = InjectEngineCallbackTimings.All)
         {
 #if UNITY_2020_2_OR_NEWER
             yielders = new ContinuationQueue[16];
@@ -403,6 +446,12 @@ namespace Cysharp.Threading.Tasks
 #else
             yielders = new ContinuationQueue[14];
             runners = new PlayerLoopRunner[14];
+#endif
+
+#if UNITY_2021_3_OR_NEWER
+            callbackRunners = new EngineCallbackRunner[3];
+#else
+            callbackRunners = new EngineCallbackRunner[2];
 #endif
 
             var copyList = playerLoop.subSystemList.ToArray();
@@ -487,6 +536,26 @@ namespace Cysharp.Threading.Tasks
 
             playerLoop.subSystemList = copyList;
             PlayerLoop.SetPlayerLoop(playerLoop);
+
+            if (GetInjectCallback(injectCallbackTimings, InjectEngineCallbackTimings.OnBeforeRender,
+                0, EngineCallbackTiming.OnBeforeRender, out var onBeforeRenderRunner))
+            {
+                Application.onBeforeRender += onBeforeRenderRunner.Run;
+            }
+
+            if (GetInjectCallback(injectCallbackTimings, InjectEngineCallbackTimings.WillRenderCanvases,
+                1, EngineCallbackTiming.WillRenderCanvases, out var willRenderCanvasesRunner))
+            {
+                Canvas.willRenderCanvases += willRenderCanvasesRunner.Run;
+            }
+
+#if UNITY_2021_3_OR_NEWER
+            if (GetInjectCallback(injectCallbackTimings, InjectEngineCallbackTimings.PreWillRenderCanvases,
+                2, EngineCallbackTiming.PreWillRenderCanvases, out var preWillRenderCanvasesRunner))
+            {
+                Canvas.preWillRenderCanvases += preWillRenderCanvasesRunner.Run;
+            }
+#endif
         }
 
         public static void AddAction(PlayerLoopTiming timing, IPlayerLoopItem action)
@@ -499,9 +568,24 @@ namespace Cysharp.Threading.Tasks
             runner.AddAction(action);
         }
 
+        public static void AddAction(EngineCallbackTiming timing, IPlayerLoopItem action)
+        {
+            var runner = callbackRunners[(int)timing];
+            if (runner == null)
+            {
+                ThrowInvalidCallbackTiming(timing);
+            }
+            runner.AddAction(action);
+        }
+
         static void ThrowInvalidLoopTiming(PlayerLoopTiming playerLoopTiming)
         {
             throw new InvalidOperationException("Target playerLoopTiming is not injected. Please check PlayerLoopHelper.Initialize. PlayerLoopTiming:" + playerLoopTiming);
+        }
+
+        static void ThrowInvalidCallbackTiming(EngineCallbackTiming engineCallbackTiming)
+        {
+            throw new InvalidOperationException("Target engineCallbackTiming is not injected. Please check PlayerLoopHelper.Initialize. EngineCallbackTiming:" + engineCallbackTiming);
         }
 
         public static void AddContinuation(PlayerLoopTiming timing, Action continuation)
@@ -510,6 +594,16 @@ namespace Cysharp.Threading.Tasks
             if (q == null)
             {
                 ThrowInvalidLoopTiming(timing);
+            }
+            q.Enqueue(continuation);
+        }
+
+        public static void AddContinuation(EngineCallbackTiming timing, Action continuation)
+        {
+            var q = yielders[(int)timing];
+            if (q == null)
+            {
+                ThrowInvalidCallbackTiming(timing);
             }
             q.Enqueue(continuation);
         }
