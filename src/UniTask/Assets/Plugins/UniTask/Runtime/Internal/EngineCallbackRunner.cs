@@ -24,7 +24,7 @@ namespace Cysharp.Threading.Tasks.Internal
                 case EngineCallbackTiming.WillRenderCanvases:
                     WillRenderCanvases();
                     break;
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
                 case EngineCallbackTiming.PreWillRenderCanvases:
                     PreWillRenderCanvases();
                     break;
@@ -40,7 +40,7 @@ namespace Cysharp.Threading.Tasks.Internal
 
         void OnBeforeRender() => RunCore();
         void WillRenderCanvases() => RunCore();
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
         void PreWillRenderCanvases() => RunCore();
 #endif
     }

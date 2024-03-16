@@ -103,7 +103,7 @@ namespace Cysharp.Threading.Tasks
         OnBeforeRender = 0,
 
         WillRenderCanvases = 1,
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
         PreWillRenderCanvases = 2,
 #endif
     }
@@ -187,7 +187,7 @@ namespace Cysharp.Threading.Tasks
         All =
             OnBeforeRender |
             WillRenderCanvases
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
             | PreWillRenderCanvases
 #endif
         ,
@@ -195,7 +195,7 @@ namespace Cysharp.Threading.Tasks
         OnBeforeRender = 1,
 
         WillRenderCanvases = 2,
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
         PreWillRenderCanvases = 4,
 #endif
     }
@@ -448,7 +448,7 @@ namespace Cysharp.Threading.Tasks
             runners = new PlayerLoopRunner[14];
 #endif
 
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
             callbackRunners = new EngineCallbackRunner[3];
 #else
             callbackRunners = new EngineCallbackRunner[2];
@@ -549,7 +549,7 @@ namespace Cysharp.Threading.Tasks
                 Canvas.willRenderCanvases += willRenderCanvasesRunner.Run;
             }
 
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
             if (GetInjectCallback(injectCallbackTimings, InjectEngineCallbackTimings.PreWillRenderCanvases,
                 2, EngineCallbackTiming.PreWillRenderCanvases, out var preWillRenderCanvasesRunner))
             {

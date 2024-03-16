@@ -205,7 +205,7 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(YieldPromise.Create(EngineCallbackTiming.WillRenderCanvases, cancellationToken, cancelImmediately, out var token), token);
         }
 
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2020_3_OR_NEWER
         public static UniTask WaitForPreWillRenderCanvases(CancellationToken cancellationToken = default(CancellationToken), bool cancelImmediately = false)
         {
             return new UniTask(YieldPromise.Create(EngineCallbackTiming.PreWillRenderCanvases, cancellationToken, cancelImmediately, out var token), token);
