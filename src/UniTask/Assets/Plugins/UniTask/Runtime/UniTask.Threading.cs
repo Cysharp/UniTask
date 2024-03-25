@@ -52,6 +52,14 @@ namespace Cysharp.Threading.Tasks
             PlayerLoopHelper.AddContinuation(timing, action);
         }
 
+        /// <summary>
+        /// Queue the action to an Engine Callback.
+        /// </summary>
+        public static void Post(Action action, EngineCallbackTiming timing)
+        {
+            PlayerLoopHelper.AddContinuation(timing, action);
+        }
+
 #endif
 
         public static SwitchToThreadPoolAwaitable SwitchToThreadPool()
