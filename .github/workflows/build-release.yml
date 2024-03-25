@@ -12,17 +12,13 @@ on:
         default: false
         type: boolean
 
-env:
-  GIT_TAG: ${{ github.event.inputs.tag }}
-  DRY_RUN: ${{ github.event.inputs.dry-run }}
-
 jobs:
   update-packagejson:
     uses: Cysharp/Actions/.github/workflows/update-packagejson.yaml@main
     with:
       file-path: ./src/UniTask/Assets/Plugins/UniTask/package.json
-      tag: ${{ github.event.inputs.tag }}
-      dry-run: ${{ fromJson(github.event.inputs.dry-run) }}
+      tag: ${{ inputs.tag }}
+      dry-run: ${{ inputs.dry-run }}
 
   build-dotnet:
     needs: [update-packagejson]
@@ -35,9 +31,9 @@ jobs:
           ref: ${{ needs.update-packagejson.outputs.sha }}
       - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
       # build and pack
-      - run: dotnet build -c Release -p:Version=${{ env.GIT_TAG }}
+      - run: dotnet build -c Release -p:Version=${{ inputs.tag }}
       - run: dotnet test -c Release --no-build
-      - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ env.GIT_TAG }} -o ./publish
+      - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ inputs.tag }} -o ./publish
       # Store artifacts.
       - uses: actions/upload-artifact@v2
         with:
@@ -77,43 +73,24 @@ jobs:
       # Store artifacts.
       - uses: actions/upload-artifact@v2
         with:
-          name: UniTask.${{ env.GIT_TAG }}.unitypackage
-          path: ./src/UniTask/UniTask.${{ env.GIT_TAG }}.unitypackage
+          name: UniTask.${{ inputs.tag }}.unitypackage
+          path: ./src/UniTask/UniTask.${{ inputs.tag }}.unitypackage
 
+  # release
   create-release:
-    if: github.event.inputs.dry-run == 'false'
     needs: [update-packagejson, build-dotnet, build-unity]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
-      # Create Releases
-      - uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.GIT_TAG }}
-          release_name: Ver.${{ env.GIT_TAG }}
-          commitish: ${{ needs.update-packagejson.outputs.sha }}
-          draft: true
-          prerelease: false
-      # Download(All) Artifacts to current directory
-      - uses: actions/download-artifact@v2
-      # Upload to NuGet
-      - run: dotnet nuget push "./nuget/*.nupkg" --skip-duplicate -s https://www.nuget.org/api/v2/package -k ${{ secrets.NUGET_KEY }}
-      # Upload to Releases(unitypackage)
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./UniTask.${{ env.GIT_TAG }}.unitypackage/UniTask.${{ env.GIT_TAG }}.unitypackage
-          asset_name: UniTask.${{ env.GIT_TAG }}.unitypackage
-          asset_content_type: application/octet-stream
+    uses: Cysharp/Actions/.github/workflows/create-release.yaml@main
+    with:
+      commit-id: ${{ needs.update-packagejson.outputs.sha }}
+      dry-run: ${{ inputs.dry-run }}
+      tag: ${{ inputs.tag }}
+      nuget-push: true
+      release-upload: true
+      release-asset-path: ./UniTask.${{ inputs.tag }}.unitypackage/UniTask.${{ inputs.tag }}.unitypackage
+    secrets: inherit
 
   cleanup:
-    if: needs.update-packagejson.outputs.is-branch-created == 'true'
+    if: ${{ needs.update-packagejson.outputs.is-branch-created == 'true' }}
     needs: [update-packagejson, build-dotnet, build-unity]
     uses: Cysharp/Actions/.github/workflows/clean-packagejson-branch.yaml@main
     with:
