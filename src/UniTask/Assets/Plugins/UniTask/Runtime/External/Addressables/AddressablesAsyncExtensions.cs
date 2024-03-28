@@ -137,6 +137,7 @@ namespace Cysharp.Threading.Tasks
                 result.cancellationToken = cancellationToken;
                 result.cancelImmediately = cancelImmediately;
                 result.autoReleaseWhenCanceled = autoReleaseWhenCanceled;
+                result.completed = false;
                 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -201,7 +202,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
