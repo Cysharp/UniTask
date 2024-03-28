@@ -155,7 +155,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -220,19 +222,16 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-                    else
-                    {
-                        core.TrySetResult(AsyncUnit.Default);
-                    }
+                    core.TrySetResult(AsyncUnit.Default);
                 }
             }
         }
@@ -382,7 +381,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -451,19 +452,16 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.asset);
-                    }
+                    core.TrySetResult(asyncOperation.asset);
                 }
             }
         }
@@ -614,7 +612,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -683,19 +683,16 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.asset);
-                    }
+                    core.TrySetResult(asyncOperation.asset);
                 }
             }
         }
@@ -847,7 +844,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -916,19 +915,16 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.assetBundle);
-                    }
+                    core.TrySetResult(asyncOperation.assetBundle);
                 }
             }
         }
@@ -1096,7 +1092,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -1173,23 +1171,20 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
+                }
+                else if (asyncOperation.webRequest.IsError())
+                {
+                    core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-                    else if (asyncOperation.webRequest.IsError())
-                    {
-                        core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.webRequest);
-                    }
+                    core.TrySetResult(asyncOperation.webRequest);
                 }
             }
         }

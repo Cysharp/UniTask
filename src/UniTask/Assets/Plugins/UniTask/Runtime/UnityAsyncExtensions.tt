@@ -230,7 +230,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -315,31 +317,28 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
+                }
+<# if(IsUnityWebRequest(t)) { #>
+                else if (asyncOperation.webRequest.IsError())
+                {
+                    core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-<# if(IsUnityWebRequest(t)) { #>
-                    else if (asyncOperation.webRequest.IsError())
-                    {
-                        core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.webRequest);
-                    }
-<# } else { #>
-                    else
-                    {
-                        core.TrySetResult(<#= IsVoid(t) ? "AsyncUnit.Default" : $"asyncOperation.{t.returnField}" #>);
-                    }
-<# } #>
+                    core.TrySetResult(asyncOperation.webRequest);
                 }
+<# } else { #>
+                else
+                {
+                    core.TrySetResult(<#= IsVoid(t) ? "AsyncUnit.Default" : $"asyncOperation.{t.returnField}" #>);
+                }
+<# } #>
             }
         }
 

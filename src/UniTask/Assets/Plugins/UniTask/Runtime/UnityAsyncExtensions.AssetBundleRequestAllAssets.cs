@@ -159,7 +159,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -227,19 +229,17 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.allAssets);
-                    }
+                    core.TrySetResult(asyncOperation.allAssets);
                 }
             }
         }

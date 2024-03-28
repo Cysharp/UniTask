@@ -94,7 +94,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 

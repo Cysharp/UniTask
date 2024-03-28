@@ -99,7 +99,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -218,7 +220,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -336,7 +340,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -450,7 +456,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
@@ -587,7 +595,9 @@ namespace Cysharp.Threading.Tasks
                 finally
                 {
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
                         TryReturn();
+                    }
                 }
             }
 
