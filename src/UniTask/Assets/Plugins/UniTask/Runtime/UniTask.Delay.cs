@@ -208,6 +208,7 @@ namespace Cysharp.Threading.Tasks
 
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
             UniTaskCompletionSourceCore<object> core;
 
             YieldPromise()
@@ -227,6 +228,7 @@ namespace Cysharp.Threading.Tasks
                 }
 
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
                 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -253,7 +255,8 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                        TryReturn();
                 }
             }
 
@@ -290,6 +293,7 @@ namespace Cysharp.Threading.Tasks
                 core.Reset();
                 cancellationToken = default;
                 cancellationTokenRegistration.Dispose();
+                cancelImmediately = default;
                 return pool.TryPush(this);
             }
         }
@@ -309,6 +313,7 @@ namespace Cysharp.Threading.Tasks
             UniTaskCompletionSourceCore<AsyncUnit> core;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
 
             NextFramePromise()
             {
@@ -328,6 +333,7 @@ namespace Cysharp.Threading.Tasks
 
                 result.frameCount = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -354,7 +360,8 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                        TryReturn();
                 }
             }
 
@@ -414,6 +421,7 @@ namespace Cysharp.Threading.Tasks
             UniTaskCompletionSourceCore<object> core;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
 
             WaitForEndOfFramePromise()
             {
@@ -432,6 +440,7 @@ namespace Cysharp.Threading.Tasks
                 }
 
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -458,7 +467,8 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                        TryReturn();
                 }
             }
 
@@ -533,6 +543,7 @@ namespace Cysharp.Threading.Tasks
             int delayFrameCount;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
 
             int currentFrameCount;
             UniTaskCompletionSourceCore<AsyncUnit> core;
@@ -556,6 +567,7 @@ namespace Cysharp.Threading.Tasks
                 result.delayFrameCount = delayFrameCount;
                 result.cancellationToken = cancellationToken;
                 result.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
+                result.cancelImmediately = cancelImmediately;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -582,7 +594,8 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                        TryReturn();
                 }
             }
 
@@ -653,6 +666,7 @@ namespace Cysharp.Threading.Tasks
                 delayFrameCount = default;
                 cancellationToken = default;
                 cancellationTokenRegistration.Dispose();
+                cancelImmediately = default;
                 return pool.TryPush(this);
             }
         }
@@ -673,6 +687,7 @@ namespace Cysharp.Threading.Tasks
             float elapsed;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
 
             UniTaskCompletionSourceCore<object> core;
 
@@ -696,6 +711,7 @@ namespace Cysharp.Threading.Tasks
                 result.delayTimeSpan = (float)delayTimeSpan.TotalSeconds;
                 result.cancellationToken = cancellationToken;
                 result.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
+                result.cancelImmediately = cancelImmediately;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -722,7 +738,8 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                        TryReturn();
                 }
             }
 
@@ -775,6 +792,7 @@ namespace Cysharp.Threading.Tasks
                 elapsed = default;
                 cancellationToken = default;
                 cancellationTokenRegistration.Dispose();
+                cancelImmediately = default;
                 return pool.TryPush(this);
             }
         }
@@ -795,6 +813,7 @@ namespace Cysharp.Threading.Tasks
             int initialFrame;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
 
             UniTaskCompletionSourceCore<object> core;
 
@@ -818,6 +837,7 @@ namespace Cysharp.Threading.Tasks
                 result.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
                 result.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -844,7 +864,8 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                        TryReturn();
                 }
             }
 
@@ -897,6 +918,7 @@ namespace Cysharp.Threading.Tasks
                 elapsed = default;
                 cancellationToken = default;
                 cancellationTokenRegistration.Dispose();
+                cancelImmediately = default;
                 return pool.TryPush(this);
             }
         }
@@ -916,6 +938,7 @@ namespace Cysharp.Threading.Tasks
             ValueStopwatch stopwatch;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
 
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
@@ -938,6 +961,7 @@ namespace Cysharp.Threading.Tasks
                 result.stopwatch = ValueStopwatch.StartNew();
                 result.delayTimeSpanTicks = delayTimeSpan.Ticks;
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -964,7 +988,8 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                        TryReturn();
                 }
             }
 
@@ -1013,6 +1038,7 @@ namespace Cysharp.Threading.Tasks
                 stopwatch = default;
                 cancellationToken = default;
                 cancellationTokenRegistration.Dispose();
+                cancelImmediately = default;
                 return pool.TryPush(this);
             }
         }
