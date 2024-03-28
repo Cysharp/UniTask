@@ -45,7 +45,7 @@ namespace Cysharp.Threading.Tasks
             AsyncGPUReadbackRequest asyncOperation;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
-
+            bool cancelImmediately;
             UniTaskCompletionSourceCore<AsyncGPUReadbackRequest> core;
 
             AsyncGPUReadbackRequestAwaiterConfiguredSource()
@@ -66,6 +66,7 @@ namespace Cysharp.Threading.Tasks
 
                 result.asyncOperation = asyncOperation;
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
                 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -92,7 +93,10 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
+                        TryReturn();
+                    }
                 }
             }
 
@@ -146,6 +150,7 @@ namespace Cysharp.Threading.Tasks
                 asyncOperation = default;
                 cancellationToken = default;
                 cancellationTokenRegistration.Dispose();
+                cancelImmediately = default;
                 return pool.TryPush(this);
             }
         }

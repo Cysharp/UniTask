@@ -101,6 +101,7 @@ namespace Cysharp.Threading.Tasks
             IProgress<float> progress;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
+            bool cancelImmediately;
             bool completed;
 
             UniTaskCompletionSourceCore<UnityEngine.Object[]> core;
@@ -127,6 +128,7 @@ namespace Cysharp.Threading.Tasks
                 result.asyncOperation = asyncOperation;
                 result.progress = progress;
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
                 result.completed = false;
 
                 asyncOperation.completed += result.continuationAction;
@@ -156,7 +158,10 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    TryReturn();
+                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    {
+                        TryReturn();
+                    }
                 }
             }
 
@@ -216,6 +221,7 @@ namespace Cysharp.Threading.Tasks
                 progress = default;
                 cancellationToken = default;
                 cancellationTokenRegistration.Dispose();
+                cancelImmediately = default;
                 return pool.TryPush(this);
             }
             
@@ -223,19 +229,17 @@ namespace Cysharp.Threading.Tasks
             {
                 if (completed)
                 {
-                    TryReturn();
+                    return;
+                }
+                
+                completed = true;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
-                    completed = true;
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        core.TrySetCanceled(cancellationToken);
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.allAssets);
-                    }
+                    core.TrySetResult(asyncOperation.allAssets);
                 }
             }
         }
