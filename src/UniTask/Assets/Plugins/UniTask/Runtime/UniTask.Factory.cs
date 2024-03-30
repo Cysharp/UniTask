@@ -86,7 +86,7 @@ namespace Cysharp.Threading.Tasks
             return factory(cancellationToken);
         }
 
-        public static UniTask Create<T>(Func<T, UniTask> factory, T state)
+        public static UniTask Create<T>(T state, Func<T, UniTask> factory)
         {
             return factory(state);
         }
@@ -150,7 +150,7 @@ namespace Cysharp.Threading.Tasks
         /// <summary>
         /// helper of create add UniTaskVoid to delegate.
         /// </summary>
-        public static Action Action<T>(Func<T, UniTaskVoid> asyncAction, T state)
+        public static Action Action<T>(T state, Func<T, UniTaskVoid> asyncAction)
         {
             return () => asyncAction(state).Forget();
         }
@@ -179,7 +179,7 @@ namespace Cysharp.Threading.Tasks
         /// Create async void(UniTaskVoid) UnityAction.
         /// For example: onClick.AddListener(UniTask.UnityAction(FooAsync, Argument))
         /// </summary>
-        public static UnityEngine.Events.UnityAction UnityAction<T>(Func<T, UniTaskVoid> asyncAction, T state)
+        public static UnityEngine.Events.UnityAction UnityAction<T>(T state, Func<T, UniTaskVoid> asyncAction)
         {
             return () => asyncAction(state).Forget();
         }
