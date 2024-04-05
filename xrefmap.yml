@@ -17842,6 +17842,15 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.Action
   nameWithType: UniTask.Action
+- uid: Cysharp.Threading.Tasks.UniTask.Action``1(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTaskVoid})
+  name: Action<T>(T, Func<T, UniTaskVoid>)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Action__1___0_System_Func___0_Cysharp_Threading_Tasks_UniTaskVoid__
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Action``1(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTaskVoid})
+  name.vb: Action(Of T)(T, Func(Of T, UniTaskVoid))
+  fullName: Cysharp.Threading.Tasks.UniTask.Action<T>(T, System.Func<T, Cysharp.Threading.Tasks.UniTaskVoid>)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Action(Of T)(T, System.Func(Of T, Cysharp.Threading.Tasks.UniTaskVoid))
+  nameWithType: UniTask.Action<T>(T, Func<T, UniTaskVoid>)
+  nameWithType.vb: UniTask.Action(Of T)(T, Func(Of T, UniTaskVoid))
 - uid: Cysharp.Threading.Tasks.UniTask.AsAsyncUnitUniTask
   name: AsAsyncUnitUniTask()
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_AsAsyncUnitUniTask
@@ -17951,6 +17960,15 @@ references:
   commentId: F:Cysharp.Threading.Tasks.UniTask.CompletedTask
   fullName: Cysharp.Threading.Tasks.UniTask.CompletedTask
   nameWithType: UniTask.CompletedTask
+- uid: Cysharp.Threading.Tasks.UniTask.Create(System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask},CancellationToken)
+  name: Create(Func<CancellationToken, UniTask>, CancellationToken)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Create_System_Func_CancellationToken_Cysharp_Threading_Tasks_UniTask__CancellationToken_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Create(System.Func{CancellationToken,Cysharp.Threading.Tasks.UniTask},CancellationToken)
+  name.vb: Create(Func(Of CancellationToken, UniTask), CancellationToken)
+  fullName: Cysharp.Threading.Tasks.UniTask.Create(System.Func<CancellationToken, Cysharp.Threading.Tasks.UniTask>, CancellationToken)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Create(System.Func(Of CancellationToken, Cysharp.Threading.Tasks.UniTask), CancellationToken)
+  nameWithType: UniTask.Create(Func<CancellationToken, UniTask>, CancellationToken)
+  nameWithType.vb: UniTask.Create(Func(Of CancellationToken, UniTask), CancellationToken)
 - uid: Cysharp.Threading.Tasks.UniTask.Create(System.Func{Cysharp.Threading.Tasks.UniTask})
   name: Create(Func<UniTask>)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Create_System_Func_Cysharp_Threading_Tasks_UniTask__
@@ -17967,6 +17985,15 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.Create
   nameWithType: UniTask.Create
+- uid: Cysharp.Threading.Tasks.UniTask.Create``1(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTask})
+  name: Create<T>(T, Func<T, UniTask>)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Create__1___0_System_Func___0_Cysharp_Threading_Tasks_UniTask__
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Create``1(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTask})
+  name.vb: Create(Of T)(T, Func(Of T, UniTask))
+  fullName: Cysharp.Threading.Tasks.UniTask.Create<T>(T, System.Func<T, Cysharp.Threading.Tasks.UniTask>)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Create(Of T)(T, System.Func(Of T, Cysharp.Threading.Tasks.UniTask))
+  nameWithType: UniTask.Create<T>(T, Func<T, UniTask>)
+  nameWithType.vb: UniTask.Create(Of T)(T, Func(Of T, UniTask))
 - uid: Cysharp.Threading.Tasks.UniTask.Create``1(System.Func{Cysharp.Threading.Tasks.UniTask{``0}})
   name: Create<T>(Func<UniTask<T>>)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Create__1_System_Func_Cysharp_Threading_Tasks_UniTask___0___
