@@ -216,7 +216,7 @@
 //            RETRY:
 //            try
 //            {
-//                context.RequestHeaders["x-accesss-token"] = token;
+//                context.RequestHeaders["x-access-token"] = token;
 //                return await next(context, cancellationToken);
 //            }
 //            catch (UnityWebRequestException ex)
