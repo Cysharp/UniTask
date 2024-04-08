@@ -82,13 +82,14 @@
   <div class="markdown level0 conceptual"></div>
   
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public struct Awaiter</code></pre>
+    <pre><code class="lang-csharp hljs">public struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion</code></pre>
   </div>
 
   
   <div classs="implements">
     <h5>Implements</h5>
-    <div><span class="xref">ICriticalNotifyCompletion</span></div>
+    <div><span class="xref">System.Runtime.CompilerServices.ICriticalNotifyCompletion</span></div>
+    <div><span class="xref">System.Runtime.CompilerServices.INotifyCompletion</span></div>
   </div>
   
   
@@ -109,7 +110,7 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_SynchronizationContext_CancellationToken_">Awaiter(SynchronizationContext, CancellationToken)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.html#Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_System_Threading_SynchronizationContext_System_Threading_CancellationToken_">Awaiter(SynchronizationContext, CancellationToken)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -168,7 +169,7 @@
   </h3>
   <section>
   <a id="Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_" data-uid="Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor*"></a>
-  <h4 id="Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_SynchronizationContext_CancellationToken_" data-uid="Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor(SynchronizationContext,CancellationToken)">Awaiter(SynchronizationContext, CancellationToken)</h4>
+  <h4 id="Cysharp_Threading_Tasks_SwitchToSynchronizationContextAwaitable_Awaiter__ctor_System_Threading_SynchronizationContext_System_Threading_CancellationToken_" data-uid="Cysharp.Threading.Tasks.SwitchToSynchronizationContextAwaitable.Awaiter.#ctor(System.Threading.SynchronizationContext,System.Threading.CancellationToken)">Awaiter(SynchronizationContext, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -179,9 +180,9 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>synchronizationContext</code></span> <span class="xref">SynchronizationContext</span></dt>
+    <dt><span class="parametername"><code>synchronizationContext</code></span> <span class="xref">System.Threading.SynchronizationContext</span></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">System.Threading.CancellationToken</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -318,7 +319,10 @@
   
   <h3 id="implements">Implements</h3>
   <div>
-      <span class="xref">ICriticalNotifyCompletion</span>
+      <span class="xref">System.Runtime.CompilerServices.ICriticalNotifyCompletion</span>
+  </div>
+  <div>
+      <span class="xref">System.Runtime.CompilerServices.INotifyCompletion</span>
   </div>
   
   
