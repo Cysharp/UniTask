@@ -59,13 +59,13 @@ namespace Cysharp.Threading.Tasks
             return exception;
         }
 
-        ~ExceptionHolder()
-        {
-            if (!calledGet)
-            {
-                UniTaskScheduler.PublishUnobservedTaskException(exception.SourceException);
-            }
-        }
+        //~ExceptionHolder()
+        //{
+        //    if (!calledGet)
+        //    {
+        //        UniTaskScheduler.PublishUnobservedTaskException(exception.SourceException);
+        //    }
+        //}
     }
 
     [StructLayout(LayoutKind.Auto)]
