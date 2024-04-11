@@ -166,6 +166,10 @@ namespace Cysharp.Threading.Tasks
                 {
                     continuation(continuationState);
                 }
+                else 
+                {
+                    UniTaskScheduler.PublishUnobservedTaskException(error);
+                }
                 return true;
             }
 
