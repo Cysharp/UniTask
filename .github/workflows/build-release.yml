@@ -35,10 +35,11 @@ jobs:
       - run: dotnet test -c Release --no-build
       - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ inputs.tag }} -o ./publish
       # Store artifacts.
-      - uses: actions/upload-artifact@v2
+      - uses: Cysharp/Actions/.github/actions/upload-artifact@main
         with:
           name: nuget
           path: ./publish/
+          retention-days: 1
 
   build-unity:
     needs: [update-packagejson]
@@ -82,10 +83,11 @@ jobs:
           directory: src/UniTask
 
       # Store artifacts.
-      - uses: actions/upload-artifact@v2
+      - uses: Cysharp/Actions/.github/actions/upload-artifact@main
         with:
           name: UniTask.${{ inputs.tag }}.unitypackage
           path: ./src/UniTask/UniTask.${{ inputs.tag }}.unitypackage
+          retention-days: 1
 
   # release
   create-release:
