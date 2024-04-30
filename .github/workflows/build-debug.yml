@@ -78,3 +78,4 @@ jobs:
         with:
           name: UniTask.unitypackage-${{ matrix.unity }}.zip
           path: ./src/UniTask/*.unitypackage
+          retention-days: 1
