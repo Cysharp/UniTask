@@ -74,7 +74,7 @@ jobs:
           directory: src/UniTask
 
       # Store artifacts.
-      - uses: actions/upload-artifact@v2
+      - uses: Cysharp/Actions/.github/actions/upload-artifact@main
         with:
           name: UniTask.unitypackage-${{ matrix.unity }}.zip
           path: ./src/UniTask/*.unitypackage
