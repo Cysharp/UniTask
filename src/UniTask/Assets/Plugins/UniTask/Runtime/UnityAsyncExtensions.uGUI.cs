@@ -339,7 +339,7 @@ namespace Cysharp.Threading.Tasks
 
         void InvokeCore(string item1, int item2, int item3)
         {
-            innerEvent.Invoke(item1, item2, item3);
+            Invoke((item1, item2, item3));
         }
 
         public void Dispose()
