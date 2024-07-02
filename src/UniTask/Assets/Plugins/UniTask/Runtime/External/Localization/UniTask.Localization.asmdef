@@ -1,0 +1,24 @@
+{
+    "name": "UniTask.Localization",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+        "GUID:5c01796d064528144a599661eaab93a6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "UNITASK_LOCALIZATION_SUPPORT"
+        }
+    ],
+    "noEngineReferences": false
+}
