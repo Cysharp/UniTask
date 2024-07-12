@@ -19,7 +19,7 @@
         },
         {
             "name": "com.unity.ugui",
-            "expression": "",
+            "expression": "2.0.0",
             "define": "UNITASK_TEXTMESHPRO_SUPPORT"
         }
     ],
