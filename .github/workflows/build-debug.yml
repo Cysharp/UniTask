@@ -39,8 +39,9 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend mono /BuildTarget StandaloneLinux64
-      - name: Build UnitTest(Linux64, mono)
+      # Execute Unittest
+      # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend IL2CPP /BuildTarget StandaloneLinux64
+      - name: Build UnitTest
         uses: Cysharp/Actions/.github/actions/unity-builder@main
         env:
           UNITY_EMAIL: ${{ steps.op-load-secret.outputs.UNITY_EMAIL }}
@@ -51,9 +52,11 @@ jobs:
           unityVersion: ${{ matrix.unity }}
           targetPlatform: StandaloneLinux64
           buildMethod: UnitTestBuilder.BuildUnitTest
-          customParameters: /headless /ScriptBackend mono
+          customParameters: "/headless /ScriptBackend IL2CPP"
+      - name: Check UnitTest file is generated
+        run: ls -lR ./src/UniTask/bin/UnitTest
       - name: Execute UnitTest
-        run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_Mono2x/test
+        run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_IL2CPP/test
 
       # Execute scripts: Export Package
       #  /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
