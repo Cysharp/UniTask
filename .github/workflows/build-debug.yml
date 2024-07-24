@@ -83,3 +83,10 @@ jobs:
           name: UniTask.unitypackage-${{ matrix.unity }}.zip
           path: ./src/UniTask/*.unitypackage
           retention-days: 1
+
+      - uses: Cysharp/Actions/.github/actions/upload-artifact@main
+        if: always()
+        with:
+          name: StandaloneLinux64_IL2CPP.${{ matrix.unity}}.test.zip
+          path: ./src/UniTask/bin/UnitTest/StandaloneLinux64_IL2CPP/test/
+          retention-days: 1
