@@ -21,6 +21,7 @@ jobs:
   build-unity:
     if: ${{ (github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:') }}
     strategy:
+      fail-fast: false
       matrix:
         unity: ["2019.3.9f1", "2019.4.13f1", "2020.1.12f1"]
     runs-on: ubuntu-latest
