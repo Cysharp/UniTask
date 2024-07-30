@@ -150,3 +150,6 @@ UniRx.Async.Tests.Editor.csproj
 
 src/UniTask/*.csproj
 .vsconfig
+
+# Unity
+!src/UniTask/Packages/
