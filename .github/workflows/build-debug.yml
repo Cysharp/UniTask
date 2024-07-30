@@ -19,7 +19,7 @@ jobs:
       - run: dotnet test -c Debug
 
   build-unity:
-    if: ${{ (github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:') }}
+    if: ${{ (github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:') || github.triggering_actor == 'dependabot[bot]' }}
     strategy:
       fail-fast: false
       matrix:
@@ -67,7 +67,7 @@ jobs:
 
   test-unity:
     needs: [build-unity]
-    if: ${{ (github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:') }}
+    if: ${{ (github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:') || github.triggering_actor == 'dependabot[bot]' }}
     strategy:
       fail-fast: false
       matrix:
