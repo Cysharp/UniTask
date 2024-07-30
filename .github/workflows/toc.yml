@@ -10,6 +10,6 @@ jobs:
     name: TOC Generator
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/toc-generator@v2.4.0
+      - uses: technote-space/toc-generator@v4.3.1
         with:
           TOC_TITLE: "## Table of Contents"
