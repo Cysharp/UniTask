@@ -25,7 +25,7 @@ jobs:
       matrix:
         unity: ["2021.3.41f1", "2022.3.38f1", "6000.0.11f1"] # Test with LTS
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Load secrets
         id: op-load-secret
@@ -82,11 +82,4 @@ jobs:
         with:
           name: UniTask.unitypackage-${{ matrix.unity }}.zip
           path: ./src/UniTask/*.unitypackage
-          retention-days: 1
-
-      - uses: Cysharp/Actions/.github/actions/upload-artifact@main
-        if: always()
-        with:
-          name: StandaloneLinux64_IL2CPP.${{ matrix.unity}}.test.zip
-          path: ./src/UniTask/bin/UnitTest/StandaloneLinux64_IL2CPP/test/
           retention-days: 1
