@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
       - run: dotnet build -c Debug
       - run: dotnet test -c Debug
@@ -21,10 +21,11 @@ jobs:
   build-unity:
     if: ${{ (github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:') }}
     strategy:
+      fail-fast: false
       matrix:
-        unity: ["2019.3.9f1", "2019.4.13f1", "2020.1.12f1"]
+        unity: ["2021.3.41f1", "2022.3.39f1", "6000.0.12f1"] # Test with LTS
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Load secrets
         id: op-load-secret
@@ -37,23 +38,7 @@ jobs:
           UNITY_PASSWORD: "op://GitHubActionsPublic/UNITY_LICENSE/credential"
           UNITY_SERIAL: "op://GitHubActionsPublic/UNITY_LICENSE/serial"
 
-      - uses: actions/checkout@v3
-      # Execute scripts: RuntimeUnitTestToolkit
-      # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend mono /BuildTarget StandaloneLinux64
-      - name: Build UnitTest(Linux64, mono)
-        uses: Cysharp/Actions/.github/actions/unity-builder@main
-        env:
-          UNITY_EMAIL: ${{ steps.op-load-secret.outputs.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ steps.op-load-secret.outputs.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ steps.op-load-secret.outputs.UNITY_SERIAL }}
-        with:
-          projectPath: src/UniTask
-          unityVersion: ${{ matrix.unity }}
-          targetPlatform: StandaloneLinux64
-          buildMethod: UnitTestBuilder.BuildUnitTest
-          customParameters: /headless /ScriptBackend mono
-      - name: Execute UnitTest
-        run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_Mono2x/test
+      - uses: actions/checkout@v4
 
       # Execute scripts: Export Package
       #  /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
@@ -79,3 +64,45 @@ jobs:
           name: UniTask.unitypackage-${{ matrix.unity }}.zip
           path: ./src/UniTask/*.unitypackage
           retention-days: 1
+
+  test-unity:
+    needs: [build-unity]
+    if: ${{ (github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        unity: ["2021.3.41f1", "2022.3.39f1", "6000.0.12f1"] # Test with LTS
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Load secrets
+        id: op-load-secret
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PUBLIC }}
+          UNITY_EMAIL: "op://GitHubActionsPublic/UNITY_LICENSE/username"
+          UNITY_PASSWORD: "op://GitHubActionsPublic/UNITY_LICENSE/credential"
+          UNITY_SERIAL: "op://GitHubActionsPublic/UNITY_LICENSE/serial"
+
+      - uses: actions/checkout@v4
+
+      # Execute UnitTest
+      # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend IL2CPP /BuildTarget StandaloneLinux64
+      - name: Build UnitTest
+        uses: Cysharp/Actions/.github/actions/unity-builder@main
+        env:
+          UNITY_EMAIL: ${{ steps.op-load-secret.outputs.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ steps.op-load-secret.outputs.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ steps.op-load-secret.outputs.UNITY_SERIAL }}
+        with:
+          projectPath: src/UniTask
+          unityVersion: ${{ matrix.unity }}
+          targetPlatform: StandaloneLinux64
+          buildMethod: UnitTestBuilder.BuildUnitTest
+          customParameters: "/headless /ScriptBackend IL2CPP"
+      - name: Check UnitTest file is generated
+        run: ls -lR ./src/UniTask/bin/UnitTest
+      - name: Execute UnitTest
+        run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_IL2CPP/test

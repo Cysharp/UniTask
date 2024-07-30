@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - run: echo ${{ needs.update-packagejson.outputs.sha }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ needs.update-packagejson.outputs.sha }}
       - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
@@ -45,7 +45,7 @@ jobs:
     needs: [update-packagejson]
     strategy:
       matrix:
-        unity: ["2019.3.9f1"]
+        unity: ["2021.3.41f1"]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -61,7 +61,7 @@ jobs:
           UNITY_SERIAL: "op://GitHubActionsPublic/UNITY_LICENSE/serial"
 
       - run: echo ${{ needs.update-packagejson.outputs.sha }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ needs.update-packagejson.outputs.sha }}
       # Execute scripts: Export Package
