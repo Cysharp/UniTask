@@ -130,26 +130,15 @@ UpgradeLog*.XML
 Assets/WSATestCertificate.pfx
 .vs/
 
-Assembly-CSharp\.csproj
-
-UniRx\.Async\.csproj
-
-UniRx\.Async\.Editor\.csproj
-
-UniRx\.Async\.Tests\.csproj
-
-UniTask\.sln
-
-RuntimeUnitTestToolkit\.csproj
-
-Assembly-CSharp-Editor\.csproj
-
-UniRx\.Async\.unitypackage
-
-UniRx.Async.Tests.Editor.csproj
-
-src/UniTask/*.csproj
-.vsconfig
+# Unity
 
 # Unity
+.vsconfig
+src/UniTask/Library/*
+src/UniTask/Temp/*
+src/UniTask/Logs/*
+src/UniTask/[Uu]ser[Ss]ettings/
+src/UniTask/*.sln
+src/UniTask/*.csproj
+src/UniTask/*.unitypackage
 !src/UniTask/Packages/
