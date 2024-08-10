@@ -243,7 +243,7 @@ namespace Cysharp.Threading.Tasks
 
                 if (progress != null && handle.IsValid())
                 {
-                    progress.Report(handle.PercentComplete);
+                    progress.Report(handle.GetDownloadStatus().Percent);
                 }
 
                 return true;
@@ -448,7 +448,7 @@ namespace Cysharp.Threading.Tasks
 
                 if (progress != null && handle.IsValid())
                 {
-                    progress.Report(handle.PercentComplete);
+                    progress.Report(handle.GetDownloadStatus().Percent);
                 }
 
                 return true;
