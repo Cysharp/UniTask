@@ -22,6 +22,7 @@ jobs:
     if: ${{ ((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:')) && github.triggering_actor != 'dependabot[bot]' }}
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         unity: ["2021.3.41f1", "2022.3.39f1", "6000.0.12f1"] # Test with LTS
     runs-on: ubuntu-latest
@@ -43,6 +44,7 @@ jobs:
       # Execute scripts: Export Package
       #  /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
       - name: Build Unity (.unitypacakge)
+        if: ${{ startsWith(matrix.unity, '2021') }} # only execute once
         uses: Cysharp/Actions/.github/actions/unity-builder@main
         env:
           UNITY_EMAIL: ${{ steps.op-load-secret.outputs.UNITY_EMAIL }}
@@ -60,7 +62,7 @@ jobs:
 
       # Execute UnitTest
       # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend IL2CPP /BuildTarget StandaloneLinux64
-      - name: Build UnitTest
+      - name: Build UnitTest (IL2CPP)
         uses: Cysharp/Actions/.github/actions/unity-builder@main
         env:
           UNITY_EMAIL: ${{ steps.op-load-secret.outputs.UNITY_EMAIL }}
