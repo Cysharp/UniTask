@@ -203,6 +203,22 @@ namespace Cysharp.Threading.Tasks
         }
 
         /// <summary>
+        /// Defer the task creation just before call await.
+        /// </summary>
+        public static UniTask Defer<TState>(TState state, Func<TState, UniTask> factory)
+        {
+            return new UniTask(new DeferPromiseWithState<TState>(state, factory), 0);
+        }
+
+        /// <summary>
+        /// Defer the task creation just before call await.
+        /// </summary>
+        public static UniTask<TResult> Defer<TState, TResult>(TState state, Func<TState, UniTask<TResult>> factory)
+        {
+            return new UniTask<TResult>(new DeferPromiseWithState<TState, TResult>(state, factory), 0);
+        }
+
+        /// <summary>
         /// Never complete.
         /// </summary>
         public static UniTask Never(CancellationToken cancellationToken)
@@ -448,6 +464,93 @@ namespace Cysharp.Threading.Tasks
                 if (f != null)
                 {
                     task = f();
+                    awaiter = task.GetAwaiter();
+                }
+
+                return task.Status;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                awaiter.SourceOnCompleted(continuation, state);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return task.Status;
+            }
+        }
+
+        sealed class DeferPromiseWithState<TState> : IUniTaskSource
+        {
+            Func<TState, UniTask> factory;
+            TState argument;
+            UniTask task;
+            UniTask.Awaiter awaiter;
+
+            public DeferPromiseWithState(TState argument, Func<TState, UniTask> factory)
+            {
+                this.argument = argument;
+                this.factory = factory;
+            }
+
+            public void GetResult(short token)
+            {
+                awaiter.GetResult();
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                var f = Interlocked.Exchange(ref factory, null);
+                if (f != null)
+                {
+                    task = f(argument);
+                    awaiter = task.GetAwaiter();
+                }
+
+                return task.Status;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                awaiter.SourceOnCompleted(continuation, state);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return task.Status;
+            }
+        }
+
+        sealed class DeferPromiseWithState<TState, TResult> : IUniTaskSource<TResult>
+        {
+            Func<TState, UniTask<TResult>> factory;
+            TState argument;
+            UniTask<TResult> task;
+            UniTask<TResult>.Awaiter awaiter;
+
+            public DeferPromiseWithState(TState argument, Func<TState, UniTask<TResult>> factory)
+            {
+                this.argument = argument;
+                this.factory = factory;
+            }
+
+            public TResult GetResult(short token)
+            {
+                return awaiter.GetResult();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                awaiter.GetResult();
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                var f = Interlocked.Exchange(ref factory, null);
+                if (f != null)
+                {
+                    task = f(argument);
                     awaiter = task.GetAwaiter();
                 }
 
