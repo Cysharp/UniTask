@@ -241,6 +241,10 @@ namespace Cysharp.Threading.Tasks
                     {
                         TryReturn();
                     }
+                    else
+                    {
+                        TaskTracker.RemoveTracking(this);
+                    }
                 }
             }
 
@@ -461,6 +465,7 @@ namespace Cysharp.Threading.Tasks
                 result.predicate = predicate;
                 result.argument = argument;
                 result.cancellationToken = cancellationToken;
+                result.cancelImmediately = cancelImmediately;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
                 {
@@ -490,6 +495,10 @@ namespace Cysharp.Threading.Tasks
                     if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
                     {
                         TryReturn();
+                    }
+                    else
+                    {
+                        TaskTracker.RemoveTracking(this);
                     }
                 }
             }
