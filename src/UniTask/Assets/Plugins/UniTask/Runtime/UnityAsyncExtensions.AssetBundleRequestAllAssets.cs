@@ -162,6 +162,10 @@ namespace Cysharp.Threading.Tasks
                     {
                         TryReturn();
                     }
+                    else
+                    {
+                        TaskTracker.RemoveTracking(this);
+                    }
                 }
             }
 
