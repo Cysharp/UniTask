@@ -18019,6 +18019,15 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.Defer
   nameWithType: UniTask.Defer
+- uid: Cysharp.Threading.Tasks.UniTask.Defer``1(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTask})
+  name: Defer<TState>(TState, Func<TState, UniTask>)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Defer__1___0_System_Func___0_Cysharp_Threading_Tasks_UniTask__
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Defer``1(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTask})
+  name.vb: Defer(Of TState)(TState, Func(Of TState, UniTask))
+  fullName: Cysharp.Threading.Tasks.UniTask.Defer<TState>(TState, System.Func<TState, Cysharp.Threading.Tasks.UniTask>)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Defer(Of TState)(TState, System.Func(Of TState, Cysharp.Threading.Tasks.UniTask))
+  nameWithType: UniTask.Defer<TState>(TState, Func<TState, UniTask>)
+  nameWithType.vb: UniTask.Defer(Of TState)(TState, Func(Of TState, UniTask))
 - uid: Cysharp.Threading.Tasks.UniTask.Defer``1(System.Func{Cysharp.Threading.Tasks.UniTask{``0}})
   name: Defer<T>(Func<UniTask<T>>)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Defer__1_System_Func_Cysharp_Threading_Tasks_UniTask___0___
@@ -18028,6 +18037,15 @@ references:
   fullName.vb: Cysharp.Threading.Tasks.UniTask.Defer(Of T)(System.Func(Of Cysharp.Threading.Tasks.UniTask(Of T)))
   nameWithType: UniTask.Defer<T>(Func<UniTask<T>>)
   nameWithType.vb: UniTask.Defer(Of T)(Func(Of UniTask(Of T)))
+- uid: Cysharp.Threading.Tasks.UniTask.Defer``2(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTask{``1}})
+  name: Defer<TState, TResult>(TState, Func<TState, UniTask<TResult>>)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Defer__2___0_System_Func___0_Cysharp_Threading_Tasks_UniTask___1___
+  commentId: M:Cysharp.Threading.Tasks.UniTask.Defer``2(``0,System.Func{``0,Cysharp.Threading.Tasks.UniTask{``1}})
+  name.vb: Defer(Of TState, TResult)(TState, Func(Of TState, UniTask(Of TResult)))
+  fullName: Cysharp.Threading.Tasks.UniTask.Defer<TState, TResult>(TState, System.Func<TState, Cysharp.Threading.Tasks.UniTask<TResult>>)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.Defer(Of TState, TResult)(TState, System.Func(Of TState, Cysharp.Threading.Tasks.UniTask(Of TResult)))
+  nameWithType: UniTask.Defer<TState, TResult>(TState, Func<TState, UniTask<TResult>>)
+  nameWithType.vb: UniTask.Defer(Of TState, TResult)(TState, Func(Of TState, UniTask(Of TResult)))
 - uid: Cysharp.Threading.Tasks.UniTask.Delay(System.Int32,Cysharp.Threading.Tasks.DelayType,Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken,System.Boolean)
   name: Delay(Int32, DelayType, PlayerLoopTiming, CancellationToken, Boolean)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_Delay_System_Int32_Cysharp_Threading_Tasks_DelayType_Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_System_Boolean_
@@ -18627,6 +18645,15 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.WaitUntil
   nameWithType: UniTask.WaitUntil
+- uid: Cysharp.Threading.Tasks.UniTask.WaitUntil``1(``0,System.Func{``0,System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken,System.Boolean)
+  name: WaitUntil<T>(T, Func<T, Boolean>, PlayerLoopTiming, CancellationToken, Boolean)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntil__1___0_System_Func___0_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_System_Boolean_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.WaitUntil``1(``0,System.Func{``0,System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken,System.Boolean)
+  name.vb: WaitUntil(Of T)(T, Func(Of T, Boolean), PlayerLoopTiming, CancellationToken, Boolean)
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitUntil<T>(T, System.Func<T, System.Boolean>, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken, System.Boolean)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.WaitUntil(Of T)(T, System.Func(Of T, System.Boolean), Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken, System.Boolean)
+  nameWithType: UniTask.WaitUntil<T>(T, Func<T, Boolean>, PlayerLoopTiming, CancellationToken, Boolean)
+  nameWithType.vb: UniTask.WaitUntil(Of T)(T, Func(Of T, Boolean), PlayerLoopTiming, CancellationToken, Boolean)
 - uid: Cysharp.Threading.Tasks.UniTask.WaitUntilCanceled(CancellationToken,Cysharp.Threading.Tasks.PlayerLoopTiming,System.Boolean)
   name: WaitUntilCanceled(CancellationToken, PlayerLoopTiming, Boolean)
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitUntilCanceled_CancellationToken_Cysharp_Threading_Tasks_PlayerLoopTiming_System_Boolean_
@@ -18672,6 +18699,15 @@ references:
   isSpec: "True"
   fullName: Cysharp.Threading.Tasks.UniTask.WaitWhile
   nameWithType: UniTask.WaitWhile
+- uid: Cysharp.Threading.Tasks.UniTask.WaitWhile``1(``0,System.Func{``0,System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken,System.Boolean)
+  name: WaitWhile<T>(T, Func<T, Boolean>, PlayerLoopTiming, CancellationToken, Boolean)
+  href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WaitWhile__1___0_System_Func___0_System_Boolean__Cysharp_Threading_Tasks_PlayerLoopTiming_CancellationToken_System_Boolean_
+  commentId: M:Cysharp.Threading.Tasks.UniTask.WaitWhile``1(``0,System.Func{``0,System.Boolean},Cysharp.Threading.Tasks.PlayerLoopTiming,CancellationToken,System.Boolean)
+  name.vb: WaitWhile(Of T)(T, Func(Of T, Boolean), PlayerLoopTiming, CancellationToken, Boolean)
+  fullName: Cysharp.Threading.Tasks.UniTask.WaitWhile<T>(T, System.Func<T, System.Boolean>, Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken, System.Boolean)
+  fullName.vb: Cysharp.Threading.Tasks.UniTask.WaitWhile(Of T)(T, System.Func(Of T, System.Boolean), Cysharp.Threading.Tasks.PlayerLoopTiming, CancellationToken, System.Boolean)
+  nameWithType: UniTask.WaitWhile<T>(T, Func<T, Boolean>, PlayerLoopTiming, CancellationToken, Boolean)
+  nameWithType.vb: UniTask.WaitWhile(Of T)(T, Func(Of T, Boolean), PlayerLoopTiming, CancellationToken, Boolean)
 - uid: Cysharp.Threading.Tasks.UniTask.WhenAll(Cysharp.Threading.Tasks.UniTask[])
   name: WhenAll(UniTask[])
   href: api/Cysharp.Threading.Tasks.UniTask.html#Cysharp_Threading_Tasks_UniTask_WhenAll_Cysharp_Threading_Tasks_UniTask___
