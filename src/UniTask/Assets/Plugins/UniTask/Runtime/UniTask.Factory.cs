@@ -190,34 +190,34 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static UnityEngine.Events.UnityAction<T> UnityAction<T>(Func<T, UniTaskVoid> asyncAction)
         {
-            return (state) => asyncAction(state);
+            return (state) => asyncAction(state).Forget();
         }
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 s1, T2 s2) => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 state1, T2 state2) => { /* */ } ))
         /// </summary>
         public static UnityEngine.Events.UnityAction<T1, T2> UnityAction<T1, T2>(Func<T1, T2, UniTaskVoid> asyncAction)
         {
-            return (s1, s2) => asyncAction(s1, s2);
+            return (state1, state2) => asyncAction(state1, state2).Forget();
         }
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 s1, T2 s2, T3 s3) => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 state1, T2 state2, T3 state3) => { /* */ } ))
         /// </summary>
         public static UnityEngine.Events.UnityAction<T1, T2, T3> UnityAction<T1, T2, T3>(Func<T1, T2, T3, UniTaskVoid> asyncAction)
         {
-            return (s1, s2, s3) => asyncAction(s1, s2, s3);
+            return (state1, state2, state3) => asyncAction(state1, state2, state3).Forget();
         }
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 s1, T2 s2, T3 s3, T4 s4) => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 state1, T2 state2, T3 state3, T4 state4) => { /* */ } ))
         /// </summary>
         public static UnityEngine.Events.UnityAction<T1, T2, T3, T4> UnityAction<T1, T2, T3, T4>(Func<T1, T2, T3, T4, UniTaskVoid> asyncAction)
         {
-            return (s1, s2, s3, s4) => asyncAction(s1, s2, s3, s4);
+            return (state1, state2, state3, state4) => asyncAction(state1, state2, state3, state4).Forget();
         }
 
 #endif
