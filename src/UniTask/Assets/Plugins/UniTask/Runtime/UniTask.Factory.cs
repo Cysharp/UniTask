@@ -186,38 +186,38 @@ namespace Cysharp.Threading.Tasks
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(async (T state) => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T arg) => { /* */ } ))
         /// </summary>
         public static UnityEngine.Events.UnityAction<T> UnityAction<T>(Func<T, UniTaskVoid> asyncAction)
         {
-            return (state) => asyncAction(state).Forget();
+            return (arg) => asyncAction(arg).Forget();
         }
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 state1, T2 state2) => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1) => { /* */ } ))
         /// </summary>
-        public static UnityEngine.Events.UnityAction<T1, T2> UnityAction<T1, T2>(Func<T1, T2, UniTaskVoid> asyncAction)
+        public static UnityEngine.Events.UnityAction<T0, T1> UnityAction<T0, T1>(Func<T0, T1, UniTaskVoid> asyncAction)
         {
-            return (state1, state2) => asyncAction(state1, state2).Forget();
+            return (arg0, arg1) => asyncAction(arg0, arg1).Forget();
         }
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 state1, T2 state2, T3 state3) => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2) => { /* */ } ))
         /// </summary>
-        public static UnityEngine.Events.UnityAction<T1, T2, T3> UnityAction<T1, T2, T3>(Func<T1, T2, T3, UniTaskVoid> asyncAction)
+        public static UnityEngine.Events.UnityAction<T0, T1, T2> UnityAction<T0, T1, T2>(Func<T0, T1, T2, UniTaskVoid> asyncAction)
         {
-            return (state1, state2, state3) => asyncAction(state1, state2, state3).Forget();
+            return (arg0, arg1, arg2) => asyncAction(arg0, arg1, arg2).Forget();
         }
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
-        /// For example: onClick.AddListener(UniTask.UnityAction(async (T1 state1, T2 state2, T3 state3, T4 state4) => { /* */ } ))
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2, T3 arg3) => { /* */ } ))
         /// </summary>
-        public static UnityEngine.Events.UnityAction<T1, T2, T3, T4> UnityAction<T1, T2, T3, T4>(Func<T1, T2, T3, T4, UniTaskVoid> asyncAction)
+        public static UnityEngine.Events.UnityAction<T0, T1, T2, T3> UnityAction<T0, T1, T2, T3>(Func<T0, T1, T2, T3, UniTaskVoid> asyncAction)
         {
-            return (state1, state2, state3, state4) => asyncAction(state1, state2, state3, state4).Forget();
+            return (arg0, arg1, arg2, arg3) => asyncAction(arg0, arg1, arg2, arg3).Forget();
         }
 
 #endif
