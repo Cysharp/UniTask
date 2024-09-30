@@ -160,7 +160,7 @@ UniTask provides three pattern of extension methods.
 
 > Note: AssetBundleRequest has `asset` and `allAssets`, default await returns `asset`. If you want to get `allAssets`, you can use `AwaitForAllAssets()` method.
 
-The type of `UniTask` can use utilities like `UniTask.WhenAll`, `UniTask.WhenAny`. They are like `Task.WhenAll`/`Task.WhenAny` but the return type is more useful. They return value tuples so you can deconstruct each result and pass multiple types.
+The type of `UniTask` can use utilities like `UniTask.WhenAll`, `UniTask.WhenAny`, `UniTask.WhenEach`. They are like `Task.WhenAll`/`Task.WhenAny` but the return type is more useful. They return value tuples so you can deconstruct each result and pass multiple types.
 
 ```csharp
 public async UniTaskVoid LoadManyAsync()
@@ -716,6 +716,19 @@ await UniTaskAsyncEnumerable.EveryUpdate().ForEachAsync(_ =>
 }, token);
 ```
 
+`UniTask.WhenEach` that is similar to .NET 9's `Task.WhenEach` can consume new way for await multiple tasks.
+
+```csharp
+await foreach (var result in UniTask.WhenEach(task1, task2, task3))
+{
+    // The result is of type WhenEachResult<T>.
+    // It contains either `T Result` or `Exception Exception`.
+    // You can check `IsCompletedSuccessfully` or `IsFaulted` to determine whether to access `.Result` or `.Exception`.
+    // If you want to throw an exception when `IsFaulted` and retrieve the result when successful, use `GetResult()`.
+    Debug.Log(result.GetResult());
+}
+```
+
 UniTaskAsyncEnumerable implements asynchronous LINQ, similar to LINQ in `IEnumerable<T>` or Rx in `IObservable<T>`. All standard LINQ query operators can be applied to asynchronous streams. For example, the following code shows how to apply a Where filter to a button-click asynchronous stream that runs once every two clicks.
 
 ```csharp
@@ -1026,6 +1039,7 @@ Use UniTask type.
 | `Task.Run` | `UniTask.RunOnThreadPool` |
 | `Task.WhenAll` | `UniTask.WhenAll` |
 | `Task.WhenAny` | `UniTask.WhenAny` |
+| `Task.WhenEach` | `UniTask.WhenEach` |
 | `Task.CompletedTask` | `UniTask.CompletedTask` |
 | `Task.FromException` | `UniTask.FromException` |
 | `Task.FromResult` | `UniTask.FromResult` |

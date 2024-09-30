@@ -119,7 +119,28 @@ public class AsyncMessageBroker<T> : IDisposable
         connection.Dispose();
     }
 }
+public class WhenEachTest
+{
+    public async UniTask Each()
+    {
+        var a = Delay(1, 3000);
+        var b = Delay(2, 1000);
+        var c = Delay(3, 2000);
 
+        var l = new List<int>();
+        await foreach (var item in UniTask.WhenEach(a, b, c))
+        {
+            Debug.Log(item.Result);
+        }
+    }
+
+    async UniTask<int> Delay(int id, int sleep)
+    {
+        await UniTask.Delay(sleep);
+        return id;
+    }
+
+}
 
 public class SandboxMain : MonoBehaviour
 {
@@ -146,6 +167,18 @@ public class SandboxMain : MonoBehaviour
         await UniTask.DelayFrame(loop);
 
         Debug.Log("Again");
+
+
+        // var foo = InstantiateAsync<SandboxMain>(this).ToUniTask();
+
+
+        
+
+
+        // var tako = await foo;
+
+        
+
 
         return 10;
     }
@@ -557,6 +590,7 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Start()
     {
+        await new WhenEachTest().Each();
 
 
         // UniTask.Delay(TimeSpan.FromSeconds(1)).TimeoutWithoutException

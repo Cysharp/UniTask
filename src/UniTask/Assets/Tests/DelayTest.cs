@@ -1,4 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿#pragma warning disable CS0618
+
+using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using FluentAssertions;
 using NUnit.Framework;

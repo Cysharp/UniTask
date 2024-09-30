@@ -1,4 +1,6 @@
-﻿#if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+﻿#pragma warning disable CS0618
+
+#if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using UnityEngine;
