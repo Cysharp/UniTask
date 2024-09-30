@@ -145,7 +145,7 @@ namespace Cysharp.Threading.TasksTests
             public int MyProperty { get; set; }
         }
 
-        class MyBoolenClass
+        class MyBooleanClass
         {
             public bool MyProperty { get; set; }
         }
@@ -167,7 +167,7 @@ namespace Cysharp.Threading.TasksTests
         [UnityTest]
         public IEnumerator WaitUntilWithState() => UniTask.ToCoroutine(async () =>
         {
-            var v = new MyBoolenClass { MyProperty = false };
+            var v = new MyBooleanClass { MyProperty = false };
 
             UniTask.DelayFrame(10, PlayerLoopTiming.PostLateUpdate).ContinueWith(() => v.MyProperty = true).Forget();
 
@@ -195,7 +195,7 @@ namespace Cysharp.Threading.TasksTests
         [UnityTest]
         public IEnumerator WaitWhileWithState() => UniTask.ToCoroutine(async () =>
         {
-            var v = new MyBoolenClass { MyProperty = true };
+            var v = new MyBooleanClass { MyProperty = true };
 
             UniTask.DelayFrame(10, PlayerLoopTiming.PostLateUpdate).ContinueWith(() => v.MyProperty = false).Forget();
 

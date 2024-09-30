@@ -184,6 +184,78 @@ namespace Cysharp.Threading.Tasks
             return () => asyncAction(state).Forget();
         }
 
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T arg) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T> UnityAction<T>(Func<T, UniTaskVoid> asyncAction)
+        {
+            return (arg) => asyncAction(arg).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1> UnityAction<T0, T1>(Func<T0, T1, UniTaskVoid> asyncAction)
+        {
+            return (arg0, arg1) => asyncAction(arg0, arg1).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2> UnityAction<T0, T1, T2>(Func<T0, T1, T2, UniTaskVoid> asyncAction)
+        {
+            return (arg0, arg1, arg2) => asyncAction(arg0, arg1, arg2).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2, T3 arg3) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2, T3> UnityAction<T0, T1, T2, T3>(Func<T0, T1, T2, T3, UniTaskVoid> asyncAction)
+        {
+            return (arg0, arg1, arg2, arg3) => asyncAction(arg0, arg1, arg2, arg3).Forget();
+        }
+
+        // <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T arg, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T> UnityAction<T>(Func<T, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg) => asyncAction(arg, cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1> UnityAction<T0, T1>(Func<T0, T1, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg0, arg1) => asyncAction(arg0, arg1, cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2> UnityAction<T0, T1, T2>(Func<T0, T1, T2, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg0, arg1, arg2) => asyncAction(arg0, arg1, arg2, cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2, T3 arg3, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2, T3> UnityAction<T0, T1, T2, T3>(Func<T0, T1, T2, T3, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg0, arg1, arg2, arg3) => asyncAction(arg0, arg1, arg2, arg3, cancellationToken).Forget();
+        }
+
 #endif
 
         /// <summary>
