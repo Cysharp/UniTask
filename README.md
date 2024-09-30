@@ -526,6 +526,9 @@ It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.
 
 In UniTask, await directly uses native timing, while `WithCancellation` and `ToUniTask` use specified timing. This is usually not a particular problem, but with `LoadSceneAsync`, it causes a different order of Start and continuation after await. So it is recommended not to use `LoadSceneAsync.ToUniTask`.
 
+> Note: When using Unity 2023.1 or newer, ensure you have `using UnityEngine;` in the using statements of your file when working with new `UnityEngine.Awaitable` methods like `SceneManager.LoadSceneAsync`. 
+> This prevents compilation errors by avoiding the use of the `UnityEngine.AsyncOperation` version.
+
 In the stacktrace, you can check where it is running in playerloop.
 
 ![image](https://user-images.githubusercontent.com/46207/83735571-83caea80-a68b-11ea-8d22-5e22864f0d24.png)

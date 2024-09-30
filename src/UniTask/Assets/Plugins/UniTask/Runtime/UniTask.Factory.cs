@@ -184,6 +184,78 @@ namespace Cysharp.Threading.Tasks
             return () => asyncAction(state).Forget();
         }
 
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T arg) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T> UnityAction<T>(Func<T, UniTaskVoid> asyncAction)
+        {
+            return (arg) => asyncAction(arg).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1> UnityAction<T0, T1>(Func<T0, T1, UniTaskVoid> asyncAction)
+        {
+            return (arg0, arg1) => asyncAction(arg0, arg1).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2> UnityAction<T0, T1, T2>(Func<T0, T1, T2, UniTaskVoid> asyncAction)
+        {
+            return (arg0, arg1, arg2) => asyncAction(arg0, arg1, arg2).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2, T3 arg3) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2, T3> UnityAction<T0, T1, T2, T3>(Func<T0, T1, T2, T3, UniTaskVoid> asyncAction)
+        {
+            return (arg0, arg1, arg2, arg3) => asyncAction(arg0, arg1, arg2, arg3).Forget();
+        }
+
+        // <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T arg, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T> UnityAction<T>(Func<T, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg) => asyncAction(arg, cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1> UnityAction<T0, T1>(Func<T0, T1, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg0, arg1) => asyncAction(arg0, arg1, cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2> UnityAction<T0, T1, T2>(Func<T0, T1, T2, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg0, arg1, arg2) => asyncAction(arg0, arg1, arg2, cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// Create async void(UniTaskVoid) UnityAction.
+        /// For example: onClick.AddListener(UniTask.UnityAction(async (T0 arg0, T1 arg1, T2 arg2, T3 arg3, CancellationToken cancellationToken) => { /* */ } ))
+        /// </summary>
+        public static UnityEngine.Events.UnityAction<T0, T1, T2, T3> UnityAction<T0, T1, T2, T3>(Func<T0, T1, T2, T3, CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
+        {
+            return (arg0, arg1, arg2, arg3) => asyncAction(arg0, arg1, arg2, arg3, cancellationToken).Forget();
+        }
+
 #endif
 
         /// <summary>
@@ -200,6 +272,22 @@ namespace Cysharp.Threading.Tasks
         public static UniTask<T> Defer<T>(Func<UniTask<T>> factory)
         {
             return new UniTask<T>(new DeferPromise<T>(factory), 0);
+        }
+
+        /// <summary>
+        /// Defer the task creation just before call await.
+        /// </summary>
+        public static UniTask Defer<TState>(TState state, Func<TState, UniTask> factory)
+        {
+            return new UniTask(new DeferPromiseWithState<TState>(state, factory), 0);
+        }
+
+        /// <summary>
+        /// Defer the task creation just before call await.
+        /// </summary>
+        public static UniTask<TResult> Defer<TState, TResult>(TState state, Func<TState, UniTask<TResult>> factory)
+        {
+            return new UniTask<TResult>(new DeferPromiseWithState<TState, TResult>(state, factory), 0);
         }
 
         /// <summary>
@@ -448,6 +536,93 @@ namespace Cysharp.Threading.Tasks
                 if (f != null)
                 {
                     task = f();
+                    awaiter = task.GetAwaiter();
+                }
+
+                return task.Status;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                awaiter.SourceOnCompleted(continuation, state);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return task.Status;
+            }
+        }
+
+        sealed class DeferPromiseWithState<TState> : IUniTaskSource
+        {
+            Func<TState, UniTask> factory;
+            TState argument;
+            UniTask task;
+            UniTask.Awaiter awaiter;
+
+            public DeferPromiseWithState(TState argument, Func<TState, UniTask> factory)
+            {
+                this.argument = argument;
+                this.factory = factory;
+            }
+
+            public void GetResult(short token)
+            {
+                awaiter.GetResult();
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                var f = Interlocked.Exchange(ref factory, null);
+                if (f != null)
+                {
+                    task = f(argument);
+                    awaiter = task.GetAwaiter();
+                }
+
+                return task.Status;
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short token)
+            {
+                awaiter.SourceOnCompleted(continuation, state);
+            }
+
+            public UniTaskStatus UnsafeGetStatus()
+            {
+                return task.Status;
+            }
+        }
+
+        sealed class DeferPromiseWithState<TState, TResult> : IUniTaskSource<TResult>
+        {
+            Func<TState, UniTask<TResult>> factory;
+            TState argument;
+            UniTask<TResult> task;
+            UniTask<TResult>.Awaiter awaiter;
+
+            public DeferPromiseWithState(TState argument, Func<TState, UniTask<TResult>> factory)
+            {
+                this.argument = argument;
+                this.factory = factory;
+            }
+
+            public TResult GetResult(short token)
+            {
+                return awaiter.GetResult();
+            }
+
+            void IUniTaskSource.GetResult(short token)
+            {
+                awaiter.GetResult();
+            }
+
+            public UniTaskStatus GetStatus(short token)
+            {
+                var f = Interlocked.Exchange(ref factory, null);
+                if (f != null)
+                {
+                    task = f(argument);
                     awaiter = task.GetAwaiter();
                 }
 

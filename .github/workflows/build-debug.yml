@@ -81,6 +81,7 @@ jobs:
 
       # Store artifacts.
       - uses: Cysharp/Actions/.github/actions/upload-artifact@main
+        if: ${{ startsWith(matrix.unity, '2021') }} # only execute 2021
         with:
           name: UniTask.unitypackage-${{ matrix.unity }}.zip
           path: ./src/UniTask/*.unitypackage

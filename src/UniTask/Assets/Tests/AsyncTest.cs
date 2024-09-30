@@ -145,6 +145,11 @@ namespace Cysharp.Threading.TasksTests
             public int MyProperty { get; set; }
         }
 
+        class MyBooleanClass
+        {
+            public bool MyProperty { get; set; }
+        }
+
         [UnityTest]
         public IEnumerator WaitUntil() => UniTask.ToCoroutine(async () =>
         {
@@ -160,6 +165,20 @@ namespace Cysharp.Threading.TasksTests
         });
 
         [UnityTest]
+        public IEnumerator WaitUntilWithState() => UniTask.ToCoroutine(async () =>
+        {
+            var v = new MyBooleanClass { MyProperty = false };
+
+            UniTask.DelayFrame(10, PlayerLoopTiming.PostLateUpdate).ContinueWith(() => v.MyProperty = true).Forget();
+
+            var startFrame = Time.frameCount;
+            await UniTask.WaitUntil(v, static v => v.MyProperty, PlayerLoopTiming.EarlyUpdate);
+
+            var diff = Time.frameCount - startFrame;
+            diff.Should().Be(11);
+        });
+
+        [UnityTest]
         public IEnumerator WaitWhile() => UniTask.ToCoroutine(async () =>
         {
             bool t = true;
@@ -168,6 +187,20 @@ namespace Cysharp.Threading.TasksTests
 
             var startFrame = Time.frameCount;
             await UniTask.WaitWhile(() => t, PlayerLoopTiming.EarlyUpdate);
+
+            var diff = Time.frameCount - startFrame;
+            diff.Should().Be(11);
+        });
+
+        [UnityTest]
+        public IEnumerator WaitWhileWithState() => UniTask.ToCoroutine(async () =>
+        {
+            var v = new MyBooleanClass { MyProperty = true };
+
+            UniTask.DelayFrame(10, PlayerLoopTiming.PostLateUpdate).ContinueWith(() => v.MyProperty = false).Forget();
+
+            var startFrame = Time.frameCount;
+            await UniTask.WaitWhile(v, static v => v.MyProperty, PlayerLoopTiming.EarlyUpdate);
 
             var diff = Time.frameCount - startFrame;
             diff.Should().Be(11);
