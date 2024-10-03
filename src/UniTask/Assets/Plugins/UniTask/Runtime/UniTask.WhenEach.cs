@@ -39,7 +39,7 @@ namespace Cysharp.Threading.Tasks
         public WhenEachResult(Exception exception)
         {
             if (exception == null) throw new ArgumentNullException(nameof(exception));
-            this.Result = default!;
+            this.Result = default;
             this.Exception = exception;
         }
 
@@ -144,24 +144,24 @@ namespace Cysharp.Threading.Tasks
                 {
                     RunWhenEachTask(self, array[i], length).Forget();
                 }
+            }
 
-                static async UniTaskVoid RunWhenEachTask(Enumerator self, UniTask<T> task, int length)
+            static async UniTaskVoid RunWhenEachTask(Enumerator self, UniTask<T> task, int length)
+            {
+                try
                 {
-                    try
-                    {
-                        var result = await task;
-                        self.channel.Writer.TryWrite(new WhenEachResult<T>(result));
-                    }
-                    catch (Exception ex)
-                    {
-                        self.channel.Writer.TryWrite(new WhenEachResult<T>(ex));
-                    }
+                    var result = await task;
+                    self.channel.Writer.TryWrite(new WhenEachResult<T>(result));
+                }
+                catch (Exception ex)
+                {
+                    self.channel.Writer.TryWrite(new WhenEachResult<T>(ex));
+                }
 
-                    if (Interlocked.Increment(ref self.completeCount) == length)
-                    {
-                        self.state = WhenEachState.Completed;
-                        self.channel.Writer.TryComplete();
-                    }
+                if (Interlocked.Increment(ref self.completeCount) == length)
+                {
+                    self.state = WhenEachState.Completed;
+                    self.channel.Writer.TryComplete();
                 }
             }
 
