@@ -15,6 +15,12 @@ namespace Cysharp.Threading.Tasks
             return new AnonymousProgress<T>(handler);
         }
 
+        public static IProgress<T> Create<T, TState>(TState state, Action<T, TState> handler)
+        {
+            if (handler == null) return NullProgress<T>.Instance;
+            return new AnonymousProgress<T, TState>(handler, state);
+        }
+
         public static IProgress<T> CreateOnlyValueChanged<T>(Action<T> handler, IEqualityComparer<T> comparer = null)
         {
             if (handler == null) return NullProgress<T>.Instance;
@@ -22,6 +28,16 @@ namespace Cysharp.Threading.Tasks
             return new OnlyValueChangedProgress<T>(handler, comparer ?? UnityEqualityComparer.GetDefault<T>());
 #else
             return new OnlyValueChangedProgress<T>(handler, comparer ?? EqualityComparer<T>.Default);
+#endif
+        }
+
+        public static IProgress<T> CreateOnlyValueChanged<T, TState>(TState state, Action<T, TState> handler, IEqualityComparer<T> comparer = null)
+        {
+            if (handler == null) return NullProgress<T>.Instance;
+#if UNITY_2018_3_OR_NEWER
+            return new OnlyValueChangedProgress<T, TState>(handler, state, comparer ?? UnityEqualityComparer.GetDefault<T>());
+#else
+            return new OnlyValueChangedProgress<T, TState>(handler, state, comparer ?? EqualityComparer<T>.Default);
 #endif
         }
 
@@ -54,6 +70,23 @@ namespace Cysharp.Threading.Tasks
             }
         }
 
+        sealed class AnonymousProgress<T, TState> : IProgress<T>
+        {
+            readonly Action<T, TState> action;
+            readonly TState state;
+
+            public AnonymousProgress(Action<T, TState> action, TState state)
+            {
+                this.action = action;
+                this.state = state;
+            }
+
+            public void Report(T value)
+            {
+                action(value, state);
+            }
+        }
+
         sealed class OnlyValueChangedProgress<T> : IProgress<T>
         {
             readonly Action<T> action;
@@ -81,6 +114,38 @@ namespace Cysharp.Threading.Tasks
 
                 latestValue = value;
                 action(value);
+            }
+        }
+
+        sealed class OnlyValueChangedProgress<T, TState> : IProgress<T>
+        {
+            readonly Action<T, TState> action;
+            readonly TState state;
+            readonly IEqualityComparer<T> comparer;
+            bool isFirstCall;
+            T latestValue;
+
+            public OnlyValueChangedProgress(Action<T, TState> action, TState state, IEqualityComparer<T> comparer)
+            {
+                this.action = action;
+                this.state = state;
+                this.comparer = comparer;
+                this.isFirstCall = true;
+            }
+
+            public void Report(T value)
+            {
+                if (isFirstCall)
+                {
+                    isFirstCall = false;
+                }
+                else if (comparer.Equals(value, latestValue))
+                {
+                    return;
+                }
+
+                latestValue = value;
+                action(value, state);
             }
         }
     }
