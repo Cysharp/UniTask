@@ -67,6 +67,7 @@ async UniTask<string> DemoAsync()
     await SceneManager.LoadSceneAsync("scene2");
 
     // .WithCancellation enables Cancel, GetCancellationTokenOnDestroy synchornizes with lifetime of GameObject
+    // after Unity 2022.2, you can use `destroyCancellationToken` in MonoBehaviour
     var asset2 = await Resources.LoadAsync<TextAsset>("bar").WithCancellation(this.GetCancellationTokenOnDestroy());
 
     // .ToUniTask accepts progress callback(and all options), Progress.Create is a lightweight alternative of IProgress<T>
@@ -292,6 +293,8 @@ public class MyBehaviour : MonoBehaviour
     }
 }
 ```
+
+After Unity 2022.2, Unity adds CancellationToken in [MonoBehaviour.destroyCancellationToken](https://docs.unity3d.com/ScriptReference/MonoBehaviour-destroyCancellationToken.html) and [Application.exitCancellationToken](https://docs.unity3d.com/ScriptReference/Application-exitCancellationToken.html).
 
 When cancellation is detected, all methods throw `OperationCanceledException` and propagate upstream. When exception(not limited to `OperationCanceledException`) is not handled in async method, it is propagated finally to `UniTaskScheduler.UnobservedTaskException`. The default behaviour of received unhandled exception is to write log as exception. Log level can be changed using `UniTaskScheduler.UnobservedExceptionWriteLogType`. If you want to use custom behaviour, set an action to `UniTaskScheduler.UnobservedTaskException.`
 
@@ -952,6 +955,14 @@ public class AsyncMessageBroker<T> : IDisposable
     }
 }
 ```
+
+vs Awaitable
+---
+Unity 6 introduces the awaitable type, [Awaitable](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Awaitable.html). To put it simply, Awaitable can be considered a subset of UniTask, and in fact, Awaitable's design was influenced by UniTask. It should be able to handle PlayerLoop-based awaits, pooled Tasks, and support for cancellation with `CancellationToken` in a similar way. With its inclusion in the standard library, you may wonder whether to continue using UniTask or migrate to Awaitable. Here's a brief guide.
+
+First, the functionality provided by Awaitable is equivalent to what coroutines offer. Instead of `yield return`, you use await; `await NextFrameAsync()` replaces `yield return null`; and there are equivalents for `WaitForSeconds` and `EndOfFrame`. However, that's the extent of it. Being coroutine-based in terms of functionality, it lacks Task-based features. In practical application development using async/await, operations like `WhenAll` are essential. Additionally, UniTask enables many frame-based operations (such as `DelayFrame`) and more flexible PlayerLoopTiming control, which are not available in Awaitable. Of course, there's no Tracker Window either.
+
+Therefore, I recommend using UniTask for application development. UniTask is a superset of Awaitable and includes many essential features. For library development, where you want to avoid external dependencies, using Awaitable as a return type for methods would be appropriate. UniTask can be converted to Awaitable using `ToAwaitable`, and Awaitable can be converted to UniTask using `ToUniTask`, so there's no issue in handling Awaitable-based functionality within the UniTask library. Of course, if you don't need to worry about dependencies, using UniTask would be the best choice even for library development.
 
 For Unit Testing
 ---
