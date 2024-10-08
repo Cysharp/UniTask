@@ -33,6 +33,7 @@ For advanced tips, see blog post: [Extends UnityWebRequest via async decorator p
 - [AsyncEnumerable and Async LINQ](#asyncenumerable-and-async-linq)
 - [Awaitable Events](#awaitable-events)
 - [Channel](#channel)
+- [vs Awaitable](#vs-awaitable)
 - [For Unit Testing](#for-unit-testing)
 - [ThreadPool limitation](#threadpool-limitation)
 - [IEnumerator.ToUniTask limitation](#ienumeratortounitask-limitation)
