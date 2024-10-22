@@ -497,6 +497,12 @@ namespace Cysharp.Threading.Tasks
                 ThrowInvalidLoopTiming(timing);
             }
             runner.AddAction(action);
+
+            // Ensure references are not lost after resuming
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
         }
 
         static void ThrowInvalidLoopTiming(PlayerLoopTiming playerLoopTiming)
@@ -512,6 +518,12 @@ namespace Cysharp.Threading.Tasks
                 ThrowInvalidLoopTiming(timing);
             }
             q.Enqueue(continuation);
+
+            // Ensure references are not lost after resuming
+            if (continuation == null)
+            {
+                throw new ArgumentNullException(nameof(continuation));
+            }
         }
 
         // Diagnostics helper
@@ -578,4 +590,3 @@ namespace Cysharp.Threading.Tasks
 
     }
 }
-

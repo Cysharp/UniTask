@@ -1,4 +1,3 @@
-﻿
 using System;
 using UnityEngine;
 
@@ -17,8 +16,6 @@ namespace Cysharp.Threading.Tasks.Internal
         bool running = false;
         IPlayerLoopItem[] loopItems = new IPlayerLoopItem[InitialSize];
         MinimumQueue<IPlayerLoopItem> waitQueue = new MinimumQueue<IPlayerLoopItem>(InitialSize);
-
-
 
         public PlayerLoopRunner(PlayerLoopTiming timing)
         {
@@ -240,6 +237,14 @@ namespace Cysharp.Threading.Tasks.Internal
                     continue;
                 }
 
+                // Reinitialize references after resuming
+                for (int i = 0; i < loopItems.Length; i++)
+                {
+                    if (loopItems[i] == null)
+                    {
+                        loopItems[i] = waitQueue.Dequeue();
+                    }
+                }
 
                 lock (runningAndQueueLock)
                 {
@@ -257,4 +262,3 @@ namespace Cysharp.Threading.Tasks.Internal
         }
     }
 }
-

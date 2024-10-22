@@ -1,4 +1,3 @@
-﻿
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
@@ -56,7 +55,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             else
             {
-                runnerPromise.SetException(exception);
+                if (runnerPromise != null)
+                {
+                    runnerPromise.SetException(exception);
+                }
             }
         }
 
@@ -83,7 +85,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
-            awaiter.OnCompleted(runnerPromise.MoveNext);
+            if (runnerPromise != null)
+            {
+                awaiter.OnCompleted(runnerPromise.MoveNext);
+            }
         }
 
         // 6. AwaitUnsafeOnCompleted
@@ -99,7 +104,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
-            awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
+            if (runnerPromise != null)
+            {
+                awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
+            }
         }
 
         // 7. Start
@@ -183,7 +191,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             else
             {
-                runnerPromise.SetException(exception);
+                if (runnerPromise != null)
+                {
+                    runnerPromise.SetException(exception);
+                }
             }
         }
 
@@ -198,7 +209,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             }
             else
             {
-                runnerPromise.SetResult(result);
+                if (runnerPromise != null)
+                {
+                    runnerPromise.SetResult(result);
+                }
             }
         }
 
@@ -214,7 +228,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine, T>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
-            awaiter.OnCompleted(runnerPromise.MoveNext);
+            if (runnerPromise != null)
+            {
+                awaiter.OnCompleted(runnerPromise.MoveNext);
+            }
         }
 
         // 6. AwaitUnsafeOnCompleted
@@ -230,7 +247,10 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine, T>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
-            awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
+            if (runnerPromise != null)
+            {
+                awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
+            }
         }
 
         // 7. Start
