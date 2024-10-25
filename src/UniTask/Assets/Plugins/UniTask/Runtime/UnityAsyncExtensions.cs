@@ -42,6 +42,7 @@ namespace Cysharp.Threading.Tasks
             return new UniTask(AsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, cancelImmediately, out var token), token);
         }
 
+#if !UNITY_2023_1_OR_NEWER
         public struct AsyncOperationAwaiter : ICriticalNotifyCompletion
         {
             AsyncOperation asyncOperation;
@@ -81,6 +82,7 @@ namespace Cysharp.Threading.Tasks
                 asyncOperation.completed += continuationAction;
             }
         }
+#endif
 
         sealed class AsyncOperationConfiguredSource : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<AsyncOperationConfiguredSource>
         {
@@ -99,6 +101,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration cancellationTokenRegistration;
             bool cancelImmediately;
             bool completed;
+            bool allowReturn;
 
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
@@ -126,7 +129,8 @@ namespace Cysharp.Threading.Tasks
                 result.cancellationToken = cancellationToken;
                 result.cancelImmediately = cancelImmediately;
                 result.completed = false;
-                
+                result.allowReturn = false;
+
                 asyncOperation.completed += result.continuationAction;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
@@ -154,9 +158,16 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        TryReturn();
+                        if (allowReturn)
+                        {
+                            TryReturn();
+                        }
+                        else
+                        {
+                            allowReturn = true;
+                        }
                     }
                     else
                     {
@@ -183,9 +194,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                // Already completed
-                if (completed || asyncOperation == null)
+                if (allowReturn)
                 {
+                    TryReturn();
+                    return false;
+                }
+
+                if (completed)
+                {
+                    allowReturn = true;
                     return false;
                 }
 
@@ -202,6 +219,8 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
+                    cancellationTokenRegistration.Dispose();
+                    allowReturn = true;
                     core.TrySetResult(AsyncUnit.Default);
                     return false;
                 }
@@ -212,29 +231,31 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
+                cancellationTokenRegistration.Dispose();
                 core.Reset();
                 asyncOperation.completed -= continuationAction;
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                cancellationTokenRegistration.Dispose();
                 cancelImmediately = default;
                 return pool.TryPush(this);
             }
 
             void Continuation(AsyncOperation _)
             {
-                if (completed)
-                {
-                    return;
-                }
                 completed = true;
+                cancellationTokenRegistration.Dispose();
                 if (cancellationToken.IsCancellationRequested)
                 {
                     core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
+                    if (progress != null)
+                    {
+                        progress.Report(asyncOperation.progress);
+                    }
+
                     core.TrySetResult(AsyncUnit.Default);
                 }
             }
@@ -329,6 +350,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration cancellationTokenRegistration;
             bool cancelImmediately;
             bool completed;
+            bool allowReturn;
 
             UniTaskCompletionSourceCore<UnityEngine.Object> core;
 
@@ -356,7 +378,8 @@ namespace Cysharp.Threading.Tasks
                 result.cancellationToken = cancellationToken;
                 result.cancelImmediately = cancelImmediately;
                 result.completed = false;
-                
+                result.allowReturn = false;
+
                 asyncOperation.completed += result.continuationAction;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
@@ -384,9 +407,16 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        TryReturn();
+                        if (allowReturn)
+                        {
+                            TryReturn();
+                        }
+                        else
+                        {
+                            allowReturn = true;
+                        }
                     }
                     else
                     {
@@ -417,9 +447,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                // Already completed
-                if (completed || asyncOperation == null)
+                if (allowReturn)
                 {
+                    TryReturn();
+                    return false;
+                }
+
+                if (completed)
+                {
+                    allowReturn = true;
                     return false;
                 }
 
@@ -436,6 +472,8 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
+                    cancellationTokenRegistration.Dispose();
+                    allowReturn = true;
                     core.TrySetResult(asyncOperation.asset);
                     return false;
                 }
@@ -446,29 +484,31 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
+                cancellationTokenRegistration.Dispose();
                 core.Reset();
                 asyncOperation.completed -= continuationAction;
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                cancellationTokenRegistration.Dispose();
                 cancelImmediately = default;
                 return pool.TryPush(this);
             }
 
             void Continuation(AsyncOperation _)
             {
-                if (completed)
-                {
-                    return;
-                }
                 completed = true;
+                cancellationTokenRegistration.Dispose();
                 if (cancellationToken.IsCancellationRequested)
                 {
                     core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
+                    if (progress != null)
+                    {
+                        progress.Report(asyncOperation.progress);
+                    }
+
                     core.TrySetResult(asyncOperation.asset);
                 }
             }
@@ -564,6 +604,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration cancellationTokenRegistration;
             bool cancelImmediately;
             bool completed;
+            bool allowReturn;
 
             UniTaskCompletionSourceCore<UnityEngine.Object> core;
 
@@ -591,7 +632,8 @@ namespace Cysharp.Threading.Tasks
                 result.cancellationToken = cancellationToken;
                 result.cancelImmediately = cancelImmediately;
                 result.completed = false;
-                
+                result.allowReturn = false;
+
                 asyncOperation.completed += result.continuationAction;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
@@ -619,9 +661,16 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        TryReturn();
+                        if (allowReturn)
+                        {
+                            TryReturn();
+                        }
+                        else
+                        {
+                            allowReturn = true;
+                        }
                     }
                     else
                     {
@@ -652,9 +701,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                // Already completed
-                if (completed || asyncOperation == null)
+                if (allowReturn)
                 {
+                    TryReturn();
+                    return false;
+                }
+
+                if (completed)
+                {
+                    allowReturn = true;
                     return false;
                 }
 
@@ -671,6 +726,8 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
+                    cancellationTokenRegistration.Dispose();
+                    allowReturn = true;
                     core.TrySetResult(asyncOperation.asset);
                     return false;
                 }
@@ -681,29 +738,31 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
+                cancellationTokenRegistration.Dispose();
                 core.Reset();
                 asyncOperation.completed -= continuationAction;
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                cancellationTokenRegistration.Dispose();
                 cancelImmediately = default;
                 return pool.TryPush(this);
             }
 
             void Continuation(AsyncOperation _)
             {
-                if (completed)
-                {
-                    return;
-                }
                 completed = true;
+                cancellationTokenRegistration.Dispose();
                 if (cancellationToken.IsCancellationRequested)
                 {
                     core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
+                    if (progress != null)
+                    {
+                        progress.Report(asyncOperation.progress);
+                    }
+
                     core.TrySetResult(asyncOperation.asset);
                 }
             }
@@ -800,6 +859,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration cancellationTokenRegistration;
             bool cancelImmediately;
             bool completed;
+            bool allowReturn;
 
             UniTaskCompletionSourceCore<AssetBundle> core;
 
@@ -827,7 +887,8 @@ namespace Cysharp.Threading.Tasks
                 result.cancellationToken = cancellationToken;
                 result.cancelImmediately = cancelImmediately;
                 result.completed = false;
-                
+                result.allowReturn = false;
+
                 asyncOperation.completed += result.continuationAction;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
@@ -855,9 +916,16 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        TryReturn();
+                        if (allowReturn)
+                        {
+                            TryReturn();
+                        }
+                        else
+                        {
+                            allowReturn = true;
+                        }
                     }
                     else
                     {
@@ -888,9 +956,15 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                // Already completed
-                if (completed || asyncOperation == null)
+                if (allowReturn)
                 {
+                    TryReturn();
+                    return false;
+                }
+
+                if (completed)
+                {
+                    allowReturn = true;
                     return false;
                 }
 
@@ -907,6 +981,8 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
+                    cancellationTokenRegistration.Dispose();
+                    allowReturn = true;
                     core.TrySetResult(asyncOperation.assetBundle);
                     return false;
                 }
@@ -916,30 +992,32 @@ namespace Cysharp.Threading.Tasks
 
             bool TryReturn()
             {
+                cancellationTokenRegistration.Dispose();
                 TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation.completed -= continuationAction;
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                cancellationTokenRegistration.Dispose();
                 cancelImmediately = default;
                 return pool.TryPush(this);
             }
 
             void Continuation(AsyncOperation _)
             {
-                if (completed)
-                {
-                    return;
-                }
                 completed = true;
+                cancellationTokenRegistration.Dispose();
                 if (cancellationToken.IsCancellationRequested)
                 {
                     core.TrySetCanceled(cancellationToken);
                 }
                 else
                 {
+                    if (progress != null)
+                    {
+                        progress.Report(asyncOperation.progress);
+                    }
+
                     core.TrySetResult(asyncOperation.assetBundle);
                 }
             }
@@ -1051,6 +1129,7 @@ namespace Cysharp.Threading.Tasks
             CancellationTokenRegistration cancellationTokenRegistration;
             bool cancelImmediately;
             bool completed;
+            bool allowReturn;
 
             UniTaskCompletionSourceCore<UnityWebRequest> core;
 
@@ -1078,7 +1157,8 @@ namespace Cysharp.Threading.Tasks
                 result.cancellationToken = cancellationToken;
                 result.cancelImmediately = cancelImmediately;
                 result.completed = false;
-                
+                result.allowReturn = false;
+
                 asyncOperation.completed += result.continuationAction;
 
                 if (cancelImmediately && cancellationToken.CanBeCanceled)
@@ -1107,9 +1187,16 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        TryReturn();
+                        if (allowReturn)
+                        {
+                            TryReturn();
+                        }
+                        else
+                        {
+                            allowReturn = true;
+                        }
                     }
                     else
                     {
@@ -1140,15 +1227,20 @@ namespace Cysharp.Threading.Tasks
 
             public bool MoveNext()
             {
-                // Already completed
-                if (completed || asyncOperation == null)
+                if (allowReturn)
                 {
+                    TryReturn();
+                    return false;
+                }
+
+                if (completed)
+                {
+                    allowReturn = true;
                     return false;
                 }
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    asyncOperation.webRequest.Abort();
                     core.TrySetCanceled(cancellationToken);
                     return false;
                 }
@@ -1160,14 +1252,9 @@ namespace Cysharp.Threading.Tasks
 
                 if (asyncOperation.isDone)
                 {
-                    if (asyncOperation.webRequest.IsError())
-                    {
-                        core.TrySetException(new UnityWebRequestException(asyncOperation.webRequest));
-                    }
-                    else
-                    {
-                        core.TrySetResult(asyncOperation.webRequest);
-                    }
+                    cancellationTokenRegistration.Dispose();
+                    allowReturn = true;
+                    core.TrySetResult(asyncOperation.webRequest);
                     return false;
                 }
 
@@ -1176,24 +1263,22 @@ namespace Cysharp.Threading.Tasks
 
             bool TryReturn()
             {
+                cancellationTokenRegistration.Dispose();
                 TaskTracker.RemoveTracking(this);
                 core.Reset();
                 asyncOperation.completed -= continuationAction;
                 asyncOperation = default;
                 progress = default;
                 cancellationToken = default;
-                cancellationTokenRegistration.Dispose();
                 cancelImmediately = default;
                 return pool.TryPush(this);
             }
 
             void Continuation(AsyncOperation _)
             {
-                if (completed)
-                {
-                    return;
-                }
                 completed = true;
+                cancellationTokenRegistration.Dispose();
+
                 if (cancellationToken.IsCancellationRequested)
                 {
                     core.TrySetCanceled(cancellationToken);
@@ -1204,6 +1289,11 @@ namespace Cysharp.Threading.Tasks
                 }
                 else
                 {
+                    if (progress != null)
+                    {
+                        progress.Report(asyncOperation.progress);
+                    }
+
                     core.TrySetResult(asyncOperation.webRequest);
                 }
             }

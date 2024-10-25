@@ -135,8 +135,8 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
-                core.Reset();
                 cancellationTokenRegistration.Dispose();
+                core.Reset();
                 cancellationTokenRegistration = default;
                 parent.triggerEvent.Remove(this);
                 parent = null;
@@ -453,8 +453,8 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
-                core.Reset();
                 cancellationTokenRegistration.Dispose();
+                core.Reset();
                 cancellationTokenRegistration = default;
                 parent.triggerEvent.Remove(this);
                 parent = null;

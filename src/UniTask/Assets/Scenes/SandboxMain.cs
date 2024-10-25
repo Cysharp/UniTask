@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using UnityEngine.Events;
 
 
-
 // using DG.Tweening;
 
 
@@ -180,7 +179,7 @@ public class SandboxMain : MonoBehaviour
 
 
         //UnityAction action;
-        
+
 
         return 10;
     }
@@ -592,69 +591,78 @@ public class SandboxMain : MonoBehaviour
 
     async UniTaskVoid Start()
     {
-        await new WhenEachTest().Each();
-
-
-        // UniTask.Delay(TimeSpan.FromSeconds(1)).TimeoutWithoutException
-
-
-        var currentLoop = PlayerLoop.GetDefaultPlayerLoop();
-        PlayerLoopHelper.Initialize(ref currentLoop, InjectPlayerLoopTimings.Minimum); // minimum is Update | FixedUpdate | LastPostLateUpdate
-
-
-
-        
-
-
-        // TestAsync(cts.Token).Forget();
-
-        okButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        var p = Progress.Create<float>(x =>
         {
-            await UniTask.WaitForEndOfFrame(this);
-            var texture = new Texture2D(Screen.width, Screen.height);
-            texture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-            texture.Apply();
+            Debug.Log(x);
+        });
+        var foo = await Resources.LoadAsync("test2").ToUniTask(progress: p) as TextAsset;
+        Debug.Log(foo.text);
+        //var foo2 = await Resources.LoadAsync("test2").ToUniTask() as TextAsset;
+        //Debug.Log(foo2.text); // onemore?
 
-            var jpg = texture.EncodeToJPG();
-            File.WriteAllBytes("testscreencapture.jpg", jpg);
-            Debug.Log("ok?");
 
-            //var texture = ScreenCapture.CaptureScreenshotAsTexture();
-            //if (texture == null)
-            //{
-            //    Debug.Log("fail");
-            //}
-            //else
-            //{
-            //    var jpg = texture.EncodeToJPG();
-            //    File.WriteAllBytes("testscreencapture.jpg", jpg);
-            //    Debug.Log("ok?");
-            //}
-        }));
 
-        cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
-        {
-            //clickCancelSource.Cancel();
+        //await new WhenEachTest().Each();
 
-            //RunCheck(PlayerLoopTiming.Initialization).Forget();
-            //RunCheck(PlayerLoopTiming.LastInitialization).Forget();
-            //RunCheck(PlayerLoopTiming.EarlyUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.LastEarlyUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.FixedUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.LastFixedUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.PreUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.LastPreUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.Update).Forget();
-            //RunCheck(PlayerLoopTiming.LastUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.PreLateUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.LastPreLateUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.PostLateUpdate).Forget();
-            //RunCheck(PlayerLoopTiming.LastPostLateUpdate).Forget();
 
-            await UniTask.Yield();
-        }));
+        //// UniTask.Delay(TimeSpan.FromSeconds(1)).TimeoutWithoutException
 
-        await UniTask.Yield();
+
+        //var currentLoop = PlayerLoop.GetDefaultPlayerLoop();
+        //PlayerLoopHelper.Initialize(ref currentLoop, InjectPlayerLoopTimings.Minimum); // minimum is Update | FixedUpdate | LastPostLateUpdate
+
+
+
+
+
+
+        //// TestAsync(cts.Token).Forget();
+
+        //okButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        //{
+        //    await UniTask.WaitForEndOfFrame(this);
+        //    var texture = new Texture2D(Screen.width, Screen.height);
+        //    texture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+        //    texture.Apply();
+
+        //    var jpg = texture.EncodeToJPG();
+        //    File.WriteAllBytes("testscreencapture.jpg", jpg);
+        //    Debug.Log("ok?");
+
+        //    //var texture = ScreenCapture.CaptureScreenshotAsTexture();
+        //    //if (texture == null)
+        //    //{
+        //    //    Debug.Log("fail");
+        //    //}
+        //    //else
+        //    //{
+        //    //    var jpg = texture.EncodeToJPG();
+        //    //    File.WriteAllBytes("testscreencapture.jpg", jpg);
+        //    //    Debug.Log("ok?");
+        //    //}
+        //}));
+
+        //cancelButton.onClick.AddListener(UniTask.UnityAction(async () =>
+        //{
+        //    //clickCancelSource.Cancel();
+
+        //    //RunCheck(PlayerLoopTiming.Initialization).Forget();
+        //    //RunCheck(PlayerLoopTiming.LastInitialization).Forget();
+        //    //RunCheck(PlayerLoopTiming.EarlyUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.LastEarlyUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.FixedUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.LastFixedUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.PreUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.LastPreUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.Update).Forget();
+        //    //RunCheck(PlayerLoopTiming.LastUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.PreLateUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.LastPreLateUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.PostLateUpdate).Forget();
+        //    //RunCheck(PlayerLoopTiming.LastPostLateUpdate).Forget();
+
+        //    await UniTask.Yield();
+        //}));
     }
 
     async UniTaskVoid RunCheck(PlayerLoopTiming timing)

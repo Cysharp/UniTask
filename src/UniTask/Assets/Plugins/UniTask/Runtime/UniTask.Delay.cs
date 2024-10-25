@@ -255,7 +255,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    if (!cancellationToken.IsCancellationRequested)
                     {
                         TryReturn();
                     }
@@ -289,6 +289,7 @@ namespace Cysharp.Threading.Tasks
                     return false;
                 }
 
+                cancellationTokenRegistration.Dispose();
                 core.TrySetResult(null);
                 return false;
             }
@@ -296,9 +297,9 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
+                cancellationTokenRegistration.Dispose();
                 core.Reset();
                 cancellationToken = default;
-                cancellationTokenRegistration.Dispose();
                 cancelImmediately = default;
                 return pool.TryPush(this);
             }
@@ -366,7 +367,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 finally
                 {
-                    if (!(cancelImmediately && cancellationToken.IsCancellationRequested))
+                    if (!cancellationToken.IsCancellationRequested)
                     {
                         TryReturn();
                     }
@@ -412,9 +413,9 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
+                cancellationTokenRegistration.Dispose();
                 core.Reset();
                 cancellationToken = default;
-                cancellationTokenRegistration.Dispose();
                 return pool.TryPush(this);
             }
         }

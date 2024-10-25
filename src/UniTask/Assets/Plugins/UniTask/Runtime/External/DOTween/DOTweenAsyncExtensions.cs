@@ -353,8 +353,8 @@ namespace Cysharp.Threading.Tasks
             bool TryReturn()
             {
                 TaskTracker.RemoveTracking(this);
-                core.Reset();
                 cancellationRegistration.Dispose();
+                core.Reset();
 
                 RestoreOriginalCallback();
 
