@@ -6,14 +6,15 @@ UniTask
 
 - 基于值类型的`UniTask<T>`和自定义的 AsyncMethodBuilder 来实现0GC
 - 使所有 Unity 的 AsyncOperations 和 Coroutines 可等待
-- 基于 PlayerLoop 的任务( `UniTask.Yield`, `UniTask.Delay`, `UniTask.DelayFrame`, etc..) 可以替换所有协程操作
+- 基于 PlayerLoop 的任务(`UniTask.Yield`，`UniTask.Delay`，`UniTask.DelayFrame`等..) 可以替换所有协程操作
 - 对MonoBehaviour 消息事件和 uGUI 事件进行 可等待/异步枚举 拓展
 - 完全在 Unity 的 PlayerLoop 上运行，因此不使用Thread，并且同样能在 WebGL、wasm 等平台上运行。
 - 带有 Channel 和 AsyncReactiveProperty的异步 LINQ，
 - 提供一个 TaskTracker EditorWindow 以追踪所有UniTask分配来预防内存泄漏
 - 与原生 Task/ValueTask/IValueTaskSource 高度兼容的行为
 
-有关技术细节，请参阅博客文章：[UniTask v2 — Unity 的0GC async/await 以及 异步LINQ 的使用](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)
+有关技术细节，请参阅博客文章：[UniTask v2 — Unity 的0GC async/await 以及 异步LINQ 的使用
+](https://medium.com/@neuecc/unitask-v2-zero-allocation-async-await-for-unity-with-asynchronous-linq-1aa9c96aa7dd)
 有关高级技巧，请参阅博客文章：[通过异步装饰器模式扩展 UnityWebRequest — UniTask 的高级技术](https://medium.com/@neuecc/extends-unitywebrequest-via-async-decorator-pattern-advanced-techniques-of-unitask-ceff9c5ee846)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -22,7 +23,7 @@ UniTask
 
 - [入门](#%E5%85%A5%E9%97%A8)
 - [UniTask 和 AsyncOperation 基础知识](#unitask-%E5%92%8C-asyncoperation-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86)
-- [Cancellation and Exception handling](#cancellation-and-exception-handling)
+- [Cancellation and Exception 处理](#cancellation-and-exception-handling)
 - [超时处理](#%E8%B6%85%E6%97%B6%E5%A4%84%E7%90%86)
 - [进度](#%E8%BF%9B%E5%BA%A6)
 - [PlayerLoop](#playerloop)
@@ -32,6 +33,7 @@ UniTask
 - [AsyncEnumerable 和 Async LINQ](#asyncenumerable-%E5%92%8C-async-linq)
 - [可等待事件](#%E5%8F%AF%E7%AD%89%E5%BE%85%E4%BA%8B%E4%BB%B6)
 - [Channel](#channel)
+- [与 Awaitable 对比](#%E4%B8%8E-awaitable-%E5%AF%B9%E6%AF%94)
 - [单元测试](#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95)
 - [线程池限制](#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E9%99%90%E5%88%B6)
 - [IEnumerator.ToUniTask 限制](#ienumeratortounitask-%E9%99%90%E5%88%B6)
@@ -43,7 +45,6 @@ UniTask
 - [API References](#api-references)
 - [UPM Package](#upm-package)
   - [通过 git URL 安装](#%E9%80%9A%E8%BF%87-git-url-%E5%AE%89%E8%A3%85)
-  - [通过 OpenUPM 安装](#%E9%80%9A%E8%BF%87-openupm-%E5%AE%89%E8%A3%85)
 - [.NET Core](#net-core)
 - [License](#license)
 
@@ -67,6 +68,7 @@ async UniTask<string> DemoAsync()
     await SceneManager.LoadSceneAsync("scene2");
 
     // .WithCancellation 会启用取消功能，GetCancellationTokenOnDestroy 表示获取一个依赖对象生命周期的Cancel句柄，当对象被销毁时，将会调用这个Cancel句柄，从而实现取消的功能
+    // 在Unity 2022.2之后，你可以在MonoBehaviour中使用`destroyCancellationToken`
     var asset2 = await Resources.LoadAsync<TextAsset>("bar").WithCancellation(this.GetCancellationTokenOnDestroy());
 
     // .ToUniTask 可接收一个 progress 回调以及一些配置参数，Progress.Create是IProgress<T>的轻量级替代方案
@@ -78,16 +80,21 @@ async UniTask<string> DemoAsync()
     // yield return new WaitForSeconds/WaitForSecondsRealtime 的替代方案
     await UniTask.Delay(TimeSpan.FromSeconds(10), ignoreTimeScale: false);
     
-    // 可以等待任何 playerloop 的生命周期(PreUpdate, Update, LateUpdate, 等...)
+    // 可以等待任何 playerloop 的生命周期(PreUpdate，Update，LateUpdate，等...)
     await UniTask.Yield(PlayerLoopTiming.PreLateUpdate);
 
     // yield return null 替代方案
     await UniTask.Yield();
     await UniTask.NextFrame();
 
-    // WaitForEndOfFrame 替代方案 (需要 MonoBehaviour(CoroutineRunner))
-    await UniTask.WaitForEndOfFrame(this); // this 是一个 MonoBehaviour
-
+    // WaitForEndOfFrame 替代方案
+#if UNITY_2023_1_OR_NEWER
+    await UniTask.WaitForEndOfFrame();
+#else
+    // 需要 MonoBehaviour(CoroutineRunner)
+    await UniTask.WaitForEndOfFrame(this); // this是一个 MonoBehaviour
+#endif
+    
     // yield return new WaitForFixedUpdate 替代方案，(和 UniTask.Yield(PlayerLoopTiming.FixedUpdate) 效果一样)
     await UniTask.WaitForFixedUpdate();
     
@@ -108,7 +115,7 @@ async UniTask<string> DemoAsync()
 
     /* 工作在线程池上的代码 */
 
-    // 转回主线程
+    // 转回主线程（和UniRx中的`ObserveOnMainThread`效果一样）
     await UniTask.SwitchToMainThread();
 
     // 获取异步的 webrequest
@@ -125,10 +132,10 @@ async UniTask<string> DemoAsync()
     // 构造一个async-wait，并通过元组语义轻松获取所有结果
     var (google, bing, yahoo) = await UniTask.WhenAll(task1, task2, task3);
 
-    // WhenAll简写形式
+    // WhenAll简写形式，元组可以直接await
     var (google2, bing2, yahoo2) = await (task1, task2, task3);
 
-    // 返回一个异步值，或者你也可以使用`UniTask`(无结果), `UniTaskVoid`(协程，不可等待)
+    // 返回一个异步值，或者你也可以使用`UniTask`(无结果)，`UniTaskVoid`(协程，不可等待)
     return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
 }
 ```
@@ -144,9 +151,9 @@ UniTask 功能依赖于 C# 7.0( [task-like custom async method builder feature](
 UniTask 提供了三种模式的扩展方法。
 
 ```csharp
-* await asyncOperation;
-* .WithCancellation(CancellationToken);
-* .ToUniTask(IProgress, PlayerLoopTiming, CancellationToken);
+await asyncOperation;
+.WithCancellation(CancellationToken);
+.ToUniTask(IProgress, PlayerLoopTiming, CancellationToken);
 ```
 
 `WithCancellation`是`ToUniTask`的简化版本，两者都返回`UniTask`。有关cancellation的详细信息，请参阅：[取消和异常处理](https://github.com/Cysharp/UniTask#cancellation-and-exception-handling)部分。
@@ -155,7 +162,7 @@ UniTask 提供了三种模式的扩展方法。
 
 > 注意： AssetBundleRequest 有`asset`和`allAssets`，默认 await 返回`asset`。如果你想得到`allAssets`，你可以使用`AwaitForAllAssets()`方法。
 
-`UniTask`可以使用`UniTask.WhenAll`和`UniTask.WhenAny`等实用函数。它们就像`Task.WhenAll`/`Task.WhenAny`。但它们会返回内容，这很有用。它们会返回值元组，因此您可以传递多种类型并解构每个结果。
+`UniTask`可以使用`UniTask.WhenAll`和`UniTask.WhenAny`等实用函数。它们就像`Task.WhenAll`，`Task.WhenAny`，`UniTask.WhenEach`。但它们会返回内容，这很有用。它们会返回值元组，因此您可以传递多种类型并解构每个结果。
 
 ```csharp
 public async UniTaskVoid LoadManyAsync()
@@ -182,24 +189,20 @@ public UniTask<int> WrapByUniTaskCompletionSource()
     var utcs = new UniTaskCompletionSource<int>();
 
     // 当操作完成时，调用 utcs.TrySetResult();
-    // 当操作失败时, 调用 utcs.TrySetException();
-    // 当操作取消时, 调用 utcs.TrySetCanceled();
+    // 当操作失败时，调用 utcs.TrySetException();
+    // 当操作取消时，调用 utcs.TrySetCanceled();
 
     return utcs.Task; //本质上就是返回了一个UniTask<int>
 }
 ```
 
-您可以进行如下转换
-
-- `Task` -> `UniTask `: 使用`AsUniTask`
-- `UniTask` -> `UniTask<AsyncUnit>`: 使用 `AsAsyncUnitUniTask`
-- `UniTask<T>` -> `UniTask`: 使用 `AsUniTask`，这两者的转换是无消耗的
+您可以进行如下转换<br>-`Task` -> `UniTask `: 使用`AsUniTask`<br>-`UniTask` -> `UniTask<AsyncUnit>`: 使用 `AsAsyncUnitUniTask`<br>-`UniTask<T>` -> `UniTask`: 使用 `AsUniTask`。`UniTask<T>` -> `UniTask`的转换是无消耗的。
 
 如果你想将异步转换为协程，你可以使用`.ToCoroutine()`，如果你只想允许使用协程系统，这很有用。
 
 UniTask 不能await两次。这是与.NET Standard 2.1 中引入的[ValueTask/IValueTaskSource](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1)相同的约束。
 
-> 永远不应在 ValueTask 实例上执行以下操作：
+> 永远不应在 ValueTask<TResult> 实例上执行以下操作：
 >
 > - 多次await实例。
 > - 多次调用 AsTask。
@@ -211,14 +214,14 @@ UniTask 不能await两次。这是与.NET Standard 2.1 中引入的[ValueTask/IV
 ```csharp
 var task = UniTask.DelayFrame(10);
 await task;
-await task; // 寄了, 抛出异常
+await task; // 寄了，抛出异常
 ```
 
 如果实在需要多次await一个异步操作，可以使用`UniTask.Lazy`来支持多次调用。`.Preserve()`同样允许多次调用（由UniTask内部缓存的结果）。这种方法在函数范围内有多个调用时很有用。
 
 同样的`UniTaskCompletionSource`可以在同一个地方被await多次，或者在很多不同的地方被await。
 
-Cancellation and Exception handling
+Cancellation和Exception处理
 ---
 一些 UniTask 工厂方法有一个`CancellationToken cancellationToken = default`参数。Unity 的一些异步操作也有`WithCancellation(CancellationToken)`和`ToUniTask(..., CancellationToken cancellation = default)`拓展方法。
 
@@ -292,6 +295,8 @@ public class MyBehaviour : MonoBehaviour
 }
 ```
 
+在Unity 2022.2之后，Unity在[MonoBehaviour.destroyCancellationToken](https://docs.unity3d.com/ScriptReference/MonoBehaviour-destroyCancellationToken.html)和[Application.exitCancellationToken](https://docs.unity3d.com/ScriptReference/Application-exitCancellationToken.html)中添加了CancellationToken。
+
 当检测到取消时，所有方法都会向上游抛出并传播`OperationCanceledException`。当异常（不限于`OperationCanceledException`）没有在异步方法中处理时，它将最终传播到`UniTaskScheduler.UnobservedTaskException`。接收到的未处理异常的默认行为是将日志写入异常。可以使用`UniTaskScheduler.UnobservedExceptionWriteLogType`更改日志级别。如果要使用自定义行为，请为`UniTaskScheduler.UnobservedTaskException.`设置一个委托
 
 而`OperationCanceledException`是一个特殊的异常，会被`UnobservedTaskException`.无视
@@ -335,6 +340,18 @@ if (isCanceled)
 
 注意：仅当您在原方法直接调用SuppressCancellationThrow时才会抑制异常抛出。否则，返回值将被转换，且整个管道不会抑制 throws。
 
+`UniTask.Yield`和`UniTask.Delay`等功能依赖于Unity的player loop，它们在player loop上确定`CancellationToken`状态。
+因此，在player loop之外调用`UniTask.Yield`或`UniTask.Delay`不会立即取消。
+
+如果要更改此行为，想要立即取消，可将`cancelImmediately`标志设置为true。
+
+```csharp
+await UniTask.Yield(cancellationToken, cancelImmediately: true);
+```
+
+Note: Setting `cancelImmediately` to true and detecting an immediate cancellation is more costly than the default behavior.
+This is because it uses `CancellationToken.Register`; it is heavier than checking CancellationToken on the player loop.
+
 超时处理
 ---
 超时是取消的一种变体。您可以通过`CancellationTokenSouce.CancelAfterSlim(TimeSpan)`设置超时并将 CancellationToken 传递给异步方法。
@@ -356,9 +373,9 @@ catch (OperationCanceledException ex)
 }
 ```
 
-> > `CancellationTokenSouce.CancelAfter`是一个原生的api。但是在 Unity 中你不应该使用它，因为它依赖于线程计时器。`CancelAfterSlim`是 UniTask 的扩展方法，它使用 PlayerLoop 代替。
->
-> 如果您想将超时与其他cancellation一起使用，请使用`CancellationTokenSource.CreateLinkedTokenSource`.
+> `CancellationTokenSouce.CancelAfter`是一个原生的api。但是在 Unity 中你不应该使用它，因为它依赖于线程计时器。`CancelAfterSlim`是 UniTask 的扩展方法，它使用 PlayerLoop 代替。
+
+如果您想将超时与其他cancellation一起使用，请使用`CancellationTokenSource.CreateLinkedTokenSource`.
 
 ```csharp
 var cancelToken = new CancellationTokenSource();
@@ -427,7 +444,7 @@ void Start()
 }
 ```
 
-注意：UniTask 有`.Timeout`,`.TimeoutWithoutException`方法，但是，如果可能，不要使用这些，请通过`CancellationToken`. 由于`.Timeout`作用在task外部，无法停止超时任务。`.Timeout`表示超时时忽略结果。如果您将一个`CancellationToken`传递给该方法，它将从任务内部执行，因此可以停止正在运行的任务。
+注意：UniTask 有`.Timeout`,`.TimeoutWithoutException`方法，但是，如果可能，不要使用这些，请通过`CancellationToken`。由于`.Timeout`作用在task外部，无法停止超时任务。`.Timeout`表示超时时忽略结果。如果您将一个`CancellationToken`传递给该方法，它将从任务内部执行，因此可以停止正在运行的任务。
 
 进度
 ---
@@ -441,7 +458,7 @@ var request = await UnityWebRequest.Get("http://google.co.jp")
     .ToUniTask(progress: progress);
 ```
 
-您不应该使用原生的`new System.Progress<T>`，因为它每次都会导致GC分配。改为使用`Cysharp.Threading.Tasks.Progress`。这个 progress factory 有两个方法，`Create`和`CreateOnlyValueChanged`. `CreateOnlyValueChanged`仅在进度值更新时调用。
+您不应该使用原生的`new System.Progress<T>`，因为它每次都会导致GC分配。改为使用`Cysharp.Threading.Tasks.Progress`。这个 progress factory 有两个方法，`Create`和`CreateOnlyValueChanged`。`CreateOnlyValueChanged`仅在进度值更新时调用。
 
 为调用者实现 IProgress 接口会更好，因为这样可以没有 lambda 分配。
 
@@ -501,7 +518,9 @@ public enum PlayerLoopTiming
 
 `PlayerLoopTiming.Update`与协程中的`yield return null`类似，但在 Update(Update 和 uGUI 事件(button.onClick, etc...) 前被调用（在`ScriptRunBehaviourUpdate`时被调用），yield return null 在`ScriptRunDelayedDynamicFrameRate`时被调用。`PlayerLoopTiming.FixedUpdate`类似于`WaitForFixedUpdate`。
 
-> `PlayerLoopTiming.LastPostLateUpdate`不等同于协程的`yield return new WaitForEndOfFrame()`. 协程的 WaitForEndOfFrame 似乎在 PlayerLoop 完成后运行。一些需要协程结束帧(`Texture2D.ReadPixels`, `ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, 等) 的方法在 async/await 时无法正常工作。在这些情况下，请将 MonoBehaviour(coroutine runner) 传递给`UniTask.WaitForEndOfFrame`. 例如，`await UniTask.WaitForEndOfFrame(this);`是`yield return new WaitForEndOfFrame()`轻量级0GC的替代方案。
+> `PlayerLoopTiming.LastPostLateUpdate`不等同于协程的`yield return new WaitForEndOfFrame()`。协程的 WaitForEndOfFrame 似乎在 PlayerLoop 完成后运行。一些需要协程结束帧(`Texture2D.ReadPixels`, `ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, 等) 的方法在 async/await 时无法正常工作。在这些情况下，请将 MonoBehaviour(coroutine runner) 传递给`UniTask.WaitForEndOfFrame`。例如，`await UniTask.WaitForEndOfFrame(this);`是`yield return new WaitForEndOfFrame()`轻量级0GC的替代方案。
+
+> 注意：在Unity 2023.1或更高版本中，`await UniTask.WaitForEndOfFrame();`不再需要MonoBehaviour。它使用`UnityEngine.Awaitable.EndOfFrameAsync`。
 
 `yield return null`和`UniTask.Yield`相似但不同。`yield return null`总是返回下一帧但`UniTask.Yield`返回下一个调用。也就是说，`UniTask.Yield(PlayerLoopTiming.Update)`在 `PreUpdate`上调用，它返回相同的帧。`UniTask.NextFrame()`保证返回下一帧，您可以认为它的行为与`yield return null`一致.
 
@@ -510,6 +529,9 @@ public enum PlayerLoopTiming
 `AsyncOperation`在原生生命周期返回。例如，await `SceneManager.LoadSceneAsync`在`EarlyUpdate.UpdatePreloading`时返回，在此之后，加载的场景的`Start`方法调用自`EarlyUpdate.ScriptRunDelayedStartupFrame`。同样的，`await UnityWebRequest`在`EarlyUpdate.ExecuteMainThreadJobs`时返回.
 
 在 UniTask 中，await 直接使用原生生命周期，`WithCancellation`和`ToUniTask`可以指定使用的原生生命周期。这通常不会有问题，但是`LoadSceneAsync`在等待之后，它会导致开始和继续的不同顺序。所以建议不要使用`LoadSceneAsync.ToUniTask`。
+
+> 注意：在Unity 2023.1或更高版本中，当你使用新的`UnityEngine.Awaitable`方法（例如`SceneManager.LoadSceneAsync`）时，确保在你的文件的using语句中包含 `using UnityEngine;`。
+> 这可以通过避免使用`UnityEngine.AsyncOperation`版本来防止编译错误。
 
 在堆栈跟踪中，您可以检查它在 playerloop 中的运行位置。
 
@@ -584,7 +606,7 @@ F:Cysharp.Threading.Tasks.PlayerLoopTiming.LastTimeUpdate; Isn't injected this P
 
 async void 与 async UniTaskVoid 对比
 ---
-`async void`是一个原生的 C# 任务系统，因此它不能在 UniTask 系统上运行。也最好不要使用它。`async UniTaskVoid`是`async UniTask`的轻量级版本，因为它没有等待完成并立即向`UniTaskScheduler.UnobservedTaskException`报告错误. 如果您不需要等待（即发即弃），那么使用`UniTaskVoid`会更好。不幸的是，要解除警告，您需要在尾部添加`Forget()`.
+`async void`是一个原生的 C# 任务系统，因此它不能在 UniTask 系统上运行。也最好不要使用它。`async UniTaskVoid`是`async UniTask`的轻量级版本，因为它没有等待完成并立即向`UniTaskScheduler.UnobservedTaskException`报告错误。如果您不需要等待（即发即弃），那么使用`UniTaskVoid`会更好。不幸的是，要解除警告，您需要在尾部添加`Forget()`.
 
 ```csharp
 public async UniTaskVoid FireAndForgetMethod()
@@ -614,7 +636,7 @@ public void Caller()
 }
 ```
 
-要使用注册到事件的异步 lambda，请不要使用`async void`. 相反，您可以使用`UniTask.Action` 或 `UniTask.UnityAction`，两者都通过`async UniTaskVoid` lambda 创建委托。
+要使用注册到事件的异步 lambda，请不要使用`async void`。相反，您可以使用`UniTask.Action` 或 `UniTask.UnityAction`，两者都通过`async UniTaskVoid` lambda 创建委托。
 
 ```csharp
 Action actEvent;
@@ -647,11 +669,11 @@ UniTaskTracker
 
 ![image](https://user-images.githubusercontent.com/46207/83527073-4434bf00-a522-11ea-86e9-3b3975b26266.png)
 
-* Enable AutoReload(Toggle) - 自动重新加载。
-* Reload - 重新加载视图（重新扫描内存中UniTask实例，并刷新界面）。
-* GC.Collect - 调用 GC.Collect。
-* Enable Tracking(Toggle) - 开始跟踪异步/等待 UniTask。性能影响：低。
-* Enable StackTrace(Toggle) - 在任务启动时捕获 StackTrace。性能影响：高。
+- Enable AutoReload(Toggle) - 自动重新加载。
+- Reload - 重新加载视图（重新扫描内存中UniTask实例，并刷新界面）。
+- GC.Collect - 调用 GC.Collect。
+- Enable Tracking(Toggle) - 开始跟踪异步/等待 UniTask。性能影响：低。
+- Enable StackTrace(Toggle) - 在任务启动时捕获 StackTrace。性能影响：高。
 
 UniTaskTracker 仅用于调试用途，因为启用跟踪和捕获堆栈跟踪很有用，但会对性能产生重大影响。推荐的用法是启用跟踪和堆栈跟踪以查找任务泄漏并在完成时禁用它们。
 
@@ -659,7 +681,7 @@ UniTaskTracker 仅用于调试用途，因为启用跟踪和捕获堆栈跟踪�
 ---
 默认情况下，UniTask 支持 TextMeshPro（`BindTo(TMP_Text)`和`TMP_InputField`，并且TMP_InputField有同原生uGUI `InputField`类似的事件扩展）、DOTween（`Tween`作为等待）和Addressables（`AsyncOperationHandle``AsyncOperationHandle<T>`作为等待）。
 
-在单独的 asmdef 中定义，如`UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
+在单独的 asmdef 中定义，如`UniTask.TextMeshPro`，`UniTask.DOTween`，`UniTask.Addressables`。
 
 从 Package manager 中导入软件包时，会自动启用对 TextMeshPro 和 Addressables 的支持。
 但对于 DOTween 支持，则需要从 [DOTWeen assets](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676r) 中导入并定义脚本定义符号 `UNITASK_DOTWEEN_SUPPORT` 后才能启用。
@@ -677,14 +699,14 @@ await UniTask.WhenAll(
     transform.DOScale(10, 3).WithCancellation(ct));
 ```
 
-DOTween 支持的默认行为( `await`, `WithCancellation`, `ToUniTask`) await tween 被终止。它适用于 Complete(true/false) 和 Kill(true/false)。但是如果你想重用tweens ( `SetAutoKill(false)`)，它就不能按预期工作。如果您想等待另一个时间点，Tween 中存在以下扩展方法，`AwaitForComplete`, `AwaitForPause`, `AwaitForPlay`, `AwaitForRewind`, `AwaitForStepComplete`。
+DOTween 支持的默认行为( `await`，`WithCancellation`，`ToUniTask`) await tween 被终止。它适用于 Complete(true/false) 和 Kill(true/false)。但是如果你想重用tweens ( `SetAutoKill(false)`)，它就不能按预期工作。如果您想等待另一个时间点，Tween 中存在以下扩展方法，`AwaitForComplete`，`AwaitForPause`，`AwaitForPlay`，`AwaitForRewind`，`AwaitForStepComplete`。
 
 AsyncEnumerable 和 Async LINQ
 ---
-Unity 2020.2 支持 C# 8.0，因此您可以使用`await foreach`. 这是异步时代的新更新符号。
+Unity 2020.2 支持 C# 8.0，因此您可以使用`await foreach`。这是异步时代的新更新符号。
 
 ```csharp
-// Unity 2020.2, C# 8.0
+// Unity 2020.2，C# 8.0
 await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate().WithCancellation(token))
 {
     Debug.Log("Update() " + Time.frameCount);
@@ -699,6 +721,19 @@ await UniTaskAsyncEnumerable.EveryUpdate().ForEachAsync(_ =>
 {
     Debug.Log("Update() " + Time.frameCount);
 }, token);
+```
+
+`UniTask.WhenEach`类似于.NET 9的`Task.WhenEach`，它可以使用新的方式来等待多个任务。
+
+```csharp
+await foreach (var result in UniTask.WhenEach(task1, task2, task3))
+{
+    // The result is of type WhenEachResult<T>.
+    // It contains either `T Result` or `Exception Exception`.
+    // You can check `IsCompletedSuccessfully` or `IsFaulted` to determine whether to access `.Result` or `.Exception`.
+    // If you want to throw an exception when `IsFaulted` and retrieve the result when successful, use `GetResult()`.
+    Debug.Log(result.GetResult());
+}
 ```
 
 UniTaskAsyncEnumerable 实现异步 LINQ，类似于 LINQ 的`IEnumerable<T>`或 Rx 的 `IObservable<T>`。所有标准 LINQ 查询运算符都可以应用于异步流。例如，以下代码表示如何将 Where 过滤器应用于每两次单击运行一次的按钮单击异步流。
@@ -721,9 +756,9 @@ Async LINQ 在 时启用`using Cysharp.Threading.Tasks.Linq;`，并且`UniTaskAs
 
 它更接近 UniRx（Reactive Extensions），但 UniTaskAsyncEnumerable 是pull-base的异步流，而 Rx 是基于push-base异步流。请注意，尽管相似，但特征不同，并且细节的行为也随之不同。
 
-`UniTaskAsyncEnumerable`是类似的入口点`Enumerable`。除了标准查询运算符之外，还有其他 Unity 生成器，例如`EveryUpdate`、`Timer`、`TimerFrame`、`Interval`、`IntervalFrame`和`EveryValueChanged`。并且还添加了额外的 UniTask 原始查询运算符，如`Append`, `Prepend`, `DistinctUntilChanged`, `ToHashSet`, `Buffer`, `CombineLatest`, `Do`, `Never`, `ForEachAsync`, `Pairwise`, `Publish`, `Queue`, `Return`, `SkipUntil`, `TakeUntil`, `SkipUntilCanceled`, `TakeUntilCanceled`, `TakeLast`, `Subscribe`。
+`UniTaskAsyncEnumerable`是类似的入口点`Enumerable`。除了标准查询运算符之外，还有其他 Unity 生成器，例如`EveryUpdate`、`Timer`、`TimerFrame`、`Interval`、`IntervalFrame`和`EveryValueChanged`。并且还添加了额外的 UniTask 原始查询运算符，如`Append`，`Prepend`，`DistinctUntilChanged`，`ToHashSet`，`Buffer`，`CombineLatest`，`Do`，`Never`，`ForEachAsync`，`Pairwise`，`Publish`，`Queue`，`Return`，`SkipUntil`，`TakeUntil`，`SkipUntilCanceled`，`TakeUntilCanceled`，`TakeLast`，`Subscribe`。
 
-以 Func 作为参数的方法具有三个额外的重载，`***Await`, `***AwaitWithCancellation`。
+以 Func 作为参数的方法具有三个额外的重载，`***Await`，`***AwaitWithCancellation`。
 
 ```csharp
 Select(Func<T, TR> selector)
@@ -736,7 +771,7 @@ SelectAwaitWithCancellation(Func<T, CancellationToken, UniTask<TR>> selector)
 如何创建异步迭代器：C# 8.0 支持异步迭代器（`async yield return`），但它只允许`IAsyncEnumerable<T>`并且当然需要 C# 8.0。UniTask 支持`UniTaskAsyncEnumerable.Create`创建自定义异步迭代器的方法。
 
 ```csharp
-// IAsyncEnumerable, C# 8.0 异步迭代器. ( 不要这样用，因为IAsyncEnumerable不被UniTask控制).
+// IAsyncEnumerable，C# 8.0 异步迭代器。( 不要这样用，因为IAsyncEnumerable不被UniTask控制).
 public async IAsyncEnumerable<int> MyEveryUpdate([EnumeratorCancellation]CancellationToken cancelationToken = default)
 {
     var frameCount = 0;
@@ -767,7 +802,7 @@ public IUniTaskAsyncEnumerable<int> MyEveryUpdate()
 
 可等待事件
 ---
-所有 uGUI 组件都实现`***AsAsyncEnumerable`了异步事件流的转换。
+所有 uGUI 组件都实现了`***AsAsyncEnumerable`异步事件流的转换。
 
 ```csharp
 async UniTask TripleClick()
@@ -809,7 +844,7 @@ async UniTask TripleClick(CancellationToken token)
 }
 ```
 
-所有 MonoBehaviour 消息事件都可以转换异步流`AsyncTriggers`，可以通过`using Cysharp.Threading.Tasks.Triggers;`进行启用，.AsyncTrigger 可以使用 UniTaskAsyncEnumerable 来创建，通过`GetAsync***Trigger`触发。
+所有MonoBehaviour消息事件可以通过`AsyncTriggers`转换成异步流，`AsyncTriggers`可通过引入using Cysharp.Threading.Tasks.Triggers启用，.AsyncTrigger可以使用UniTaskAsyncEnumerable来创建，并将它作为UniTaskAsyncEnumerable来触发。
 
 ```csharp
 var trigger = this.GetOnCollisionEnterAsyncHandler();
@@ -828,7 +863,7 @@ await this.GetAsyncMoveTrigger().ForEachAsync(axisEventData =>
 ```csharp
 var rp = new AsyncReactiveProperty<int>(99);
 
-// AsyncReactiveProperty 本身是 IUniTaskAsyncEnumerable, 可以通过LINQ进行查询
+// AsyncReactiveProperty 本身是 IUniTaskAsyncEnumerable，可以通过LINQ进行查询
 rp.ForEachAsync(x =>
 {
     Debug.Log(x);
@@ -870,7 +905,7 @@ await button.OnClickAsAsyncEnumerable().Queue().ForEachAwaitAsync(async x =>
 });
 ```
 
-或使用`Subscribe`, fire and forget 风格。
+或使用`Subscribe`，fire and forget 风格。
 
 ```csharp
 button.OnClickAsAsyncEnumerable().Subscribe(async x =>
@@ -921,6 +956,14 @@ public class AsyncMessageBroker<T> : IDisposable
     }
 }
 ```
+
+与 Awaitable 对比
+---
+Unity 6 引入了可等待类型[Awaitable](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Awaitable.html)。简而言之，Awaitable可以被认为是UniTask的一个子集，并且事实上，Awaitable的设计也受UniTask的影响。它应该能够处理基于PlayerLoop的await，池化Task，以及支持以类似的方式使用`CancellationToken`进行取消。随着它被包含在标准库中，您可能想知道是继续使用UniTask还是迁移到Awaitable。以下是简要指南。
+
+首先，Awaitable提供的功能与协程提供的功能相同。使用await代替`yield return`；`await NextFrameAsync()`代替`yield return null`；`WaitForSeconds`和`EndOfFrame`等价。然而，这只是两者之间的差异。就功能而言，它是基于协程的，缺乏基于任务的特性。在使用async/await的实际应用程序开发中，像`WhenAll`这样的操作是必不可少的。此外，UniTask支持许多基于帧的操作（如`DelayFrame`）和更灵活的PlayerLoopTiming控件，这些在Awaitable中是不可用的。当然，它也没有跟踪窗口。
+
+因此，我建议使用UniTask进行应用程序开发。UniTask是Awaitable的超集，包含了许多基本特性。对于库开发，如果您希望避免外部依赖，那么使用Awaitable作为方法的返回类型将是合适的。使用`AsUniTask`可以将Awaitable转换为UniTask，因此在UniTask库中处理基于Awaitable的功能没有问题。当然，如果你不需要担心依赖关系，即使在库开发中使用UniTask也会是最好的选择。
 
 单元测试
 ---
@@ -1011,6 +1054,7 @@ UniTask 有许多原生的 Task-like API。此表显示了一一对应的 API �
 | `Task.Run` | `UniTask.RunOnThreadPool` |
 | `Task.WhenAll` | `UniTask.WhenAll` |
 | `Task.WhenAny` | `UniTask.WhenAny` |
+| `Task.WhenEach` | `UniTask.WhenEach` |
 | `Task.CompletedTask` | `UniTask.CompletedTask` |
 | `Task.FromException` | `UniTask.FromException` |
 | `Task.FromResult` | `UniTask.FromResult` |
@@ -1074,15 +1118,8 @@ UPM Package
 
 或添加`"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"`到`Packages/manifest.json`.
 
-如果要设置目标版本，UniTask 使用`*.*.*`发布标签，因此您可以指定一个版本，如`#2.1.0`. 例如`https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
+如果要设置目标版本，UniTask 使用`*.*.*`发布标签，因此您可以指定一个版本，如`#2.1.0`。例如`https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
 
-### 通过 OpenUPM 安装
-
-该软件包在[openupm 注册表](https://openupm.com/)中可用。建议通过[openupm-cli](https://github.com/openupm/openupm-cli)安装。
-
-```
-openupm add com.cysharp.unitask
-```
 
 .NET Core
 ---
