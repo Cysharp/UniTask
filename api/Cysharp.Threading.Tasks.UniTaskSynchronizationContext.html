@@ -88,6 +88,7 @@
   <div class="inheritance">
     <h5>Inheritance</h5>
     <span><span class="xref">System.Object</span></span> → 
+    <span><span class="xref">System.Threading.SynchronizationContext</span></span> → 
     <span class="xref">UniTaskSynchronizationContext</span>
   </div>
   
@@ -128,13 +129,13 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_SendOrPostCallback_System_Object_">Post(SendOrPostCallback, Object)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_System_Threading_SendOrPostCallback_System_Object_">Post(SendOrPostCallback, Object)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_SendOrPostCallback_System_Object_">Send(SendOrPostCallback, Object)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.html#Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_System_Threading_SendOrPostCallback_System_Object_">Send(SendOrPostCallback, Object)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
@@ -157,7 +158,7 @@
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">SynchronizationContext</span></dt>
+    <dt><span class="xref">System.Threading.SynchronizationContext</span></dt>
     <dd></dd>
   </dl>
   </section>
@@ -167,6 +168,8 @@
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.CreateCopy()</span></div>
   
   
   
@@ -190,6 +193,8 @@
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.OperationCompleted()</span></div>
   
   
   
@@ -213,6 +218,8 @@
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.OperationStarted()</span></div>
   
   
   
@@ -221,7 +228,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Post*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_SendOrPostCallback_System_Object_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Post(SendOrPostCallback,System.Object)">Post(SendOrPostCallback, Object)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Post_System_Threading_SendOrPostCallback_System_Object_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">Post(SendOrPostCallback, Object)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -232,7 +239,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>d</code></span> <span class="xref">SendOrPostCallback</span></dt>
+    <dt><span class="parametername"><code>d</code></span> <span class="xref">System.Threading.SendOrPostCallback</span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
     <dd></dd>
@@ -245,6 +252,8 @@
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.Post(System.Threading.SendOrPostCallback, System.Object)</span></div>
   
   
   
@@ -253,7 +262,7 @@
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Send*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_SendOrPostCallback_System_Object_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Send(SendOrPostCallback,System.Object)">Send(SendOrPostCallback, Object)</h4>
+  <h4 id="Cysharp_Threading_Tasks_UniTaskSynchronizationContext_Send_System_Threading_SendOrPostCallback_System_Object_" data-uid="Cysharp.Threading.Tasks.UniTaskSynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">Send(SendOrPostCallback, Object)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   
@@ -264,7 +273,7 @@
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>d</code></span> <span class="xref">SendOrPostCallback</span></dt>
+    <dt><span class="parametername"><code>d</code></span> <span class="xref">System.Threading.SendOrPostCallback</span></dt>
     <dd></dd>
     <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
     <dd></dd>
@@ -277,6 +286,8 @@
   
   
   
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Threading.SynchronizationContext.Send(System.Threading.SendOrPostCallback, System.Object)</span></div>
   
   
   
