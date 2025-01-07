@@ -26,7 +26,7 @@ jobs:
       matrix:
         unity: ["2022.3.39f1", "6000.0.12f1"] # Test with LTS
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30 # Unity build takes more than 20min.
     steps:
       - name: Load secrets
         id: op-load-secret
@@ -56,10 +56,6 @@ jobs:
           targetPlatform: StandaloneLinux64
           buildMethod: PackageExporter.Export
 
-      - uses: Cysharp/Actions/.github/actions/check-metas@main # check meta files
-        with:
-          directory: src/UniTask
-
       # Execute UnitTest
       # /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod UnitTestBuilder.BuildUnitTest /headless /ScriptBackend IL2CPP /BuildTarget StandaloneLinux64
       - name: Build UnitTest (IL2CPP)
@@ -78,6 +74,10 @@ jobs:
         run: ls -lR ./src/UniTask/bin/UnitTest
       - name: Execute UnitTest
         run: ./src/UniTask/bin/UnitTest/StandaloneLinux64_IL2CPP/test
+
+      - uses: Cysharp/Actions/.github/actions/check-metas@main # check meta files
+        with:
+          directory: src/UniTask
 
       # Store artifacts.
       - uses: Cysharp/Actions/.github/actions/upload-artifact@main
