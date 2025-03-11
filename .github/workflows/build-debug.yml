@@ -35,9 +35,9 @@ jobs:
           export-env: false
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PUBLIC }}
-          UNITY_EMAIL: "op://GitHubActionsPublic/UNITY_LICENSE/username"
-          UNITY_PASSWORD: "op://GitHubActionsPublic/UNITY_LICENSE/credential"
-          UNITY_SERIAL: "op://GitHubActionsPublic/UNITY_LICENSE/serial"
+          UNITY_EMAIL: "op://${{ vars.OP_VAULT_ACTIONS_PUBLIC }}/UNITY_LICENSE/username"
+          UNITY_PASSWORD: "op://${{ vars.OP_VAULT_ACTIONS_PUBLIC }}/UNITY_LICENSE/credential"
+          UNITY_SERIAL: "op://${{ vars.OP_VAULT_ACTIONS_PUBLIC }}/UNITY_LICENSE/serial"
 
       - uses: actions/checkout@v4
 
