@@ -8,8 +8,7 @@ on:
 jobs:
   generateTOC:
     name: TOC Generator
-    runs-on: ubuntu-latest
-    steps:
-      - uses: technote-space/toc-generator@9e238e7974de5fcf7b17b7acc54c896160dda0a3 # v4.3.1
-        with:
-          TOC_TITLE: "## Table of Contents"
+    uses: Cysharp/Actions/.github/workflows/toc-generator.yaml@main
+    with:
+      TOC_TITLE: "## Table of Contents"
+    secrets: inherit
