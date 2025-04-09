@@ -36,11 +36,11 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask<bool> MoveNextAsync()
             {
-                var tcs = new UniTaskCompletionSource<bool>();
+                var tcs = AutoResetUniTaskCompletionSource<bool>.Create();
 
                 cancellationToken.Register(state =>
                 {
-                    var task = (UniTaskCompletionSource<bool>)state;
+                    var task = (AutoResetUniTaskCompletionSource<bool>)state;
                     task.TrySetCanceled(cancellationToken);
                 }, tcs);
 

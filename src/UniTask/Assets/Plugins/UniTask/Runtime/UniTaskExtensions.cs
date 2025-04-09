@@ -16,11 +16,11 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static UniTask<T> AsUniTask<T>(this Task<T> task, bool useCurrentSynchronizationContext = true)
         {
-            var promise = new UniTaskCompletionSource<T>();
+            var promise = AutoResetUniTaskCompletionSource<T>.Create();
 
             task.ContinueWith((x, state) =>
             {
-                var p = (UniTaskCompletionSource<T>)state;
+                var p = (AutoResetUniTaskCompletionSource<T>)state;
 
                 switch (x.Status)
                 {
@@ -46,11 +46,11 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static UniTask AsUniTask(this Task task, bool useCurrentSynchronizationContext = true)
         {
-            var promise = new UniTaskCompletionSource();
+            var promise = AutoResetUniTaskCompletionSource.Create();
 
             task.ContinueWith((x, state) =>
             {
-                var p = (UniTaskCompletionSource)state;
+                var p = (AutoResetUniTaskCompletionSource)state;
 
                 switch (x.Status)
                 {
