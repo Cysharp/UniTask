@@ -10,7 +10,7 @@ namespace Cysharp.Threading.Tasks
         static Action<object> continuation = SetCompletionSource;
 
         Func<UniTask> taskFactory;
-        AutoResetUniTaskCompletionSource completionSource;
+        UniTaskCompletionSource completionSource;
         UniTask.Awaiter awaiter;
 
         object syncLock;
@@ -19,7 +19,7 @@ namespace Cysharp.Threading.Tasks
         public AsyncLazy(Func<UniTask> taskFactory)
         {
             this.taskFactory = taskFactory;
-            this.completionSource = AutoResetUniTaskCompletionSource.Create();
+            this.completionSource = new UniTaskCompletionSource();
             this.syncLock = new object();
             this.initialized = false;
         }
@@ -27,7 +27,7 @@ namespace Cysharp.Threading.Tasks
         internal AsyncLazy(UniTask task)
         {
             this.taskFactory = null;
-            this.completionSource = AutoResetUniTaskCompletionSource.Create();
+            this.completionSource = new UniTaskCompletionSource();
             this.syncLock = null;
             this.initialized = true;
 
@@ -129,7 +129,7 @@ namespace Cysharp.Threading.Tasks
         static Action<object> continuation = SetCompletionSource;
 
         Func<UniTask<T>> taskFactory;
-        AutoResetUniTaskCompletionSource<T> completionSource;
+        UniTaskCompletionSource<T> completionSource;
         UniTask<T>.Awaiter awaiter;
 
         object syncLock;
@@ -138,7 +138,7 @@ namespace Cysharp.Threading.Tasks
         public AsyncLazy(Func<UniTask<T>> taskFactory)
         {
             this.taskFactory = taskFactory;
-            this.completionSource = AutoResetUniTaskCompletionSource<T>.Create();
+            this.completionSource = new UniTaskCompletionSource<T>();
             this.syncLock = new object();
             this.initialized = false;
         }
@@ -146,7 +146,7 @@ namespace Cysharp.Threading.Tasks
         internal AsyncLazy(UniTask<T> task)
         {
             this.taskFactory = null;
-            this.completionSource = AutoResetUniTaskCompletionSource<T>.Create();
+            this.completionSource = new UniTaskCompletionSource<T>();
             this.syncLock = null;
             this.initialized = true;
 
