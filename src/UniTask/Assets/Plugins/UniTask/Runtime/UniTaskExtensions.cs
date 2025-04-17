@@ -854,7 +854,7 @@ namespace Cysharp.Threading.Tasks
             Action<Exception> exceptionHandler = null;
             bool isStarted = false;
             UniTask<T> task;
-            T current = null;
+            T? current = null;
             ExceptionDispatchInfo exception;
 
             public ToCoroutineEnumerator(UniTask<T> task, Action<T> resultHandler, Action<Exception> exceptionHandler)
@@ -893,7 +893,7 @@ namespace Cysharp.Threading.Tasks
                 }
             }
 
-            public T Current => current;
+            public T? Current => current;
 
             public bool MoveNext()
             {
