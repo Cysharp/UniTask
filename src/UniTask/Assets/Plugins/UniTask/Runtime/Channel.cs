@@ -91,7 +91,7 @@ namespace Cysharp.Threading.Tasks
     {
         readonly Queue<T> items;
         readonly SingleConsumerUnboundedChannelReader readerSource;
-        UniTaskCompletionSource completedTaskSource;
+        AutoResetUniTaskCompletionSource completedTaskSource;
         UniTask completedTask;
 
         Exception completionError;
@@ -208,7 +208,7 @@ namespace Cysharp.Threading.Tasks
                         return parent.completedTask;
                     }
 
-                    parent.completedTaskSource = new UniTaskCompletionSource();
+                    parent.completedTaskSource = AutoResetUniTaskCompletionSource.Create();
                     return parent.completedTaskSource.Task;
                 }
             }

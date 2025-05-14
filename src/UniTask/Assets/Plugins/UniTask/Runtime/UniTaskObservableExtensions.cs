@@ -11,7 +11,7 @@ namespace Cysharp.Threading.Tasks
     {
         public static UniTask<T> ToUniTask<T>(this IObservable<T> source, bool useFirstValue = false, CancellationToken cancellationToken = default)
         {
-            var promise = new UniTaskCompletionSource<T>();
+            var promise = AutoResetUniTaskCompletionSource<T>.Create();
             var disposable = new SingleAssignmentDisposable();
 
             var observer = useFirstValue
@@ -109,7 +109,7 @@ namespace Cysharp.Threading.Tasks
         {
             static readonly Action<object> callback = OnCanceled;
 
-            readonly UniTaskCompletionSource<T> promise;
+            readonly IPromise<T> promise;
             readonly SingleAssignmentDisposable disposable;
             readonly CancellationToken cancellationToken;
             readonly CancellationTokenRegistration registration;
@@ -117,7 +117,7 @@ namespace Cysharp.Threading.Tasks
             bool hasValue;
             T latestValue;
 
-            public ToUniTaskObserver(UniTaskCompletionSource<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
+            public ToUniTaskObserver(IPromise<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
             {
                 this.promise = promise;
                 this.disposable = disposable;
@@ -180,14 +180,14 @@ namespace Cysharp.Threading.Tasks
         {
             static readonly Action<object> callback = OnCanceled;
 
-            readonly UniTaskCompletionSource<T> promise;
+            readonly IPromise<T> promise;
             readonly SingleAssignmentDisposable disposable;
             readonly CancellationToken cancellationToken;
             readonly CancellationTokenRegistration registration;
 
             bool hasValue;
 
-            public FirstValueToUniTaskObserver(UniTaskCompletionSource<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
+            public FirstValueToUniTaskObserver(IPromise<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
             {
                 this.promise = promise;
                 this.disposable = disposable;
