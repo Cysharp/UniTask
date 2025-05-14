@@ -1,0 +1,41 @@
+﻿# top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Visual Studio Spell checker configs (https://learn.microsoft.com/en-us/visualstudio/ide/text-spell-checker?view=vs-2022#how-to-customize-the-spell-checker)
+spelling_exclusion_path  = ./exclusion.dic
+
+[*.cs]
+indent_size = 4
+charset = utf-8-bom
+end_of_line = unset
+
+# Solution files
+[*.{sln,slnx}]
+end_of_line = unset
+
+# MSBuild project files
+[*.{csproj,props,targets}]
+end_of_line = unset
+
+# Xml config files
+[*.{ruleset,config,nuspec,resx,runsettings,DotSettings}]
+end_of_line = unset
+
+[*{_AssemblyInfo.cs,.notsupported.cs}]
+generated_code = true
+
+# C# code style settings
+[*.{cs}]
+dotnet_diagnostic.IDE0044.severity = none # IDE0044: Make field readonly
+
+# https://stackoverflow.com/questions/79195382/how-to-disable-fading-unused-methods-in-visual-studio-2022-17-12-0
+dotnet_diagnostic.IDE0051.severity = none # IDE0051: Remove unused private member
+dotnet_diagnostic.IDE0130.severity = none # IDE0130: Namespace does not match folder structure
