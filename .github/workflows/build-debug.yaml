@@ -10,7 +10,9 @@ on:
 
 jobs:
   build-dotnet:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: Cysharp/Actions/.github/actions/checkout@main
@@ -25,7 +27,9 @@ jobs:
       max-parallel: 2
       matrix:
         unity: ["2022.3.39f1", "6000.0.12f1"] # Test with LTS
-    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
     timeout-minutes: 30 # Unity build takes more than 20min.
     steps:
       - name: Load secrets

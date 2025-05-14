@@ -7,4 +7,6 @@ on:
 
 jobs:
   detect:
+    permissions:
+      contents: read
     uses: Cysharp/Actions/.github/workflows/prevent-github-change.yaml@main

@@ -8,7 +8,10 @@ on:
 
 jobs:
   run-docfx:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: Cysharp/Actions/.github/actions/checkout@main

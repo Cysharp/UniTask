@@ -14,6 +14,8 @@ on:
 
 jobs:
   update-packagejson:
+    permissions:
+      contents: write
     uses: Cysharp/Actions/.github/workflows/update-packagejson.yaml@main
     with:
       file-path: ./src/UniTask/Assets/Plugins/UniTask/package.json
@@ -22,7 +24,9 @@ jobs:
 
   build-dotnet:
     needs: [update-packagejson]
-    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - run: echo ${{ needs.update-packagejson.outputs.sha }}
@@ -46,7 +50,9 @@ jobs:
     strategy:
       matrix:
         unity: ["2022.3.39f1"]
-    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Load secrets
@@ -92,6 +98,8 @@ jobs:
   # release
   create-release:
     needs: [update-packagejson, build-dotnet, build-unity]
+    permissions:
+      contents: write
     uses: Cysharp/Actions/.github/workflows/create-release.yaml@main
     with:
       commit-id: ${{ needs.update-packagejson.outputs.sha }}
@@ -105,6 +113,8 @@ jobs:
   cleanup:
     if: ${{ needs.update-packagejson.outputs.is-branch-created == 'true' }}
     needs: [update-packagejson, build-dotnet, build-unity]
+    permissions:
+      contents: write
     uses: Cysharp/Actions/.github/workflows/clean-packagejson-branch.yaml@main
     with:
       branch: ${{ needs.update-packagejson.outputs.branch-name }}

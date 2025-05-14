@@ -6,8 +6,9 @@ on:
       - 'README.md'
 
 jobs:
-  generateTOC:
-    name: TOC Generator
+  toc:
+    permissions:
+      contents: write
     uses: Cysharp/Actions/.github/workflows/toc-generator.yaml@main
     with:
       TOC_TITLE: "## Table of Contents"
