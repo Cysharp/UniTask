@@ -18,7 +18,7 @@ UniTask
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-## 目录
+## Table of Contents
 
 - [入门](#%E5%85%A5%E9%97%A8)
 - [UniTask 和 AsyncOperation 的基础知识](#unitask-%E5%92%8C-asyncoperation-%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86)
@@ -43,7 +43,7 @@ UniTask
 - [UniTaskSynchronizationContext](#unitasksynchronizationcontext)
 - [API 文档](#api-%E6%96%87%E6%A1%A3)
 - [UPM 包](#upm-%E5%8C%85)
-- [通过 git URL 安装](#%E9%80%9A%E8%BF%87-git-url-%E5%AE%89%E8%A3%85)
+  - [通过 git URL 安装](#%E9%80%9A%E8%BF%87-git-url-%E5%AE%89%E8%A3%85)
 - [关于 .NET Core](#%E5%85%B3%E4%BA%8E-net-core)
 - [许可证](#%E8%AE%B8%E5%8F%AF%E8%AF%81)
 
