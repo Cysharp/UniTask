@@ -96,6 +96,7 @@ namespace Cysharp.Threading.Tasks
         TimeUpdate = 14,
         LastTimeUpdate = 15,
 #endif
+        ManualUpdate = 16,
     }
 
     [Flags]
@@ -192,6 +193,7 @@ namespace Cysharp.Threading.Tasks
         static SynchronizationContext unitySynchronizationContext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
+        static PlayerLoopRunner ManualRunner;
         internal static bool IsEditorApplicationQuitting { get; private set; }
         static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem,
             bool injectOnFirst,
@@ -251,6 +253,10 @@ namespace Cysharp.Threading.Tasks
 
             return dest;
         }
+        public static void ManualUpdate()
+        {
+            ManualRunner.Run();
+        }
 
         static PlayerLoopSystem[] RemoveRunner(PlayerLoopSystem loopSystem, Type loopRunnerYieldType, Type loopRunnerType)
         {
@@ -302,7 +308,7 @@ namespace Cysharp.Threading.Tasks
             catch { }
 
 #if UNITY_EDITOR && UNITY_2019_3_OR_NEWER
-            // When domain reload is disabled, re-initialization is required when entering play mode; 
+            // When domain reload is disabled, re-initialization is required when entering play mode;
             // otherwise, pending tasks will leak between play mode sessions.
             var domainReloadDisabled = UnityEditor.EditorSettings.enterPlayModeOptionsEnabled &&
                 UnityEditor.EditorSettings.enterPlayModeOptions.HasFlag(UnityEditor.EnterPlayModeOptions.DisableDomainReload);
@@ -405,6 +411,8 @@ namespace Cysharp.Threading.Tasks
             runners = new PlayerLoopRunner[14];
 #endif
 
+            ManualRunner = new PlayerLoopRunner(PlayerLoopTiming.ManualUpdate);
+
             var copyList = playerLoop.subSystemList.ToArray();
 
             // Initialization
@@ -491,6 +499,11 @@ namespace Cysharp.Threading.Tasks
 
         public static void AddAction(PlayerLoopTiming timing, IPlayerLoopItem action)
         {
+            if ((int)timing == (int)PlayerLoopTiming.ManualUpdate)
+            {
+                ManualRunner.AddAction(action);
+                return;
+            }
             var runner = runners[(int)timing];
             if (runner == null)
             {
@@ -528,8 +541,8 @@ namespace Cysharp.Threading.Tasks
             {
                 sb.AppendFormat("------{0}------", header.type.Name);
                 sb.AppendLine();
-                
-                if (header.subSystemList is null) 
+
+                if (header.subSystemList is null)
                 {
                     sb.AppendFormat("{0} has no subsystems!", header.ToString());
                     sb.AppendLine();
@@ -557,11 +570,11 @@ namespace Cysharp.Threading.Tasks
 
             foreach (var header in playerLoop.subSystemList)
             {
-                if (header.subSystemList is null) 
-                { 
+                if (header.subSystemList is null)
+                {
                     continue;
                 }
-                
+
                 foreach (var subSystem in header.subSystemList)
                 {
                     if (subSystem.type == typeof(UniTaskLoopRunners.UniTaskLoopRunnerInitialization))
