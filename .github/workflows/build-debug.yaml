@@ -17,8 +17,9 @@ jobs:
     steps:
       - uses: Cysharp/Actions/.github/actions/checkout@main
       - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
-      - run: dotnet build -c Debug
-      - run: dotnet test -c Debug
+      - run: dotnet build -c Release
+      - run: dotnet test -c Release
+      - run: dotnet pack -c Release --no-build -p:IncludeSymbols=true -o $GITHUB_WORKSPACE/artifacts
 
   build-unity:
     if: ${{ ((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:')) && github.triggering_actor != 'dependabot[bot]' }}
