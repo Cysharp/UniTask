@@ -118,6 +118,9 @@ namespace Cysharp.Threading.Tasks.Internal
                 case PlayerLoopTiming.LastPostLateUpdate:
                     LastPostLateUpdate();
                     break;
+                case PlayerLoopTiming.ManualUpdate:
+                    ManualUpdate();
+                    break;
 #if UNITY_2020_2_OR_NEWER
                 case PlayerLoopTiming.TimeUpdate:
                     TimeUpdate();
@@ -148,6 +151,7 @@ namespace Cysharp.Threading.Tasks.Internal
         void LastPreLateUpdate() => RunCore();
         void PostLateUpdate() => RunCore();
         void LastPostLateUpdate() => RunCore();
+        void ManualUpdate() => RunCore();
 #if UNITY_2020_2_OR_NEWER
         void TimeUpdate() => RunCore();
         void LastTimeUpdate() => RunCore();
@@ -178,7 +182,7 @@ namespace Cysharp.Threading.Tasks.Internal
                             }
                             else
                             {
-                                continue; // next i 
+                                continue; // next i
                             }
                         }
                         catch (Exception ex)
