@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>AsyncUnityEventHandler Class
-   | UniTask </title>
+ | UniTask </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="AsyncUnityEventHandler Class
-   | UniTask ">
-    <meta name="generator" content="docfx 2.59.2.0">
-    
+ | UniTask ">
+    <meta name="generator" content="docfx ">
+  
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
     <link rel="stylesheet" href="../styles/docfx.css">
@@ -18,14 +18,14 @@
     <link rel="stylesheet" href="../styles/cysharp.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+  
+  
+  
   </head>
   <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
       <header>
-        
+
         <nav id="autocollapse" class="navbar navbar-default ng-scope" role="navigation">
           <div class="container">
             <div class="navbar-header">
@@ -35,7 +35,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              
+
               <div class="navbar-brand">
                 <a href="../">
                   <img id="logo" src="../img/Icon.png" alt="">
@@ -52,7 +52,7 @@
             </div>
           </div>
         </nav>
-        
+
         <div class="subnav navbar navbar-default">
           <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
@@ -62,7 +62,7 @@
         </div>
       </header>
       <div role="main" class="container body-content hide-when-search">
-        
+
         <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
@@ -72,40 +72,41 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler">
-  
+
   <h1 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler" class="text-break">AsyncUnityEventHandler Class
-  </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
-  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
-  
+</h1>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.html">Cysharp</a>.<a class="xref" href="Cysharp.Threading.html">Threading</a>.<a class="xref" href="Cysharp.Threading.Tasks.html">Tasks</a></h6>
+  <h6><strong>Assembly</strong>: UniTask.dll</h6>
+
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class AsyncUnityEventHandler : IUniTaskSource, IAsyncClickEventHandler, IDisposable</code></pre>
+    <pre><code class="lang- hljs">public class AsyncUnityEventHandler : IUniTaskSource, IValueTaskSource, IAsyncClickEventHandler, IDisposable</code></pre>
   </div>
 
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <span><span class="xref">System.Object</span></span> → 
+    <span><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></span> → 
     <span class="xref">AsyncUnityEventHandler</span>
   </div>
-  
+
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.sources.ivaluetasksource">IValueTaskSource</a></div>
     <div><a class="xref" href="Cysharp.Threading.Tasks.IAsyncClickEventHandler.html">IAsyncClickEventHandler</a></div>
-    <div><span class="xref">System.IDisposable</span></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
   </div>
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
   <h3 id="members">Members</h3>
   <h4>Constructors
-  </h4>
+</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -116,14 +117,14 @@
     <tbody>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler__ctor_UnityEvent_CancellationToken_System_Boolean_">AsyncUnityEventHandler(UnityEvent, CancellationToken, Boolean)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler__ctor_UnityEngine_Events_UnityEvent_System_Threading_CancellationToken_System_Boolean_">AsyncUnityEventHandler(UnityEvent, CancellationToken, bool)</a>
         </td>
         <td class="markdown level1 summary"></td>
       </tr>
     </tbody>
   </table>
   <h4>Methods
-  </h4>
+</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -146,59 +147,17 @@
       </tr>
     </tbody>
   </table>
-  <h4>Explicit Interface Implementations
-  </h4>
-  <table class="table table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IAsyncClickEventHandler_OnClickAsync">IAsyncClickEventHandler.OnClickAsync()</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_">IUniTaskSource.GetResult(Int16)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_GetStatus_System_Int16_">IUniTaskSource.GetStatus(Int16)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_OnCompleted_System_Action_System_Object__System_Object_System_Int16_">IUniTaskSource.OnCompleted(Action&lt;Object&gt;, Object, Int16)</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-      <tr>
-        <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.AsyncUnityEventHandler.html#Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_UnsafeGetStatus">IUniTaskSource.UnsafeGetStatus()</a>
-        </td>
-        <td class="markdown level1 summary"></td>
-      </tr>
-    </tbody>
-  </table>
-  
+
   <h3 id="constructors">Constructors
-  </h3>
+</h3>
   <section>
   <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler__ctor_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.#ctor*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler__ctor_UnityEvent_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.#ctor(UnityEvent,CancellationToken,System.Boolean)">AsyncUnityEventHandler(UnityEvent, CancellationToken, Boolean)</h4>
+  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler__ctor_UnityEngine_Events_UnityEvent_System_Threading_CancellationToken_System_Boolean_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.#ctor(UnityEngine.Events.UnityEvent,System.Threading.CancellationToken,System.Boolean)">AsyncUnityEventHandler(UnityEvent, CancellationToken, bool)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AsyncUnityEventHandler(UnityEvent unityEvent, CancellationToken cancellationToken, bool callOnce)</code></pre>
+    <pre><code class="lang- hljs">public AsyncUnityEventHandler(UnityEvent unityEvent, CancellationToken cancellationToken, bool callOnce)</code></pre>
   </div>
 
   <section>
@@ -206,61 +165,61 @@
   <dl class="cysharpdocfx-valuedefinition">
     <dt><span class="parametername"><code>unityEvent</code></span> <span class="xref">UnityEvent</span></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>cancellationToken</code></span> <span class="xref">CancellationToken</span></dt>
+    <dt><span class="parametername"><code>cancellationToken</code></span> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd></dd>
-    <dt><span class="parametername"><code>callOnce</code></span> <span class="xref">System.Boolean</span></dt>
+    <dt><span class="parametername"><code>callOnce</code></span> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
   </section>
   <h3 id="methods">Methods
-  </h3>
+</h3>
   <section>
   <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Dispose_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Dispose*"></a>
   <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Dispose" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Dispose">Dispose()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+    <pre><code class="lang- hljs">public void Dispose()</code></pre>
   </div>
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_OnInvokeAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.OnInvokeAsync*"></a>
   <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_OnInvokeAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.OnInvokeAsync">OnInvokeAsync()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UniTask OnInvokeAsync()</code></pre>
+    <pre><code class="lang- hljs">public UniTask OnInvokeAsync()</code></pre>
   </div>
 
-  
+
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
@@ -268,197 +227,44 @@
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <h3 id="eii">Explicit Interface Implementations
-  </h3>
-  <section>
-  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IAsyncClickEventHandler_OnClickAsync_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IAsyncClickEventHandler#OnClickAsync*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IAsyncClickEventHandler_OnClickAsync" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IAsyncClickEventHandler#OnClickAsync">IAsyncClickEventHandler.OnClickAsync()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">UniTask IAsyncClickEventHandler.OnClickAsync()</code></pre>
-  </div>
 
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTask.html">UniTask</a></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#GetResult*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_GetResult_System_Int16_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#GetResult(System.Int16)">IUniTaskSource.GetResult(Int16)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void IUniTaskSource.GetResult(short token)</code></pre>
-  </div>
 
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_GetStatus_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#GetStatus*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_GetStatus_System_Int16_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#GetStatus(System.Int16)">IUniTaskSource.GetStatus(Int16)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">UniTaskStatus IUniTaskSource.GetStatus(short token)</code></pre>
-  </div>
 
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTaskStatus.html">UniTaskStatus</a></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_OnCompleted_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#OnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_OnCompleted_System_Action_System_Object__System_Object_System_Int16_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#OnCompleted(System.Action{System.Object},System.Object,System.Int16)">IUniTaskSource.OnCompleted(Action&lt;Object&gt;, Object, Int16)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void IUniTaskSource.OnCompleted(Action&lt;object&gt; continuation, object state, short token)</code></pre>
-  </div>
 
-  <section>
-  <h5 class="parameters">Parameters</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
-    <dd></dd>
-    <dt><span class="parametername"><code>token</code></span> <span class="xref">System.Int16</span></dt>
-    <dd></dd>
-  </dl>
-  </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  <section>
-  <a id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_UnsafeGetStatus_" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#UnsafeGetStatus*"></a>
-  <h4 id="Cysharp_Threading_Tasks_AsyncUnityEventHandler_Cysharp_Threading_Tasks_IUniTaskSource_UnsafeGetStatus" data-uid="Cysharp.Threading.Tasks.AsyncUnityEventHandler.Cysharp#Threading#Tasks#IUniTaskSource#UnsafeGetStatus">IUniTaskSource.UnsafeGetStatus()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">UniTaskStatus IUniTaskSource.UnsafeGetStatus()</code></pre>
-  </div>
 
-  
-  <section>
-  <h5 class="returns">Returns</h5>
-  <dl class="cysharpdocfx-valuedefinition">
-    <dt><a class="xref" href="Cysharp.Threading.Tasks.UniTaskStatus.html">UniTaskStatus</a></dt>
-    <dd></dd>
-  </dl>
+
+
+
+
+
+
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </section>
-  
+
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="Cysharp.Threading.Tasks.IUniTaskSource.html">IUniTaskSource</a>
   </div>
   <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.sources.ivaluetasksource">IValueTaskSource</a>
+  </div>
+  <div>
       <a class="xref" href="Cysharp.Threading.Tasks.IAsyncClickEventHandler.html">IAsyncClickEventHandler</a>
   </div>
   <div>
-      <span class="xref">System.IDisposable</span>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>
   </div>
-  
-  
+
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="FluentAssertions.FluentAssertionsExtensions.html#FluentAssertions_FluentAssertionsExtensions_Should__1___0_">FluentAssertionsExtensions.Should&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Cysharp.Threading.Tasks.CancellationTokenExtensions.html#Cysharp_Threading_Tasks_CancellationTokenExtensions_AddTo_System_IDisposable_System_Threading_CancellationToken_">CancellationTokenExtensions.AddTo(IDisposable, CancellationToken)</a>
+  </div>
+
 </article>
           </div>
-          
+
           <div class="hidden-sm col-md-2" role="complementary">
             <div class="sideaffix">
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
@@ -468,20 +274,20 @@
           </div>
         </div>
       </div>
-      
+
       <footer>
         <div class="footer">
           <div class="container">
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            
-            Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
+      
+      Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>
     </div>
-    
+
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/docfx.override.js"></script>

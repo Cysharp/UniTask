@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>TaskPool&lt;T&gt; Struct
-   | UniTask </title>
+ | UniTask </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="TaskPool&lt;T&gt; Struct
-   | UniTask ">
-    <meta name="generator" content="docfx 2.59.2.0">
-    
+ | UniTask ">
+    <meta name="generator" content="docfx ">
+  
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
     <link rel="stylesheet" href="../styles/docfx.css">
@@ -18,14 +18,14 @@
     <link rel="stylesheet" href="../styles/cysharp.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+  
+  
+  
   </head>
   <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
       <header>
-        
+
         <nav id="autocollapse" class="navbar navbar-default ng-scope" role="navigation">
           <div class="container">
             <div class="navbar-header">
@@ -35,7 +35,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              
+
               <div class="navbar-brand">
                 <a href="../">
                   <img id="logo" src="../img/Icon.png" alt="">
@@ -52,7 +52,7 @@
             </div>
           </div>
         </nav>
-        
+
         <div class="subnav navbar navbar-default">
           <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
@@ -62,7 +62,7 @@
         </div>
       </header>
       <div role="main" class="container body-content hide-when-search">
-        
+
         <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
@@ -72,25 +72,24 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.TaskPool`1">
-  
+
   <h1 id="Cysharp_Threading_Tasks_TaskPool_1" data-uid="Cysharp.Threading.Tasks.TaskPool`1" class="text-break">TaskPool&lt;T&gt; Struct
-  </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
-  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
-  
+</h1>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.html">Cysharp</a>.<a class="xref" href="Cysharp.Threading.html">Threading</a>.<a class="xref" href="Cysharp.Threading.Tasks.html">Tasks</a></h6>
+  <h6><strong>Assembly</strong>: UniTask.dll</h6>
+
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public struct TaskPool&lt;T&gt;
-    where T : class, ITaskPoolNode&lt;T&gt;</code></pre>
+    <pre><code class="lang- hljs">public struct TaskPool&lt;T&gt; where T : class, ITaskPoolNode&lt;T&gt;</code></pre>
   </div>
 
-  
-  
-  
-  
-  
+
+
+
+
+
   <section>
   <h4 class="typeParameters">Type Parameters</h4>
   <dl class="cysharpdocfx-valuedefinition">
@@ -98,11 +97,11 @@
     <dd></dd>
   </dl>
   </section>
-  
-  
+
+
   <h3 id="members">Members</h3>
   <h4>Properties
-  </h4>
+</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -120,7 +119,7 @@
     </tbody>
   </table>
   <h4>Methods
-  </h4>
+</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -143,49 +142,49 @@
       </tr>
     </tbody>
   </table>
-  
+
   <h3 id="properties">Properties
-  </h3>
+</h3>
   <section>
   <a id="Cysharp_Threading_Tasks_TaskPool_1_Size_" data-uid="Cysharp.Threading.Tasks.TaskPool`1.Size*"></a>
   <h4 id="Cysharp_Threading_Tasks_TaskPool_1_Size" data-uid="Cysharp.Threading.Tasks.TaskPool`1.Size">Size</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly int Size { get; }</code></pre>
+    <pre><code class="lang- hljs">public int Size { get; }</code></pre>
   </div>
 
-  
-  
-  
-  
+
+
+
+
   <section>
   <h5 class="propertyValue">Property Value</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Int32</span></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
   </section>
   <h3 id="methods">Methods
-  </h3>
+</h3>
   <section>
   <a id="Cysharp_Threading_Tasks_TaskPool_1_TryPop_" data-uid="Cysharp.Threading.Tasks.TaskPool`1.TryPop*"></a>
   <h4 id="Cysharp_Threading_Tasks_TaskPool_1_TryPop__0__" data-uid="Cysharp.Threading.Tasks.TaskPool`1.TryPop(`0@)">TryPop(out T)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TryPop(out T result)</code></pre>
+    <pre><code class="lang- hljs">public bool TryPop(out T result)</code></pre>
   </div>
 
   <section>
@@ -195,34 +194,34 @@
     <dd></dd>
   </dl>
   </section>
-  
+
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Boolean</span></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_TaskPool_1_TryPush_" data-uid="Cysharp.Threading.Tasks.TaskPool`1.TryPush*"></a>
   <h4 id="Cysharp_Threading_Tasks_TaskPool_1_TryPush__0_" data-uid="Cysharp.Threading.Tasks.TaskPool`1.TryPush(`0)">TryPush(T)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TryPush(T item)</code></pre>
+    <pre><code class="lang- hljs">public bool TryPush(T item)</code></pre>
   </div>
 
   <section>
@@ -232,32 +231,36 @@
     <dd></dd>
   </dl>
   </section>
-  
+
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Boolean</span></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
   </section>
-  
-  
-  
+
+
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="FluentAssertions.FluentAssertionsExtensions.html#FluentAssertions_FluentAssertionsExtensions_Should__1___0_">FluentAssertionsExtensions.Should&lt;T&gt;(T)</a>
+  </div>
+
 </article>
           </div>
-          
+
           <div class="hidden-sm col-md-2" role="complementary">
             <div class="sideaffix">
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
@@ -267,20 +270,20 @@
           </div>
         </div>
       </div>
-      
+
       <footer>
         <div class="footer">
           <div class="container">
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            
-            Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
+      
+      Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>
     </div>
-    
+
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/docfx.override.js"></script>

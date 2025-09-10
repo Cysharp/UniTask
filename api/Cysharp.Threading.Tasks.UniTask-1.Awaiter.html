@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>UniTask&lt;T&gt;.Awaiter Struct
-   | UniTask </title>
+ | UniTask </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="UniTask&lt;T&gt;.Awaiter Struct
-   | UniTask ">
-    <meta name="generator" content="docfx 2.59.2.0">
-    
+ | UniTask ">
+    <meta name="generator" content="docfx ">
+  
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
     <link rel="stylesheet" href="../styles/docfx.css">
@@ -18,14 +18,14 @@
     <link rel="stylesheet" href="../styles/cysharp.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+  
+  
+  
   </head>
   <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
       <header>
-        
+
         <nav id="autocollapse" class="navbar navbar-default ng-scope" role="navigation">
           <div class="container">
             <div class="navbar-header">
@@ -35,7 +35,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              
+
               <div class="navbar-brand">
                 <a href="../">
                   <img id="logo" src="../img/Icon.png" alt="">
@@ -52,7 +52,7 @@
             </div>
           </div>
         </nav>
-        
+
         <div class="subnav navbar navbar-default">
           <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
@@ -62,7 +62,7 @@
         </div>
       </header>
       <div role="main" class="container body-content hide-when-search">
-        
+
         <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
@@ -72,33 +72,34 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter">
-  
+
   <h1 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter" class="text-break">UniTask&lt;T&gt;.Awaiter Struct
-  </h1>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.Threading.Tasks.html">Cysharp.Threading.Tasks</a></h6>
-  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
-  
+</h1>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Cysharp.html">Cysharp</a>.<a class="xref" href="Cysharp.Threading.html">Threading</a>.<a class="xref" href="Cysharp.Threading.Tasks.html">Tasks</a></h6>
+  <h6><strong>Assembly</strong>: UniTask.dll</h6>
+
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct Awaiter</code></pre>
+    <pre><code class="lang- hljs">public readonly struct UniTask&lt;T&gt;.Awaiter : ICriticalNotifyCompletion, INotifyCompletion</code></pre>
   </div>
 
-  
+
   <div classs="implements">
     <h5>Implements</h5>
-    <div><span class="xref">ICriticalNotifyCompletion</span></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.icriticalnotifycompletion">ICriticalNotifyCompletion</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.inotifycompletion">INotifyCompletion</a></div>
   </div>
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
   <h3 id="members">Members</h3>
   <h4>Constructors
-  </h4>
+</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -116,7 +117,7 @@
     </tbody>
   </table>
   <h4>Properties
-  </h4>
+</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -134,7 +135,7 @@
     </tbody>
   </table>
   <h4>Methods
-  </h4>
+</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -157,10 +158,9 @@
       </tr>
       <tr>
         <td>
-          <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.Awaiter.html#Cysharp_Threading_Tasks_UniTask_1_Awaiter_SourceOnCompleted_System_Action_System_Object__System_Object_">SourceOnCompleted(Action&lt;Object&gt;, Object)</a>
+          <a class="xref" href="Cysharp.Threading.Tasks.UniTask-1.Awaiter.html#Cysharp_Threading_Tasks_UniTask_1_Awaiter_SourceOnCompleted_System_Action_System_Object__System_Object_">SourceOnCompleted(Action&lt;object&gt;, object)</a>
         </td>
-        <td class="markdown level1 summary"><p>If register manually continuation, you can use it instead of for compiler OnCompleted methods.</p>
-</td>
+        <td class="markdown level1 summary"></td>
       </tr>
       <tr>
         <td>
@@ -170,17 +170,17 @@
       </tr>
     </tbody>
   </table>
-  
+
   <h3 id="constructors">Constructors
-  </h3>
+</h3>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_1_Awaiter__ctor_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.#ctor*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter__ctor_Cysharp_Threading_Tasks_UniTask__0___" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.#ctor(Cysharp.Threading.Tasks.UniTask{`0}@)">Awaiter(in UniTask&lt;T&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Awaiter(in UniTask&lt;T&gt; task)</code></pre>
+    <pre><code class="lang- hljs">public Awaiter(in UniTask&lt;T&gt; task)</code></pre>
   </div>
 
   <section>
@@ -190,64 +190,64 @@
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
   </section>
   <h3 id="properties">Properties
-  </h3>
+</h3>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_IsCompleted_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.IsCompleted*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_IsCompleted" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.IsCompleted">IsCompleted</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly bool IsCompleted { get; }</code></pre>
+    <pre><code class="lang- hljs">public bool IsCompleted { get; }</code></pre>
   </div>
 
-  
-  
-  
-  
+
+
+
+
   <section>
   <h5 class="propertyValue">Property Value</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="xref">System.Boolean</span></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
   </section>
   <h3 id="methods">Methods
-  </h3>
+</h3>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_GetResult_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.GetResult*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_GetResult" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.GetResult">GetResult()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly T GetResult()</code></pre>
+    <pre><code class="lang- hljs">public T GetResult()</code></pre>
   </div>
 
-  
+
   <section>
   <h5 class="returns">Returns</h5>
   <dl class="cysharpdocfx-valuedefinition">
@@ -255,121 +255,127 @@
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_OnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.OnCompleted*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_OnCompleted_System_Action_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.OnCompleted(System.Action)">OnCompleted(Action)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly void OnCompleted(Action continuation)</code></pre>
+    <pre><code class="lang- hljs">public void OnCompleted(Action continuation)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span></dt>
+    <dt><span class="parametername"><code>continuation</code></span> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_SourceOnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.SourceOnCompleted*"></a>
-  <h4 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_SourceOnCompleted_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.SourceOnCompleted(System.Action{System.Object},System.Object)">SourceOnCompleted(Action&lt;Object&gt;, Object)</h4>
-  <div class="markdown level1 summary"><p>If register manually continuation, you can use it instead of for compiler OnCompleted methods.</p>
-</div>
+  <h4 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_SourceOnCompleted_System_Action_System_Object__System_Object_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.SourceOnCompleted(System.Action{System.Object},System.Object)">SourceOnCompleted(Action&lt;object&gt;, object)</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly void SourceOnCompleted(Action&lt;object&gt; continuation, object state)</code></pre>
+    <pre><code class="lang- hljs">public void SourceOnCompleted(Action&lt;object&gt; continuation, object state)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span>&lt;<span class="xref">System.Object</span>&gt;</dt>
+    <dt><span class="parametername"><code>continuation</code></span> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
     <dd></dd>
-    <dt><span class="parametername"><code>state</code></span> <span class="xref">System.Object</span></dt>
+    <dt><span class="parametername"><code>state</code></span> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
   </section>
   <section>
   <a id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_UnsafeOnCompleted_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.UnsafeOnCompleted*"></a>
   <h4 id="Cysharp_Threading_Tasks_UniTask_1_Awaiter_UnsafeOnCompleted_System_Action_" data-uid="Cysharp.Threading.Tasks.UniTask`1.Awaiter.UnsafeOnCompleted(System.Action)">UnsafeOnCompleted(Action)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
-  
+
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly void UnsafeOnCompleted(Action continuation)</code></pre>
+    <pre><code class="lang- hljs">public void UnsafeOnCompleted(Action continuation)</code></pre>
   </div>
 
   <section>
   <h5 class="parameters">Parameters</h5>
   <dl class="cysharpdocfx-valuedefinition">
-    <dt><span class="parametername"><code>continuation</code></span> <span class="xref">System.Action</span></dt>
+    <dt><span class="parametername"><code>continuation</code></span> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a></dt>
     <dd></dd>
   </dl>
   </section>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
   </section>
-  
+
   <h3 id="implements">Implements</h3>
   <div>
-      <span class="xref">ICriticalNotifyCompletion</span>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.icriticalnotifycompletion">ICriticalNotifyCompletion</a>
   </div>
-  
-  
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.inotifycompletion">INotifyCompletion</a>
+  </div>
+
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="FluentAssertions.FluentAssertionsExtensions.html#FluentAssertions_FluentAssertionsExtensions_Should__1___0_">FluentAssertionsExtensions.Should&lt;T&gt;(T)</a>
+  </div>
+
 </article>
           </div>
-          
+
           <div class="hidden-sm col-md-2" role="complementary">
             <div class="sideaffix">
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
@@ -379,20 +385,20 @@
           </div>
         </div>
       </div>
-      
+
       <footer>
         <div class="footer">
           <div class="container">
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            
-            Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
+      
+      Copyright © <a href="https://cysharp.co.jp/">Cysharp</a>, Inc. | <span>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>
     </div>
-    
+
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/docfx.override.js"></script>
