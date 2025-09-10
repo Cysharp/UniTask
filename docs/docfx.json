@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [
-            "UniTask/Assets/Plugins/UniTask/Runtime/**/*.cs"
+            "UniTask/Library/ScriptAssemblies/UniTask*.dll"
           ],
           "src": "../src"
         }
@@ -54,7 +54,6 @@
       }
     ],
     "dest": "_site",
-
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
