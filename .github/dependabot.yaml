@@ -5,8 +5,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly" # Check for updates to GitHub Actions every week
+    cooldown:
+      default-days: 14 # Wait 14 days before creating another PR for the same dependency. This will prevent vulnerability on the package impact.
     ignore:
       # I just want update action when major/minor version is updated. patch updates are too noisy.
-      - dependency-name: '*'
+      - dependency-name: "*"
         update-types:
           - version-update:semver-patch
