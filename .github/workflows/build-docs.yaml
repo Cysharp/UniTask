@@ -5,6 +5,9 @@ on:
     branches:
       - master
       - feature/docs
+  pull_request:
+    branches:
+      - master
 
 jobs:
   run-docfx:
@@ -19,15 +22,15 @@ jobs:
         with:
           repository: Cysharp/DocfxTemplate
           path: docs/_DocfxTemplate
-      - uses: Kirbyrawr/docfx-action@db9a22c8fe1e8693a2a21be54cb0b87dfaa72cc4
-        name: Docfx metadata
-        with:
-          args: metadata docs/docfx.json
-      - uses: Kirbyrawr/docfx-action@db9a22c8fe1e8693a2a21be54cb0b87dfaa72cc4
-        name: Docfx build
-        with:
-          args: build docs/docfx.json
+      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
+      - name: dotnet tool restore
+        run: dotnet tool restore
+      - name: Docfx metadata
+        run: dotnet docfx metadata docs/docfx.json
+      - name: Docfx build
+        run: dotnet docfx build docs/docfx.json
       - name: Publish to GitHub Pages
+        if: ${{ github.event_name != 'pull_request' }}
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
