@@ -6,6 +6,10 @@
           "files": [
             "UniTask/Library/ScriptAssemblies/UniTask*.dll"
           ],
+          "exclude": [
+            "UniTask/Library/ScriptAssemblies/UniTask.Tests.dll",
+            "UniTask/Library/ScriptAssemblies/UniTask.Tests.Editor.dll"
+          ],
           "src": "../src"
         }
       ],

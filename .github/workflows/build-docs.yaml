@@ -5,9 +5,6 @@ on:
     branches:
       - master
       - feature/docs
-  pull_request:
-    branches:
-      - master
 
 jobs:
   run-docfx:
@@ -55,7 +52,6 @@ jobs:
       - name: Docfx build
         run: dotnet docfx build docs/docfx.json
       - name: Publish to GitHub Pages
-        if: ${{ github.event_name != 'pull_request' }}
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
