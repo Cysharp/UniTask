@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Load secrets
         id: op-load-secret
-        uses: 1password/load-secrets-action@581a835fb51b8e7ec56b71cf2ffddd7e68bb25e0 # v2.0.0
+        uses: 1password/load-secrets-action@13f58eec611f8e5db52ec16247f58c508398f3e6 # v3.0.0
         with:
           export-env: false
         env:
