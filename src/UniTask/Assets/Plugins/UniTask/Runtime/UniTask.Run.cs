@@ -66,12 +66,11 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     action();
                 }
                 finally
@@ -81,6 +80,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 action();
             }
 
@@ -94,12 +94,11 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     action(state);
                 }
                 finally
@@ -109,6 +108,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 action(state);
             }
 
@@ -122,12 +122,11 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     await action();
                 }
                 finally
@@ -137,6 +136,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 await action();
             }
 
@@ -150,12 +150,11 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     await action(state);
                 }
                 finally
@@ -165,6 +164,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 await action(state);
             }
 
@@ -178,12 +178,11 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     return func();
                 }
                 finally
@@ -194,6 +193,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 return func();
             }
         }
@@ -205,23 +205,22 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     return await func();
                 }
                 finally
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
                     await UniTask.Yield();
                     cancellationToken.ThrowIfCancellationRequested();
                 }
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var result = await func();
                 cancellationToken.ThrowIfCancellationRequested();
                 return result;
@@ -235,12 +234,11 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     return func(state);
                 }
                 finally
@@ -251,6 +249,7 @@ namespace Cysharp.Threading.Tasks
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 return func(state);
             }
         }
@@ -262,23 +261,22 @@ namespace Cysharp.Threading.Tasks
 
             await UniTask.SwitchToThreadPool();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             if (configureAwait)
             {
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     return await func(state);
                 }
                 finally
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
                     await UniTask.Yield();
                     cancellationToken.ThrowIfCancellationRequested();
                 }
             }
             else
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var result = await func(state);
                 cancellationToken.ThrowIfCancellationRequested();
                 return result;
