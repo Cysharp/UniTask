@@ -8,25 +8,49 @@ on:
 
 jobs:
   run-docfx:
+    if: ${{ ((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:')) && github.triggering_actor != 'dependabot[bot]' }}
     permissions:
       contents: write
       pages: write
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
+      - name: Load secrets
+        id: op-load-secret
+        uses: 1password/load-secrets-action@581a835fb51b8e7ec56b71cf2ffddd7e68bb25e0 # v2.0.0
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PUBLIC }}
+          UNITY_EMAIL: "op://${{ vars.OP_VAULT_ACTIONS_PUBLIC }}/UNITY_LICENSE/username"
+          UNITY_PASSWORD: "op://${{ vars.OP_VAULT_ACTIONS_PUBLIC }}/UNITY_LICENSE/credential"
+          UNITY_SERIAL: "op://${{ vars.OP_VAULT_ACTIONS_PUBLIC }}/UNITY_LICENSE/serial"
       - uses: Cysharp/Actions/.github/actions/checkout@main
+      # Execute scripts: Export Package
+      #  /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
+      - name: Build Unity (.unitypackage)
+        uses: Cysharp/Actions/.github/actions/unity-builder@main
+        env:
+          UNITY_EMAIL: ${{ steps.op-load-secret.outputs.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ steps.op-load-secret.outputs.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ steps.op-load-secret.outputs.UNITY_SERIAL }}
+        with:
+          projectPath: src/UniTask
+          unityVersion: "2022.3.39f1"
+          targetPlatform: StandaloneLinux64
+          buildMethod: PackageExporter.Export
+
       - uses: Cysharp/Actions/.github/actions/checkout@main
         with:
           repository: Cysharp/DocfxTemplate
           path: docs/_DocfxTemplate
-      - uses: Kirbyrawr/docfx-action@db9a22c8fe1e8693a2a21be54cb0b87dfaa72cc4
-        name: Docfx metadata
-        with:
-          args: metadata docs/docfx.json
-      - uses: Kirbyrawr/docfx-action@db9a22c8fe1e8693a2a21be54cb0b87dfaa72cc4
-        name: Docfx build
-        with:
-          args: build docs/docfx.json
+      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
+      - name: dotnet tool restore
+        run: dotnet tool restore
+      - name: Docfx metadata
+        run: dotnet docfx metadata docs/docfx.json
+      - name: Docfx build
+        run: dotnet docfx build docs/docfx.json
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
         with:

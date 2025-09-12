@@ -4,7 +4,11 @@
       "src": [
         {
           "files": [
-            "UniTask/Assets/Plugins/UniTask/Runtime/**/*.cs"
+            "UniTask/Library/ScriptAssemblies/UniTask*.dll"
+          ],
+          "exclude": [
+            "UniTask/Library/ScriptAssemblies/UniTask.Tests.dll",
+            "UniTask/Library/ScriptAssemblies/UniTask.Tests.Editor.dll"
           ],
           "src": "../src"
         }
@@ -54,7 +58,6 @@
       }
     ],
     "dest": "_site",
-
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
