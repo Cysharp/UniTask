@@ -4,7 +4,6 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>NetCoreSandbox</RootNamespace>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,12 +15,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UniTask.NetCore\UniTask.NetCore.csproj" />
-
-
-      <ProjectReference Include="..\UniTask.Analyzer\UniTask.Analyzer.csproj">
-          <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-          <OutputItemType>Analyzer</OutputItemType>
-      </ProjectReference>
+    <ProjectReference Include="..\UniTask.Analyzer\UniTask.Analyzer.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
