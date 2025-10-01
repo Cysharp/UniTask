@@ -101,6 +101,7 @@ jobs:
     needs: [update-packagejson, build-dotnet, build-unity]
     permissions:
       contents: write
+      id-token: write # required for NuGet Trusted Publish
     uses: Cysharp/Actions/.github/workflows/create-release.yaml@main
     with:
       commit-id: ${{ needs.update-packagejson.outputs.sha }}
