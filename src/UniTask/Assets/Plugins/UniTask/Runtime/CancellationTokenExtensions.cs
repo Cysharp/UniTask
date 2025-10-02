@@ -67,13 +67,13 @@ namespace Cysharp.Threading.Tasks
                 return (UniTask.FromCanceled(cancellationToken), default(CancellationTokenRegistration));
             }
 
-            var promise = new UniTaskCompletionSource();
+            var promise = AutoResetUniTaskCompletionSource.Create();
             return (promise.Task, cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationTokenCallback, promise));
         }
 
         static void Callback(object state)
         {
-            var promise = (UniTaskCompletionSource)state;
+            var promise = (AutoResetUniTaskCompletionSource)state;
             promise.TrySetResult();
         }
 

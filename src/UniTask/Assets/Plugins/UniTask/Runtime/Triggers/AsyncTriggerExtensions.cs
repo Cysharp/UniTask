@@ -18,13 +18,13 @@ namespace Cysharp.Threading.Tasks
 
 #endif
 
-        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
+        /// <summary>This CancellationToken is canceled when the GameObject will be destroyed.</summary>
         public static CancellationToken GetCancellationTokenOnDestroy(this GameObject gameObject)
         {
             return gameObject.GetAsyncDestroyTrigger().CancellationToken;
         }
 
-        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
+        /// <summary>This CancellationToken is canceled when the Component will be destroyed.</summary>
         public static CancellationToken GetCancellationTokenOnDestroy(this Component component)
         {
 #if UNITY_2022_2_OR_NEWER
