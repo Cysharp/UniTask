@@ -236,6 +236,11 @@ namespace Cysharp.Threading.Tasks
 
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    if (handle.IsValid())
+                    {
+                        handle.Completed -= completedCallback;
+                    }
+                    
                     completed = true;
                     if (autoReleaseWhenCanceled && handle.IsValid())
                     {
