@@ -35,10 +35,10 @@ jobs:
         with:
           ref: ${{ needs.update-packagejson.outputs.sha }}
       - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
-      # build and pack
+      # build and pack nuget (.nupkg and .symbols.nupkg will be created)
       - run: dotnet build -c Release -p:Version=${{ inputs.tag }}
       - run: dotnet test -c Release --no-build
-      - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ inputs.tag }} -o ./publish
+      - run: dotnet pack ./src/UniTask.NetCore/UniTask.NetCore.csproj -c Release --no-build -p:Version=${{ inputs.tag }} -p:IncludeSymbols=true -o ./publish
       # Store artifacts.
       - uses: Cysharp/Actions/.github/actions/upload-artifact@main
         with:
@@ -96,9 +96,32 @@ jobs:
           path: ./src/UniTask/UniTask.${{ inputs.tag }}.unitypackage
           retention-days: 1
 
+  # publish
+  publish:
+    name: "Publish NuGet packages"
+    needs: [build-dotnet, build-unity]
+    permissions:
+      contents: read
+      id-token: write # required for NuGet Trusted Publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
+      - uses: Cysharp/Actions/.github/actions/download-artifact@main
+      # push nuget
+      - name: NuGet login (OIDC)
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - run: dotnet nuget push "./nuget/*.nupkg" --skip-duplicate -s https://api.nuget.org/v3/index.json -k "${NUGET_KEY}"
+        if: ${{ !inputs.dry-run }}
+        env:
+          NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+
   # release
   create-release:
-    needs: [update-packagejson, build-dotnet, build-unity]
+    needs: [update-packagejson, publish]
     permissions:
       contents: write
       id-token: write # required for NuGet Trusted Publish
@@ -107,14 +130,14 @@ jobs:
       commit-id: ${{ needs.update-packagejson.outputs.sha }}
       dry-run: ${{ inputs.dry-run }}
       tag: ${{ inputs.tag }}
-      nuget-push: true
+      nuget-push: false
       release-upload: true
       release-asset-path: ./UniTask.${{ inputs.tag }}.unitypackage/UniTask.${{ inputs.tag }}.unitypackage
     secrets: inherit
 
   cleanup:
     if: ${{ needs.update-packagejson.outputs.is-branch-created == 'true' }}
-    needs: [update-packagejson, build-dotnet, build-unity]
+    needs: [update-packagejson, create-release]
     permissions:
       contents: write
     uses: Cysharp/Actions/.github/workflows/clean-packagejson-branch.yaml@main
