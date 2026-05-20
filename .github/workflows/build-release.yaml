@@ -27,7 +27,6 @@ jobs:
     needs: [update-packagejson]
     permissions:
       contents: read
-      id-token: write # required for NuGet Trusted Publish
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -46,16 +45,6 @@ jobs:
           name: nuget
           path: ./publish/
           retention-days: 1
-      # push nuget
-      - name: NuGet login (OIDC)
-        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
-        id: login
-        with:
-          user: ${{ secrets.NUGET_USER }}
-      - run: dotnet nuget push "./publish/*.nupkg" --skip-duplicate -s https://api.nuget.org/v3/index.json -k "${NUGET_KEY}"
-        if: ${{ !inputs.dry-run }}
-        env:
-          NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
 
   build-unity:
     needs: [update-packagejson]
@@ -107,9 +96,32 @@ jobs:
           path: ./src/UniTask/UniTask.${{ inputs.tag }}.unitypackage
           retention-days: 1
 
+  # publish
+  publish:
+    name: "Publish NuGet packages"
+    needs: [build-dotnet, build-unity]
+    permissions:
+      contents: read
+      id-token: write # required for NuGet Trusted Publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
+      - uses: Cysharp/Actions/.github/actions/download-artifact@main
+      # push nuget
+      - name: NuGet login (OIDC)
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - run: dotnet nuget push "./nuget/*.nupkg" --skip-duplicate -s https://api.nuget.org/v3/index.json -k "${NUGET_KEY}"
+        if: ${{ !inputs.dry-run }}
+        env:
+          NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+
   # release
   create-release:
-    needs: [update-packagejson, build-dotnet, build-unity]
+    needs: [update-packagejson, publish]
     permissions:
       contents: write
       id-token: write # required for NuGet Trusted Publish
@@ -125,7 +137,7 @@ jobs:
 
   cleanup:
     if: ${{ needs.update-packagejson.outputs.is-branch-created == 'true' }}
-    needs: [update-packagejson, build-dotnet, build-unity]
+    needs: [update-packagejson, create-release]
     permissions:
       contents: write
     uses: Cysharp/Actions/.github/workflows/clean-packagejson-branch.yaml@main
