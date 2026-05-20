@@ -56,6 +56,10 @@ jobs:
         if: ${{ !inputs.dry-run }}
         env:
           NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+      - run: dotnet nuget push "./publish/*.snupkg" --skip-duplicate -s https://api.nuget.org/v3/index.json -k "${NUGET_KEY}"
+        if: ${{ !inputs.dry-run }}
+        env:
+          NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
 
   build-unity:
     needs: [update-packagejson]
