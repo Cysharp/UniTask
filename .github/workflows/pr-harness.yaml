@@ -1,0 +1,12 @@
+name: PR Harness
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  harness:
+    permissions:
+      contents: read
+      pull-requests: read
+    uses: Cysharp/Actions/.github/workflows/pr-harness.yaml@main
