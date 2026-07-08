@@ -59,7 +59,7 @@ Install via [UPM package](#upm-package) with git reference or asset package(`Uni
 using Cysharp.Threading.Tasks;
 
 // You can return type as struct UniTask<T>(or UniTask), it is unity specialized lightweight alternative of Task<T>
-// zero allocation and fast excution for zero overhead async/await integrate with Unity
+// zero allocation and fast execution for zero overhead async/await integrate with Unity
 async UniTask<string> DemoAsync()
 {
     // You can await Unity's AsyncObject
@@ -67,7 +67,7 @@ async UniTask<string> DemoAsync()
     var txt = (await UnityWebRequest.Get("https://...").SendWebRequest()).downloadHandler.text;
     await SceneManager.LoadSceneAsync("scene2");
 
-    // .WithCancellation enables Cancel, GetCancellationTokenOnDestroy synchornizes with lifetime of GameObject
+    // .WithCancellation enables Cancel, GetCancellationTokenOnDestroy synchronizes with lifetime of GameObject
     // after Unity 2022.2, you can use `destroyCancellationToken` in MonoBehaviour
     var asset2 = await Resources.LoadAsync<TextAsset>("bar").WithCancellation(this.GetCancellationTokenOnDestroy());
 
@@ -144,7 +144,7 @@ Basics of UniTask and AsyncOperation
 ---
 UniTask features rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so the required Unity version is after `Unity 2018.3`, the official lowest version supported is `Unity 2018.4.13f1`.
 
-Why is UniTask(custom task-like object) required? Because Task is too heavy and not matched to Unity threading (single-thread). UniTask does not use threads and SynchronizationContext/ExecutionContext because Unity's asynchronous object is automaticaly dispatched by Unity's engine layer. It achieves faster and lower allocation, and is completely integrated with Unity.
+Why is UniTask(custom task-like object) required? Because Task is too heavy and not matched to Unity threading (single-thread). UniTask does not use threads and SynchronizationContext/ExecutionContext because Unity's asynchronous object is automatically dispatched by Unity's engine layer. It achieves faster and lower allocation, and is completely integrated with Unity.
 
 You can await `AsyncOperation`, `ResourceRequest`, `AssetBundleRequest`, `AssetBundleCreateRequest`, `UnityWebRequestAsyncOperation`, `AsyncGPUReadbackRequest`, `IEnumerator` and others when `using Cysharp.Threading.Tasks;`.
 
@@ -265,7 +265,7 @@ async UniTask BarAsync(CancellationToken cancellationToken)
 }
 ```
 
-`CancellationToken` means lifecycle of async. You can hold your own lifecycle insteadof default CancellationTokenOnDestroy.
+`CancellationToken` means lifecycle of async. You can hold your own lifecycle instead of default CancellationTokenOnDestroy.
 
 ```csharp
 public class MyBehaviour : MonoBehaviour
@@ -354,7 +354,7 @@ This is because it uses `CancellationToken.Register`; it is heavier than checkin
 
 Timeout handling
 ---
-Timeout is a variation of cancellation. You can set timeout by `CancellationTokenSouce.CancelAfterSlim(TimeSpan)` and pass CancellationToken to async methods.
+Timeout is a variation of cancellation. You can set timeout by `CancellationTokenSource.CancelAfterSlim(TimeSpan)` and pass CancellationToken to async methods.
 
 ```csharp
 var cts = new CancellationTokenSource();
@@ -373,7 +373,7 @@ catch (OperationCanceledException ex)
 }
 ```
 
-> `CancellationTokenSouce.CancelAfter` is a standard api. However in Unity you should not use it because it depends threading timer. `CancelAfterSlim` is UniTask's extension methods, it uses PlayerLoop instead.
+> `CancellationTokenSource.CancelAfter` is a standard api. However in Unity you should not use it because it depends threading timer. `CancelAfterSlim` is UniTask's extension methods, it uses PlayerLoop instead.
 
 If you want to use timeout with other source of cancellation, use `CancellationTokenSource.CreateLinkedTokenSource`.
 
@@ -518,7 +518,7 @@ It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.
 
 `PlayerLoopTiming.Update` is similar to `yield return null` in a coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`). `PlayerLoopTiming.FixedUpdate` is similar to `WaitForFixedUpdate`.
 
-> `PlayerLoopTiming.LastPostLateUpdate` is not equivalent to coroutine's `yield return new WaitForEndOfFrame()`. Coroutine's WaitForEndOfFrame seems to run after the PlayerLoop is done. Some methods that require coroutine's end of frame(`Texture2D.ReadPixels`, `ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, etc) do not work correctly when replaced with async/await. In these cases, pass MonoBehaviour(coroutine runnner) to `UniTask.WaitForEndOfFrame`. For example, `await UniTask.WaitForEndOfFrame(this);` is lightweight allocation free alternative of `yield return new WaitForEndOfFrame()`.
+> `PlayerLoopTiming.LastPostLateUpdate` is not equivalent to coroutine's `yield return new WaitForEndOfFrame()`. Coroutine's WaitForEndOfFrame seems to run after the PlayerLoop is done. Some methods that require coroutine's end of frame(`Texture2D.ReadPixels`, `ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, etc) do not work correctly when replaced with async/await. In these cases, pass MonoBehaviour(coroutine runner) to `UniTask.WaitForEndOfFrame`. For example, `await UniTask.WaitForEndOfFrame(this);` is lightweight allocation free alternative of `yield return new WaitForEndOfFrame()`.
 > 
 > Note: In Unity 2023.1 or newer, `await UniTask.WaitForEndOfFrame();` no longer requires MonoBehaviour. It uses `UnityEngine.Awaitable.EndOfFrameAsync`.
 
@@ -771,7 +771,7 @@ If you want to use the `async` method inside the func, use the `***Await` or `**
 How to create an async iterator: C# 8.0 supports async iterator(`async yield return`) but it only allows `IAsyncEnumerable<T>` and of course requires C# 8.0. UniTask supports `UniTaskAsyncEnumerable.Create` method to create custom async iterator.
 
 ```csharp
-// IAsyncEnumerable, C# 8.0 version of async iterator. ( do not use this style, IAsyncEnumerable is not controled in UniTask).
+// IAsyncEnumerable, C# 8.0 version of async iterator. ( do not use this style, IAsyncEnumerable is not controlled in UniTask).
 public async IAsyncEnumerable<int> MyEveryUpdate([EnumeratorCancellation]CancellationToken cancelationToken = default)
 {
     var frameCount = 0;
@@ -807,7 +807,7 @@ All uGUI component implements `***AsAsyncEnumerable` to convert asynchronous str
 ```csharp
 async UniTask TripleClick()
 {
-    // In default, used button.GetCancellationTokenOnDestroy to manage lieftime of async
+    // In default, used button.GetCancellationTokenOnDestroy to manage lifetime of async
     await button.OnClickAsync();
     await button.OnClickAsync();
     await button.OnClickAsync();
