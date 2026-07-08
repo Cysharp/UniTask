@@ -2,7 +2,7 @@ name: PR Harness
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   harness:
