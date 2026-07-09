@@ -52,7 +52,7 @@ namespace Cysharp.Threading.Tasks.Editor
             // Splittable
             SplitterGUILayout.BeginVerticalSplit(this.splitterState, EmptyLayoutOption);
             {
-                // Column Tabble
+                // Column Table
                 RenderTable();
 
                 // StackTrace details

@@ -220,7 +220,7 @@ namespace Cysharp.Threading.Tasks
             return (arg0, arg1, arg2, arg3) => asyncAction(arg0, arg1, arg2, arg3).Forget();
         }
 
-        // <summary>
+        /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
         /// For example: onClick.AddListener(UniTask.UnityAction(async (T arg, CancellationToken cancellationToken) => { /* */ } ))
         /// </summary>
