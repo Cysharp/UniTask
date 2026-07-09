@@ -160,6 +160,7 @@ namespace Cysharp.Threading.Tasks
                 }
                 else if (initialFrame == Time.frameCount)
                 {
+                    initialFrame = -2; // mark as skipped for Edit Mode, where Time.frameCount does not advance regularly.
                     return true; // already executed in first frame, skip.
                 }
 
