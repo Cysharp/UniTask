@@ -14,8 +14,9 @@ namespace Cysharp.Threading.Tasks
         public static CancellationToken ToCancellationToken(this UniTask task)
         {
             var cts = new CancellationTokenSource();
+            var token = cts.Token;
             ToCancellationTokenCore(task, cts).Forget();
-            return cts.Token;
+            return token;
         }
 
         public static CancellationToken ToCancellationToken(this UniTask task, CancellationToken linkToken)
@@ -31,9 +32,10 @@ namespace Cysharp.Threading.Tasks
             }
 
             var cts = CancellationTokenSource.CreateLinkedTokenSource(linkToken);
+            var token = cts.Token;
             ToCancellationTokenCore(task, cts).Forget();
 
-            return cts.Token;
+            return token;
         }
 
         public static CancellationToken ToCancellationToken<T>(this UniTask<T> task)
