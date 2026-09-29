@@ -76,7 +76,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             {
                 result = new AsyncUniTaskVoid<TStateMachine>();
             }
-            TaskTracker.TrackActiveTask(result, 3);
+            TaskTracker.TrackActiveStateMachine(result, typeof(TStateMachine), 3);
 
             runnerFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
@@ -101,7 +101,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
+#if UNITY_EDITOR
+            var tracked = TaskTracker.EnterRun(this);
+            try
+            {
+                stateMachine.MoveNext();
+            }
+            finally
+            {
+                if (tracked) TaskTracker.Exit();
+            }
+#else
             stateMachine.MoveNext();
+#endif
         }
 
         // dummy interface implementation for TaskTracker.
@@ -152,7 +164,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             {
                 result = new AsyncUniTask<TStateMachine>();
             }
-            TaskTracker.TrackActiveTask(result, 3);
+            TaskTracker.TrackActiveStateMachine(result, typeof(TStateMachine), 3);
 
             runnerPromiseFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
@@ -186,7 +198,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
+#if UNITY_EDITOR
+            var tracked = TaskTracker.EnterRun(this);
+            try
+            {
+                stateMachine.MoveNext();
+            }
+            finally
+            {
+                if (tracked) TaskTracker.Exit();
+            }
+#else
             stateMachine.MoveNext();
+#endif
         }
 
         public UniTask Task
@@ -275,7 +299,7 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             {
                 result = new AsyncUniTask<TStateMachine, T>();
             }
-            TaskTracker.TrackActiveTask(result, 3);
+            TaskTracker.TrackActiveStateMachine(result, typeof(TStateMachine), 3);
 
             runnerPromiseFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
@@ -310,7 +334,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         void Run()
         {
             // UnityEngine.Debug.Log($"MoveNext State:" + StateMachineUtility.GetState(stateMachine));
+#if UNITY_EDITOR
+            var tracked = TaskTracker.EnterRun(this);
+            try
+            {
+                stateMachine.MoveNext();
+            }
+            finally
+            {
+                if (tracked) TaskTracker.Exit();
+            }
+#else
             stateMachine.MoveNext();
+#endif
         }
 
         public UniTask<T> Task
