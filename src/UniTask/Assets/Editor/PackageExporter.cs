@@ -30,7 +30,7 @@ public static class PackageExporter
             exportPath,
             ExportPackageOptions.Default);
 
-        UnityEngine.Debug.Log("Export complete: " + Path.GetFullPath(exportPath));
+        UnityEngine.Debug.Log("Build succeeded! Export complete: " + Path.GetFullPath(exportPath));
     }
 
     static string GetVersion(string root)
