@@ -198,6 +198,10 @@ namespace Cysharp.Threading.Tasks
                 if (progress != null)
                 {
                     progress.Report(asyncOperation.progress);
+                    if (completed || asyncOperation == null)
+                    {
+                        return false;
+                    }
                 }
 
                 if (asyncOperation.isDone)
@@ -432,6 +436,10 @@ namespace Cysharp.Threading.Tasks
                 if (progress != null)
                 {
                     progress.Report(asyncOperation.progress);
+                    if (completed || asyncOperation == null)
+                    {
+                        return false;
+                    }
                 }
 
                 if (asyncOperation.isDone)
@@ -667,6 +675,10 @@ namespace Cysharp.Threading.Tasks
                 if (progress != null)
                 {
                     progress.Report(asyncOperation.progress);
+                    if (completed || asyncOperation == null)
+                    {
+                        return false;
+                    }
                 }
 
                 if (asyncOperation.isDone)
@@ -903,6 +915,10 @@ namespace Cysharp.Threading.Tasks
                 if (progress != null)
                 {
                     progress.Report(asyncOperation.progress);
+                    if (completed || asyncOperation == null)
+                    {
+                        return false;
+                    }
                 }
 
                 if (asyncOperation.isDone)
@@ -1156,6 +1172,10 @@ namespace Cysharp.Threading.Tasks
                 if (progress != null)
                 {
                     progress.Report(asyncOperation.progress);
+                    if (completed || asyncOperation == null)
+                    {
+                        return false;
+                    }
                 }
 
                 if (asyncOperation.isDone)
