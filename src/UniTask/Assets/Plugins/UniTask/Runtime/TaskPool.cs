@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Cysharp.Threading.Tasks
 {
-    // internally used but public, allow to user create custom operator with pooling.
+    // internally used but public, allow user to create custom operator with pooling.
 
     public static class TaskPool
     {
