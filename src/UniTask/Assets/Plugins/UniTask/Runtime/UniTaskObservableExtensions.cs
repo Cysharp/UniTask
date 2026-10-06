@@ -50,7 +50,7 @@ namespace Cysharp.Threading.Tasks
         }
 
         /// <summary>
-        /// Ideally returns IObservabl[Unit] is best but Cysharp.Threading.Tasks does not have Unit so return AsyncUnit instead.
+        /// Ideally returns IObservable[Unit] is best but Cysharp.Threading.Tasks does not have Unit so return AsyncUnit instead.
         /// </summary>
         public static IObservable<AsyncUnit> ToObservable(this UniTask task)
         {
