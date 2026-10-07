@@ -230,7 +230,7 @@ namespace Cysharp.Threading.Tasks.Internal
             return false;
         }
 
-        static string AppendHyperLink(string path, string line)
+        internal static string AppendHyperLink(string path, string line)
         {
             var fi = new FileInfo(path);
             if (fi.Directory == null)
@@ -240,7 +240,7 @@ namespace Cysharp.Threading.Tasks.Internal
             else
             {
                 var fname = fi.FullName.Replace(Path.DirectorySeparatorChar, '/').Replace(PlayerLoopHelper.ApplicationDataPath, "");
-                var withAssetsPath = "Assets/" + fname;
+                var withAssetsPath = "Assets/" + fname.TrimStart('/');
                 return "<a href=\"" + withAssetsPath + "\" line=\"" + line + "\">" + withAssetsPath + ":" + line + "</a>";
             }
         }

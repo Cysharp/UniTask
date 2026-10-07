@@ -108,7 +108,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         public void Start<TStateMachine>(ref TStateMachine stateMachine)
             where TStateMachine : IAsyncStateMachine
         {
+#if UNITY_EDITOR
+            var tracked = TaskTracker.EnterStart(typeof(TStateMachine));
+            try
+            {
+                stateMachine.MoveNext();
+            }
+            finally
+            {
+                if (tracked) TaskTracker.Exit();
+            }
+#else
             stateMachine.MoveNext();
+#endif
         }
 
         // 8. SetStateMachine
@@ -239,7 +251,19 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         public void Start<TStateMachine>(ref TStateMachine stateMachine)
             where TStateMachine : IAsyncStateMachine
         {
+#if UNITY_EDITOR
+            var tracked = TaskTracker.EnterStart(typeof(TStateMachine));
+            try
+            {
+                stateMachine.MoveNext();
+            }
+            finally
+            {
+                if (tracked) TaskTracker.Exit();
+            }
+#else
             stateMachine.MoveNext();
+#endif
         }
 
         // 8. SetStateMachine
