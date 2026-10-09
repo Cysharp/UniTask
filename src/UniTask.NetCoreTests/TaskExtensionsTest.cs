@@ -1,6 +1,7 @@
 #pragma warning disable CS1998
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Xunit;
@@ -79,6 +80,42 @@ namespace NetCoreTests
 
             Assert.Equal(UniTaskStatus.Faulted, task.Status);
             Assert.Same(exception, Assert.Throws<InvalidOperationException>(() => task.GetAwaiter().GetResult()));
+        }
+
+        [Fact]
+        public void AsUniTask_CanceledTask_IsCanceled()
+        {
+            UniTask task = Task.FromCanceled(new CancellationToken(true)).AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Canceled, task.Status);
+            Assert.Throws<OperationCanceledException>(() => task.GetAwaiter().GetResult());
+        }
+
+        [Fact]
+        public void AsUniTask_CanceledTaskWithResult_IsCanceled()
+        {
+            UniTask<int> task = Task.FromCanceled<int>(new CancellationToken(true)).AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Canceled, task.Status);
+            Assert.Throws<OperationCanceledException>(() => task.GetAwaiter().GetResult());
+        }
+
+        [Fact]
+        public void AsUniTask_OperationCanceledFaultedTask_IsCanceled()
+        {
+            UniTask task = Task.FromException(new OperationCanceledException()).AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Canceled, task.Status);
+            Assert.Throws<OperationCanceledException>(() => task.GetAwaiter().GetResult());
+        }
+
+        [Fact]
+        public void AsUniTask_OperationCanceledFaultedTaskWithResult_IsCanceled()
+        {
+            UniTask<int> task = Task.FromException<int>(new OperationCanceledException()).AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Canceled, task.Status);
+            Assert.Throws<OperationCanceledException>(() => task.GetAwaiter().GetResult());
         }
    }
 }
