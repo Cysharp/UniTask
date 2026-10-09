@@ -117,5 +117,104 @@ namespace NetCoreTests
             Assert.Equal(UniTaskStatus.Canceled, task.Status);
             Assert.Throws<OperationCanceledException>(() => task.GetAwaiter().GetResult());
         }
+
+        [Fact]
+        public async Task AsUniTask_PendingTask_SucceedsWhenTaskCompletes()
+        {
+            var source = new TaskCompletionSource();
+
+            UniTask task = source.Task.AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Pending, task.Status);
+
+            source.SetResult();
+            await task;
+
+            Assert.Equal(UniTaskStatus.Succeeded, task.Status);
+        }
+
+        [Fact]
+        public async Task AsUniTask_PendingTaskWithResult_SucceedsWithSameResultWhenTaskCompletes()
+        {
+            var source = new TaskCompletionSource<int>();
+
+            UniTask<int> task = source.Task.AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Pending, task.Status);
+
+            source.SetResult(42);
+
+            Assert.Equal(42, await task);
+        }
+
+        [Fact]
+        public async Task AsUniTask_PendingTask_FaultsWithSameExceptionWhenTaskFaults()
+        {
+            var exception = new InvalidOperationException("expected");
+            var source = new TaskCompletionSource();
+
+            UniTask task = source.Task.AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Pending, task.Status);
+
+            source.SetException(exception);
+
+            Assert.Same(exception, await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await task;
+            }));
+        }
+
+        [Fact]
+        public async Task AsUniTask_PendingTaskWithResult_FaultsWithSameExceptionWhenTaskFaults()
+        {
+            var exception = new InvalidOperationException("expected");
+            var source = new TaskCompletionSource<int>();
+
+            UniTask<int> task = source.Task.AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Pending, task.Status);
+
+            source.SetException(exception);
+
+            Assert.Same(exception, await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await task;
+            }));
+        }
+
+        [Fact]
+        public async Task AsUniTask_PendingTask_IsCanceledWhenTaskIsCanceled()
+        {
+            var source = new TaskCompletionSource();
+
+            UniTask task = source.Task.AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Pending, task.Status);
+
+            source.SetCanceled();
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                await task;
+            });
+        }
+
+        [Fact]
+        public async Task AsUniTask_PendingTaskWithResult_IsCanceledWhenTaskIsCanceled()
+        {
+            var source = new TaskCompletionSource<int>();
+
+            UniTask<int> task = source.Task.AsUniTask();
+
+            Assert.Equal(UniTaskStatus.Pending, task.Status);
+
+            source.SetCanceled();
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                await task;
+            });
+        }
    }
 }
