@@ -83,6 +83,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
+#if UNITASK_NETCORE
+            if (UniTaskScheduler.FlowExecutionContext)
+            {
+                runnerPromise.CaptureExecutionContext();
+            }
+#endif
             awaiter.OnCompleted(runnerPromise.MoveNext);
         }
 
@@ -99,6 +105,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
+#if UNITASK_NETCORE
+            if (UniTaskScheduler.FlowExecutionContext)
+            {
+                runnerPromise.CaptureExecutionContext();
+            }
+#endif
             awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
         }
 
@@ -108,6 +120,14 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         public void Start<TStateMachine>(ref TStateMachine stateMachine)
             where TStateMachine : IAsyncStateMachine
         {
+#if UNITASK_NETCORE
+            if (UniTaskScheduler.FlowExecutionContext)
+            {
+                // Undo what the code before the first await sets, as an async Task method does.
+                default(AsyncTaskMethodBuilder).Start(ref stateMachine);
+                return;
+            }
+#endif
             stateMachine.MoveNext();
         }
 
@@ -214,6 +234,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine, T>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
+#if UNITASK_NETCORE
+            if (UniTaskScheduler.FlowExecutionContext)
+            {
+                runnerPromise.CaptureExecutionContext();
+            }
+#endif
             awaiter.OnCompleted(runnerPromise.MoveNext);
         }
 
@@ -230,6 +256,12 @@ namespace Cysharp.Threading.Tasks.CompilerServices
                 AsyncUniTask<TStateMachine, T>.SetStateMachine(ref stateMachine, ref runnerPromise);
             }
 
+#if UNITASK_NETCORE
+            if (UniTaskScheduler.FlowExecutionContext)
+            {
+                runnerPromise.CaptureExecutionContext();
+            }
+#endif
             awaiter.UnsafeOnCompleted(runnerPromise.MoveNext);
         }
 
@@ -239,6 +271,14 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         public void Start<TStateMachine>(ref TStateMachine stateMachine)
             where TStateMachine : IAsyncStateMachine
         {
+#if UNITASK_NETCORE
+            if (UniTaskScheduler.FlowExecutionContext)
+            {
+                // Undo what the code before the first await sets, as an async Task method does.
+                default(AsyncTaskMethodBuilder).Start(ref stateMachine);
+                return;
+            }
+#endif
             stateMachine.MoveNext();
         }
 
