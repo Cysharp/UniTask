@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Cysharp.Threading.Tasks.CompilerServices
 {
@@ -15,6 +16,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     internal interface IStateMachineRunner
     {
         Action MoveNext { get; }
+#if UNITASK_NETCORE
+        void CaptureExecutionContext();
+#endif
         void Return();
 
 #if ENABLE_IL2CPP
@@ -25,6 +29,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     internal interface IStateMachineRunnerPromise : IUniTaskSource
     {
         Action MoveNext { get; }
+#if UNITASK_NETCORE
+        void CaptureExecutionContext();
+#endif
         UniTask Task { get; }
         void SetResult();
         void SetException(Exception exception);
@@ -33,6 +40,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
     internal interface IStateMachineRunnerPromise<T> : IUniTaskSource<T>
     {
         Action MoveNext { get; }
+#if UNITASK_NETCORE
+        void CaptureExecutionContext();
+#endif
         UniTask<T> Task { get; }
         void SetResult(T result);
         void SetException(Exception exception);
@@ -61,6 +71,17 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         TStateMachine stateMachine;
 
         public Action MoveNext { get; }
+#if UNITASK_NETCORE
+        // Restored around the resume, as an async Task method does: without it the code after an
+        // await runs in whatever ExecutionContext the completing thread carries, losing AsyncLocals.
+        ExecutionContext executionContext;
+        static readonly ContextCallback RunInExecutionContext = state => ((AsyncUniTaskVoid<TStateMachine>)state).stateMachine.MoveNext();
+
+        public void CaptureExecutionContext()
+        {
+            executionContext = ExecutionContext.Capture();
+        }
+#endif
 
         public AsyncUniTaskVoid()
         {
@@ -94,6 +115,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         {
             TaskTracker.RemoveTracking(this);
             stateMachine = default;
+#if UNITASK_NETCORE
+            executionContext = null;
+#endif
             pool.TryPush(this);
         }
 
@@ -101,6 +125,15 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
+#if UNITASK_NETCORE
+            ExecutionContext context = executionContext;
+            if (context != null)
+            {
+                executionContext = null;
+                ExecutionContext.Run(context, RunInExecutionContext, this);
+                return;
+            }
+#endif
             stateMachine.MoveNext();
         }
 
@@ -134,6 +167,17 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         readonly Action returnDelegate;  
 #endif
         public Action MoveNext { get; }
+#if UNITASK_NETCORE
+        // Restored around the resume, as an async Task method does: without it the code after an
+        // await runs in whatever ExecutionContext the completing thread carries, losing AsyncLocals.
+        ExecutionContext executionContext;
+        static readonly ContextCallback RunInExecutionContext = state => ((AsyncUniTask<TStateMachine>)state).stateMachine.MoveNext();
+
+        public void CaptureExecutionContext()
+        {
+            executionContext = ExecutionContext.Capture();
+        }
+#endif
 
         TStateMachine stateMachine;
         UniTaskCompletionSourceCore<AsyncUnit> core;
@@ -171,6 +215,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             TaskTracker.RemoveTracking(this);
             core.Reset();
             stateMachine = default;
+#if UNITASK_NETCORE
+            executionContext = null;
+#endif
             pool.TryPush(this);
         }
 
@@ -179,6 +226,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             TaskTracker.RemoveTracking(this);
             core.Reset();
             stateMachine = default;
+#if UNITASK_NETCORE
+            executionContext = null;
+#endif
             return pool.TryPush(this);
         }
 
@@ -186,6 +236,15 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
+#if UNITASK_NETCORE
+            ExecutionContext context = executionContext;
+            if (context != null)
+            {
+                executionContext = null;
+                ExecutionContext.Run(context, RunInExecutionContext, this);
+                return;
+            }
+#endif
             stateMachine.MoveNext();
         }
 
@@ -257,6 +316,17 @@ namespace Cysharp.Threading.Tasks.CompilerServices
 #endif
 
         public Action MoveNext { get; }
+#if UNITASK_NETCORE
+        // Restored around the resume, as an async Task method does: without it the code after an
+        // await runs in whatever ExecutionContext the completing thread carries, losing AsyncLocals.
+        ExecutionContext executionContext;
+        static readonly ContextCallback RunInExecutionContext = state => ((AsyncUniTask<TStateMachine, T>)state).stateMachine.MoveNext();
+
+        public void CaptureExecutionContext()
+        {
+            executionContext = ExecutionContext.Capture();
+        }
+#endif
 
         TStateMachine stateMachine;
         UniTaskCompletionSourceCore<T> core;
@@ -294,6 +364,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             TaskTracker.RemoveTracking(this);
             core.Reset();
             stateMachine = default;
+#if UNITASK_NETCORE
+            executionContext = null;
+#endif
             pool.TryPush(this);
         }
 
@@ -302,6 +375,9 @@ namespace Cysharp.Threading.Tasks.CompilerServices
             TaskTracker.RemoveTracking(this);
             core.Reset();
             stateMachine = default;
+#if UNITASK_NETCORE
+            executionContext = null;
+#endif
             return pool.TryPush(this);
         }
 
@@ -309,6 +385,15 @@ namespace Cysharp.Threading.Tasks.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Run()
         {
+#if UNITASK_NETCORE
+            ExecutionContext context = executionContext;
+            if (context != null)
+            {
+                executionContext = null;
+                ExecutionContext.Run(context, RunInExecutionContext, this);
+                return;
+            }
+#endif
             // UnityEngine.Debug.Log($"MoveNext State:" + StateMachineUtility.GetState(stateMachine));
             stateMachine.MoveNext();
         }

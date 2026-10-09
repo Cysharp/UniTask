@@ -17,6 +17,14 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static bool PropagateOperationCanceledException = false;
 
+#if UNITASK_NETCORE
+
+        /// <summary>
+        /// Restore the ExecutionContext when an async UniTask method resumes, as async Task does, so AsyncLocal values survive an await. Adds a few nanoseconds per await and no allocation; set it at startup. Default is false.
+        /// </summary>
+        public static bool FlowExecutionContext = false;
+#endif
+
 #if UNITY_2018_3_OR_NEWER
 
         /// <summary>
