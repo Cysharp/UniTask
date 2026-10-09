@@ -16,6 +16,16 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static UniTask<T> AsUniTask<T>(this Task<T> task, bool useCurrentSynchronizationContext = true)
         {
+            switch (task.Status)
+            {
+                case TaskStatus.Canceled:
+                    return UniTask.FromCanceled<T>();
+                case TaskStatus.Faulted:
+                    return UniTask.FromException<T>(task.Exception.InnerException ?? task.Exception);
+                case TaskStatus.RanToCompletion:
+                    return UniTask.FromResult<T>(task.Result);
+            }
+
             var promise = new UniTaskCompletionSource<T>();
 
             task.ContinueWith((x, state) =>
@@ -46,6 +56,16 @@ namespace Cysharp.Threading.Tasks
         /// </summary>
         public static UniTask AsUniTask(this Task task, bool useCurrentSynchronizationContext = true)
         {
+            switch (task.Status)
+            {
+                case TaskStatus.Canceled:
+                    return UniTask.FromCanceled();
+                case TaskStatus.Faulted:
+                    return UniTask.FromException(task.Exception.InnerException ?? task.Exception);
+                case TaskStatus.RanToCompletion:
+                    return UniTask.CompletedTask;
+            }
+
             var promise = new UniTaskCompletionSource();
 
             task.ContinueWith((x, state) =>
