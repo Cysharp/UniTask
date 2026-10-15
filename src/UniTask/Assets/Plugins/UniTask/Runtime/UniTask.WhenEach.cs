@@ -140,6 +140,13 @@ namespace Cysharp.Threading.Tasks
 
             static void ConsumeAll(Enumerator self, UniTask<T>[] array, int length)
             {
+                if (length == 0)
+                {
+                    self.state = WhenEachState.Completed;
+                    self.channel.Writer.TryComplete();
+                    return;
+                }
+
                 for (int i = 0; i < length; i++)
                 {
                     RunWhenEachTask(self, array[i], length).Forget();

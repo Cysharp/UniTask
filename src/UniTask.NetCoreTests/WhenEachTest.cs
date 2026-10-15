@@ -11,6 +11,27 @@ namespace NetCoreTests
 {
     public class WhenEachTest
     {
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task Empty(bool useArray)
+        {
+            var source = useArray
+                ? UniTask.WhenEach(Array.Empty<UniTask<int>>())
+                : UniTask.WhenEach(Enumerable.Empty<UniTask<int>>());
+            var enumerator = source.GetAsyncEnumerator();
+            try
+            {
+                var moveNext = enumerator.MoveNextAsync();
+                moveNext.Status.Should().Be(UniTaskStatus.Succeeded);
+                (await moveNext).Should().BeFalse();
+            }
+            finally
+            {
+                await enumerator.DisposeAsync();
+            }
+        }
+
         [Fact]
         public async Task Each()
         {
