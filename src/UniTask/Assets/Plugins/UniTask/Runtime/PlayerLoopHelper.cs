@@ -198,29 +198,6 @@ namespace Cysharp.Threading.Tasks
             Type loopRunnerYieldType, ContinuationQueue cq,
             Type loopRunnerType, PlayerLoopRunner runner)
         {
-
-#if UNITY_EDITOR
-            EditorApplication.playModeStateChanged += (state) =>
-            {
-                if (state == PlayModeStateChange.EnteredEditMode || state == PlayModeStateChange.ExitingEditMode)
-                {
-                    IsEditorApplicationQuitting = true;
-                    // run rest action before clear.
-                    if (runner != null)
-                    {
-                        runner.Run();
-                        runner.Clear();
-                    }
-                    if (cq != null)
-                    {
-                        cq.Run();
-                        cq.Clear();
-                    }
-                    IsEditorApplicationQuitting = false;
-                }
-            };
-#endif
-
             var yieldLoop = new PlayerLoopSystem
             {
                 type = loopRunnerYieldType,
@@ -332,6 +309,37 @@ namespace Cysharp.Threading.Tasks
 
             // register an Editor update delegate, used to forcing playerLoop update
             EditorApplication.update += ForceEditorPlayerLoopUpdate;
+
+            // registered once per domain load; iterates the current yielders/runners so it stays valid
+            // when Init() recreates them with domain reload disabled.
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        static void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state != PlayModeStateChange.EnteredEditMode && state != PlayModeStateChange.ExitingEditMode) return;
+
+            IsEditorApplicationQuitting = true;
+            // run rest action before clear.
+            if (runners != null)
+            {
+                foreach (var item in runners)
+                {
+                    if (item == null) continue;
+                    item.Run();
+                    item.Clear();
+                }
+            }
+            if (yielders != null)
+            {
+                foreach (var item in yielders)
+                {
+                    if (item == null) continue;
+                    item.Run();
+                    item.Clear();
+                }
+            }
+            IsEditorApplicationQuitting = false;
         }
 
         private static void ForceEditorPlayerLoopUpdate()
