@@ -226,9 +226,18 @@ namespace Cysharp.Threading.Tasks
                                 source.tween.Kill(false);
                                 break;
                             case TweenCancelBehaviour.KillAndCancelAwait:
+                            {
                                 source.canceled = true;
+                                var callbackType = source.callbackType;
                                 source.tween.Kill(false);
+                                if (callbackType != CallbackType.Kill)
+                                {
+                                    // Kill(false) invokes onKill, not callbacks such as onComplete.
+                                    // Complete the await here when it is waiting for another callback.
+                                    source.core.TrySetCanceled(source.cancellationToken);
+                                }
                                 break;
+                            }
                             case TweenCancelBehaviour.KillWithCompleteCallback:
                                 source.tween.Kill(true);
                                 break;
