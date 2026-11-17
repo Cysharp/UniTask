@@ -68,7 +68,11 @@ namespace Cysharp.Threading.Tasks
         public UniTask<bool> SuppressCancellationThrow()
         {
             var status = Status;
-            if (status == UniTaskStatus.Succeeded) return CompletedTasks.False;
+            if (status == UniTaskStatus.Succeeded)
+            {
+                source?.GetResult(token);
+                return CompletedTasks.False;
+            }
             if (status == UniTaskStatus.Canceled) return CompletedTasks.True;
             return new UniTask<bool>(new IsCanceledSource(source), token);
         }
