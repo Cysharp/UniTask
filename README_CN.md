@@ -683,7 +683,7 @@ UniTaskTracker 仅用于调试用途，因为启用跟踪和捕获堆栈跟踪�
 它们被定义在了如`UniTask.TextMeshPro`，`UniTask.DOTween`，`UniTask.Addressables`等单独的 asmdef文件中。
 
 从包管理器中导入软件包时，会自动启用对 TextMeshPro 和 Addressables 的支持。
-但对于 DOTween 的支持，则需要从[DOTWeen assets](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676r)中导入并定义脚本定义符号`UNITASK_DOTWEEN_SUPPORT`后才能启用。
+但对于 DOTween 的支持，则需要从[DOTWeen assets](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)中导入并定义脚本定义符号`UNITASK_DOTWEEN_SUPPORT`后才能启用。
 
 ```csharp
 // 动画序列
