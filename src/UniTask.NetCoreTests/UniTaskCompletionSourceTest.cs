@@ -9,6 +9,24 @@ namespace NetCoreTests
     public class AutoResetUniTaskCompletionSourceTest
     {
         [Fact]
+        public async Task SuppressCancellationThrowConsumesSucceededSource()
+        {
+            var source = AutoResetUniTaskCompletionSource.Create();
+            var task = source.Task;
+            source.TrySetResult();
+
+            Assert.False(await task.SuppressCancellationThrow());
+            // Returning to the pool resets the core and invalidates the old token.
+            Assert.Throws<System.InvalidOperationException>(() => task.Status);
+        }
+
+        [Fact]
+        public async Task SuppressCancellationThrowHandlesSourceFreeSuccess()
+        {
+            Assert.False(await UniTask.CompletedTask.SuppressCancellationThrow());
+        }
+
+        [Fact]
         public async Task SetResultAfterReturn()
         {
             var source1 = AutoResetUniTaskCompletionSource.Create();
