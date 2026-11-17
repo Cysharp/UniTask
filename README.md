@@ -684,7 +684,7 @@ By default, UniTask supports TextMeshPro(`BindTo(TMP_Text)` and `TMP_InputField`
 There are defined in separated asmdefs like `UniTask.TextMeshPro`, `UniTask.DOTween`, `UniTask.Addressables`.
 
 TextMeshPro and Addressables support are automatically enabled when importing their packages from package manager. 
-However for DOTween support, after importing from the [DOTWeen assets](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676r) and define the scripting define symbol `UNITASK_DOTWEEN_SUPPORT` to enable it.
+However for DOTween support, after importing from the [DOTWeen assets](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676) and define the scripting define symbol `UNITASK_DOTWEEN_SUPPORT` to enable it.
 
 ```csharp
 // sequential
