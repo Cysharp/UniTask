@@ -301,6 +301,40 @@ namespace NetCoreTests
             new AddMe().Run2();
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AddMultipleWhileDispatchingKeepsAllHandlers(bool hasExistingTail)
+        {
+            var ev = new TriggerEvent<int>();
+            var callOrder = new List<int>();
+            var first = new TestEvent(2, () => callOrder.Add(2));
+            var second = new TestEvent(3, () => callOrder.Add(3));
+            var later = new TestEvent(4, () => callOrder.Add(4));
+            var addDeferred = true;
+
+            ev.Add(new TestEvent(1, () =>
+            {
+                if (!addDeferred) return;
+
+                addDeferred = false;
+                ev.Add(first);
+                ev.Add(second);
+            }));
+            if (hasExistingTail)
+            {
+                ev.Add(new TestEvent(5));
+            }
+
+            ev.SetResult(10);
+            callOrder.Should().BeEmpty();
+
+            ev.Add(later);
+            ev.SetResult(20);
+
+            callOrder.Should().Equal(2, 3, 4);
+        }
+
         public class RemoveMe
         {
             TriggerEvent<int> ev;

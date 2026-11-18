@@ -59,11 +59,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             iteratingNode = null;
-            if (iteratingHead != null)
-            {
-                Add(iteratingHead);
-                iteratingHead = null;
-            }
+            AppendDeferredHandlers();
         }
 
         public void SetCanceled(CancellationToken cancellationToken)
@@ -93,11 +89,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             iteratingNode = null;
-            if (iteratingHead != null)
-            {
-                Add(iteratingHead);
-                iteratingHead = null;
-            }
+            AppendDeferredHandlers();
         }
 
         public void SetCompleted()
@@ -127,11 +119,7 @@ namespace Cysharp.Threading.Tasks
             }
 
             iteratingNode = null;
-            if (iteratingHead != null)
-            {
-                Add(iteratingHead);
-                iteratingHead = null;
-            }
+            AppendDeferredHandlers();
         }
 
         public void SetError(Exception exception)
@@ -161,11 +149,26 @@ namespace Cysharp.Threading.Tasks
             }
 
             iteratingNode = null;
-            if (iteratingHead != null)
+            AppendDeferredHandlers();
+        }
+
+        void AppendDeferredHandlers()
+        {
+            if (iteratingHead == null) return;
+
+            if (head == null)
             {
-                Add(iteratingHead);
-                iteratingHead = null;
+                head = iteratingHead;
             }
+            else
+            {
+                var tail = head.Prev ?? head;
+                head.Prev = iteratingHead.Prev ?? iteratingHead;
+                tail.Next = iteratingHead;
+                iteratingHead.Prev = tail;
+            }
+
+            iteratingHead = null;
         }
 
         public void Add(ITriggerHandler<T> handler)
