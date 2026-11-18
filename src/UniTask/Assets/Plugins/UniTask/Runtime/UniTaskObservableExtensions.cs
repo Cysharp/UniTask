@@ -24,7 +24,7 @@ namespace Cysharp.Threading.Tasks
             }
             catch (Exception ex)
             {
-                promise.TrySetException(ex);
+                observer.OnError(ex);
             }
 
             return promise.Task;
