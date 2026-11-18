@@ -301,6 +301,53 @@ namespace NetCoreTests
             (await enumerator.MoveNextAsync()).Should().BeFalse();
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task AsyncEnumeratorAdvancesWithoutReadingCurrent(bool waitForFirst)
+        {
+            var channel = Cysharp.Threading.Tasks.Channel.CreateSingleConsumerUnbounded<int>();
+            await using var enumerator = channel.Reader.ReadAllAsync().GetAsyncEnumerator();
+
+            if (!waitForFirst)
+            {
+                channel.Writer.TryWrite(10).Should().BeTrue();
+            }
+
+            var first = enumerator.MoveNextAsync();
+            if (waitForFirst)
+            {
+                first.Status.Should().Be(UniTaskStatus.Pending);
+                channel.Writer.TryWrite(10).Should().BeTrue();
+            }
+            else
+            {
+                first.Status.Should().Be(UniTaskStatus.Succeeded);
+            }
+
+            (await first.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Should().BeTrue();
+
+            channel.Writer.TryWrite(20).Should().BeTrue();
+            channel.Writer.Complete();
+            (await enumerator.MoveNextAsync()).Should().BeTrue();
+            enumerator.Current.Should().Be(20);
+            (await enumerator.MoveNextAsync()).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task AsyncEnumeratorReadsBufferedItemBeforeCompletionError()
+        {
+            var channel = Cysharp.Threading.Tasks.Channel.CreateSingleConsumerUnbounded<int>();
+            var error = new InvalidOperationException("Writer failed.");
+            channel.Writer.TryWrite(10).Should().BeTrue();
+            channel.Writer.Complete(error);
+
+            await using var enumerator = channel.Reader.ReadAllAsync().GetAsyncEnumerator();
+            (await enumerator.MoveNextAsync()).Should().BeTrue();
+            enumerator.Current.Should().Be(10);
+            (await Assert.ThrowsAsync<InvalidOperationException>(async () => await enumerator.MoveNextAsync())).Should().BeSameAs(error);
+        }
+
         [Fact]
         public async Task AsyncEnumeratorCancellation()
         {

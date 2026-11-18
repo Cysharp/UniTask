@@ -372,7 +372,6 @@ namespace Cysharp.Threading.Tasks
                 CancellationTokenRegistration cancellationTokenRegistration2;
 
                 T current;
-                bool cacheValue;
                 bool running;
 
                 public ReadAllAsyncEnumerable(SingleConsumerUnboundedChannelReader parent, CancellationToken cancellationToken)
@@ -407,23 +406,25 @@ namespace Cysharp.Threading.Tasks
                     return this;
                 }
 
-                public T Current
-                {
-                    get
-                    {
-                        if (cacheValue)
-                        {
-                            return current;
-                        }
-                        cacheValue = parent.TryRead(out current);
-                        return current;
-                    }
-                }
+                public T Current => current;
 
                 public UniTask<bool> MoveNextAsync()
                 {
-                    cacheValue = false;
-                    return parent.WaitToReadAsync(CancellationToken.None); // ok to use None, registered in ctor.
+                    return parent.TryRead(out current) ? CompletedTasks.True : WaitAndReadAsync();
+                }
+
+                async UniTask<bool> WaitAndReadAsync()
+                {
+                    // The enumerator already registered its cancellation tokens.
+                    while (await parent.WaitToReadAsync(CancellationToken.None))
+                    {
+                        if (parent.TryRead(out current))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 public UniTask DisposeAsync()
