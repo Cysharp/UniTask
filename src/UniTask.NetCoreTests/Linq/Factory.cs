@@ -26,6 +26,25 @@ namespace NetCoreTests.Linq
         }
 
         [Theory]
+        [InlineData(1, 0)]
+        [InlineData(-2, 3)]
+        [InlineData(int.MinValue, 2)]
+        [InlineData(int.MaxValue, 1)]
+        [InlineData(int.MaxValue - 1, 2)]
+        public async Task RangeStaysExhausted(int start, int count)
+        {
+            await using var enumerator = UniTaskAsyncEnumerable.Range(start, count).GetAsyncEnumerator();
+            foreach (var expected in Enumerable.Range(start, count))
+            {
+                (await enumerator.MoveNextAsync()).Should().BeTrue();
+                enumerator.Current.Should().Be(expected);
+            }
+
+            (await enumerator.MoveNextAsync()).Should().BeFalse();
+            (await enumerator.MoveNextAsync()).Should().BeFalse();
+        }
+
+        [Theory]
         [InlineData("foo", 0)]
         [InlineData("bar", 1)]
         [InlineData("baz", 3)]

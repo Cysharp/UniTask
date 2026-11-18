@@ -56,6 +56,11 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (current == end)
+                {
+                    return CompletedTasks.False;
+                }
+
                 current++;
 
                 if (current != end)
