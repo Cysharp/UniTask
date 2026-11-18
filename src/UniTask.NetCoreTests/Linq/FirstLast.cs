@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -181,6 +182,32 @@ namespace NetCoreTests.Linq
             }
         }
 
+
+        [Fact]
+        public async Task NegativeElementAtThrowsWithoutEnumerating()
+        {
+            var source = new FailingElementAtSource();
+
+            var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await source.ElementAtAsync(-1));
+
+            error.ParamName.Should().Be("index");
+        }
+
+        [Fact]
+        public async Task NegativeElementAtOrDefaultDoesNotEnumerate()
+        {
+            var source = new FailingElementAtSource();
+
+            (await source.ElementAtOrDefaultAsync(-1)).Should().Be(0);
+        }
+
+        sealed class FailingElementAtSource : IUniTaskAsyncEnumerable<int>
+        {
+            public IUniTaskAsyncEnumerator<int> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            {
+                throw new UniTaskTestException();
+            }
+        }
 
         [Fact]
         public async Task ElementAtTest()

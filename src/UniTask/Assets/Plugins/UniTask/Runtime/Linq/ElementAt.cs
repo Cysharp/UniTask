@@ -25,6 +25,16 @@ namespace Cysharp.Threading.Tasks.Linq
     {
         public static async UniTask<TSource> ElementAtAsync<TSource>(IUniTaskAsyncEnumerable<TSource> source, int index, CancellationToken cancellationToken, bool defaultIfEmpty)
         {
+            if (index < 0)
+            {
+                if (defaultIfEmpty)
+                {
+                    return default;
+                }
+
+                throw Error.ArgumentOutOfRange(nameof(index));
+            }
+
             var e = source.GetAsyncEnumerator(cancellationToken);
             try
             {
