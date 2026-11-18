@@ -64,6 +64,50 @@ namespace NetCoreTests
             }
         }
 
+        [Fact]
+        public void FactoryThrowIsCached()
+        {
+            var error = new TaskTestException();
+            var calls = 0;
+            var lazy = UniTask.Lazy(() =>
+            {
+                calls++;
+                throw error;
+            });
+
+            Assert.Same(error, Assert.Throws<TaskTestException>(() => lazy.GetAwaiter().GetResult()));
+
+            var task = lazy.Task;
+            Assert.Equal(UniTaskStatus.Faulted, task.Status);
+            Assert.Same(error, Assert.Throws<TaskTestException>(() => task.GetAwaiter().GetResult()));
+            Assert.Equal(1, calls);
+        }
+
+        [Fact]
+        public void FactoryFailureCallbackCanReadTaskOnAnotherThread()
+        {
+            var error = new TaskTestException();
+            var readCompleted = false;
+            var observedStatus = UniTaskStatus.Pending;
+            AsyncLazy lazy = null;
+            lazy = UniTask.Lazy(() =>
+            {
+                lazy.Task.GetAwaiter().OnCompleted(() =>
+                {
+                    var reader = new Thread(() => observedStatus = lazy.Task.Status) { IsBackground = true };
+                    reader.Start();
+                    readCompleted = reader.Join(TimeSpan.FromSeconds(10));
+                });
+                throw error;
+            });
+
+            var task = lazy.Task;
+
+            Assert.True(readCompleted, "The failure continuation could not read the lazy task on another thread.");
+            Assert.Equal(UniTaskStatus.Faulted, observedStatus);
+            Assert.Same(error, Assert.Throws<TaskTestException>(() => task.GetAwaiter().GetResult()));
+        }
+
         static async UniTask AwaitAwait(UniTask t)
         {
             await t;
@@ -139,6 +183,25 @@ namespace NetCoreTests
                 await Assert.ThrowsAsync<TaskTestException>(async () => await b);
                 await Assert.ThrowsAsync<TaskTestException>(async () => await c);
             }
+        }
+
+        [Fact]
+        public void FactoryThrowIsCached()
+        {
+            var error = new TaskTestException();
+            var calls = 0;
+            var lazy = UniTask.Lazy<int>(() =>
+            {
+                calls++;
+                throw error;
+            });
+
+            Assert.Same(error, Assert.Throws<TaskTestException>(() => lazy.GetAwaiter().GetResult()));
+
+            var task = lazy.Task;
+            Assert.Equal(UniTaskStatus.Faulted, task.Status);
+            Assert.Same(error, Assert.Throws<TaskTestException>(() => task.GetAwaiter().GetResult()));
+            Assert.Equal(1, calls);
         }
 
         static async UniTask<int> AwaitAwait(UniTask<int> t)

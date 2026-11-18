@@ -74,7 +74,19 @@ namespace Cysharp.Threading.Tasks
                     var f = Interlocked.Exchange(ref taskFactory, null);
                     if (f != null)
                     {
-                        var task = f();
+                        UniTask task;
+                        try
+                        {
+                            task = f();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Completion can run a continuation that accesses Task inline.
+                            Volatile.Write(ref initialized, true);
+                            completionSource.TrySetException(ex);
+                            return;
+                        }
+
                         var awaiter = task.GetAwaiter();
                         if (awaiter.IsCompleted)
                         {
@@ -193,7 +205,19 @@ namespace Cysharp.Threading.Tasks
                     var f = Interlocked.Exchange(ref taskFactory, null);
                     if (f != null)
                     {
-                        var task = f();
+                        UniTask<T> task;
+                        try
+                        {
+                            task = f();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Completion can run a continuation that accesses Task inline.
+                            Volatile.Write(ref initialized, true);
+                            completionSource.TrySetException(ex);
+                            return;
+                        }
+
                         var awaiter = task.GetAwaiter();
                         if (awaiter.IsCompleted)
                         {
