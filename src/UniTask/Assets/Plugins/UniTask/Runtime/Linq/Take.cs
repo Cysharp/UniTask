@@ -56,14 +56,14 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (enumerator == null)
-                {
-                    enumerator = source.GetAsyncEnumerator(cancellationToken);
-                }
-
                 if (checked(index) >= count)
                 {
                     return CompletedTasks.False;
+                }
+
+                if (enumerator == null)
+                {
+                    enumerator = source.GetAsyncEnumerator(cancellationToken);
                 }
 
                 completionSource.Reset();

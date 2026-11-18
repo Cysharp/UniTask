@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -104,6 +105,29 @@ namespace NetCoreTests.Linq
             var ys = Enumerable.Range(1, collection).Take(takeCount).ToArray();
 
             xs.Should().Equal(ys);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public async Task TakeWithNonpositiveCountDoesNotAcquireSource(int count)
+        {
+            var source = new EnumeratorCountingSource();
+
+            (await source.Take(count).ToArrayAsync()).Should().BeEmpty();
+
+            source.EnumeratorCount.Should().Be(0);
+        }
+
+        private sealed class EnumeratorCountingSource : IUniTaskAsyncEnumerable<int>
+        {
+            public int EnumeratorCount { get; private set; }
+
+            public IUniTaskAsyncEnumerator<int> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            {
+                EnumeratorCount++;
+                return UniTaskAsyncEnumerable.Empty<int>().GetAsyncEnumerator(cancellationToken);
+            }
         }
 
         [Fact]
