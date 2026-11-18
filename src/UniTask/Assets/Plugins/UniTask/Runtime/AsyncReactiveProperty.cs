@@ -340,20 +340,20 @@ namespace Cysharp.Threading.Tasks
 
         async UniTaskVoid ConsumeEnumerator(IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
         {
-            enumerator = source.GetAsyncEnumerator(cancellationToken);
+            var sourceEnumerator = source.GetAsyncEnumerator(cancellationToken);
+            enumerator = sourceEnumerator;
             try
             {
-                while (await enumerator.MoveNextAsync())
+                while (await sourceEnumerator.MoveNextAsync())
                 {
-                    var value = enumerator.Current;
+                    var value = sourceEnumerator.Current;
                     this.latestValue = value;
                     triggerEvent.SetResult(value);
                 }
             }
             finally
             {
-                await enumerator.DisposeAsync();
-                enumerator = null;
+                await DisposeSourceEnumerator();
             }
         }
 
@@ -369,12 +369,14 @@ namespace Cysharp.Threading.Tasks
 
         public void Dispose()
         {
-            if (enumerator != null)
-            {
-                enumerator.DisposeAsync().Forget();
-            }
-
+            DisposeSourceEnumerator().Forget();
             triggerEvent.SetCompleted();
+        }
+
+        UniTask DisposeSourceEnumerator()
+        {
+            var sourceEnumerator = Interlocked.Exchange(ref enumerator, null);
+            return sourceEnumerator == null ? default : sourceEnumerator.DisposeAsync();
         }
 
         public static implicit operator T(ReadOnlyAsyncReactiveProperty<T> value)

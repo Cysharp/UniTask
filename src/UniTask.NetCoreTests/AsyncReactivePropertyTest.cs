@@ -158,6 +158,54 @@ namespace NetCoreTests
         }
 
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ReadOnlyPropertyDisposesSourceEnumeratorOnce(bool sourceCompletesFirst)
+        {
+            var source = new DisposeCompletesMoveNext();
+            using var property = source.ToReadOnlyAsyncReactiveProperty(CancellationToken.None);
+
+            if (sourceCompletesFirst)
+            {
+                source.Complete();
+            }
+
+            property.Dispose();
+
+            source.DisposeCalls.Should().Be(1);
+        }
+
+        sealed class DisposeCompletesMoveNext : IUniTaskAsyncEnumerable<int>, IUniTaskAsyncEnumerator<int>
+        {
+            readonly UniTaskCompletionSource<bool> pendingMove = new UniTaskCompletionSource<bool>();
+
+            public int Current => 0;
+            public int DisposeCalls { get; private set; }
+
+            public IUniTaskAsyncEnumerator<int> GetAsyncEnumerator(CancellationToken cancellationToken)
+            {
+                return this;
+            }
+
+            public UniTask<bool> MoveNextAsync()
+            {
+                return pendingMove.Task;
+            }
+
+            public void Complete()
+            {
+                pendingMove.TrySetResult(false);
+            }
+
+            public UniTask DisposeAsync()
+            {
+                DisposeCalls++;
+                Complete();
+                return default;
+            }
+        }
+
         [Fact]
         public async Task ReadOnlyWaitAsyncTest()
         {
