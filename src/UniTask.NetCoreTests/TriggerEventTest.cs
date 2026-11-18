@@ -335,6 +335,48 @@ namespace NetCoreTests
             callOrder.Should().Equal(2, 3, 4);
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RemoveDeferredHeadKeepsRemainingHandlers(bool keepMultiple)
+        {
+            var ev = new TriggerEvent<int>();
+            var removed = new TestEvent(2);
+            var firstRemaining = new TestEvent(3);
+            var secondRemaining = keepMultiple ? new TestEvent(4) : null;
+            var addDeferred = true;
+
+            ev.Add(new TestEvent(1, () =>
+            {
+                if (!addDeferred) return;
+
+                addDeferred = false;
+                ev.Add(removed);
+                ev.Add(firstRemaining);
+                if (secondRemaining != null)
+                {
+                    ev.Add(secondRemaining);
+                }
+                ev.Remove(removed);
+            }));
+
+            ev.SetResult(10);
+            firstRemaining.NextCalled.Should().BeEmpty();
+            removed.Next.Should().BeNull();
+            removed.Prev.Should().BeNull();
+            firstRemaining.Next.Should().BeSameAs(secondRemaining);
+            (secondRemaining ?? firstRemaining).Next.Should().BeNull();
+
+            ev.SetResult(20);
+
+            removed.NextCalled.Should().BeEmpty();
+            firstRemaining.NextCalled.Should().Equal(20);
+            if (secondRemaining != null)
+            {
+                secondRemaining.NextCalled.Should().Equal(20);
+            }
+        }
+
         public class RemoveMe
         {
             TriggerEvent<int> ev;

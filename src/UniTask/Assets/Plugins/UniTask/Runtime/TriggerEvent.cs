@@ -242,8 +242,8 @@ namespace Cysharp.Threading.Tasks
             {
                 head = next;
             }
-            // when handler is head, prev indicate last so don't use it.
-            else if (prev != null)
+            // The head of either list stores its tail in Prev.
+            else if (prev != null && handler != iteratingHead)
             {
                 prev.Next = next;
             }
