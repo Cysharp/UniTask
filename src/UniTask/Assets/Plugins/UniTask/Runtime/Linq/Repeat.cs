@@ -51,12 +51,13 @@ namespace Cysharp.Threading.Tasks.Linq
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (remaining-- != 0)
+                if (remaining == 0)
                 {
-                    return CompletedTasks.True;
+                    return CompletedTasks.False;
                 }
 
-                return CompletedTasks.False;
+                remaining--;
+                return CompletedTasks.True;
             }
 
             public UniTask DisposeAsync()

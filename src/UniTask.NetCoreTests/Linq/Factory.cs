@@ -39,6 +39,25 @@ namespace NetCoreTests.Linq
             xs.Should().Equal(ys);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(3)]
+        public async Task RepeatStaysExhausted(int count)
+        {
+            const string value = "foo";
+            await using var enumerator = UniTaskAsyncEnumerable.Repeat(value, count).GetAsyncEnumerator();
+
+            for (var i = 0; i < count; i++)
+            {
+                (await enumerator.MoveNextAsync()).Should().BeTrue();
+                enumerator.Current.Should().Be(value);
+            }
+
+            (await enumerator.MoveNextAsync()).Should().BeFalse();
+            (await enumerator.MoveNextAsync()).Should().BeFalse();
+        }
+
         [Fact]
         public async Task EmptyTest()
         {
