@@ -52,7 +52,7 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask DisposeAsync()
             {
                 TaskTracker.RemoveTracking(this);
-                writer.Dispose();
+                writer?.Dispose();
                 return default;
             }
 

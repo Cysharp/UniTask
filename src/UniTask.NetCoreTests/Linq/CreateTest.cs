@@ -160,6 +160,22 @@ namespace NetCoreTests.Linq
         }
 
         [Fact]
+        public async Task DisposeBeforeFirstMoveDoesNotStartProducer()
+        {
+            var producerStarted = false;
+            var enumerable = UniTaskAsyncEnumerable.Create<int>((_, _) =>
+            {
+                producerStarted = true;
+                return UniTask.CompletedTask;
+            });
+
+            var enumerator = enumerable.GetAsyncEnumerator();
+            await enumerator.DisposeAsync();
+
+            producerStarted.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task AwaitForeachBreak()
         {
             var finallyCalled = false;
