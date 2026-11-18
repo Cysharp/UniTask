@@ -105,6 +105,31 @@ namespace Cysharp.Threading.Tasks
             Reader = readerSource;
         }
 
+        // Store the terminal task under the queue lock. Resolve pending sources outside it.
+        UniTaskCompletionSource PrepareCompletion(Exception error)
+        {
+            if (completedTaskSource == null)
+            {
+                completedTask = error == null ? UniTask.CompletedTask : UniTask.FromException(error);
+            }
+
+            return completedTaskSource;
+        }
+
+        static void ResolveCompletion(UniTaskCompletionSource source, Exception error)
+        {
+            if (source == null) return;
+
+            if (error == null)
+            {
+                source.TrySetResult();
+            }
+            else
+            {
+                source.TrySetException(error);
+            }
+        }
+
         sealed class SingleConsumerUnboundedChannelWriter : ChannelWriter<T>
         {
             readonly SingleConsumerUnboundedChannel<T> parent;
@@ -135,45 +160,25 @@ namespace Cysharp.Threading.Tasks
 
             public override bool TryComplete(Exception error = null)
             {
-                bool waiting;
+                UniTaskCompletionSource completionSource = null;
+                bool signalReader = false;
                 lock (parent.items)
                 {
                     if (parent.closed) return false;
                     parent.closed = true;
-                    waiting = parent.readerSource.isWaiting;
+                    parent.completionError = error;
 
                     if (parent.items.Count == 0)
                     {
-                        if (error == null)
-                        {
-                            if (parent.completedTaskSource != null)
-                            {
-                                parent.completedTaskSource.TrySetResult();
-                            }
-                            else
-                            {
-                                parent.completedTask = UniTask.CompletedTask;
-                            }
-                        }
-                        else
-                        {
-                            if (parent.completedTaskSource != null)
-                            {
-                                parent.completedTaskSource.TrySetException(error);
-                            }
-                            else
-                            {
-                                parent.completedTask = UniTask.FromException(error);
-                            }
-                        }
-
-                        if (waiting)
-                        {
-                            parent.readerSource.SingalCompleted(error);
-                        }
+                        completionSource = parent.PrepareCompletion(error);
+                        signalReader = parent.readerSource.isWaiting;
                     }
+                }
 
-                    parent.completionError = error;
+                ResolveCompletion(completionSource, error);
+                if (signalReader)
+                {
+                    parent.readerSource.SingalCompleted(error);
                 }
 
                 return true;
@@ -201,60 +206,42 @@ namespace Cysharp.Threading.Tasks
             {
                 get
                 {
-                    if (parent.completedTaskSource != null) return parent.completedTaskSource.Task;
-
-                    if (parent.closed)
+                    lock (parent.items)
                     {
-                        return parent.completedTask;
-                    }
+                        if (parent.completedTaskSource != null) return parent.completedTaskSource.Task;
 
-                    parent.completedTaskSource = new UniTaskCompletionSource();
-                    return parent.completedTaskSource.Task;
+                        if (parent.closed && parent.items.Count == 0)
+                        {
+                            return parent.completedTask;
+                        }
+
+                        parent.completedTaskSource = new UniTaskCompletionSource();
+                        return parent.completedTaskSource.Task;
+                    }
                 }
             }
 
             public override bool TryRead(out T item)
             {
+                UniTaskCompletionSource completionSource = null;
+                Exception error = null;
                 lock (parent.items)
                 {
-                    if (parent.items.Count != 0)
-                    {
-                        item = parent.items.Dequeue();
-
-                        // complete when all value was consumed.
-                        if (parent.closed && parent.items.Count == 0)
-                        {
-                            if (parent.completionError != null)
-                            {
-                                if (parent.completedTaskSource != null)
-                                {
-                                    parent.completedTaskSource.TrySetException(parent.completionError);
-                                }
-                                else
-                                {
-                                    parent.completedTask = UniTask.FromException(parent.completionError);
-                                }
-                            }
-                            else
-                            {
-                                if (parent.completedTaskSource != null)
-                                {
-                                    parent.completedTaskSource.TrySetResult();
-                                }
-                                else
-                                {
-                                    parent.completedTask = UniTask.CompletedTask;
-                                }
-                            }
-                        }
-                    }
-                    else
+                    if (parent.items.Count == 0)
                     {
                         item = default;
                         return false;
                     }
+
+                    item = parent.items.Dequeue();
+                    if (parent.closed && parent.items.Count == 0)
+                    {
+                        error = parent.completionError;
+                        completionSource = parent.PrepareCompletion(error);
+                    }
                 }
 
+                ResolveCompletion(completionSource, error);
                 return true;
             }
 

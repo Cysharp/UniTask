@@ -196,6 +196,57 @@ namespace NetCoreTests
         }
 
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task CompletionAccessedAfterWriterClosesWaitsForBufferedItems(bool completeWithError)
+        {
+            var channel = Cysharp.Threading.Tasks.Channel.CreateSingleConsumerUnbounded<int>();
+            var error = completeWithError ? new InvalidOperationException("Writer failed.") : null;
+            channel.Writer.TryWrite(10);
+            channel.Writer.TryWrite(20);
+            channel.Writer.Complete(error);
+
+            var completion = channel.Reader.Completion;
+            completion.Status.Should().Be(UniTaskStatus.Pending);
+
+            channel.Reader.TryRead(out var first).Should().BeTrue();
+            first.Should().Be(10);
+            completion.Status.Should().Be(UniTaskStatus.Pending);
+
+            channel.Reader.TryRead(out var last).Should().BeTrue();
+            last.Should().Be(20);
+
+            if (completeWithError)
+            {
+                (await Assert.ThrowsAsync<InvalidOperationException>(async () => await completion)).Should().BeSameAs(error);
+            }
+            else
+            {
+                completion.Status.Should().Be(UniTaskStatus.Succeeded);
+                await completion;
+            }
+        }
+
+        [Fact]
+        public async Task CompletionCanBeReadFromWaitingReaderContinuation()
+        {
+            var channel = Cysharp.Threading.Tasks.Channel.CreateSingleConsumerUnbounded<int>();
+            var readerContinuation = ObserveCompletion();
+            channel.Writer.Complete();
+            await readerContinuation;
+
+            async Task ObserveCompletion()
+            {
+                (await channel.Reader.WaitToReadAsync()).Should().BeFalse();
+
+                // The writer must release the queue lock before invoking this continuation.
+                var completionStatus = Task.Run(() => channel.Reader.Completion.Status);
+                completionStatus.Wait(TimeSpan.FromSeconds(5)).Should().BeTrue();
+                (await completionStatus).Should().Be(UniTaskStatus.Succeeded);
+            }
+        }
+
         [Fact]
         public async Task CompleteErrorWithRest()
         {
