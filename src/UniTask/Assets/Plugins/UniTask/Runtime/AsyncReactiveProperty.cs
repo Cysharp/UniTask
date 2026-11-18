@@ -259,6 +259,8 @@ namespace Cysharp.Threading.Tasks
 
             public UniTask<bool> MoveNextAsync()
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 // raise latest value on first call.
                 if (firstCall)
                 {
@@ -268,6 +270,8 @@ namespace Cysharp.Threading.Tasks
                 }
 
                 completionSource.Reset();
+                // Cancellation may have completed the previous source before the reset.
+                cancellationToken.ThrowIfCancellationRequested();
                 return new UniTask<bool>(this, completionSource.Version);
             }
 
@@ -576,6 +580,8 @@ namespace Cysharp.Threading.Tasks
 
             public UniTask<bool> MoveNextAsync()
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 // raise latest value on first call.
                 if (firstCall)
                 {
@@ -585,6 +591,8 @@ namespace Cysharp.Threading.Tasks
                 }
 
                 completionSource.Reset();
+                // Cancellation may have completed the previous source before the reset.
+                cancellationToken.ThrowIfCancellationRequested();
                 return new UniTask<bool>(this, completionSource.Version);
             }
 

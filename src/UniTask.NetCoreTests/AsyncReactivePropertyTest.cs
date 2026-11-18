@@ -112,6 +112,67 @@ namespace NetCoreTests
             state.Value.Should().Be(20);
         }
 
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public async Task EnumerationObservesAlreadyCanceledToken(bool readOnly, bool withoutCurrent)
+        {
+            using var property = new AsyncReactiveProperty<int>(99);
+            using var readOnlyProperty = readOnly ? property.ToReadOnlyAsyncReactiveProperty(CancellationToken.None) : null;
+            IReadOnlyAsyncReactiveProperty<int> source = readOnly ? readOnlyProperty : property;
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            var sequence = withoutCurrent ? source.WithoutCurrent() : source;
+            await using var enumerator = sequence.GetAsyncEnumerator(cancellation.Token);
+            await AssertMoveCanceled(enumerator, cancellation.Token);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task EnumerationObservesCancellationBetweenMoves(bool readOnly)
+        {
+            using var property = new AsyncReactiveProperty<int>(99);
+            using var readOnlyProperty = readOnly ? property.ToReadOnlyAsyncReactiveProperty(CancellationToken.None) : null;
+            IReadOnlyAsyncReactiveProperty<int> source = readOnly ? readOnlyProperty : property;
+            using var cancellation = new CancellationTokenSource();
+            await using var enumerator = source.GetAsyncEnumerator(cancellation.Token);
+
+            (await enumerator.MoveNextAsync()).Should().BeTrue();
+            enumerator.Current.Should().Be(99);
+
+            cancellation.Cancel();
+            await AssertMoveCanceled(enumerator, cancellation.Token);
+        }
+
+        [Fact]
+        public async Task FirstAsyncWithAlreadyCanceledTokenDoesNotWaitForMatchingValue()
+        {
+            using var property = new AsyncReactiveProperty<int>(99);
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            var result = property.FirstAsync(value => value == 100, cancellation.Token);
+
+            result.Status.Should().Be(UniTaskStatus.Canceled);
+            var exception = await Assert.ThrowsAsync<OperationCanceledException>(async () => await result);
+            exception.CancellationToken.Should().Be(cancellation.Token);
+        }
+
+        static async Task AssertMoveCanceled(IUniTaskAsyncEnumerator<int> enumerator, CancellationToken cancellationToken)
+        {
+            var exception = await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                var move = enumerator.MoveNextAsync();
+                move.Status.Should().Be(UniTaskStatus.Canceled);
+                await move;
+            });
+            exception.CancellationToken.Should().Be(cancellationToken);
+        }
+
         [Fact]
         public async Task WaitAsyncTest()
         {
