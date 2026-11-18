@@ -415,7 +415,7 @@ namespace Cysharp.Threading.Tasks
                         {
                             return current;
                         }
-                        parent.TryRead(out current);
+                        cacheValue = parent.TryRead(out current);
                         return current;
                     }
                 }

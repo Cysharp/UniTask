@@ -281,6 +281,27 @@ namespace NetCoreTests
         }
 
         [Fact]
+        public async Task AsyncEnumeratorCurrentCanBeReadRepeatedly()
+        {
+            var channel = Cysharp.Threading.Tasks.Channel.CreateSingleConsumerUnbounded<int>();
+            channel.Writer.TryWrite(10);
+            channel.Writer.TryWrite(20);
+            channel.Writer.Complete();
+
+            await using var enumerator = channel.Reader.ReadAllAsync().GetAsyncEnumerator();
+
+            (await enumerator.MoveNextAsync()).Should().BeTrue();
+            enumerator.Current.Should().Be(10);
+            enumerator.Current.Should().Be(10);
+
+            (await enumerator.MoveNextAsync()).Should().BeTrue();
+            enumerator.Current.Should().Be(20);
+            enumerator.Current.Should().Be(20);
+
+            (await enumerator.MoveNextAsync()).Should().BeFalse();
+        }
+
+        [Fact]
         public async Task AsyncEnumeratorCancellation()
         {
             // Token1, Token2 and Cancel1
