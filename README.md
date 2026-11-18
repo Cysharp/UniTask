@@ -1100,6 +1100,8 @@ public class SyncContextInjecter
 
 This is an optional choice and is not always recommended; `UniTaskSynchronizationContext` is less performant than `async UniTask` and is not a complete UniTask replacement. It also does not guarantee full behavioral compatibility with the `UnitySynchronizationContext`.
 
+On Android, replacing Unity's synchronization context has been [reported to leave the Unity IAP store connection pending](https://github.com/Cysharp/UniTask/issues/708). If the connection hangs after you add the injection above, remove the injection to keep Unity's default synchronization context.
+
 API References
 ---
 UniTask's API References are hosted at [cysharp.github.io/UniTask](https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.html) by [DocFX](https://dotnet.github.io/docfx/) and [Cysharp/DocfXTemplate](https://github.com/Cysharp/DocfxTemplate).
