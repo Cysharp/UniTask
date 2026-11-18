@@ -12,84 +12,55 @@ namespace NetCoreTests.Linq
 {
     public class MergeTest
     {
-        [Fact]
-        public async Task TwoSource()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task InterleavesSources(bool includeThirdSource)
         {
-            var semaphore = new SemaphoreSlim(1, 1);
+            var a1Ready = new UniTaskCompletionSource();
+            var b1Ready = new UniTaskCompletionSource();
+            var a2Ready = new UniTaskCompletionSource();
+            var b3Ready = new UniTaskCompletionSource();
 
             var a = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
-                await UniTask.SwitchToThreadPool();
-
-                await semaphore.WaitAsync();
+                await a1Ready.Task;
                 await writer.YieldAsync("A1");
-                semaphore.Release();
+                b1Ready.TrySetResult();
 
-                await semaphore.WaitAsync();
+                await a2Ready.Task;
                 await writer.YieldAsync("A2");
-                semaphore.Release();
+                b3Ready.TrySetResult();
             });
 
             var b = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
             {
-                await UniTask.SwitchToThreadPool();
-
-                await semaphore.WaitAsync();
+                await b1Ready.Task;
                 await writer.YieldAsync("B1");
                 await writer.YieldAsync("B2");
-                semaphore.Release();
+                a2Ready.TrySetResult();
 
-                await semaphore.WaitAsync();
+                await b3Ready.Task;
                 await writer.YieldAsync("B3");
-                semaphore.Release();
             });
 
-            var result = await a.Merge(b).ToArrayAsync();
-            result.Should().Equal("A1", "B1", "B2", "A2", "B3");
-        }
-
-        [Fact]
-        public async Task ThreeSource()
-        {
-            var semaphore = new SemaphoreSlim(0, 1);
-
-            var a = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
+            if (includeThirdSource)
             {
-                await UniTask.SwitchToThreadPool();
+                var c = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
+                {
+                    await writer.YieldAsync("C1");
+                    a1Ready.TrySetResult();
+                });
 
-                await semaphore.WaitAsync();
-                await writer.YieldAsync("A1");
-                semaphore.Release();
-
-                await semaphore.WaitAsync();
-                await writer.YieldAsync("A2");
-                semaphore.Release();
-            });
-
-            var b = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
+                var result = await a.Merge(b, c).ToArrayAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+                result.Should().Equal("C1", "A1", "B1", "B2", "A2", "B3");
+            }
+            else
             {
-                await UniTask.SwitchToThreadPool();
-
-                await semaphore.WaitAsync();
-                await writer.YieldAsync("B1");
-                await writer.YieldAsync("B2");
-                semaphore.Release();
-
-                await semaphore.WaitAsync();
-                await writer.YieldAsync("B3");
-                semaphore.Release();
-            });
-
-            var c = UniTaskAsyncEnumerable.Create<string>(async (writer, _) =>
-            {
-                await UniTask.SwitchToThreadPool();
-
-                await writer.YieldAsync("C1");
-                semaphore.Release();
-            });
-
-            var result = await a.Merge(b, c).ToArrayAsync();
-            result.Should().Equal("C1", "A1", "B1", "B2", "A2", "B3");
+                a1Ready.TrySetResult();
+                var result = await a.Merge(b).ToArrayAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+                result.Should().Equal("A1", "B1", "B2", "A2", "B3");
+            }
         }
 
         [Fact]
