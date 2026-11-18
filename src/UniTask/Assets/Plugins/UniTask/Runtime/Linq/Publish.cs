@@ -100,10 +100,14 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public _Publish(Publish<TSource> parent, CancellationToken cancellationToken)
             {
-                if (cancellationToken.IsCancellationRequested) return;
-
                 this.parent = parent;
                 this.cancellationToken = cancellationToken;
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    isDisposed = true;
+                    return;
+                }
 
                 if (cancellationToken.CanBeCanceled)
                 {

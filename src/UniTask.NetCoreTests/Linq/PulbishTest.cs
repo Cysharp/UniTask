@@ -43,6 +43,27 @@ namespace NetCoreTests.Linq
         }
 
         [Fact]
+        public async Task EnumeratorWithCanceledTokenPreservesCancellation()
+        {
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+            var token = cancellation.Token;
+            var enumerator = UniTaskAsyncEnumerable.Return(1).Publish().GetAsyncEnumerator(token);
+
+            var error = await Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
+            error.CancellationToken.Should().Be(token);
+        }
+
+        [Fact]
+        public async Task EnumeratorWithCanceledTokenCanBeDisposedBeforeMoving()
+        {
+            var token = new CancellationToken(canceled: true);
+            var enumerator = UniTaskAsyncEnumerable.Return(1).Publish().GetAsyncEnumerator(token);
+
+            await enumerator.DisposeAsync();
+        }
+
+        [Fact]
         public async Task Cancel()
         {
             var rp = new AsyncReactiveProperty<int>(1);
