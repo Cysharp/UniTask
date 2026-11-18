@@ -92,6 +92,10 @@ namespace Cysharp.Threading.Tasks
                         var result = awaiter.GetResult();
                         return Task.FromResult(result);
                     }
+                    catch (OperationCanceledException ex)
+                    {
+                        return CreateCanceledTask<T>(ex.CancellationToken);
+                    }
                     catch (Exception ex)
                     {
                         return Task.FromException<T>(ex);
@@ -109,6 +113,10 @@ namespace Cysharp.Threading.Tasks
                         {
                             var result = inAwaiter.GetResult();
                             inTcs.SetResult(result);
+                        }
+                        catch (OperationCanceledException ex)
+                        {
+                            inTcs.TrySetCanceled(ex.CancellationToken);
                         }
                         catch (Exception ex)
                         {
@@ -146,6 +154,10 @@ namespace Cysharp.Threading.Tasks
                         awaiter.GetResult(); // check token valid on Succeeded
                         return Task.CompletedTask;
                     }
+                    catch (OperationCanceledException ex)
+                    {
+                        return CreateCanceledTask<object>(ex.CancellationToken);
+                    }
                     catch (Exception ex)
                     {
                         return Task.FromException(ex);
@@ -164,6 +176,10 @@ namespace Cysharp.Threading.Tasks
                             inAwaiter.GetResult();
                             inTcs.SetResult(null);
                         }
+                        catch (OperationCanceledException ex)
+                        {
+                            inTcs.TrySetCanceled(ex.CancellationToken);
+                        }
                         catch (Exception ex)
                         {
                             inTcs.SetException(ex);
@@ -177,6 +193,13 @@ namespace Cysharp.Threading.Tasks
             {
                 return Task.FromException(ex);
             }
+        }
+
+        static Task<T> CreateCanceledTask<T>(CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<T>();
+            tcs.TrySetCanceled(cancellationToken);
+            return tcs.Task;
         }
 
         public static AsyncLazy ToAsyncLazy(this UniTask task)
