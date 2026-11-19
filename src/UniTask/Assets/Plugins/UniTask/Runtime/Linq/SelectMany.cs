@@ -583,7 +583,16 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 if (self.TryGetResult(self.collectionSelectorAwaiter, out var result))
                 {
-                    self.selectedEnumerator = result.GetAsyncEnumerator(self.cancellationToken);
+                    try
+                    {
+                        self.selectedEnumerator = result.GetAsyncEnumerator(self.cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        self.completionSource.TrySetException(ex);
+                        return;
+                    }
+
                     self.MoveNextSelected(); // iterated selected source.
                 }
             }
@@ -859,7 +868,16 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 if (self.TryGetResult(self.collectionSelectorAwaiter, out var result))
                 {
-                    self.selectedEnumerator = result.GetAsyncEnumerator(self.cancellationToken);
+                    try
+                    {
+                        self.selectedEnumerator = result.GetAsyncEnumerator(self.cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        self.completionSource.TrySetException(ex);
+                        return;
+                    }
+
                     self.MoveNextSelected(); // iterated selected source.
                 }
             }
