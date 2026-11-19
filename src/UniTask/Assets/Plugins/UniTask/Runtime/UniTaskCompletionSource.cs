@@ -677,28 +677,28 @@ namespace Cysharp.Threading.Tasks
             }
 
             var lockGate = Thread.VolatileRead(ref gate);
-            lock (lockGate) // wait TrySignalCompletion, after status is not pending.
+            lock (lockGate)
             {
-                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending)
+                if ((UniTaskStatus)intStatus == UniTaskStatus.Pending)
                 {
-                    continuation(state);
+                    if (singleContinuation == null)
+                    {
+                        singleContinuation = continuation;
+                        singleState = state;
+                    }
+                    else
+                    {
+                        if (secondaryContinuationList == null)
+                        {
+                            secondaryContinuationList = new List<(Action<object>, object)>();
+                        }
+                        secondaryContinuationList.Add((continuation, state));
+                    }
                     return;
                 }
-
-                if (singleContinuation == null)
-                {
-                    singleContinuation = continuation;
-                    singleState = state;
-                }
-                else
-                {
-                    if (secondaryContinuationList == null)
-                    {
-                        secondaryContinuationList = new List<(Action<object>, object)>();
-                    }
-                    secondaryContinuationList.Add((continuation, state));
-                }
             }
+
+            continuation(state);
         }
 
         [DebuggerHidden]
@@ -711,39 +711,46 @@ namespace Cysharp.Threading.Tasks
                     Interlocked.CompareExchange(ref gate, new object(), null);
                 }
 
+                Action<object> firstContinuation;
+                object firstState;
+                List<(Action<object>, object)> remainingContinuations;
                 var lockGate = Thread.VolatileRead(ref gate);
-                lock (lockGate) // wait OnCompleted.
+                lock (lockGate)
                 {
-                    if (singleContinuation != null)
+                    firstContinuation = singleContinuation;
+                    firstState = singleState;
+                    remainingContinuations = secondaryContinuationList;
+
+                    singleContinuation = null;
+                    singleState = null;
+                    secondaryContinuationList = null;
+                }
+
+                if (firstContinuation != null)
+                {
+                    try
+                    {
+                        firstContinuation(firstState);
+                    }
+                    catch (Exception ex)
+                    {
+                        UniTaskScheduler.PublishUnobservedTaskException(ex);
+                    }
+                }
+
+                if (remainingContinuations != null)
+                {
+                    foreach (var (c, state) in remainingContinuations)
                     {
                         try
                         {
-                            singleContinuation(singleState);
+                            c(state);
                         }
                         catch (Exception ex)
                         {
                             UniTaskScheduler.PublishUnobservedTaskException(ex);
                         }
                     }
-
-                    if (secondaryContinuationList != null)
-                    {
-                        foreach (var (c, state) in secondaryContinuationList)
-                        {
-                            try
-                            {
-                                c(state);
-                            }
-                            catch (Exception ex)
-                            {
-                                UniTaskScheduler.PublishUnobservedTaskException(ex);
-                            }
-                        }
-                    }
-
-                    singleContinuation = null;
-                    singleState = null;
-                    secondaryContinuationList = null;
                 }
                 return true;
             }
@@ -868,28 +875,28 @@ namespace Cysharp.Threading.Tasks
             }
 
             var lockGate = Thread.VolatileRead(ref gate);
-            lock (lockGate) // wait TrySignalCompletion, after status is not pending.
+            lock (lockGate)
             {
-                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending)
+                if ((UniTaskStatus)intStatus == UniTaskStatus.Pending)
                 {
-                    continuation(state);
+                    if (singleContinuation == null)
+                    {
+                        singleContinuation = continuation;
+                        singleState = state;
+                    }
+                    else
+                    {
+                        if (secondaryContinuationList == null)
+                        {
+                            secondaryContinuationList = new List<(Action<object>, object)>();
+                        }
+                        secondaryContinuationList.Add((continuation, state));
+                    }
                     return;
                 }
-
-                if (singleContinuation == null)
-                {
-                    singleContinuation = continuation;
-                    singleState = state;
-                }
-                else
-                {
-                    if (secondaryContinuationList == null)
-                    {
-                        secondaryContinuationList = new List<(Action<object>, object)>();
-                    }
-                    secondaryContinuationList.Add((continuation, state));
-                }
             }
+
+            continuation(state);
         }
 
         [DebuggerHidden]
@@ -902,39 +909,46 @@ namespace Cysharp.Threading.Tasks
                     Interlocked.CompareExchange(ref gate, new object(), null);
                 }
 
+                Action<object> firstContinuation;
+                object firstState;
+                List<(Action<object>, object)> remainingContinuations;
                 var lockGate = Thread.VolatileRead(ref gate);
-                lock (lockGate) // wait OnCompleted.
+                lock (lockGate)
                 {
-                    if (singleContinuation != null)
+                    firstContinuation = singleContinuation;
+                    firstState = singleState;
+                    remainingContinuations = secondaryContinuationList;
+
+                    singleContinuation = null;
+                    singleState = null;
+                    secondaryContinuationList = null;
+                }
+
+                if (firstContinuation != null)
+                {
+                    try
+                    {
+                        firstContinuation(firstState);
+                    }
+                    catch (Exception ex)
+                    {
+                        UniTaskScheduler.PublishUnobservedTaskException(ex);
+                    }
+                }
+
+                if (remainingContinuations != null)
+                {
+                    foreach (var (c, state) in remainingContinuations)
                     {
                         try
                         {
-                            singleContinuation(singleState);
+                            c(state);
                         }
                         catch (Exception ex)
                         {
                             UniTaskScheduler.PublishUnobservedTaskException(ex);
                         }
                     }
-
-                    if (secondaryContinuationList != null)
-                    {
-                        foreach (var (c, state) in secondaryContinuationList)
-                        {
-                            try
-                            {
-                                c(state);
-                            }
-                            catch (Exception ex)
-                            {
-                                UniTaskScheduler.PublishUnobservedTaskException(ex);
-                            }
-                        }
-                    }
-
-                    singleContinuation = null;
-                    singleState = null;
-                    secondaryContinuationList = null;
                 }
                 return true;
             }
