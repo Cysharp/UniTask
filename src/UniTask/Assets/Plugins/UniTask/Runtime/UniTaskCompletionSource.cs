@@ -615,10 +615,7 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
-
-            this.cancellationToken = cancellationToken;
-            return TrySignalCompletion(UniTaskStatus.Canceled);
+            return TrySignalCompletion(UniTaskStatus.Canceled, cancellationToken: cancellationToken);
         }
 
         [DebuggerHidden]
@@ -629,10 +626,7 @@ namespace Cysharp.Threading.Tasks
                 return TrySetCanceled(oce.CancellationToken);
             }
 
-            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
-
-            this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
-            return TrySignalCompletion(UniTaskStatus.Faulted);
+            return TrySignalCompletion(UniTaskStatus.Faulted, exception: exception);
         }
 
         [DebuggerHidden]
@@ -640,7 +634,7 @@ namespace Cysharp.Threading.Tasks
         {
             MarkHandled();
 
-            var status = (UniTaskStatus)intStatus;
+            var status = UnsafeGetStatus();
             switch (status)
             {
                 case UniTaskStatus.Succeeded:
@@ -659,25 +653,31 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public UniTaskStatus GetStatus(short token)
         {
-            return (UniTaskStatus)intStatus;
+            return UnsafeGetStatus();
         }
 
         [DebuggerHidden]
         public UniTaskStatus UnsafeGetStatus()
         {
-            return (UniTaskStatus)intStatus;
+            return (UniTaskStatus)Volatile.Read(ref intStatus);
+        }
+
+        object GetGate()
+        {
+            var lockGate = Volatile.Read(ref gate);
+            if (lockGate == null)
+            {
+                var newGate = new object();
+                lockGate = Interlocked.CompareExchange(ref gate, newGate, null) ?? newGate;
+            }
+
+            return lockGate;
         }
 
         [DebuggerHidden]
         public void OnCompleted(Action<object> continuation, object state, short token)
         {
-            if (gate == null)
-            {
-                Interlocked.CompareExchange(ref gate, new object(), null);
-            }
-
-            var lockGate = Thread.VolatileRead(ref gate);
-            lock (lockGate)
+            lock (GetGate())
             {
                 if ((UniTaskStatus)intStatus == UniTaskStatus.Pending)
                 {
@@ -702,59 +702,64 @@ namespace Cysharp.Threading.Tasks
         }
 
         [DebuggerHidden]
-        bool TrySignalCompletion(UniTaskStatus status)
+        bool TrySignalCompletion(UniTaskStatus status, CancellationToken cancellationToken = default, Exception exception = null)
         {
-            if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
+            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
+
+            Action<object> firstContinuation;
+            object firstState;
+            List<(Action<object>, object)> remainingContinuations;
+            lock (GetGate())
             {
-                if (gate == null)
+                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending) return false;
+
+                switch (status)
                 {
-                    Interlocked.CompareExchange(ref gate, new object(), null);
+                    case UniTaskStatus.Canceled:
+                        this.cancellationToken = cancellationToken;
+                        break;
+                    case UniTaskStatus.Faulted:
+                        this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
+                        break;
                 }
+                Volatile.Write(ref intStatus, (int)status);
 
-                Action<object> firstContinuation;
-                object firstState;
-                List<(Action<object>, object)> remainingContinuations;
-                var lockGate = Thread.VolatileRead(ref gate);
-                lock (lockGate)
+                firstContinuation = singleContinuation;
+                firstState = singleState;
+                remainingContinuations = secondaryContinuationList;
+
+                singleContinuation = null;
+                singleState = null;
+                secondaryContinuationList = null;
+            }
+
+            if (firstContinuation != null)
+            {
+                try
                 {
-                    firstContinuation = singleContinuation;
-                    firstState = singleState;
-                    remainingContinuations = secondaryContinuationList;
-
-                    singleContinuation = null;
-                    singleState = null;
-                    secondaryContinuationList = null;
+                    firstContinuation(firstState);
                 }
+                catch (Exception ex)
+                {
+                    UniTaskScheduler.PublishUnobservedTaskException(ex);
+                }
+            }
 
-                if (firstContinuation != null)
+            if (remainingContinuations != null)
+            {
+                foreach (var (c, state) in remainingContinuations)
                 {
                     try
                     {
-                        firstContinuation(firstState);
+                        c(state);
                     }
                     catch (Exception ex)
                     {
                         UniTaskScheduler.PublishUnobservedTaskException(ex);
                     }
                 }
-
-                if (remainingContinuations != null)
-                {
-                    foreach (var (c, state) in remainingContinuations)
-                    {
-                        try
-                        {
-                            c(state);
-                        }
-                        catch (Exception ex)
-                        {
-                            UniTaskScheduler.PublishUnobservedTaskException(ex);
-                        }
-                    }
-                }
-                return true;
             }
-            return false;
+            return true;
         }
     }
 
@@ -798,19 +803,13 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public bool TrySetResult(T result)
         {
-            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
-
-            this.result = result;
-            return TrySignalCompletion(UniTaskStatus.Succeeded);
+            return TrySignalCompletion(UniTaskStatus.Succeeded, result);
         }
 
         [DebuggerHidden]
         public bool TrySetCanceled(CancellationToken cancellationToken = default)
         {
-            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
-
-            this.cancellationToken = cancellationToken;
-            return TrySignalCompletion(UniTaskStatus.Canceled);
+            return TrySignalCompletion(UniTaskStatus.Canceled, cancellationToken: cancellationToken);
         }
 
         [DebuggerHidden]
@@ -821,10 +820,7 @@ namespace Cysharp.Threading.Tasks
                 return TrySetCanceled(oce.CancellationToken);
             }
 
-            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
-
-            this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
-            return TrySignalCompletion(UniTaskStatus.Faulted);
+            return TrySignalCompletion(UniTaskStatus.Faulted, exception: exception);
         }
 
         [DebuggerHidden]
@@ -832,7 +828,7 @@ namespace Cysharp.Threading.Tasks
         {
             MarkHandled();
 
-            var status = (UniTaskStatus)intStatus;
+            var status = UnsafeGetStatus();
             switch (status)
             {
                 case UniTaskStatus.Succeeded:
@@ -857,25 +853,31 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public UniTaskStatus GetStatus(short token)
         {
-            return (UniTaskStatus)intStatus;
+            return UnsafeGetStatus();
         }
 
         [DebuggerHidden]
         public UniTaskStatus UnsafeGetStatus()
         {
-            return (UniTaskStatus)intStatus;
+            return (UniTaskStatus)Volatile.Read(ref intStatus);
+        }
+
+        object GetGate()
+        {
+            var lockGate = Volatile.Read(ref gate);
+            if (lockGate == null)
+            {
+                var newGate = new object();
+                lockGate = Interlocked.CompareExchange(ref gate, newGate, null) ?? newGate;
+            }
+
+            return lockGate;
         }
 
         [DebuggerHidden]
         public void OnCompleted(Action<object> continuation, object state, short token)
         {
-            if (gate == null)
-            {
-                Interlocked.CompareExchange(ref gate, new object(), null);
-            }
-
-            var lockGate = Thread.VolatileRead(ref gate);
-            lock (lockGate)
+            lock (GetGate())
             {
                 if ((UniTaskStatus)intStatus == UniTaskStatus.Pending)
                 {
@@ -900,59 +902,67 @@ namespace Cysharp.Threading.Tasks
         }
 
         [DebuggerHidden]
-        bool TrySignalCompletion(UniTaskStatus status)
+        bool TrySignalCompletion(UniTaskStatus status, in T result = default, CancellationToken cancellationToken = default, Exception exception = null)
         {
-            if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
+            if (UnsafeGetStatus() != UniTaskStatus.Pending) return false;
+
+            Action<object> firstContinuation;
+            object firstState;
+            List<(Action<object>, object)> remainingContinuations;
+            lock (GetGate())
             {
-                if (gate == null)
+                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending) return false;
+
+                switch (status)
                 {
-                    Interlocked.CompareExchange(ref gate, new object(), null);
+                    case UniTaskStatus.Succeeded:
+                        this.result = result;
+                        break;
+                    case UniTaskStatus.Canceled:
+                        this.cancellationToken = cancellationToken;
+                        break;
+                    case UniTaskStatus.Faulted:
+                        this.exception = new ExceptionHolder(ExceptionDispatchInfo.Capture(exception));
+                        break;
                 }
+                Volatile.Write(ref intStatus, (int)status);
 
-                Action<object> firstContinuation;
-                object firstState;
-                List<(Action<object>, object)> remainingContinuations;
-                var lockGate = Thread.VolatileRead(ref gate);
-                lock (lockGate)
+                firstContinuation = singleContinuation;
+                firstState = singleState;
+                remainingContinuations = secondaryContinuationList;
+
+                singleContinuation = null;
+                singleState = null;
+                secondaryContinuationList = null;
+            }
+
+            if (firstContinuation != null)
+            {
+                try
                 {
-                    firstContinuation = singleContinuation;
-                    firstState = singleState;
-                    remainingContinuations = secondaryContinuationList;
-
-                    singleContinuation = null;
-                    singleState = null;
-                    secondaryContinuationList = null;
+                    firstContinuation(firstState);
                 }
+                catch (Exception ex)
+                {
+                    UniTaskScheduler.PublishUnobservedTaskException(ex);
+                }
+            }
 
-                if (firstContinuation != null)
+            if (remainingContinuations != null)
+            {
+                foreach (var (c, state) in remainingContinuations)
                 {
                     try
                     {
-                        firstContinuation(firstState);
+                        c(state);
                     }
                     catch (Exception ex)
                     {
                         UniTaskScheduler.PublishUnobservedTaskException(ex);
                     }
                 }
-
-                if (remainingContinuations != null)
-                {
-                    foreach (var (c, state) in remainingContinuations)
-                    {
-                        try
-                        {
-                            c(state);
-                        }
-                        catch (Exception ex)
-                        {
-                            UniTaskScheduler.PublishUnobservedTaskException(ex);
-                        }
-                    }
-                }
-                return true;
             }
-            return false;
+            return true;
         }
    }
 }
