@@ -135,7 +135,7 @@ namespace Cysharp.Threading.Tasks
                     }
                 }
 
-                return channelEnumerator.MoveNextAsync();
+                return channelEnumerator?.MoveNextAsync() ?? CompletedTasks.False;
             }
 
             static void ConsumeAll(Enumerator self, UniTask<T>[] array, int length)
@@ -175,7 +175,7 @@ namespace Cysharp.Threading.Tasks
                 if (state != WhenEachState.Completed)
                 {
                     state = WhenEachState.Completed;
-                    channel.Writer.TryComplete(new OperationCanceledException());
+                    channel?.Writer.TryComplete(new OperationCanceledException());
                 }
             }
         }

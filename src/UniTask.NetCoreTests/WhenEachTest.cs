@@ -53,6 +53,27 @@ namespace NetCoreTests
             l[2].Result.Should().Be(1);
         }
 
+        [Fact]
+        public async Task DisposeBeforeFirstMoveDoesNotEnumerateInput()
+        {
+            var inputEnumerated = false;
+
+            IEnumerable<UniTask<int>> Tasks()
+            {
+                inputEnumerated = true;
+                yield return UniTask.FromResult(1);
+            }
+
+            var enumerator = UniTask.WhenEach(Tasks()).GetAsyncEnumerator();
+            await enumerator.DisposeAsync();
+            await enumerator.DisposeAsync();
+
+            var moveNext = enumerator.MoveNextAsync();
+            Assert.Equal(UniTaskStatus.Succeeded, moveNext.Status);
+            Assert.False(await moveNext);
+            Assert.False(inputEnumerated);
+        }
+
         async UniTask<int> Delay(int id, int sleep)
         {
             await Task.Delay(sleep);
