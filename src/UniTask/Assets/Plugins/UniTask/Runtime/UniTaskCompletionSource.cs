@@ -149,6 +149,16 @@ namespace Cysharp.Threading.Tasks
         [DebuggerHidden]
         public bool TrySetException(Exception error)
         {
+            if (error == null)
+            {
+                if (Volatile.Read(ref completedCount) != 0)
+                {
+                    return false;
+                }
+
+                throw new ArgumentNullException(nameof(error));
+            }
+
             if (Interlocked.Increment(ref completedCount) == 1)
             {
                 // setup result
