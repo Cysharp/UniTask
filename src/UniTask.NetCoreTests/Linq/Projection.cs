@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -232,6 +233,86 @@ namespace NetCoreTests.Linq
                 xs.Should().Equal(ys);
             }
         }
+
+        public enum ZipSelector
+        {
+            Synchronous,
+            Asynchronous,
+            AsynchronousWithCancellation
+        }
+
+        [Theory]
+        [InlineData(ZipSelector.Synchronous, false, false)]
+        [InlineData(ZipSelector.Synchronous, false, true)]
+        [InlineData(ZipSelector.Synchronous, true, false)]
+        [InlineData(ZipSelector.Synchronous, true, true)]
+        [InlineData(ZipSelector.Asynchronous, false, false)]
+        [InlineData(ZipSelector.Asynchronous, false, true)]
+        [InlineData(ZipSelector.Asynchronous, true, false)]
+        [InlineData(ZipSelector.Asynchronous, true, true)]
+        [InlineData(ZipSelector.AsynchronousWithCancellation, false, false)]
+        [InlineData(ZipSelector.AsynchronousWithCancellation, false, true)]
+        [InlineData(ZipSelector.AsynchronousWithCancellation, true, false)]
+        [InlineData(ZipSelector.AsynchronousWithCancellation, true, true)]
+        public async Task ZipDisposesBothInputs(ZipSelector selector, bool firstFails, bool secondFails)
+        {
+            var firstError = firstFails ? new UniTaskTestException() : null;
+            var secondError = secondFails ? new UniTaskTestException() : null;
+            var disposals = new List<int>();
+            var first = new ZipDisposalSource(() => disposals.Add(1), firstError);
+            var second = new ZipDisposalSource(() => disposals.Add(2), secondError);
+            var result = selector switch
+            {
+                ZipSelector.Synchronous => first.Zip(second, (x, y) => x + y),
+                ZipSelector.Asynchronous => first.ZipAwait(second, (x, y) => UniTask.FromResult(x + y)),
+                ZipSelector.AsynchronousWithCancellation => first.ZipAwaitWithCancellation(second, (x, y, _) => UniTask.FromResult(x + y)),
+                _ => throw new ArgumentOutOfRangeException(nameof(selector))
+            };
+
+            var expectedError = firstError ?? secondError;
+            if (expectedError == null)
+            {
+                (await result.ToArrayAsync()).Should().BeEmpty();
+            }
+            else
+            {
+                var error = await Assert.ThrowsAsync<UniTaskTestException>(async () => await result.ToArrayAsync());
+                Assert.Same(expectedError, error);
+            }
+
+            disposals.Should().Equal(1, 2);
+        }
+
+        sealed class ZipDisposalSource : IUniTaskAsyncEnumerable<int>, IUniTaskAsyncEnumerator<int>
+        {
+            readonly Action dispose;
+            readonly Exception disposeError;
+
+            public ZipDisposalSource(Action dispose, Exception disposeError)
+            {
+                this.dispose = dispose;
+                this.disposeError = disposeError;
+            }
+
+            public int Current => default;
+
+            public IUniTaskAsyncEnumerator<int> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            {
+                return this;
+            }
+
+            public UniTask<bool> MoveNextAsync()
+            {
+                return UniTask.FromResult(false);
+            }
+
+            public UniTask DisposeAsync()
+            {
+                dispose();
+                return disposeError == null ? UniTask.CompletedTask : UniTask.FromException(disposeError);
+            }
+        }
+
         [Fact]
         public async Task ZipException()
         {

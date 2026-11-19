@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks.Internal;
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 
 namespace Cysharp.Threading.Tasks.Linq
@@ -40,6 +41,39 @@ namespace Cysharp.Threading.Tasks.Linq
             Error.ThrowArgumentNullException(selector, nameof(selector));
 
             return new ZipAwaitWithCancellation<TFirst, TSecond, TResult>(first, second, selector);
+        }
+    }
+
+    internal static class Zip
+    {
+        public static async UniTask DisposeAsync<TFirst, TSecond>(IUniTaskAsyncEnumerator<TFirst> first, IUniTaskAsyncEnumerator<TSecond> second)
+        {
+            ExceptionDispatchInfo firstError = null;
+            if (first != null)
+            {
+                try
+                {
+                    await first.DisposeAsync();
+                }
+                catch (Exception ex)
+                {
+                    firstError = ExceptionDispatchInfo.Capture(ex);
+                }
+            }
+
+            if (second != null)
+            {
+                try
+                {
+                    await second.DisposeAsync();
+                }
+                catch (Exception) when (firstError != null)
+                {
+                    // Keep the first error when both disposals fail.
+                }
+            }
+
+            firstError?.Throw();
         }
     }
 
@@ -180,17 +214,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
             }
 
-            public async UniTask DisposeAsync()
+            public UniTask DisposeAsync()
             {
                 TaskTracker.RemoveTracking(this);
-                if (firstEnumerator != null)
-                {
-                    await firstEnumerator.DisposeAsync();
-                }
-                if (secondEnumerator != null)
-                {
-                    await secondEnumerator.DisposeAsync();
-                }
+                return Zip.DisposeAsync(firstEnumerator, secondEnumerator);
             }
         }
     }
@@ -352,17 +379,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
             }
 
-            public async UniTask DisposeAsync()
+            public UniTask DisposeAsync()
             {
                 TaskTracker.RemoveTracking(this);
-                if (firstEnumerator != null)
-                {
-                    await firstEnumerator.DisposeAsync();
-                }
-                if (secondEnumerator != null)
-                {
-                    await secondEnumerator.DisposeAsync();
-                }
+                return Zip.DisposeAsync(firstEnumerator, secondEnumerator);
             }
         }
     }
@@ -524,17 +544,10 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
             }
 
-            public async UniTask DisposeAsync()
+            public UniTask DisposeAsync()
             {
                 TaskTracker.RemoveTracking(this);
-                if (firstEnumerator != null)
-                {
-                    await firstEnumerator.DisposeAsync();
-                }
-                if (secondEnumerator != null)
-                {
-                    await secondEnumerator.DisposeAsync();
-                }
+                return Zip.DisposeAsync(firstEnumerator, secondEnumerator);
             }
         }
     }
