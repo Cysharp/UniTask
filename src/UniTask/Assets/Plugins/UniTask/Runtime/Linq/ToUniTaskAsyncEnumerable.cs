@@ -85,7 +85,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
-                enumerator.Dispose();
+                enumerator?.Dispose();
                 return default;
             }
         }
@@ -302,7 +302,7 @@ namespace Cysharp.Threading.Tasks.Linq
 
             public UniTask DisposeAsync()
             {
-                subscription.Dispose();
+                subscription?.Dispose();
                 cancellationTokenRegistration.Dispose();
                 completionSource.Reset();
                 return default;

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -86,6 +87,37 @@ namespace NetCoreTests.Linq
 
                 xs.Should().Equal(ys);
             }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task SourceWasNotOpenedBeforeDisposal(bool observable)
+        {
+            var enumerator = ConvertSequence(observable).GetAsyncEnumerator();
+
+            await enumerator.DisposeAsync();
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task PreCanceledConvertedSequencePreservesCancellation(bool observable)
+        {
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            var error = await Assert.ThrowsAsync<OperationCanceledException>(
+                async () => await ConvertSequence(observable).ToArrayAsync(cancellation.Token));
+
+            error.CancellationToken.Should().Be(cancellation.Token);
+        }
+
+        static IUniTaskAsyncEnumerable<int> ConvertSequence(bool observable)
+        {
+            return observable
+                ? Observable.Return(1).ToUniTaskAsyncEnumerable()
+                : Enumerable.Repeat(1, 1).ToUniTaskAsyncEnumerable();
         }
 
         [Fact]
