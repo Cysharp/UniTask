@@ -491,7 +491,15 @@ namespace Cysharp.Threading.Tasks
                 var f = Interlocked.Exchange(ref factory, null);
                 if (f != null)
                 {
-                    task = f();
+                    try
+                    {
+                        task = f();
+                    }
+                    catch (Exception ex)
+                    {
+                        task = FromException(ex);
+                    }
+
                     awaiter = task.GetAwaiter();
                 }
 
@@ -535,7 +543,15 @@ namespace Cysharp.Threading.Tasks
                 var f = Interlocked.Exchange(ref factory, null);
                 if (f != null)
                 {
-                    task = f();
+                    try
+                    {
+                        task = f();
+                    }
+                    catch (Exception ex)
+                    {
+                        task = FromException<T>(ex);
+                    }
+
                     awaiter = task.GetAwaiter();
                 }
 
@@ -576,7 +592,15 @@ namespace Cysharp.Threading.Tasks
                 var f = Interlocked.Exchange(ref factory, null);
                 if (f != null)
                 {
-                    task = f(argument);
+                    try
+                    {
+                        task = f(argument);
+                    }
+                    catch (Exception ex)
+                    {
+                        task = FromException(ex);
+                    }
+
                     awaiter = task.GetAwaiter();
                 }
 
@@ -622,7 +646,15 @@ namespace Cysharp.Threading.Tasks
                 var f = Interlocked.Exchange(ref factory, null);
                 if (f != null)
                 {
-                    task = f(argument);
+                    try
+                    {
+                        task = f(argument);
+                    }
+                    catch (Exception ex)
+                    {
+                        task = FromException<TResult>(ex);
+                    }
+
                     awaiter = task.GetAwaiter();
                 }
 
