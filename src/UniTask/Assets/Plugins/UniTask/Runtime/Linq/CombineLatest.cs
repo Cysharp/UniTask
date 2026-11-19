@@ -272,6 +272,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, Func<T1, T2, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -288,6 +289,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -297,10 +300,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -313,7 +322,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -327,7 +336,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2))
                 {
                     goto AGAIN;
                 }
@@ -343,7 +352,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -363,7 +377,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -379,7 +393,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -398,7 +412,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -418,7 +437,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -434,7 +453,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -448,10 +467,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2)
                 {
-                    result = resultSelector(current1, current2);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -532,6 +570,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, Func<T1, T2, T3, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -549,6 +588,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -559,10 +600,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -575,7 +622,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -588,7 +635,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -602,7 +649,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3))
                 {
                     goto AGAIN;
                 }
@@ -618,7 +665,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -638,7 +690,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -654,7 +706,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -673,7 +725,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -693,7 +750,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -709,7 +766,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -728,7 +785,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -748,7 +810,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -764,7 +826,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -778,10 +840,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3)
                 {
-                    result = resultSelector(current1, current2, current3);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -876,6 +957,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, Func<T1, T2, T3, T4, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -894,6 +976,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -905,10 +989,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -921,7 +1011,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -934,7 +1024,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -947,7 +1037,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -961,7 +1051,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4))
                 {
                     goto AGAIN;
                 }
@@ -977,7 +1067,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -997,7 +1092,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1013,7 +1108,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1032,7 +1127,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -1052,7 +1152,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1068,7 +1168,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1087,7 +1187,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -1107,7 +1212,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1123,7 +1228,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1142,7 +1247,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -1162,7 +1272,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1178,7 +1288,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1192,10 +1302,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4)
                 {
-                    result = resultSelector(current1, current2, current3, current4);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -1304,6 +1433,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, Func<T1, T2, T3, T4, T5, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -1323,6 +1453,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -1335,10 +1467,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -1351,7 +1489,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -1364,7 +1502,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -1377,7 +1515,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -1390,7 +1528,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -1404,7 +1542,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5))
                 {
                     goto AGAIN;
                 }
@@ -1420,7 +1558,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -1440,7 +1583,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1456,7 +1599,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1475,7 +1618,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -1495,7 +1643,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1511,7 +1659,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1530,7 +1678,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -1550,7 +1703,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1566,7 +1719,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1585,7 +1738,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -1605,7 +1763,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1621,7 +1779,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1640,7 +1798,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -1660,7 +1823,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1676,7 +1839,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -1690,10 +1853,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -1816,6 +1998,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, Func<T1, T2, T3, T4, T5, T6, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -1836,6 +2019,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -1849,10 +2034,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -1865,7 +2056,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -1878,7 +2069,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -1891,7 +2082,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -1904,7 +2095,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -1917,7 +2108,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -1931,7 +2122,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6))
                 {
                     goto AGAIN;
                 }
@@ -1947,7 +2138,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -1967,7 +2163,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -1983,7 +2179,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2002,7 +2198,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -2022,7 +2223,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2038,7 +2239,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2057,7 +2258,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -2077,7 +2283,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2093,7 +2299,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2112,7 +2318,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -2132,7 +2343,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2148,7 +2359,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2167,7 +2378,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -2187,7 +2403,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2203,7 +2419,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2222,7 +2438,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -2242,7 +2463,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2258,7 +2479,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2272,10 +2493,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -2412,6 +2652,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, Func<T1, T2, T3, T4, T5, T6, T7, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -2433,6 +2674,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -2447,10 +2690,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -2463,7 +2712,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -2476,7 +2725,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -2489,7 +2738,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -2502,7 +2751,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -2515,7 +2764,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -2528,7 +2777,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -2542,7 +2791,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7))
                 {
                     goto AGAIN;
                 }
@@ -2558,7 +2807,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -2578,7 +2832,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2594,7 +2848,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2613,7 +2867,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -2633,7 +2892,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2649,7 +2908,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2668,7 +2927,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -2688,7 +2952,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2704,7 +2968,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2723,7 +2987,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -2743,7 +3012,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2759,7 +3028,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2778,7 +3047,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -2798,7 +3072,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2814,7 +3088,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2833,7 +3107,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -2853,7 +3132,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2869,7 +3148,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2888,7 +3167,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -2908,7 +3192,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -2924,7 +3208,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -2938,10 +3222,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -3092,6 +3395,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -3114,6 +3418,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -3129,10 +3435,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -3145,7 +3457,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -3158,7 +3470,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -3171,7 +3483,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -3184,7 +3496,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -3197,7 +3509,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -3210,7 +3522,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -3223,7 +3535,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -3237,7 +3549,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8))
                 {
                     goto AGAIN;
                 }
@@ -3253,7 +3565,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -3273,7 +3590,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3289,7 +3606,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3308,7 +3625,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -3328,7 +3650,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3344,7 +3666,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3363,7 +3685,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -3383,7 +3710,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3399,7 +3726,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3418,7 +3745,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -3438,7 +3770,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3454,7 +3786,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3473,7 +3805,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -3493,7 +3830,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3509,7 +3846,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3528,7 +3865,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -3548,7 +3890,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3564,7 +3906,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3583,7 +3925,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -3603,7 +3950,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3619,7 +3966,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3638,7 +3985,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -3658,7 +4010,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -3674,7 +4026,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -3688,10 +4040,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -3856,6 +4227,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, IUniTaskAsyncEnumerable<T9> source9, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -3879,6 +4251,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -3895,10 +4269,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -3911,7 +4291,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -3924,7 +4304,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -3937,7 +4317,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -3950,7 +4330,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -3963,7 +4343,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -3976,7 +4356,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -3989,7 +4369,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -4002,7 +4382,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter8.SourceOnCompleted(Completed8Delegate, this);
                     }
                 }
-                if (!running9)
+                if (!running9 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
@@ -4016,7 +4396,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9))
                 {
                     goto AGAIN;
                 }
@@ -4032,7 +4412,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -4052,7 +4437,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4068,7 +4453,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4087,7 +4472,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -4107,7 +4497,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4123,7 +4513,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4142,7 +4532,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -4162,7 +4557,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4178,7 +4573,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4197,7 +4592,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -4217,7 +4617,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4233,7 +4633,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4252,7 +4652,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -4272,7 +4677,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4288,7 +4693,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4307,7 +4712,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -4327,7 +4737,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4343,7 +4753,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4362,7 +4772,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -4382,7 +4797,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4398,7 +4813,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4417,7 +4832,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -4437,7 +4857,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4453,7 +4873,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4472,7 +4892,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter9.GetResult())
+                    var hasNext = self.awaiter9.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent9 = true;
                         self.current9 = self.enumerator9.Current;
@@ -4492,7 +4917,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running9 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4508,7 +4933,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4522,10 +4947,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8 && hasCurrent9)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -4704,6 +5148,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, IUniTaskAsyncEnumerable<T9> source9, IUniTaskAsyncEnumerable<T10> source10, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -4728,6 +5173,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -4745,10 +5192,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -4761,7 +5214,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -4774,7 +5227,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -4787,7 +5240,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -4800,7 +5253,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -4813,7 +5266,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -4826,7 +5279,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -4839,7 +5292,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -4852,7 +5305,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter8.SourceOnCompleted(Completed8Delegate, this);
                     }
                 }
-                if (!running9)
+                if (!running9 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
@@ -4865,7 +5318,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter9.SourceOnCompleted(Completed9Delegate, this);
                     }
                 }
-                if (!running10)
+                if (!running10 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
@@ -4879,7 +5332,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10))
                 {
                     goto AGAIN;
                 }
@@ -4895,7 +5348,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -4915,7 +5373,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4931,7 +5389,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -4950,7 +5408,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -4970,7 +5433,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -4986,7 +5449,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5005,7 +5468,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -5025,7 +5493,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5041,7 +5509,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5060,7 +5528,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -5080,7 +5553,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5096,7 +5569,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5115,7 +5588,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -5135,7 +5613,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5151,7 +5629,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5170,7 +5648,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -5190,7 +5673,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5206,7 +5689,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5225,7 +5708,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -5245,7 +5733,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5261,7 +5749,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5280,7 +5768,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -5300,7 +5793,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5316,7 +5809,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5335,7 +5828,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter9.GetResult())
+                    var hasNext = self.awaiter9.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent9 = true;
                         self.current9 = self.enumerator9.Current;
@@ -5355,7 +5853,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running9 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5371,7 +5869,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5390,7 +5888,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter10.GetResult())
+                    var hasNext = self.awaiter10.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent10 = true;
                         self.current10 = self.enumerator10.Current;
@@ -5410,7 +5913,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running10 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5426,7 +5929,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5440,10 +5943,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8 && hasCurrent9 && hasCurrent10)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -5636,6 +6158,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, IUniTaskAsyncEnumerable<T9> source9, IUniTaskAsyncEnumerable<T10> source10, IUniTaskAsyncEnumerable<T11> source11, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -5661,6 +6184,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -5679,10 +6204,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -5695,7 +6226,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -5708,7 +6239,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -5721,7 +6252,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -5734,7 +6265,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -5747,7 +6278,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -5760,7 +6291,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -5773,7 +6304,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -5786,7 +6317,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter8.SourceOnCompleted(Completed8Delegate, this);
                     }
                 }
-                if (!running9)
+                if (!running9 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
@@ -5799,7 +6330,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter9.SourceOnCompleted(Completed9Delegate, this);
                     }
                 }
-                if (!running10)
+                if (!running10 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
@@ -5812,7 +6343,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter10.SourceOnCompleted(Completed10Delegate, this);
                     }
                 }
-                if (!running11)
+                if (!running11 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
@@ -5826,7 +6357,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11))
                 {
                     goto AGAIN;
                 }
@@ -5842,7 +6373,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -5862,7 +6398,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5878,7 +6414,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5897,7 +6433,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -5917,7 +6458,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5933,7 +6474,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -5952,7 +6493,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -5972,7 +6518,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -5988,7 +6534,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6007,7 +6553,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -6027,7 +6578,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6043,7 +6594,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6062,7 +6613,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -6082,7 +6638,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6098,7 +6654,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6117,7 +6673,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -6137,7 +6698,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6153,7 +6714,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6172,7 +6733,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -6192,7 +6758,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6208,7 +6774,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6227,7 +6793,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -6247,7 +6818,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6263,7 +6834,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6282,7 +6853,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter9.GetResult())
+                    var hasNext = self.awaiter9.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent9 = true;
                         self.current9 = self.enumerator9.Current;
@@ -6302,7 +6878,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running9 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6318,7 +6894,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6337,7 +6913,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter10.GetResult())
+                    var hasNext = self.awaiter10.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent10 = true;
                         self.current10 = self.enumerator10.Current;
@@ -6357,7 +6938,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running10 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6373,7 +6954,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6392,7 +6973,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter11.GetResult())
+                    var hasNext = self.awaiter11.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent11 = true;
                         self.current11 = self.enumerator11.Current;
@@ -6412,7 +6998,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running11 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6428,7 +7014,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6442,10 +7028,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8 && hasCurrent9 && hasCurrent10 && hasCurrent11)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -6652,6 +7257,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, IUniTaskAsyncEnumerable<T9> source9, IUniTaskAsyncEnumerable<T10> source10, IUniTaskAsyncEnumerable<T11> source11, IUniTaskAsyncEnumerable<T12> source12, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -6678,6 +7284,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -6697,10 +7305,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -6713,7 +7327,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -6726,7 +7340,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -6739,7 +7353,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -6752,7 +7366,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -6765,7 +7379,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -6778,7 +7392,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -6791,7 +7405,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -6804,7 +7418,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter8.SourceOnCompleted(Completed8Delegate, this);
                     }
                 }
-                if (!running9)
+                if (!running9 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
@@ -6817,7 +7431,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter9.SourceOnCompleted(Completed9Delegate, this);
                     }
                 }
-                if (!running10)
+                if (!running10 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
@@ -6830,7 +7444,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter10.SourceOnCompleted(Completed10Delegate, this);
                     }
                 }
-                if (!running11)
+                if (!running11 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
@@ -6843,7 +7457,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter11.SourceOnCompleted(Completed11Delegate, this);
                     }
                 }
-                if (!running12)
+                if (!running12 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
@@ -6857,7 +7471,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12))
                 {
                     goto AGAIN;
                 }
@@ -6873,7 +7487,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -6893,7 +7512,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6909,7 +7528,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6928,7 +7547,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -6948,7 +7572,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -6964,7 +7588,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -6983,7 +7607,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -7003,7 +7632,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7019,7 +7648,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7038,7 +7667,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -7058,7 +7692,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7074,7 +7708,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7093,7 +7727,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -7113,7 +7752,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7129,7 +7768,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7148,7 +7787,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -7168,7 +7812,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7184,7 +7828,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7203,7 +7847,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -7223,7 +7872,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7239,7 +7888,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7258,7 +7907,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -7278,7 +7932,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7294,7 +7948,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7313,7 +7967,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter9.GetResult())
+                    var hasNext = self.awaiter9.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent9 = true;
                         self.current9 = self.enumerator9.Current;
@@ -7333,7 +7992,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running9 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7349,7 +8008,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7368,7 +8027,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter10.GetResult())
+                    var hasNext = self.awaiter10.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent10 = true;
                         self.current10 = self.enumerator10.Current;
@@ -7388,7 +8052,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running10 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7404,7 +8068,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7423,7 +8087,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter11.GetResult())
+                    var hasNext = self.awaiter11.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent11 = true;
                         self.current11 = self.enumerator11.Current;
@@ -7443,7 +8112,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running11 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7459,7 +8128,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7478,7 +8147,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter12.GetResult())
+                    var hasNext = self.awaiter12.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent12 = true;
                         self.current12 = self.enumerator12.Current;
@@ -7498,7 +8172,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running12 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -7514,7 +8188,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -7528,10 +8202,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8 && hasCurrent9 && hasCurrent10 && hasCurrent11 && hasCurrent12)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -7752,6 +8445,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, IUniTaskAsyncEnumerable<T9> source9, IUniTaskAsyncEnumerable<T10> source10, IUniTaskAsyncEnumerable<T11> source11, IUniTaskAsyncEnumerable<T12> source12, IUniTaskAsyncEnumerable<T13> source13, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -7779,6 +8473,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -7799,10 +8495,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -7815,7 +8517,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -7828,7 +8530,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -7841,7 +8543,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -7854,7 +8556,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -7867,7 +8569,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -7880,7 +8582,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -7893,7 +8595,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -7906,7 +8608,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter8.SourceOnCompleted(Completed8Delegate, this);
                     }
                 }
-                if (!running9)
+                if (!running9 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
@@ -7919,7 +8621,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter9.SourceOnCompleted(Completed9Delegate, this);
                     }
                 }
-                if (!running10)
+                if (!running10 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
@@ -7932,7 +8634,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter10.SourceOnCompleted(Completed10Delegate, this);
                     }
                 }
-                if (!running11)
+                if (!running11 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
@@ -7945,7 +8647,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter11.SourceOnCompleted(Completed11Delegate, this);
                     }
                 }
-                if (!running12)
+                if (!running12 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
@@ -7958,7 +8660,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter12.SourceOnCompleted(Completed12Delegate, this);
                     }
                 }
-                if (!running13)
+                if (!running13 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running13 = true;
                     awaiter13 = enumerator13.MoveNextAsync().GetAwaiter();
@@ -7972,7 +8674,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13))
                 {
                     goto AGAIN;
                 }
@@ -7988,7 +8690,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -8008,7 +8715,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8024,7 +8731,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8043,7 +8750,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -8063,7 +8775,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8079,7 +8791,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8098,7 +8810,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -8118,7 +8835,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8134,7 +8851,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8153,7 +8870,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -8173,7 +8895,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8189,7 +8911,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8208,7 +8930,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -8228,7 +8955,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8244,7 +8971,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8263,7 +8990,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -8283,7 +9015,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8299,7 +9031,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8318,7 +9050,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -8338,7 +9075,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8354,7 +9091,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8373,7 +9110,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -8393,7 +9135,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8409,7 +9151,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8428,7 +9170,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter9.GetResult())
+                    var hasNext = self.awaiter9.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent9 = true;
                         self.current9 = self.enumerator9.Current;
@@ -8448,7 +9195,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running9 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8464,7 +9211,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8483,7 +9230,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter10.GetResult())
+                    var hasNext = self.awaiter10.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent10 = true;
                         self.current10 = self.enumerator10.Current;
@@ -8503,7 +9255,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running10 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8519,7 +9271,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8538,7 +9290,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter11.GetResult())
+                    var hasNext = self.awaiter11.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent11 = true;
                         self.current11 = self.enumerator11.Current;
@@ -8558,7 +9315,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running11 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8574,7 +9331,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8593,7 +9350,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter12.GetResult())
+                    var hasNext = self.awaiter12.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent12 = true;
                         self.current12 = self.enumerator12.Current;
@@ -8613,7 +9375,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running12 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8629,7 +9391,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8648,7 +9410,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter13.GetResult())
+                    var hasNext = self.awaiter13.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent13 = true;
                         self.current13 = self.enumerator13.Current;
@@ -8668,7 +9435,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running13 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -8684,7 +9451,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -8698,10 +9465,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8 && hasCurrent9 && hasCurrent10 && hasCurrent11 && hasCurrent12 && hasCurrent13)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12, current13);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12, current13);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -8936,6 +9722,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, IUniTaskAsyncEnumerable<T9> source9, IUniTaskAsyncEnumerable<T10> source10, IUniTaskAsyncEnumerable<T11> source11, IUniTaskAsyncEnumerable<T12> source12, IUniTaskAsyncEnumerable<T13> source13, IUniTaskAsyncEnumerable<T14> source14, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -8964,6 +9751,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -8985,10 +9774,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -9001,7 +9796,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -9014,7 +9809,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -9027,7 +9822,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -9040,7 +9835,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -9053,7 +9848,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -9066,7 +9861,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -9079,7 +9874,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -9092,7 +9887,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter8.SourceOnCompleted(Completed8Delegate, this);
                     }
                 }
-                if (!running9)
+                if (!running9 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
@@ -9105,7 +9900,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter9.SourceOnCompleted(Completed9Delegate, this);
                     }
                 }
-                if (!running10)
+                if (!running10 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
@@ -9118,7 +9913,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter10.SourceOnCompleted(Completed10Delegate, this);
                     }
                 }
-                if (!running11)
+                if (!running11 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
@@ -9131,7 +9926,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter11.SourceOnCompleted(Completed11Delegate, this);
                     }
                 }
-                if (!running12)
+                if (!running12 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
@@ -9144,7 +9939,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter12.SourceOnCompleted(Completed12Delegate, this);
                     }
                 }
-                if (!running13)
+                if (!running13 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running13 = true;
                     awaiter13 = enumerator13.MoveNextAsync().GetAwaiter();
@@ -9157,7 +9952,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter13.SourceOnCompleted(Completed13Delegate, this);
                     }
                 }
-                if (!running14)
+                if (!running14 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running14 = true;
                     awaiter14 = enumerator14.MoveNextAsync().GetAwaiter();
@@ -9171,7 +9966,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13 || !running14)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13 || !running14))
                 {
                     goto AGAIN;
                 }
@@ -9187,7 +9982,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -9207,7 +10007,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9223,7 +10023,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9242,7 +10042,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -9262,7 +10067,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9278,7 +10083,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9297,7 +10102,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -9317,7 +10127,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9333,7 +10143,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9352,7 +10162,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -9372,7 +10187,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9388,7 +10203,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9407,7 +10222,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -9427,7 +10247,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9443,7 +10263,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9462,7 +10282,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -9482,7 +10307,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9498,7 +10323,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9517,7 +10342,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -9537,7 +10367,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9553,7 +10383,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9572,7 +10402,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -9592,7 +10427,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9608,7 +10443,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9627,7 +10462,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter9.GetResult())
+                    var hasNext = self.awaiter9.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent9 = true;
                         self.current9 = self.enumerator9.Current;
@@ -9647,7 +10487,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running9 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9663,7 +10503,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9682,7 +10522,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter10.GetResult())
+                    var hasNext = self.awaiter10.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent10 = true;
                         self.current10 = self.enumerator10.Current;
@@ -9702,7 +10547,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running10 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9718,7 +10563,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9737,7 +10582,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter11.GetResult())
+                    var hasNext = self.awaiter11.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent11 = true;
                         self.current11 = self.enumerator11.Current;
@@ -9757,7 +10607,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running11 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9773,7 +10623,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9792,7 +10642,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter12.GetResult())
+                    var hasNext = self.awaiter12.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent12 = true;
                         self.current12 = self.enumerator12.Current;
@@ -9812,7 +10667,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running12 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9828,7 +10683,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9847,7 +10702,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter13.GetResult())
+                    var hasNext = self.awaiter13.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent13 = true;
                         self.current13 = self.enumerator13.Current;
@@ -9867,7 +10727,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running13 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9883,7 +10743,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9902,7 +10762,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter14.GetResult())
+                    var hasNext = self.awaiter14.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent14 = true;
                         self.current14 = self.enumerator14.Current;
@@ -9922,7 +10787,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running14 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -9938,7 +10803,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -9952,10 +10817,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8 && hasCurrent9 && hasCurrent10 && hasCurrent11 && hasCurrent12 && hasCurrent13 && hasCurrent14)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12, current13, current14);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12, current13, current14);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
@@ -10204,6 +11088,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(IUniTaskAsyncEnumerable<T1> source1, IUniTaskAsyncEnumerable<T2> source2, IUniTaskAsyncEnumerable<T3> source3, IUniTaskAsyncEnumerable<T4> source4, IUniTaskAsyncEnumerable<T5> source5, IUniTaskAsyncEnumerable<T6> source6, IUniTaskAsyncEnumerable<T7> source7, IUniTaskAsyncEnumerable<T8> source8, IUniTaskAsyncEnumerable<T9> source9, IUniTaskAsyncEnumerable<T10> source10, IUniTaskAsyncEnumerable<T11> source11, IUniTaskAsyncEnumerable<T12> source12, IUniTaskAsyncEnumerable<T13> source13, IUniTaskAsyncEnumerable<T14> source14, IUniTaskAsyncEnumerable<T15> source15, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> resultSelector, CancellationToken cancellationToken)
             {
@@ -10233,6 +11118,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -10255,10 +11142,16 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
-                if (!running1)
+                if (!running1 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running1 = true;
                     awaiter1 = enumerator1.MoveNextAsync().GetAwaiter();
@@ -10271,7 +11164,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter1.SourceOnCompleted(Completed1Delegate, this);
                     }
                 }
-                if (!running2)
+                if (!running2 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running2 = true;
                     awaiter2 = enumerator2.MoveNextAsync().GetAwaiter();
@@ -10284,7 +11177,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter2.SourceOnCompleted(Completed2Delegate, this);
                     }
                 }
-                if (!running3)
+                if (!running3 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running3 = true;
                     awaiter3 = enumerator3.MoveNextAsync().GetAwaiter();
@@ -10297,7 +11190,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter3.SourceOnCompleted(Completed3Delegate, this);
                     }
                 }
-                if (!running4)
+                if (!running4 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running4 = true;
                     awaiter4 = enumerator4.MoveNextAsync().GetAwaiter();
@@ -10310,7 +11203,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter4.SourceOnCompleted(Completed4Delegate, this);
                     }
                 }
-                if (!running5)
+                if (!running5 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running5 = true;
                     awaiter5 = enumerator5.MoveNextAsync().GetAwaiter();
@@ -10323,7 +11216,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter5.SourceOnCompleted(Completed5Delegate, this);
                     }
                 }
-                if (!running6)
+                if (!running6 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running6 = true;
                     awaiter6 = enumerator6.MoveNextAsync().GetAwaiter();
@@ -10336,7 +11229,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter6.SourceOnCompleted(Completed6Delegate, this);
                     }
                 }
-                if (!running7)
+                if (!running7 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running7 = true;
                     awaiter7 = enumerator7.MoveNextAsync().GetAwaiter();
@@ -10349,7 +11242,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter7.SourceOnCompleted(Completed7Delegate, this);
                     }
                 }
-                if (!running8)
+                if (!running8 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running8 = true;
                     awaiter8 = enumerator8.MoveNextAsync().GetAwaiter();
@@ -10362,7 +11255,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter8.SourceOnCompleted(Completed8Delegate, this);
                     }
                 }
-                if (!running9)
+                if (!running9 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running9 = true;
                     awaiter9 = enumerator9.MoveNextAsync().GetAwaiter();
@@ -10375,7 +11268,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter9.SourceOnCompleted(Completed9Delegate, this);
                     }
                 }
-                if (!running10)
+                if (!running10 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running10 = true;
                     awaiter10 = enumerator10.MoveNextAsync().GetAwaiter();
@@ -10388,7 +11281,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter10.SourceOnCompleted(Completed10Delegate, this);
                     }
                 }
-                if (!running11)
+                if (!running11 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running11 = true;
                     awaiter11 = enumerator11.MoveNextAsync().GetAwaiter();
@@ -10401,7 +11294,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter11.SourceOnCompleted(Completed11Delegate, this);
                     }
                 }
-                if (!running12)
+                if (!running12 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running12 = true;
                     awaiter12 = enumerator12.MoveNextAsync().GetAwaiter();
@@ -10414,7 +11307,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter12.SourceOnCompleted(Completed12Delegate, this);
                     }
                 }
-                if (!running13)
+                if (!running13 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running13 = true;
                     awaiter13 = enumerator13.MoveNextAsync().GetAwaiter();
@@ -10427,7 +11320,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter13.SourceOnCompleted(Completed13Delegate, this);
                     }
                 }
-                if (!running14)
+                if (!running14 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running14 = true;
                     awaiter14 = enumerator14.MoveNextAsync().GetAwaiter();
@@ -10440,7 +11333,7 @@ namespace Cysharp.Threading.Tasks.Linq
                         awaiter14.SourceOnCompleted(Completed14Delegate, this);
                     }
                 }
-                if (!running15)
+                if (!running15 && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running15 = true;
                     awaiter15 = enumerator15.MoveNextAsync().GetAwaiter();
@@ -10454,7 +11347,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     }
                 }
 
-                if (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13 || !running14 || !running15)
+                if (Volatile.Read(ref resultSelectorError) == null && (!running1 || !running2 || !running3 || !running4 || !running5 || !running6 || !running7 || !running8 || !running9 || !running10 || !running11 || !running12 || !running13 || !running14 || !running15))
                 {
                     goto AGAIN;
                 }
@@ -10470,7 +11363,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter1.GetResult())
+                    var hasNext = self.awaiter1.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent1 = true;
                         self.current1 = self.enumerator1.Current;
@@ -10490,7 +11388,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running1 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10506,7 +11404,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10525,7 +11423,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter2.GetResult())
+                    var hasNext = self.awaiter2.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent2 = true;
                         self.current2 = self.enumerator2.Current;
@@ -10545,7 +11448,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running2 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10561,7 +11464,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10580,7 +11483,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter3.GetResult())
+                    var hasNext = self.awaiter3.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent3 = true;
                         self.current3 = self.enumerator3.Current;
@@ -10600,7 +11508,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running3 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10616,7 +11524,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10635,7 +11543,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter4.GetResult())
+                    var hasNext = self.awaiter4.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent4 = true;
                         self.current4 = self.enumerator4.Current;
@@ -10655,7 +11568,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running4 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10671,7 +11584,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10690,7 +11603,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter5.GetResult())
+                    var hasNext = self.awaiter5.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent5 = true;
                         self.current5 = self.enumerator5.Current;
@@ -10710,7 +11628,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running5 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10726,7 +11644,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10745,7 +11663,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter6.GetResult())
+                    var hasNext = self.awaiter6.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent6 = true;
                         self.current6 = self.enumerator6.Current;
@@ -10765,7 +11688,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running6 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10781,7 +11704,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10800,7 +11723,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter7.GetResult())
+                    var hasNext = self.awaiter7.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent7 = true;
                         self.current7 = self.enumerator7.Current;
@@ -10820,7 +11748,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running7 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10836,7 +11764,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10855,7 +11783,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter8.GetResult())
+                    var hasNext = self.awaiter8.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent8 = true;
                         self.current8 = self.enumerator8.Current;
@@ -10875,7 +11808,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running8 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10891,7 +11824,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10910,7 +11843,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter9.GetResult())
+                    var hasNext = self.awaiter9.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent9 = true;
                         self.current9 = self.enumerator9.Current;
@@ -10930,7 +11868,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running9 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -10946,7 +11884,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -10965,7 +11903,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter10.GetResult())
+                    var hasNext = self.awaiter10.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent10 = true;
                         self.current10 = self.enumerator10.Current;
@@ -10985,7 +11928,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running10 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -11001,7 +11944,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -11020,7 +11963,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter11.GetResult())
+                    var hasNext = self.awaiter11.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent11 = true;
                         self.current11 = self.enumerator11.Current;
@@ -11040,7 +11988,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running11 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -11056,7 +12004,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -11075,7 +12023,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter12.GetResult())
+                    var hasNext = self.awaiter12.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent12 = true;
                         self.current12 = self.enumerator12.Current;
@@ -11095,7 +12048,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running12 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -11111,7 +12064,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -11130,7 +12083,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter13.GetResult())
+                    var hasNext = self.awaiter13.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent13 = true;
                         self.current13 = self.enumerator13.Current;
@@ -11150,7 +12108,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running13 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -11166,7 +12124,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -11185,7 +12143,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter14.GetResult())
+                    var hasNext = self.awaiter14.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent14 = true;
                         self.current14 = self.enumerator14.Current;
@@ -11205,7 +12168,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running14 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -11221,7 +12184,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -11240,7 +12203,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter15.GetResult())
+                    var hasNext = self.awaiter15.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent15 = true;
                         self.current15 = self.enumerator15.Current;
@@ -11260,7 +12228,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running15 = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -11276,7 +12244,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -11290,10 +12258,29 @@ namespace Cysharp.Threading.Tasks.Linq
 
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (hasCurrent1 && hasCurrent2 && hasCurrent3 && hasCurrent4 && hasCurrent5 && hasCurrent6 && hasCurrent7 && hasCurrent8 && hasCurrent9 && hasCurrent10 && hasCurrent11 && hasCurrent12 && hasCurrent13 && hasCurrent14 && hasCurrent15)
                 {
-                    result = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12, current13, current14, current15);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(current1, current2, current3, current4, current5, current6, current7, current8, current9, current10, current11, current12, current13, current14, current15);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else

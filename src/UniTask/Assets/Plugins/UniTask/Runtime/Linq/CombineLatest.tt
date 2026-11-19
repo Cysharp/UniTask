@@ -79,6 +79,7 @@ namespace Cysharp.Threading.Tasks.Linq
             int completedCount;
             bool syncRunning;
             TResult result;
+            Exception resultSelectorError;
 
             public _CombineLatest(<#= paramArgs(i) #>, Func<<#= typeArgs(i) #>> resultSelector, CancellationToken cancellationToken)
             {
@@ -95,6 +96,8 @@ namespace Cysharp.Threading.Tasks.Linq
             public UniTask<bool> MoveNextAsync()
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                var selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null) return UniTask.FromException<bool>(selectorError);
                 if (completedCount == CompleteCount) return CompletedTasks.False;
 
                 if (enumerator1 == null)
@@ -105,11 +108,17 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 
                 completionSource.Reset();
+                selectorError = Volatile.Read(ref resultSelectorError);
+                if (selectorError != null)
+                {
+                    completionSource.TrySetException(selectorError);
+                    return new UniTask<bool>(this, completionSource.Version);
+                }
 
                 AGAIN:
                 syncRunning = true;
 <# for(var j = 1; j <= i; j++) { #>
-                if (!running<#= j #>)
+                if (!running<#= j #> && Volatile.Read(ref resultSelectorError) == null)
                 {
                     running<#= j #> = true;
                     awaiter<#= j #> = enumerator<#= j #>.MoveNextAsync().GetAwaiter();
@@ -124,7 +133,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 }
 <# } #>
 
-                if (<#= string.Join(" || ", Enumerable.Range(1, i).Select(x => $"!running{x}")) #>)
+                if (Volatile.Read(ref resultSelectorError) == null && (<#= string.Join(" || ", Enumerable.Range(1, i).Select(x => $"!running{x}")) #>))
                 {
                     goto AGAIN;
                 }
@@ -141,7 +150,12 @@ namespace Cysharp.Threading.Tasks.Linq
 
                 try
                 {
-                    if (self.awaiter<#= j #>.GetResult())
+                    var hasNext = self.awaiter<#= j #>.GetResult();
+                    if (Volatile.Read(ref self.resultSelectorError) != null)
+                    {
+                        return;
+                    }
+                    if (hasNext)
                     {
                         self.hasCurrent<#= j #> = true;
                         self.current<#= j #> = self.enumerator<#= j #>.Current;
@@ -161,7 +175,7 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     self.running<#= j #> = true; // as complete, no more call MoveNextAsync.
                     self.completedCount = CompleteCount;
-                    self.completionSource.TrySetException(ex);
+                    self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                     return;
                 }
 
@@ -177,7 +191,7 @@ namespace Cysharp.Threading.Tasks.Linq
                     catch (Exception ex)
                     {
                         self.completedCount = CompleteCount;
-                        self.completionSource.TrySetException(ex);
+                        self.completionSource.TrySetException(Volatile.Read(ref self.resultSelectorError) ?? ex);
                         return;
                     }
 
@@ -192,10 +206,29 @@ namespace Cysharp.Threading.Tasks.Linq
 <# } #>
             bool TrySetResult()
             {
+                if (Volatile.Read(ref resultSelectorError) != null)
+                {
+                    return true;
+                }
                 if (<#= string.Join(" && ", Enumerable.Range(1, i).Select(x => $"hasCurrent{x}")) #>)
                 {
-                    result = resultSelector(<#= string.Join(", ", Enumerable.Range(1, i).Select(x => $"current{x}")) #>);
-                    completionSource.TrySetResult(true);
+                    TResult selected;
+                    try
+                    {
+                        selected = resultSelector(<#= string.Join(", ", Enumerable.Range(1, i).Select(x => $"current{x}")) #>);
+                    }
+                    catch (Exception ex)
+                    {
+                        var error = Interlocked.CompareExchange(ref resultSelectorError, ex, null) ?? ex;
+                        completionSource.TrySetException(error);
+                        return true;
+                    }
+
+                    if (Volatile.Read(ref resultSelectorError) == null)
+                    {
+                        result = selected;
+                        completionSource.TrySetResult(true);
+                    }
                     return true;
                 }
                 else
