@@ -134,19 +134,21 @@ namespace Cysharp.Threading.Tasks.Linq
 
             async UniTaskVoid RunSecondAfterDisposeAsync()
             {
+                var firstEnumerator = enumerator;
+                enumerator = null;
+                awaiter = default;
+
                 try
                 {
-                    await enumerator.DisposeAsync();
-                    enumerator = null;
-                    awaiter = default;
+                    await firstEnumerator.DisposeAsync();
                     iteratingState = IteratingState.IteratingSecond;
+                    StartIterate();
                 }
                 catch (Exception ex)
                 {
+                    iteratingState = IteratingState.Complete;
                     completionSource.TrySetException(ex);
                 }
-
-                StartIterate();
             }
 
             public UniTask DisposeAsync()

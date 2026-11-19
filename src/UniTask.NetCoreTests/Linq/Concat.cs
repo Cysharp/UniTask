@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -110,6 +111,81 @@ namespace NetCoreTests.Linq
 
                 var zs = UniTaskAsyncEnumerable.Range(1, 10).Concat(UniTaskTestException.ThrowInMoveNext()).ToArrayAsync();
                 await Assert.ThrowsAsync<UniTaskTestException>(async () => await zs);
+            }
+        }
+
+        [Fact]
+        public async Task ConcatPropagatesSecondAcquisitionFailure()
+        {
+            var failure = new UniTaskTestException();
+            var first = new TrackingEmptySource();
+            var second = new FailingAcquisitionSource(failure);
+            await using var enumerator = first.Concat(second).GetAsyncEnumerator();
+
+            var next = enumerator.MoveNextAsync();
+
+            next.Status.Should().Be(UniTaskStatus.Faulted);
+            var error = await Assert.ThrowsAsync<UniTaskTestException>(async () => await next);
+            Assert.Same(failure, error);
+            first.DisposeCount.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task ConcatDoesNotRetryFailedDisposal()
+        {
+            var failure = new UniTaskTestException();
+            var first = new TrackingEmptySource(failure);
+
+            var result = first.Concat(UniTaskAsyncEnumerable.Empty<int>()).ToArrayAsync();
+
+            result.Status.Should().Be(UniTaskStatus.Faulted);
+            var error = await Assert.ThrowsAsync<UniTaskTestException>(async () => await result);
+            Assert.Same(failure, error);
+            first.DisposeCount.Should().Be(1);
+        }
+
+        sealed class FailingAcquisitionSource : IUniTaskAsyncEnumerable<int>
+        {
+            readonly Exception error;
+
+            public FailingAcquisitionSource(Exception error)
+            {
+                this.error = error;
+            }
+
+            public IUniTaskAsyncEnumerator<int> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            {
+                throw error;
+            }
+        }
+
+        sealed class TrackingEmptySource : IUniTaskAsyncEnumerable<int>, IUniTaskAsyncEnumerator<int>
+        {
+            readonly Exception disposeError;
+
+            public TrackingEmptySource(Exception disposeError = null)
+            {
+                this.disposeError = disposeError;
+            }
+
+            public int DisposeCount { get; private set; }
+
+            public int Current => default;
+
+            public IUniTaskAsyncEnumerator<int> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            {
+                return this;
+            }
+
+            public UniTask<bool> MoveNextAsync()
+            {
+                return UniTask.FromResult(false);
+            }
+
+            public UniTask DisposeAsync()
+            {
+                DisposeCount++;
+                return DisposeCount == 1 && disposeError != null ? UniTask.FromException(disposeError) : default;
             }
         }
 
