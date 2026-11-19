@@ -194,14 +194,14 @@ namespace Cysharp.Threading.Tasks.Linq
                 {
                     if (Interlocked.CompareExchange(ref moveNextCompleted, 1, 0) == 0)
                     {
-                        Current = enumerators[index].Current;
+                        Current = hasNext ? enumerators[index].Current : default;
                         completionSource.TrySetResult(!completedAll);
                     }
                     else
                     {
                         lock (states)
                         {
-                            queuedResult.Enqueue((enumerators[index].Current, null, !completedAll));
+                            queuedResult.Enqueue((hasNext ? enumerators[index].Current : default, null, !completedAll));
                         }
                     }
                 }
