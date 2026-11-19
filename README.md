@@ -95,7 +95,7 @@ async UniTask<string> DemoAsync()
     await UniTask.WaitForEndOfFrame(this); // this is MonoBehaviour
 #endif
 
-    // replacement of yield return new WaitForFixedUpdate(same as UniTask.Yield(PlayerLoopTiming.FixedUpdate))
+    // resume at the end of the fixed-update phase (same as UniTask.Yield(PlayerLoopTiming.LastFixedUpdate))
     await UniTask.WaitForFixedUpdate();
     
     // replacement of yield return WaitUntil
@@ -516,7 +516,11 @@ public enum PlayerLoopTiming
 
 It indicates when to run, you can check [PlayerLoopList.md](https://gist.github.com/neuecc/bc3a1cfd4d74501ad057e49efcd7bdae) to Unity's default playerloop and injected UniTask's custom loop.
 
-`PlayerLoopTiming.Update` is similar to `yield return null` in a coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`). `PlayerLoopTiming.FixedUpdate` is similar to `WaitForFixedUpdate`.
+`PlayerLoopTiming.Update` is similar to `yield return null` in a coroutine, but it is called before Update(Update and uGUI events(button.onClick, etc...) are called on `ScriptRunBehaviourUpdate`, yield return null is called on `ScriptRunDelayedDynamicFrameRate`).
+
+`UniTask.Yield(PlayerLoopTiming.FixedUpdate)` resumes at the start of Unity's fixed-update phase. `UniTask.WaitForFixedUpdate()` uses `PlayerLoopTiming.LastFixedUpdate` to resume at the end of that phase. Unity can run several fixed updates in a rendered frame or skip the phase for that frame. Wall-clock spacing depends on frame rate and simulation timing. [Unity FixedUpdate reference](https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/monobehaviour/fixedupdate)
+
+`UniTask.Delay` with `DelayType.DeltaTime` checks for completion at the selected player-loop timing. If the delay is created on the main thread, it starts accumulating time after the creation frame. This also applies when the selected timing is `FixedUpdate`.
 
 > `PlayerLoopTiming.LastPostLateUpdate` is not equivalent to coroutine's `yield return new WaitForEndOfFrame()`. Coroutine's WaitForEndOfFrame seems to run after the PlayerLoop is done. Some methods that require coroutine's end of frame(`Texture2D.ReadPixels`, `ScreenCapture.CaptureScreenshotAsTexture`, `CommandBuffer`, etc) do not work correctly when replaced with async/await. In these cases, pass MonoBehaviour(coroutine runnner) to `UniTask.WaitForEndOfFrame`. For example, `await UniTask.WaitForEndOfFrame(this);` is lightweight allocation free alternative of `yield return new WaitForEndOfFrame()`.
 > 
@@ -1049,7 +1053,7 @@ Use UniTask type.
 | `IAsyncEnumerable<T>` | `IUniTaskAsyncEnumerable<T>` |
 | `IAsyncEnumerator<T>` | `IUniTaskAsyncEnumerator<T>` |
 | `IAsyncDisposable` | `IUniTaskAsyncDisposable` |
-| `Task.Delay` | `UniTask.Delay` |
+| `Task.Delay` | `UniTask.Delay` (Unity only, see [.NET Core](#net-core)) |
 | `Task.Yield` | `UniTask.Yield` |
 | `Task.Run` | `UniTask.RunOnThreadPool` |
 | `Task.WhenAll` | `UniTask.WhenAll` |
@@ -1127,7 +1131,7 @@ For .NET Core, use NuGet.
 
 > PM> Install-Package [UniTask](https://www.nuget.org/packages/UniTask)
 
-UniTask of .NET Core version is a subset of Unity UniTask with PlayerLoop dependent methods removed.
+The .NET Core package omits methods that depend on Unity's PlayerLoop, including `UniTask.Delay`, `UniTask.DelayFrame`, and `UniTask.WaitForSeconds`. For an elapsed-time delay on .NET Core, await `Task.Delay` inside your `async UniTask` method.
 
 It runs at higher performance than the standard Task/ValueTask, but you should be careful to ignore the ExecutionContext/SynchronizationContext when using it. `AsyncLocal` also does not work because it ignores ExecutionContext.
 
